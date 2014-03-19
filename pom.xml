@@ -7,7 +7,7 @@
 	<artifactId>afl</artifactId>
 	<version>1.0.0</version>
 	<name>ask for leave</name>
-	<url>http://www.chinaskycloud.com</url>
+	<url>http://www.sizheng.com</url>
 	<properties>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<spring.framework.version>3.2.6.RELEASE</spring.framework.version>
