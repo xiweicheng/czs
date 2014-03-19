@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[3.4.0.201310051539-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[true]]></enableImports>
+	<configs>
+		<config>src/main/resources/root-context.xml</config>
+		<config>src/main/resources/servlet-context.xml</config>
+		<config>java:com.sizheng.afl.base.impl.CommonService</config>
+		<config>java:com.sizheng.afl.base.impl.CommonDao</config>
+		<config>java:com.sizheng.afl.component.ApiInvoker</config>
+		<config>java:com.sizheng.afl.component.MessageUtil</config>
+		<config>java:com.sizheng.afl.component.SpringAppContextUtil</config>
+		<config>java:com.sizheng.afl.component.AjaxJsonView</config>
+	</configs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>

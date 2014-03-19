@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+	<type-mapping>
+		<sql-type jdbc-type="INTEGER" hibernate-type="java.lang.Integer"
+			not-null="false">
+		</sql-type>
+		<sql-type jdbc-type="BIGINT" hibernate-type="java.lang.Long"
+			not-null="false">
+		</sql-type>
+		<sql-type jdbc-type="VARCHAR" hibernate-type="java.lang.String"
+			not-null="false">
+		</sql-type>
+		<sql-type jdbc-type="LONGVARCHAR" hibernate-type="java.lang.String"
+			not-null="false">
+		</sql-type>
+		<sql-type jdbc-type="DOUBLE" hibernate-type="java.lang.Double"
+			not-null="false">
+		</sql-type>
+		<sql-type jdbc-type="LONGVARBINARY" hibernate-type="binary"
+			not-null="false">
+		</sql-type>
+		<sql-type jdbc-type="CHAR" hibernate-type="java.lang.String"
+			not-null="false">
+		</sql-type>
+		<sql-type jdbc-type="FLOAT" hibernate-type="java.lang.Float"
+			not-null="false">
+		</sql-type>
+	</type-mapping>
+
+	<table-filter match-catalog="skycloud" match-name="acknowledges" />
+	<table-filter match-catalog="skycloud" match-name="actions" />
+	<table-filter match-catalog="skycloud" match-name="alerts" />
+	<table-filter match-catalog="skycloud" match-name="applications" />
+	<table-filter match-catalog="skycloud" match-name="auditlog" />
+	<table-filter match-catalog="skycloud" match-name="auditlog_details" />
+	<table-filter match-catalog="skycloud" match-name="autoreg_host" />
+	<table-filter match-catalog="skycloud" match-name="conditions" />
+	<table-filter match-catalog="skycloud" match-name="config" />
+	<table-filter match-catalog="skycloud" match-name="dchecks" />
+	<table-filter match-catalog="skycloud" match-name="dhosts" />
+	<table-filter match-catalog="skycloud" match-name="drules" />
+	<table-filter match-catalog="skycloud" match-name="dservices" />
+	<table-filter match-catalog="skycloud" match-name="escalations" />
+	<table-filter match-catalog="skycloud" match-name="events" />
+	<table-filter match-catalog="skycloud" match-name="expressions" />
+	<table-filter match-catalog="skycloud" match-name="functions" />
+	<table-filter match-catalog="skycloud" match-name="globalmacro" />
+	<table-filter match-catalog="skycloud" match-name="globalvars" />
+	<table-filter match-catalog="skycloud" match-name="graph_discovery" />
+	<table-filter match-catalog="skycloud" match-name="graph_theme" />
+	<table-filter match-catalog="skycloud" match-name="graphs" />
+	<table-filter match-catalog="skycloud" match-name="graphs_items" />
+	<table-filter match-catalog="skycloud" match-name="groups" />
+	<table-filter match-catalog="skycloud" match-name="help_items" />
+	<table-filter match-catalog="skycloud" match-name="history" />
+	<table-filter match-catalog="skycloud" match-name="history_log" />
+	<table-filter match-catalog="skycloud" match-name="history_str" />
+	<table-filter match-catalog="skycloud" match-name="history_str_sync" />
+	<table-filter match-catalog="skycloud" match-name="history_sync" />
+	<table-filter match-catalog="skycloud" match-name="history_text" />
+	<table-filter match-catalog="skycloud" match-name="history_uint" />
+	<table-filter match-catalog="skycloud" match-name="history_uint_sync" />
+	<table-filter match-catalog="skycloud" match-name="host_inventory" />
+	<table-filter match-catalog="skycloud" match-name="hostmacro" />
+	<table-filter match-catalog="skycloud" match-name="hosts" />
+	<table-filter match-catalog="skycloud" match-name="hosts_groups" />
+	<table-filter match-catalog="skycloud" match-name="hosts_templates" />
+	<table-filter match-catalog="skycloud" match-name="housekeeper" />
+	<table-filter match-catalog="skycloud" match-name="httpstep" />
+	<table-filter match-catalog="skycloud" match-name="httpstepitem" />
+	<table-filter match-catalog="skycloud" match-name="httptest" />
+	<table-filter match-catalog="skycloud" match-name="httptestitem" />
+	<table-filter match-catalog="skycloud" match-name="icon_map" />
+	<table-filter match-catalog="skycloud" match-name="icon_mapping" />
+	<table-filter match-catalog="skycloud" match-name="ids" />
+	<table-filter match-catalog="skycloud" match-name="images" />
+	<table-filter match-catalog="skycloud" match-name="interface" />
+	<table-filter match-catalog="skycloud" match-name="item_discovery" />
+	<table-filter match-catalog="skycloud" match-name="items" />
+	<table-filter match-catalog="skycloud" match-name="items_applications" />
+	<table-filter match-catalog="skycloud" match-name="maintenances" />
+	<table-filter match-catalog="skycloud" match-name="maintenances_groups" />
+	<table-filter match-catalog="skycloud" match-name="maintenances_hosts" />
+	<table-filter match-catalog="skycloud" match-name="maintenances_windows" />
+	<table-filter match-catalog="skycloud" match-name="mappings" />
+	<table-filter match-catalog="skycloud" match-name="media" />
+	<table-filter match-catalog="skycloud" match-name="media_type" />
+	<table-filter match-catalog="skycloud" match-name="node_cksum" />
+	<table-filter match-catalog="skycloud" match-name="nodes" />
+	<table-filter match-catalog="skycloud" match-name="opcommand" />
+	<table-filter match-catalog="skycloud" match-name="opcommand_grp" />
+	<table-filter match-catalog="skycloud" match-name="opcommand_hst" />
+	<table-filter match-catalog="skycloud" match-name="opconditions" />
+	<table-filter match-catalog="skycloud" match-name="operations" />
+	<table-filter match-catalog="skycloud" match-name="opgroup" />
+	<table-filter match-catalog="skycloud" match-name="opmessage" />
+	<table-filter match-catalog="skycloud" match-name="opmessage_grp" />
+	<table-filter match-catalog="skycloud" match-name="opmessage_usr" />
+	<table-filter match-catalog="skycloud" match-name="optemplate" />
+	<table-filter match-catalog="skycloud" match-name="profiles" />
+	<table-filter match-catalog="skycloud" match-name="proxy_autoreg_host" />
+	<table-filter match-catalog="skycloud" match-name="proxy_dhistory" />
+	<table-filter match-catalog="skycloud" match-name="proxy_history" />
+	<table-filter match-catalog="skycloud" match-name="regexps" />
+	<table-filter match-catalog="skycloud" match-name="rights" />
+	<table-filter match-catalog="skycloud" match-name="screens" />
+	<table-filter match-catalog="skycloud" match-name="screens_items" />
+	<table-filter match-catalog="skycloud" match-name="scripts" />
+	<table-filter match-catalog="skycloud" match-name="service_alarms" />
+	<table-filter match-catalog="skycloud" match-name="services" />
+	<table-filter match-catalog="skycloud" match-name="services_links" />
+	<table-filter match-catalog="skycloud" match-name="services_times" />
+	<table-filter match-catalog="skycloud" match-name="sessions" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_VMMonitor_config"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_alarm_hidden"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_alarm_ok"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_alias"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_asset"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_assetProperty"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_assetType"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_asset_TP"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_available"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_backup"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_config"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_configuration"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_department"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_domain"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_event_history_count"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_function"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_graph_custom"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_graph_file"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_graph_tool"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_graph_tool_user"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_graph_topology"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_group"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_groups_groups"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_groupstype_host"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_groupstype_template"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_grouptype"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_history_citrix"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_history_unit"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_hostStatus"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_hostTotalUpTime"
+		exclude="true" />
+	<table-filter match-catalog="skycloud"
+		match-name="skycloud_hostTotalUpTime_copy" exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_host_citrix"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_host_systemApp"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_item_citrix"
+		exclude="true" />
+	<table-filter match-catalog="skycloud"
+		match-name="skycloud_item_triggeralgorithm" exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_kvm"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_licence_web"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_licence_web_used"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_lockUser"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_lockusersendmail"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_menu"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_modelLibrary"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_monitor"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_monitor_parameter"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_monitorlayer"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_node_gis_info_w"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_operatelog"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_ports"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_power"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_power_set"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_proxy"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_rackmodeling_w"
+		exclude="true" />
+	<table-filter match-catalog="skycloud"
+		match-name="skycloud_resourceUsableilityReport" exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_role_set"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_rubbisWords"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_snmptrap"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_systemconfig"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_template"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_template_group"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_topn"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_topn_grid"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_topn_layout"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_topo_w"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_trigger"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_triggeralgorithm"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_userconfig"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_userinfo"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_usrgrp"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_visitlist"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_vmware_alarm"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_vmware_alarmevent"
+		exclude="true" />
+	<table-filter match-catalog="skycloud"
+		match-name="skycloud_vmware_hardwarestatus" exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_vmware_host"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_vmware_notice"
+		exclude="true" />
+	<table-filter match-catalog="skycloud"
+		match-name="skycloud_vmware_performanceitem" exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_xenserver_SR"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_xenserver_cpu"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_xenserver_history"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_xenserver_host"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_xenserver_item"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_xenserver_memory"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="skycloud_xenserver_network"
+		exclude="true" />
+	<table-filter match-catalog="skycloud" match-name="slides" />
+	<table-filter match-catalog="skycloud" match-name="slideshows" />
+	<table-filter match-catalog="skycloud" match-name="sysmap_element_url" />
+	<table-filter match-catalog="skycloud" match-name="sysmap_url" />
+	<table-filter match-catalog="skycloud" match-name="sysmaps" />
+	<table-filter match-catalog="skycloud" match-name="sysmaps_elements" />
+	<table-filter match-catalog="skycloud" match-name="sysmaps_link_triggers" />
+	<table-filter match-catalog="skycloud" match-name="sysmaps_links" />
+	<table-filter match-catalog="skycloud" match-name="timeperiods" />
+	<table-filter match-catalog="skycloud" match-name="trends" />
+	<table-filter match-catalog="skycloud" match-name="trends_uint" />
+	<table-filter match-catalog="skycloud" match-name="trigger_depends" />
+	<table-filter match-catalog="skycloud" match-name="trigger_discovery" />
+	<table-filter match-catalog="skycloud" match-name="triggers" />
+	<table-filter match-catalog="skycloud" match-name="userInfo" />
+	<table-filter match-catalog="skycloud" match-name="user_history" />
+	<table-filter match-catalog="skycloud" match-name="users" />
+	<table-filter match-catalog="skycloud" match-name="users_groups" />
+	<table-filter match-catalog="skycloud" match-name="usrgrp" />
+	<table-filter match-catalog="skycloud" match-name="valuemaps" />
+	
+	<table catalog="skycloud" name="items">
+		<column name="itemid"></column>
+		<column name="type"></column>
+		<column name="snmp_community"></column>
+		<column name="snmp_oid"></column>
+		<column name="hostid"></column>
+		<column name="name"></column>
+		<column name="key_" property="key"></column>
+		<column name="delay"></column>
+		<column name="history"></column>
+		<column name="trends"></column>
+		<column name="lastvalue"></column>
+		<column name="lastclock"></column>
+		<column name="prevvalue"></column>
+		<column name="status"></column>
+		<column name="value_type"></column>
+		<column name="trapper_hosts"></column>
+		<column name="units"></column>
+		<column name="multiplier"></column>
+		<column name="delta"></column>
+		<column name="prevorgvalue"></column>
+		<column name="snmpv3_securityname"></column>
+		<column name="snmpv3_securitylevel"></column>
+		<column name="snmpv3_authpassphrase"></column>
+		<column name="snmpv3_privpassphrase"></column>
+		<column name="formula"></column>
+		<column name="error"></column>
+		<column name="lastlogsize"></column>
+		<column name="logtimefmt"></column>
+		<column name="templateid"></column>
+		<column name="valuemapid"></column>
+		<column name="delay_flex"></column>
+		<column name="params"></column>
+		<column name="ipmi_sensor"></column>
+		<column name="data_type"></column>
+		<column name="authtype"></column>
+		<column name="username"></column>
+		<column name="password"></column>
+		<column name="publickey"></column>
+		<column name="privatekey"></column>
+		<column name="mtime"></column>
+		<column name="lastns"></column>
+		<column name="flags"></column>
+		<column name="filter"></column>
+		<column name="interfaceid"></column>
+		<column name="port"></column>
+		<column name="description"></column>
+		<column name="inventory_link"></column>
+		<column name="lifetime"></column>
+	</table>
+	<table catalog="skycloud" name="interface" class="Interfaces">
+		<column name="interfaceid"></column>
+		<column name="hostid"></column>
+		<column name="main"></column>
+		<column name="type"></column>
+		<column name="useip"></column>
+		<column name="ip"></column>
+		<column name="dns"></column>
+		<column name="port"></column>
+	</table>
+</hibernate-reverse-engineering>

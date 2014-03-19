@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	<context:annotation-config />
+
+	<context:property-placeholder location="classpath:jdbc.properties" />
+
+	<aop:aspectj-autoproxy />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+
+	<context:component-scan base-package="com.sizheng.afl" />
+
+	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<beans:property name="driverClassName" value="${jdbc.driverClassName}" />
+		<beans:property name="url" value="${jdbc.url}" />
+		<beans:property name="username" value="${jdbc.username}" />
+		<beans:property name="password" value="${jdbc.password}" />
+	</beans:bean>
+
+	<beans:bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<beans:property name="dataSource" ref="dataSource" />
+		<beans:property name="configLocation" value="classpath:hibernate.cfg.xml" />
+		<beans:property name="packagesToScan" value="com.sizheng.afl.pojo.entity" />
+	</beans:bean>
+
+	<beans:bean id="hibernateTemplate"
+		class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<beans:property name="sessionFactory" ref="sessionFactory" />
+	</beans:bean>
+
+	<beans:bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+
+	<beans:bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<beans:property name="sessionFactory" ref="sessionFactory" />
+	</beans:bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<util:properties id="systemProperties" location="classpath:system.properties" />
+
+	<beans:bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<beans:property name="basename" value="message" />
+	</beans:bean>
+
+	<beans:bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+
+	<beans:bean id="localeChangeInterceptor"
+		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+
+	<!-- <beans:bean name="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor"> 
+		<beans:property name="sessionFactory" ref="sessionFactory" /> </beans:bean> -->
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/*/*" />
+			<beans:ref bean="localeChangeInterceptor" />
+		</mvc:interceptor>
+		<!-- <mvc:interceptor>
+			<mvc:mapping path="/*/*.do" />
+			<beans:ref bean="openSessionInViewInterceptor" />
+		</mvc:interceptor> -->
+	</mvc:interceptors>
+
+</beans:beans>
