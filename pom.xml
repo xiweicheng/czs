@@ -9,10 +9,8 @@
 	<name>ask for leave</name>
 	<url>http://www.sizheng.com</url>
 	<properties>
-		<maven.test.failure.ignore>true</maven.test.failure.ignore>
 		<spring.framework.version>3.2.6.RELEASE</spring.framework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<webapp.webinf.lib.dir>D:/SourceCode/Java/workspace/jkb/src/main/webapp/WEB-INF/lib</webapp.webinf.lib.dir>
 	</properties>
 
 	<dependencies>
