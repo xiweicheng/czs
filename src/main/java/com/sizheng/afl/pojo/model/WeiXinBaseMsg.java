@@ -26,6 +26,8 @@ public class WeiXinBaseMsg implements Serializable {
 	private String MsgType;
 	private String Content;
 	private String MsgId;
+	private String Event;
+	private String EventKey;
 
 	public String getToUserName() {
 		return ToUserName;
@@ -75,10 +77,28 @@ public class WeiXinBaseMsg implements Serializable {
 		MsgId = msgId;
 	}
 
+	public String getEvent() {
+		return Event;
+	}
+
+	public void setEvent(String event) {
+		Event = event;
+	}
+
+	public String getEventKey() {
+		return EventKey;
+	}
+
+	public void setEventKey(String eventKey) {
+		EventKey = eventKey;
+	}
+
 	@Override
 	public String toString() {
-		return "WeiXinBaseMsg [ToUserName=" + ToUserName + ", FromUserName=" + FromUserName + ", CreateTime="
-				+ CreateTime + ", MsgType=" + MsgType + ", Content=" + Content + ", MsgId=" + MsgId + "]";
+		return "WeiXinBaseMsg [ToUserName=" + ToUserName + ", FromUserName="
+				+ FromUserName + ", CreateTime=" + CreateTime + ", MsgType="
+				+ MsgType + ", Content=" + Content + ", MsgId=" + MsgId
+				+ ", Event=" + Event + ", EventKey=" + EventKey + "]";
 	}
 
 }

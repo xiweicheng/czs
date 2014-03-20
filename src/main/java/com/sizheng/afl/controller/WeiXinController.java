@@ -9,6 +9,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.model.WeiXinMsg;
@@ -47,6 +49,9 @@ public class WeiXinController extends BaseController {
 
 	@Value("#{systemProperties['weixin.resp.tpl.text']}")
 	private String tplText;
+	
+	@Autowired
+	WeiXinApiInvoker weiXinApiInvoker;
 
 	/**
 	 * 验证【微信】.
@@ -56,7 +61,7 @@ public class WeiXinController extends BaseController {
 	 * @modification 2014年03月19日 02:07:25
 	 * @return
 	 */
-	@RequestMapping("verify")
+	// @RequestMapping("verify")
 	@ResponseBody
 	public String verify(@ModelAttribute WeiXinMsg weiXinMsg, Locale locale) {
 
@@ -110,7 +115,7 @@ public class WeiXinController extends BaseController {
 	 * @param locale
 	 * @return
 	 */
-	// @RequestMapping("verify")
+	@RequestMapping("verify")
 	public void verify(@ModelAttribute WeiXinMsg weiXinMsg, @RequestBody String reqBody, HttpServletResponse response,
 			Locale locale) {
 
@@ -121,6 +126,19 @@ public class WeiXinController extends BaseController {
 		if (weixinVerify(weiXinMsg, locale)) {
 
 			WeiXinBaseMsg bean = XmlUtil.toBean(reqBody, WeiXinBaseMsg.class);
+
+			if ("event".equals(bean.getMsgType()) && "CLICK".equals(bean.getEvent())) {
+
+				String eventKey = bean.getEventKey();
+
+				if ("c_001".equals(eventKey)) {
+					weiXinApiInvoker.sendServiceMsg(bean.getFromUserName(), "你点击了[我要请假]");
+				} else if ("c_002".equals(eventKey)) {
+					weiXinApiInvoker.sendServiceMsg(bean.getFromUserName(), "你点击了[允许请假]");
+				}
+
+				return;
+			}
 
 			String resp = StringUtil.replaceByKV(tplText, "FromUserName", bean.getToUserName(), "ToUserName",
 					bean.getFromUserName(), "CreateTime", String.valueOf(DateUtil.now().getTime()), "MsgType", "text",
