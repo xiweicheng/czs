@@ -56,7 +56,7 @@ public class WeiXinController extends BaseController {
 	 * @modification 2014年03月19日 02:07:25
 	 * @return
 	 */
-	// @RequestMapping("verify")
+	@RequestMapping("verify")
 	@ResponseBody
 	public String verify(@ModelAttribute WeiXinMsg weiXinMsg, Locale locale) {
 
@@ -110,7 +110,7 @@ public class WeiXinController extends BaseController {
 	 * @param locale
 	 * @return
 	 */
-	@RequestMapping("verify")
+	// @RequestMapping("verify")
 	public void verify(@ModelAttribute WeiXinMsg weiXinMsg, @RequestBody String reqBody, HttpServletResponse response,
 			Locale locale) {
 
