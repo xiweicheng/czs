@@ -239,4 +239,17 @@ public class TestController extends BaseController {
 		return new ResultMsg();
 	}
 
+	@RequestMapping(value = "respBody", consumes = "application/x-www-form-urlencoded")
+	@ResponseBody
+	public String respBody(@ModelAttribute Test test, Locale locale) {
+
+		logger.debug("查询【测试】");
+
+		// TODO
+
+		// 参数验证
+
+		return test.getDescription();
+	}
+
 }

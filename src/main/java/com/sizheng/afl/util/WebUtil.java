@@ -80,6 +80,30 @@ public final class WebUtil {
 	}
 
 	/**
+	 * 向客户端返回j字符串内容.
+	 * 
+	 * @param response
+	 * @param object
+	 */
+	public static void writeString(HttpServletResponse response, Object object) {
+
+		PrintWriter pw = null;
+
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			response.setHeader("Cache-Control", "no-cache");
+
+			pw = response.getWriter();
+			pw.write(String.valueOf(object));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			pw.flush();
+			pw.close();
+		}
+	}
+
+	/**
 	 * 解析请求参数.
 	 * 
 	 * @param request

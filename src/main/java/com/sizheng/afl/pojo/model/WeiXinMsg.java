@@ -1,12 +1,12 @@
 /**
- * Token.java
+ * WeiXinMsg.java
  */
 package com.sizheng.afl.pojo.model;
 
 import java.io.Serializable;
 
 /**
- * 【测试】请求参数.
+ * 【微信】请求参数.
  * 
  * @creation 2014年03月19日 02:07:25
  * @modification 2014年03月19日 02:07:25
@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @version 1.0
  * 
  */
-public class Token implements Serializable {
+public class WeiXinMsg implements Serializable {
 
 	/** serialVersionUID [long] */
 	private static final long serialVersionUID = -8648096090515469018L;
