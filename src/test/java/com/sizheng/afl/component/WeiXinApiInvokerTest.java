@@ -1,5 +1,7 @@
 package com.sizheng.afl.component;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,20 +14,17 @@ public class WeiXinApiInvokerTest extends BaseTest {
 
 	@Test
 	public void accessTokenInitTest() {
-		boolean flag = weiXinApiInvoker.accessTokenInit();
-		System.out.println(flag);
+		assertTrue(weiXinApiInvoker.accessTokenInit());
 	}
 	
 	@Test
 	public void menuCreateTest() {
-		boolean flag = weiXinApiInvoker.menuCreate();
-		System.out.println(flag);
+		assertTrue(weiXinApiInvoker.menuCreate());
 	}
 	
 	@Test
 	public void sendServiceMsgTest() {
-		boolean flag = weiXinApiInvoker.sendServiceMsg("okPUDtzjrogWsWdsI_Fz39VNbgBc", "这是一条客服消息!");
-		System.out.println(flag);
+		assertTrue(weiXinApiInvoker.sendServiceMsg("okPUDtzjrogWsWdsI_Fz39VNbgBc", "这是一条客服消息!"));
 	}
 
 }
