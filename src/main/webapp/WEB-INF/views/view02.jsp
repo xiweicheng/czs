@@ -9,10 +9,10 @@
 </head>
 <body>
 <div>
-<div><h3><c:out value="title"></c:out></h3></div>
+<div><h3><c:out value="${title}"></c:out></h3></div>
 <div>
-<div>code: <c:out value="${code}"></c:out></div>
-<div>state: <c:out value="${state}"></c:out></div>
+<div>code: <c:out value="${param.code}"></c:out></div>
+<div>state: <c:out value="${param.state}"></c:out></div>
 </div>
 <div></div>
 </div>

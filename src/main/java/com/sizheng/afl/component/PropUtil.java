@@ -39,6 +39,12 @@ public class PropUtil {
 	@Value("#{systemProperties['weixin.api.url.connect.oauth2.authorize']}")
 	private String webpageCodeGetUrl;
 
+	@Value("#{systemProperties['weixin.api.url.drcode.create']}")
+	private String qrcodeCreateUrl;
+
+	@Value("#{systemProperties['weixin.api.url.showqrcode']}")
+	private String showqrcodeUrl;
+
 	public boolean isLogReqbody() {
 		return logReqbody;
 	}
@@ -81,6 +87,14 @@ public class PropUtil {
 
 	public String getWebpageCodeGetUrl() {
 		return webpageCodeGetUrl;
+	}
+
+	public String getQrcodeCreateUrl() {
+		return qrcodeCreateUrl;
+	}
+
+	public String getShowqrcodeUrl() {
+		return showqrcodeUrl;
 	}
 
 }

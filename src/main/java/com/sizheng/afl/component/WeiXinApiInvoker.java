@@ -1,7 +1,10 @@
 package com.sizheng.afl.component;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -31,8 +35,10 @@ import com.sizheng.afl.pojo.model.WeiXinClickButton;
 import com.sizheng.afl.pojo.model.WeiXinCustomMsg;
 import com.sizheng.afl.pojo.model.WeiXinCustomText;
 import com.sizheng.afl.pojo.model.WeiXinMenu;
+import com.sizheng.afl.pojo.model.WeiXinQrcodeCreateParam;
 import com.sizheng.afl.pojo.model.WeiXinUserInfo;
 import com.sizheng.afl.pojo.model.WeiXinViewButton;
+import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.JsonUtil;
 import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
@@ -392,5 +398,154 @@ public class WeiXinApiInvoker {
 		}
 
 		return StringUtil.EMPTY;
+	}
+
+	/**
+	 * 正确获取事返回[JSONObject] {"ticket":
+	 * "gQG28DoAAAAAAAAAASxodHRwOi8vd2VpeGluLnFxLmNvbS9xL0FuWC1DNmZuVEhvMVp4NDNMRnNRAAIEesLvUQMECAcAAA=="
+	 * ,"expire_seconds":1800}
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月23日 下午9:42:44
+	 * @modification 2014年3月23日 下午9:42:44
+	 * @return
+	 */
+	public JSONObject getTicket(WeiXinQrcodeCreateParam param) {
+
+		logger.debug("创建二维码ticket");
+
+		JSONObject invoke = invoke(
+				StringUtil.replaceByKV(propUtil.getQrcodeCreateUrl(), "accessToken", getAccessToken()), param);
+
+		if (invoke.containsKey("errcode")) {
+			logger.info(invoke.getString("errcode"));
+			logger.info(invoke.getString("errmsg"));
+			if (invoke.getLongValue("errcode") == 42001) {
+				logger.debug("[access token]过期,重新获取!");
+				if (initAccessToken()) {
+					logger.debug("[access token]过期,重新获取成功!");
+					return getTicket(param);
+				} else {
+					logger.debug("[access token]过期,重新获取失败!");
+				}
+			}
+		} else {
+			return invoke;
+		}
+		logger.debug("创建二维码ticket失败!");
+		return null;
+	}
+
+	/**
+	 * 获取二维码图片获取的URL
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月23日 下午10:16:44
+	 * @modification 2014年3月23日 下午10:16:44
+	 * @param param
+	 * @return
+	 */
+	public String getQrcodeUrl(WeiXinQrcodeCreateParam param) {
+		JSONObject ticket = getTicket(param);
+
+		if (ticket != null && ticket.containsKey("ticket")) {
+			try {
+				return StringUtil.replaceByKV(propUtil.getShowqrcodeUrl(), "ticket",
+						URLEncoder.encode(ticket.getString("ticket"), "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * 下载二维码图片
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月23日 下午10:20:19
+	 * @modification 2014年3月23日 下午10:20:19
+	 * @param url
+	 * @param filePath
+	 * @return
+	 */
+	public boolean downQrcodeImage(String url, String filePath) {
+
+		logger.debug(url);
+
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+
+		HttpGet httpGet = new HttpGet(url);
+
+		String fileName = null;
+
+		final String outFilePath;
+
+		try {
+			fileName = new URL(url).getQuery().split("=")[1];
+			logger.debug(fileName);
+
+			File file = new File(filePath);
+
+			if (!filePath.endsWith(".jpg")) {
+				if (!file.exists()) {
+					file.mkdirs();
+				}
+				
+				file = new File(file, StringUtil.replace("{?1}_{?2}.jpg", fileName,
+						DateUtil.format(DateUtil.now(), DateUtil.FORMAT5)));
+			} else {
+				File parentFile = file.getParentFile();
+				if (!parentFile.exists()) {
+					parentFile.mkdirs();
+				}
+			}
+
+			outFilePath = file.getAbsolutePath();
+			logger.debug(outFilePath);
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
+		try {
+			return httpclient.execute(httpGet, new ResponseHandler<Boolean>() {
+
+				@Override
+				public Boolean handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+					final StatusLine statusLine = response.getStatusLine();
+					final HttpEntity entity = response.getEntity();
+					if (statusLine.getStatusCode() >= 300) {
+						EntityUtils.consume(entity);
+						throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+					}
+
+					entity.writeTo(new FileOutputStream(outFilePath));
+
+					return true;
+				}
+
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * 下载二维码图片
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月23日 下午10:31:21
+	 * @modification 2014年3月23日 下午10:31:21
+	 * @param param
+	 * @param filePath
+	 * @return
+	 */
+	public boolean downQrcodeImage(WeiXinQrcodeCreateParam param, String filePath) {
+		return downQrcodeImage(getQrcodeUrl(param), filePath);
 	}
 }

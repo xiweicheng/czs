@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.service.impl;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +19,7 @@ import com.sizheng.afl.component.ApiInvoker;
 import com.sizheng.afl.component.SimpleMailSender;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IWeiXinDao;
+import com.sizheng.afl.pojo.entity.Message;
 import com.sizheng.afl.pojo.entity.Subscriber;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.model.WeiXin;
@@ -230,6 +232,45 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 	@Override
 	public String getWebpageCodeUrl() {
 		return weiXinApiInvoker.getWebpageCodeUrl();
+	}
+
+	@Override
+	public Serializable saveMessage(WeiXinBaseMsg bean) {
+
+		Message message = new Message();
+		message.setFromUserName(bean.getFromUserName());
+		message.setCreateTime(Long.valueOf(bean.getCreateTime()));
+		message.setMsgType(bean.getMsgType());
+		message.setContent(bean.getContent());
+		message.setMsgId(Long.valueOf(bean.getMsgId()));
+		message.setPicUrl(bean.getPicUrl());
+		message.setMediaId(bean.getMediaId());
+		message.setFormat(bean.getFormat());
+		message.setThumbMediaId(bean.getThumbMediaId());
+		message.setLocationX(bean.getLocation_X() == null ? BigDecimal.ZERO : new BigDecimal(bean.getLocation_X()));
+		message.setLocationY(bean.getLocation_Y() == null ? BigDecimal.ZERO : new BigDecimal(bean.getLocation_Y()));
+		message.setScale(bean.getScale() == null ? BigDecimal.ZERO : new BigDecimal(bean.getScale()));
+		message.setLabel(bean.getLabel());
+		message.setTitle(bean.getTitle());
+		message.setDescription(bean.getDescription());
+		message.setUrl(bean.getUrl());
+		message.setEvent(bean.getEvent());
+		message.setEventKey(bean.getEventKey());
+		message.setLatitude(bean.getLatitude() == null ? BigDecimal.ZERO : new BigDecimal(bean.getLatitude()));
+		message.setLongitude(bean.getLongitude() == null ? BigDecimal.ZERO : new BigDecimal(bean.getLongitude()));
+		message.setPrecision(bean.getPrecision() == null ? BigDecimal.ZERO : new BigDecimal(bean.getPrecision()));
+		message.setTicket(bean.getTicket());
+
+		return hibernateTemplate.save(message);
+	}
+
+	@Override
+	public boolean view(WeiXinBaseMsg bean, Locale locale) {
+		logger.debug("[业务逻辑层]跳转链接菜单单击事件");
+
+		logger.debug(bean.getEventKey());
+
+		return false;
 	}
 
 }

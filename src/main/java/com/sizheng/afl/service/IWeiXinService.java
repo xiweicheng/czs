@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -126,4 +127,8 @@ public interface IWeiXinService extends IBaseService {
 	boolean location(WeiXinBaseMsg bean, Locale locale);
 
 	String getWebpageCodeUrl();
+
+	Serializable saveMessage(WeiXinBaseMsg bean);
+
+	boolean view(WeiXinBaseMsg bean, Locale locale);
 }

@@ -2,7 +2,7 @@ package com.sizheng.afl.pojo.model;
 
 public enum WeiXinEventType {
 
-	SUBSCRIBE("subscribe"), UNSUBSCRIBE("unsubscribe"), CLICK("CLICK"), LOCATION("LOCATION");
+	SUBSCRIBE("subscribe"), UNSUBSCRIBE("unsubscribe"), CLICK("CLICK"), LOCATION("LOCATION"), SCAN("SCAN"), VIEW("VIEW");
 
 	private String value;
 

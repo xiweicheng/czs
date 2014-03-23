@@ -2,7 +2,7 @@ package com.sizheng.afl.pojo.model;
 
 public enum WeiXinMsgType {
 
-	EVENT("event"), TEXT("text");
+	EVENT("event"), TEXT("text"), IMAGE("image"), VOICE("voice"), VIDEO("video"), LOCATION("location"), LINK("link");
 
 	private String value;
 

@@ -134,6 +134,10 @@ public class WeiXinController extends BaseController {
 			// 解析消息
 			WeiXinBaseMsg bean = XmlUtil.toBean(reqBody, WeiXinBaseMsg.class);
 
+			// 保存所有来自微信的消息
+			// text image voice video location link
+			weiXinService.saveMessage(bean);
+
 			// 消息类型
 			String msgType = bean.getMsgType();
 
@@ -142,28 +146,68 @@ public class WeiXinController extends BaseController {
 				String event = bean.getEvent();
 
 				if (WeiXinEventType.SUBSCRIBE.getValue().equals(event)) {// 关注事件
-					weiXinService.subscribe(bean, locale);
-					writeText(response, bean, "欢迎您的订阅!");
+
+					String eventKey = bean.getEventKey();
+
+					// 扫描带参数二维码事件
+					// 用户未关注时，进行关注后的事件推送
+					if (eventKey != null && eventKey.startsWith("qrscene_")) {
+						// TODO
+						writeText(response, bean, "扫描带参数二维码事件,用户未关注时，进行关注后的事件推送!");
+					} else {
+						weiXinService.subscribe(bean, locale);
+						writeText(response, bean, "欢迎您的订阅!");
+					}
 				} else if (WeiXinEventType.UNSUBSCRIBE.getValue().equals(event)) {// 取消关注事件
 					weiXinService.unsubscribe(bean, locale);
 					writeText(response, bean, "期待您的再次回来!");
 				} else if (WeiXinEventType.CLICK.getValue().equals(event)) { // 菜单点击事件
 					weiXinService.click(bean, locale);
-					writeText(response, bean, "你点击了自定义菜单项!");
+					writeText(response, bean, "点击菜单拉取消息时的事件推送!");
+				} else if (WeiXinEventType.VIEW.getValue().equals(event)) { // 菜单点击事件
+					weiXinService.view(bean, locale);
+					writeText(response, bean, "点击菜单跳转链接时的事件推送!");
 				} else if (WeiXinEventType.LOCATION.getValue().equals(event)) {// 上报地理位置事件
 					weiXinService.location(bean, locale);
 					writeText(response, bean, "获取到您的地理位置!");
+				} else if (WeiXinEventType.SCAN.getValue().equals(event)) {// 扫描带参数二维码事件
+					// TODO
+					writeText(response, bean, "扫描带参数二维码事件,用户已关注时的事件推送!");
 				}
 
 			} else if (WeiXinMsgType.TEXT.getValue().equals(msgType)) {
-
-				// 原样文本内容回复
 				// TODO
-				writeText(response, bean, bean.getContent());
+				writeText(response, bean, "文本消息!");
+
+			} else if (WeiXinMsgType.IMAGE.getValue().equals(msgType)) {
+				// TODO
+				writeText(response, bean, "图片消息!");
+
+			} else if (WeiXinMsgType.VOICE.getValue().equals(msgType)) {
+				// TODO
+				writeText(response, bean, "语音消息!");
+
+			} else if (WeiXinMsgType.VIDEO.getValue().equals(msgType)) {
+				// TODO
+				writeText(response, bean, "视频消息!");
+
+			} else if (WeiXinMsgType.LOCATION.getValue().equals(msgType)) {
+				// TODO
+				writeText(response, bean, "地理位置消息!");
+
+				bean.setLatitude(bean.getLocation_X());
+				bean.setLongitude(bean.getLocation_Y());
+				bean.setPrecision(bean.getScale());
+
+				weiXinService.location(bean, locale);
+
+			} else if (WeiXinMsgType.LINK.getValue().equals(msgType)) {
+				// TODO
+				writeText(response, bean, "链接消息!");
 
 			} else {
-				logger.error("未识别消息类型[" + msgType + "]");
 				weiXinService.handleMsgTypeFail(bean, locale);
+				writeText(response, bean, "系统不能识别该种消息类型!");
 			}
 		} else {
 			logger.error("验证[消息来自微信服务器]没有通过!");
