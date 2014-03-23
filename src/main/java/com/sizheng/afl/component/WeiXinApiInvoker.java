@@ -21,7 +21,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -77,29 +76,8 @@ public class WeiXinApiInvoker {
 
 	private static Logger logger = Logger.getLogger(WeiXinApiInvoker.class);
 
-	@Value("#{systemProperties['weixin.api.url.token.get']}")
-	private String tokenGetUrl;
-
-	@Value("#{systemProperties['weixin.api.url.menu.create']}")
-	private String menuCreateUrl;
-
-	@Value("#{systemProperties['weixin.api.url.custom.send']}")
-	private String customSendUrl;
-
-	@Value("#{systemProperties['weixin.api.client.credential.appid']}")
-	private String appid;
-
-	@Value("#{systemProperties['weixin.api.client.credential.secret']}")
-	private String secret;
-
-	@Value("#{systemProperties['weixin.api.url.user.info.get']}")
-	private String userInfoGetUrl;
-
-	@Value("#{systemProperties['weixin.api.url.menu.delete']}")
-	private String menuDeleteUrl;
-
-	@Value("#{systemProperties['weixin.api.url.connect.oauth2.authorize']}")
-	private String webpageCodeGetUrl;
+	@Autowired
+	PropUtil propUtil;
 
 	/**
 	 * zabbix api invoke.
@@ -209,7 +187,8 @@ public class WeiXinApiInvoker {
 	 */
 	public boolean initAccessToken() {
 
-		String url = StringUtil.replaceByKV(tokenGetUrl, "appid", appid, "secret", secret);
+		String url = StringUtil.replaceByKV(propUtil.getTokenGetUrl(), "appid", propUtil.getAppid(), "secret",
+				propUtil.getSecret());
 
 		JSONObject invoke = invoke(url, StringUtil.EMPTY);
 
@@ -237,8 +216,8 @@ public class WeiXinApiInvoker {
 	 * @return
 	 */
 	public boolean deleteMenu() {
-		JSONObject invoke = invoke(StringUtil.replaceByKV(menuDeleteUrl, "accessToken", getAccessToken()),
-				StringUtil.EMPTY);
+		JSONObject invoke = invoke(
+				StringUtil.replaceByKV(propUtil.getMenuDeleteUrl(), "accessToken", getAccessToken()), StringUtil.EMPTY);
 
 		if (invoke.containsKey("errcode")) {
 			logger.info(invoke.getString("errcode"));
@@ -280,7 +259,8 @@ public class WeiXinApiInvoker {
 
 		weiXinMenu.setButton(button);
 
-		JSONObject invoke = invoke(StringUtil.replaceByKV(menuCreateUrl, "accessToken", getAccessToken()),
+		JSONObject invoke = invoke(
+				StringUtil.replaceByKV(propUtil.getMenuCreateUrl(), "accessToken", getAccessToken()),
 				JsonUtil.toJson(weiXinMenu));
 
 		if (invoke.containsKey("errcode")) {
@@ -317,7 +297,8 @@ public class WeiXinApiInvoker {
 		weiXinCustomMsg.setTouser(openId);
 		weiXinCustomMsg.setText(new WeiXinCustomText(msg));
 
-		JSONObject invoke = invoke(StringUtil.replaceByKV(customSendUrl, "accessToken", getAccessToken()),
+		JSONObject invoke = invoke(
+				StringUtil.replaceByKV(propUtil.getCustomSendUrl(), "accessToken", getAccessToken()),
 				JsonUtil.toJson(weiXinCustomMsg));
 
 		if (invoke.containsKey("errcode")) {
@@ -354,7 +335,7 @@ public class WeiXinApiInvoker {
 		logger.debug("获取微信用户基本信息");
 
 		JSONObject invoke = invoke(
-				StringUtil.replaceByKV(userInfoGetUrl, "accessToken", getAccessToken(), "openid", openId),
+				StringUtil.replaceByKV(propUtil.getUserInfoGetUrl(), "accessToken", getAccessToken(), "openid", openId),
 				StringUtil.EMPTY);
 
 		if (invoke.containsKey("errcode")) {
@@ -387,8 +368,8 @@ public class WeiXinApiInvoker {
 	public String getWebpageCode() {
 		logger.debug("获取网页授权验证code");
 
-		return invokeSimple(StringUtil.replaceByKV(webpageCodeGetUrl, "appid", appid, "redirect_uri",
-				"http://202.120.2.86/afl/weiXin/view01"), StringUtil.EMPTY);
+		return invokeSimple(StringUtil.replaceByKV(propUtil.getWebpageCodeGetUrl(), "appid", propUtil.getAppid(),
+				"redirect_uri", "http://202.120.2.86/afl/weiXin/view01"), StringUtil.EMPTY);
 	}
 
 	/**
@@ -403,8 +384,8 @@ public class WeiXinApiInvoker {
 		logger.debug("网页授权验证code获取的URL");
 
 		try {
-			return StringUtil.replaceByKV(webpageCodeGetUrl, "appid", appid, "redirect_uri",
-					URLEncoder.encode("http://202.120.2.86/afl/weiXin/view02.do", "UTF-8"));
+			return StringUtil.replaceByKV(propUtil.getWebpageCodeGetUrl(), "appid", propUtil.getAppid(),
+					"redirect_uri", URLEncoder.encode("http://202.120.2.86/afl/weiXin/view02.do", "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
@@ -49,17 +49,14 @@ public class WeiXinController extends BaseController {
 
 	private static Logger logger = Logger.getLogger(WeiXinController.class);
 
-	@Value("#{systemProperties['weixin.token']}")
-	private String token;
-
-	@Value("#{systemProperties['weixin.resp.tpl.text']}")
-	private String tplText;
-
 	@Autowired
 	WeiXinApiInvoker weiXinApiInvoker;
 
 	@Autowired
 	IWeiXinService weiXinService;
+
+	@Autowired
+	PropUtil propUtil;
 
 	/**
 	 * 验证【微信】.
@@ -96,7 +93,7 @@ public class WeiXinController extends BaseController {
 		try {
 
 			if (weiXinMsg != null) {
-				String[] arr = new String[] { token, weiXinMsg.getTimestamp(), weiXinMsg.getNonce() };
+				String[] arr = new String[] { propUtil.getToken(), weiXinMsg.getTimestamp(), weiXinMsg.getNonce() };
 				Arrays.sort(arr);
 				String join = StringUtil.join(SysConstant.EMPTY, arr);
 				String encode = EncoderUtil.encodeBySHA1(join);
@@ -185,7 +182,7 @@ public class WeiXinController extends BaseController {
 	 * @param bean
 	 */
 	private void writeText(HttpServletResponse response, WeiXinBaseMsg bean, String text) {
-		String resp = StringUtil.replaceByKV(tplText, "FromUserName", bean.getToUserName(), "ToUserName",
+		String resp = StringUtil.replaceByKV(propUtil.getTplText(), "FromUserName", bean.getToUserName(), "ToUserName",
 				bean.getFromUserName(), "CreateTime", String.valueOf(DateUtil.now().getTime()), "MsgType", "text",
 				"Content", text);
 
