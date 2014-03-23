@@ -17,5 +17,8 @@ import java.io.Serializable;
  * 
  */
 public class WeiXin implements Serializable {
+
+	/** serialVersionUID [long] */
+	private static final long serialVersionUID = 4651167477777372429L;
 	// TODO
 }
