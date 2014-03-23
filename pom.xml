@@ -138,7 +138,12 @@
 			<version>1.4.7</version>
 		</dependency>
             
-
+		<!-- <dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency> -->
+            
 		<!-- <dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>

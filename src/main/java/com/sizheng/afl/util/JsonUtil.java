@@ -91,6 +91,7 @@ public final class JsonUtil {
 	public static <T> T json2Object(String json, Class<T> classOfT) {
 
 		try {
+			logger.debug(json);
 			return gson1.fromJson(json, classOfT);
 		} catch (Exception e) {
 			e.printStackTrace();
