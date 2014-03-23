@@ -226,6 +226,8 @@ public final class WebUtil {
 			url = JoinUrl(url, path);
 		}
 
+		logger.debug(url);
+
 		return url == null ? SysConstant.EMPTY : url;
 	}
 

@@ -6,12 +6,14 @@ package com.sizheng.afl.controller;
 import java.util.Arrays;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,10 @@ import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
+import com.sizheng.afl.pojo.model.WeiXinEventType;
 import com.sizheng.afl.pojo.model.WeiXinMsg;
+import com.sizheng.afl.pojo.model.WeiXinMsgType;
+import com.sizheng.afl.service.IWeiXinService;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.EncoderUtil;
 import com.sizheng.afl.util.StringUtil;
@@ -49,9 +54,12 @@ public class WeiXinController extends BaseController {
 
 	@Value("#{systemProperties['weixin.resp.tpl.text']}")
 	private String tplText;
-	
+
 	@Autowired
 	WeiXinApiInvoker weiXinApiInvoker;
+
+	@Autowired
+	IWeiXinService weiXinService;
 
 	/**
 	 * 验证【微信】.
@@ -123,33 +131,78 @@ public class WeiXinController extends BaseController {
 
 		logger.info(reqBody);
 
+		// 验证请求来自微信服务器
 		if (weixinVerify(weiXinMsg, locale)) {
 
+			// 解析消息
 			WeiXinBaseMsg bean = XmlUtil.toBean(reqBody, WeiXinBaseMsg.class);
 
-			if ("event".equals(bean.getMsgType()) && "CLICK".equals(bean.getEvent())) {
+			// 消息类型
+			String msgType = bean.getMsgType();
 
-				String eventKey = bean.getEventKey();
+			if (WeiXinMsgType.EVENT.getValue().equals(msgType)) {
+				// 事件类型
+				String event = bean.getEvent();
 
-				if ("c_001".equals(eventKey)) {
-					weiXinApiInvoker.sendServiceMsg(bean.getFromUserName(), "你点击了[我要请假]");
-				} else if ("c_002".equals(eventKey)) {
-					weiXinApiInvoker.sendServiceMsg(bean.getFromUserName(), "你点击了[允许请假]");
+				if (WeiXinEventType.SUBSCRIBE.getValue().equals(event)) {// 关注事件
+					weiXinService.subscribe(bean, locale);
+					writeText(response, bean, "欢迎您的订阅!");
+				} else if (WeiXinEventType.UNSUBSCRIBE.getValue().equals(event)) {// 取消关注事件
+					weiXinService.unsubscribe(bean, locale);
+					writeText(response, bean, "期待您的再次回来!");
+				} else if (WeiXinEventType.CLICK.getValue().equals(event)) { // 菜单点击事件
+					weiXinService.click(bean, locale);
+					writeText(response, bean, "你点击了自定义菜单项!");
+				} else if (WeiXinEventType.LOCATION.getValue().equals(event)) {// 上报地理位置事件
+					weiXinService.location(bean, locale);
+					writeText(response, bean, "获取到您的地理位置!");
 				}
 
-				return;
+			} else if (WeiXinMsgType.TEXT.getValue().equals(msgType)) {
+
+				// 原样文本内容回复
+				// TODO
+				writeText(response, bean, bean.getContent());
+
+			} else {
+				logger.error("未识别消息类型[" + msgType + "]");
+				weiXinService.handleMsgTypeFail(bean, locale);
 			}
-
-			String resp = StringUtil.replaceByKV(tplText, "FromUserName", bean.getToUserName(), "ToUserName",
-					bean.getFromUserName(), "CreateTime", String.valueOf(DateUtil.now().getTime()), "MsgType", "text",
-					"Content", bean.getContent());
-
-			logger.info(resp);
-
-			WebUtil.writeString(response, resp);
 		} else {
+			logger.error("验证[消息来自微信服务器]没有通过!");
+			weiXinService.verifyFail(weiXinMsg, locale);
 			WebUtil.writeString(response, StringUtil.EMPTY);
 		}
+	}
+
+	/**
+	 * 回复文本[text]类型消息
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月22日 下午11:45:54
+	 * @modification 2014年3月22日 下午11:45:54
+	 * @param response
+	 * @param bean
+	 */
+	private void writeText(HttpServletResponse response, WeiXinBaseMsg bean, String text) {
+		String resp = StringUtil.replaceByKV(tplText, "FromUserName", bean.getToUserName(), "ToUserName",
+				bean.getFromUserName(), "CreateTime", String.valueOf(DateUtil.now().getTime()), "MsgType", "text",
+				"Content", text);
+
+		WebUtil.writeString(response, resp);
+	}
+
+	@RequestMapping("view01")
+	public String view01(HttpServletRequest request, Locale locale, Model model) {
+		model.addAttribute("title", "测试标题1");
+		model.addAttribute("webpageCodeGetUrl", weiXinService.getWebpageCodeUrl());
+		return "view01";
+	}
+
+	@RequestMapping("view02")
+	public String view02(HttpServletRequest request, Locale locale, Model model) {
+		model.addAttribute("title", "测试标题2");
+		return "view02";
 	}
 
 }

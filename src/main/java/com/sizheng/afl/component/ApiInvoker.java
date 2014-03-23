@@ -3,12 +3,21 @@
  */
 package com.sizheng.afl.component;
 
+import java.io.IOException;
+
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -100,13 +109,26 @@ public class ApiInvoker {
 		String response = null;
 
 		try {
-			response = httpclient.execute(httpPost, new BasicResponseHandler());
+			response = httpclient.execute(httpPost, new ResponseHandler<String>() {
+
+				@Override
+				public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+					final StatusLine statusLine = response.getStatusLine();
+					final HttpEntity entity = response.getEntity();
+					if (statusLine.getStatusCode() >= 300) {
+						EntityUtils.consume(entity);
+						throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+					}
+					return entity == null ? null : EntityUtils.toString(entity, Consts.UTF_8);
+				}
+
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("[invokeAPI jsonResult] " + SysConstant.NEW_LINE + response);
+			logger.debug("[invokeAPI jsonResult] " + SysConstant.NEW_LINE + JsonUtil.toPrettyJson(response));
 		}
 
 		return response;
@@ -123,23 +145,11 @@ public class ApiInvoker {
 	 */
 	public ApiResult invoke(String jsonParams, String... path) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("[invokeAPI jsonParams] " + SysConstant.NEW_LINE + JsonUtil.toPrettyJson(jsonParams));
-		}
-
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-
-		String url = WebUtil.JoinUrls(zabbixApiUrl, path);
-		logger.debug(url);
-
-		HttpPost httpPost = new HttpPost(url);
-		httpPost.setEntity(new StringEntity(jsonParams, ContentType.APPLICATION_JSON));
+		String response = invokeSimple(jsonParams, path);
 
 		JSONObject rs = null;
-		String response = null;
 
 		try {
-			response = httpclient.execute(httpPost, new BasicResponseHandler());
 			rs = JSON.parseObject(response);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -147,10 +157,6 @@ public class ApiInvoker {
 		}
 
 		ApiResult apiResult = new ApiResult(rs);
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("[invokeAPI jsonResult] " + SysConstant.NEW_LINE + JsonUtil.toPrettyJson(response));
-		}
 
 		return apiResult;
 	}

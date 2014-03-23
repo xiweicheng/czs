@@ -63,4 +63,10 @@ public class WeiXinMsg implements Serializable {
 		this.echostr = echostr;
 	}
 
+	@Override
+	public String toString() {
+		return "WeiXinMsg [signature=" + signature + ", timestamp=" + timestamp + ", nonce=" + nonce + ", echostr="
+				+ echostr + "]";
+	}
+
 }
