@@ -239,10 +239,10 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 		Message message = new Message();
 		message.setFromUserName(bean.getFromUserName());
-		message.setCreateTime(Long.valueOf(bean.getCreateTime()));
+		message.setCreateTime(bean.getCreateTime() == null ? null : Long.valueOf(bean.getCreateTime()));
 		message.setMsgType(bean.getMsgType());
 		message.setContent(bean.getContent());
-		message.setMsgId(Long.valueOf(bean.getMsgId()));
+		message.setMsgId(bean.getMsgId() == null ? null : Long.valueOf(bean.getMsgId()));
 		message.setPicUrl(bean.getPicUrl());
 		message.setMediaId(bean.getMediaId());
 		message.setFormat(bean.getFormat());

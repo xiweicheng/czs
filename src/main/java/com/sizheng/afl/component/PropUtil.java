@@ -9,6 +9,9 @@ public class PropUtil {
 	@Value("#{systemProperties['switch.log.reqbody']}")
 	private boolean logReqbody;
 
+	@Value("#{systemProperties['switch.event.mail.send']}")
+	private boolean sendMail;
+
 	@Value("#{systemProperties['weixin.token']}")
 	private String token;
 
@@ -95,6 +98,10 @@ public class PropUtil {
 
 	public String getShowqrcodeUrl() {
 		return showqrcodeUrl;
+	}
+
+	public boolean isSendMail() {
+		return sendMail;
 	}
 
 }

@@ -2,10 +2,61 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+	<type-mapping>
+		<sql-type jdbc-type="INTEGER" hibernate-type="Integer">
+		</sql-type>
+	</type-mapping>
+	<table-filter match-catalog="afl" match-name="user" />
 
-	<table-filter match-catalog="afl" match-name="user" exclude="true" />
-	<table-filter match-name="subscriber" match-catalog="afl"
-		exclude="true">
+	<table-filter match-name="subscriber" match-catalog="afl">
 	</table-filter>
-	<table-filter match-name="message" match-catalog="afl"></table-filter>
+
+	<table-filter match-name="message" match-catalog="afl">
+	</table-filter>
+	<table catalog="afl" name="subscriber">
+		<column name="id"></column>
+		<column name="user_name"></column>
+		<column name="nickname"></column>
+		<column name="sex"></column>
+		<column name="city"></column>
+		<column name="country"></column>
+		<column name="province"></column>
+		<column name="language"></column>
+		<column name="headimgurl"></column>
+	</table>
+	<table catalog="afl" name="message">
+		<column name="id"></column>
+		<column name="from_user_name"></column>
+		<column name="create_time"></column>
+		<column name="msg_type"></column>
+		<column name="content"></column>
+		<column name="msg_id"></column>
+		<column name="pic_url"></column>
+		<column name="media_id"></column>
+		<column name="format"></column>
+		<column name="thumb_media_id"></column>
+		<column name="location_x"></column>
+		<column name="location_y"></column>
+		<column name="scale"></column>
+		<column name="label"></column>
+		<column name="title"></column>
+		<column name="description"></column>
+		<column name="url"></column>
+		<column name="event_key"></column>
+		<column name="latitude"></column>
+		<column name="longitude"></column>
+		<column name="precision_" property="precision"></column>
+		<column name="ticket"></column>
+		<column name="event"></column>
+	</table>
+	<table catalog="afl" name="user">
+		<column name="id"></column>
+		<column name="user_name"></column>
+		<column name="create_time"></column>
+		<column name="is_deleted"></column>
+		<column name="times"></column>
+		<column name="latitude"></column>
+		<column name="longitude"></column>
+		<column name="precision_" property="precision"></column>
+	</table>
 </hibernate-reverse-engineering>

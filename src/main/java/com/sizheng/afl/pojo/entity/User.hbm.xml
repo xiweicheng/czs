@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-3-22 17:38:47 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-3-24 10:12:59 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.User" table="user" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -24,7 +24,7 @@
                 &#211;&#195;&#187;&#167;&#202;&#199;&#183;&#241;&#185;&#216;&#215;&#162;&#215;&#180;&#204;&#172;;1:&#206;&#180;&#185;&#216;&#215;&#162;,0:&#185;&#216;&#215;&#162;</comment>
             </column>
         </property>
-        <property name="times" type="int">
+        <property name="times" type="Integer">
             <column name="times" not-null="true">
                 <comment>
                 &#211;&#195;&#187;&#167;&#185;&#216;&#215;&#162;&amp;&#200;&#161;&#207;&#251;&#185;&#216;&#215;&#162;&#181;&#196;&#180;&#206;&#202;&#253;&#192;&#219;&#187;&#253;</comment>
@@ -37,7 +37,7 @@
             <column name="longitude" precision="10" scale="6" />
         </property>
         <property name="precision" type="big_decimal">
-            <column name="precision" precision="10" scale="6" />
+            <column name="precision_" precision="10" scale="6" />
         </property>
     </class>
 </hibernate-mapping>

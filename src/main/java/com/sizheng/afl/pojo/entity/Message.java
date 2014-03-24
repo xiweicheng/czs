@@ -1,14 +1,12 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-3-23 20:52:10 by Hibernate Tools 3.4.0.CR1
-
-import static javax.persistence.GenerationType.IDENTITY;
+// Generated 2014-3-24 10:12:59 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -19,8 +17,6 @@ import javax.persistence.Table;
 @Table(name = "message", catalog = "afl")
 public class Message implements java.io.Serializable {
 
-	/** serialVersionUID [long] */
-	private static final long serialVersionUID = 2091973484156414417L;
 	private Integer id;
 	private String fromUserName;
 	private Long createTime;
@@ -258,7 +254,7 @@ public class Message implements java.io.Serializable {
 		this.longitude = longitude;
 	}
 
-	@Column(name = "precision", precision = 10, scale = 6)
+	@Column(name = "precision_", precision = 10, scale = 6)
 	public BigDecimal getPrecision() {
 		return this.precision;
 	}

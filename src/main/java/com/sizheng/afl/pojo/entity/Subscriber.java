@@ -1,12 +1,11 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-3-22 16:44:10 by Hibernate Tools 3.4.0.CR1
-
-import static javax.persistence.GenerationType.IDENTITY;
+// Generated 2014-3-24 10:12:59 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,8 +16,6 @@ import javax.persistence.Table;
 @Table(name = "subscriber", catalog = "afl")
 public class Subscriber implements java.io.Serializable {
 
-	/** serialVersionUID [long] */
-	private static final long serialVersionUID = -7801639074224543254L;
 	private Integer id;
 	private String userName;
 	private String nickname;

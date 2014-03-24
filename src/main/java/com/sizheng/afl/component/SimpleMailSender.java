@@ -15,6 +15,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,9 @@ public class SimpleMailSender {
 
 	@Value("#{systemProperties['java.mail.toAddress']}")
 	private String toAddress;
+
+	@Autowired
+	PropUtil propUtil;
 
 	/**
 	 * 发送简单文本邮件.
@@ -79,6 +83,11 @@ public class SimpleMailSender {
 	 * @return
 	 */
 	public boolean sendFormatText(String subject, String contentTpl, Object... vals) {
+
+		// 判断配置文件是否允许发邮件.
+		if (!propUtil.isSendMail()) {
+			return false;
+		}
 
 		MailSenderInfo mailInfo = new MailSenderInfo();
 		mailInfo.setMailServerHost("smtp.163.com");
