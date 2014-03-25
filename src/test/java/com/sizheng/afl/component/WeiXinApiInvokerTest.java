@@ -43,11 +43,6 @@ public class WeiXinApiInvokerTest extends BaseTest {
 	}
 
 	@Test
-	public void getWebpageCode() {
-		assertNotNull(weiXinApiInvoker.getWebpageCode());
-	}
-
-	@Test
 	public void getUserInfo() {
 		WeiXinUserInfo userInfo = weiXinApiInvoker.getUserInfo("okPUDtzjrogWsWdsI_Fz39VNbgBc");
 		assertNotNull(userInfo);

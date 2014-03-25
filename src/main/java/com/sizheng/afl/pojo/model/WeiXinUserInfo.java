@@ -1,5 +1,7 @@
 package com.sizheng.afl.pojo.model;
 
+import java.util.List;
+
 /**
  * 微信用户信息
  * 
@@ -21,6 +23,7 @@ public class WeiXinUserInfo {
 	private String language;
 	private String headimgurl;
 	private String subscribe_time;
+	private List<String> privilege;
 
 	public String getSubscribe() {
 		return subscribe;
@@ -100,6 +103,14 @@ public class WeiXinUserInfo {
 
 	public void setSubscribe_time(String subscribe_time) {
 		this.subscribe_time = subscribe_time;
+	}
+
+	public List<String> getPrivilege() {
+		return privilege;
+	}
+
+	public void setPrivilege(List<String> privilege) {
+		this.privilege = privilege;
 	}
 
 }

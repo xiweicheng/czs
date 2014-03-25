@@ -126,10 +126,16 @@ public class WeiXinController extends BaseController {
 
 		logger.debug("响应消息【微信】");
 
-		logger.info(reqBody);
+		logger.info(XmlUtil.format(reqBody));
 
 		// 验证请求来自微信服务器
 		if (weixinVerify(weiXinMsg, locale)) {
+
+			// 微信服务器验证 第三方服务器资源
+			if (StringUtil.isNotEmpty(weiXinMsg.getEchostr())) {
+				WebUtil.writeString(response, weiXinMsg.getEchostr());
+				return;
+			}
 
 			// 解析消息
 			WeiXinBaseMsg bean = XmlUtil.toBean(reqBody, WeiXinBaseMsg.class);
@@ -236,14 +242,25 @@ public class WeiXinController extends BaseController {
 	@RequestMapping("view01")
 	public String view01(HttpServletRequest request, Locale locale, Model model) {
 		model.addAttribute("title", "测试标题1");
-		model.addAttribute("webpageCodeGetUrl", weiXinService.getWebpageCodeUrl());
+		model.addAttribute("webpageCodeGetUrl", weiXinService.getWebpageCodeUrl("state"));
 		return "view01";
+	}
+
+	@RequestMapping("businessAdd")
+	public String businessAdd(HttpServletRequest request, Locale locale, Model model) {
+		model.addAttribute("url", weiXinService.getWebpageCodeUrl("param-state"));
+		return "weixin/business-add";
 	}
 
 	@RequestMapping("view02")
 	public String view02(HttpServletRequest request, Locale locale, Model model) {
 		model.addAttribute("title", "测试标题2");
 		return "view02";
+	}
+
+	@RequestMapping("test")
+	public String test(HttpServletRequest request, Locale locale, Model model) {
+		return "test";
 	}
 
 }

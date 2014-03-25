@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2014-3-25 17:53:07 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.sizheng.afl.pojo.entity.Qrcode" table="qrcode" catalog="afl">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="openId" type="string">
+            <column name="open_id" />
+        </property>
+        <property name="sceneId" type="java.lang.Long">
+            <column name="scene_id" />
+        </property>
+        <property name="useLimit" type="java.lang.Long">
+            <column name="use_limit" />
+        </property>
+        <property name="useTimes" type="java.lang.Long">
+            <column name="use_times" />
+        </property>
+    </class>
+</hibernate-mapping>

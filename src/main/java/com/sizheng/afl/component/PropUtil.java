@@ -48,6 +48,18 @@ public class PropUtil {
 	@Value("#{systemProperties['weixin.api.url.showqrcode']}")
 	private String showqrcodeUrl;
 
+	@Value("#{systemProperties['weixin.api.url.redirect']}")
+	private String redirectUrl;
+
+	@Value("#{systemProperties['weixin.api.url.access.token.get']}")
+	private String accessTokenGetUrl;
+
+	@Value("#{systemProperties['weixin.api.url.access.token.refresh']}")
+	private String accessTokenRefreshUrl;
+
+	@Value("#{systemProperties['weixin.api.url.web.user.info.get']}")
+	private String webUserInfoGetUrl;
+
 	public boolean isLogReqbody() {
 		return logReqbody;
 	}
@@ -102,6 +114,22 @@ public class PropUtil {
 
 	public boolean isSendMail() {
 		return sendMail;
+	}
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public String getAccessTokenGetUrl() {
+		return accessTokenGetUrl;
+	}
+
+	public String getAccessTokenRefreshUrl() {
+		return accessTokenRefreshUrl;
+	}
+
+	public String getWebUserInfoGetUrl() {
+		return webUserInfoGetUrl;
 	}
 
 }
