@@ -169,7 +169,7 @@ public class WeiXinController extends BaseController {
 					writeText(response, bean, "期待您的再次回来!");
 				} else if (WeiXinEventType.CLICK.getValue().equals(event)) { // 菜单点击事件
 					weiXinService.click(bean, locale);
-					writeText(response, bean, "点击菜单拉取消息时的事件推送!");
+					// writeText(response, bean, "点击菜单拉取消息时的事件推送!");
 				} else if (WeiXinEventType.VIEW.getValue().equals(event)) { // 菜单点击事件
 					weiXinService.view(bean, locale);
 					writeText(response, bean, "点击菜单跳转链接时的事件推送!");
@@ -183,7 +183,8 @@ public class WeiXinController extends BaseController {
 
 			} else if (WeiXinMsgType.TEXT.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "文本消息!");
+//				writeText(response, bean, "文本消息!");
+				writeText(response, bean, "<a href='http://www.baidu.com'>百度一下!</a>");
 
 			} else if (WeiXinMsgType.IMAGE.getValue().equals(msgType)) {
 				// TODO
@@ -239,16 +240,10 @@ public class WeiXinController extends BaseController {
 		WebUtil.writeString(response, resp);
 	}
 
-	@RequestMapping("view01")
-	public String view01(HttpServletRequest request, Locale locale, Model model) {
-		model.addAttribute("title", "测试标题1");
-		model.addAttribute("webpageCodeGetUrl", weiXinService.getWebpageCodeUrl("state"));
-		return "view01";
-	}
 
 	@RequestMapping("businessAdd")
 	public String businessAdd(HttpServletRequest request, Locale locale, Model model) {
-		model.addAttribute("url", weiXinService.getWebpageCodeUrl("param-state"));
+		model.addAttribute("url", weiXinService.getWebpageCodeUrl("business/add.do", "param-state"));
 		return "weixin/business-add";
 	}
 

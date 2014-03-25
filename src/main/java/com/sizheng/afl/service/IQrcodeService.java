@@ -110,4 +110,6 @@ public interface IQrcodeService extends IBaseService {
 	 * @return
 	 */
 	boolean exists(Locale locale, Qrcode qrcode);
+
+	String create(Qrcode qrcode, String realPath);
 }

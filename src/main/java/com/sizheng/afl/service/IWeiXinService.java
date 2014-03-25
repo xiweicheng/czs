@@ -126,7 +126,7 @@ public interface IWeiXinService extends IBaseService {
 
 	boolean location(WeiXinBaseMsg bean, Locale locale);
 
-	String getWebpageCodeUrl(String state);
+	String getWebpageCodeUrl(String reqMapping, String state);
 
 	Serializable saveMessage(WeiXinBaseMsg bean);
 

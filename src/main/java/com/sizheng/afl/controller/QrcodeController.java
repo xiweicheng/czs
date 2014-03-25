@@ -239,6 +239,13 @@ public class QrcodeController extends BaseController {
 	@RequestMapping("create")
 	public String create(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Qrcode qrcode) {
 
+		String realPath = request.getSession().getServletContext().getRealPath("/");
+		logger.debug(realPath);
+
+		String imgUrl = qrcodeService.create(qrcode, realPath);
+
+		model.addAttribute("imgUrl", imgUrl);
+
 		return "qrcode/create";
 	}
 

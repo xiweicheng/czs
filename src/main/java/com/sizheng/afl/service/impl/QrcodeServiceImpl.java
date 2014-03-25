@@ -3,9 +3,10 @@
  */
 package com.sizheng.afl.service.impl;
 
-import java.util.List; 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
+import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IQrcodeDao;
 import com.sizheng.afl.pojo.model.Qrcode;
+import com.sizheng.afl.pojo.model.WeiXinActionInfo;
+import com.sizheng.afl.pojo.model.WeiXinQrcodeCreateParam;
+import com.sizheng.afl.pojo.model.WeiXinScene;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IQrcodeService;
+import com.sizheng.afl.util.StringUtil;
 
 /**
  * 【二维码】业务逻辑实现.
@@ -40,6 +46,9 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 
 	@Autowired
 	ApiInvoker apiInvoker;
+
+	@Autowired
+	WeiXinApiInvoker weiXinApiInvoker;
 
 	@Override
 	public boolean save(Locale locale, Qrcode qrcode) {
@@ -113,6 +122,27 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 		
 		// TODO
 		return true;
+	}
+
+	@Override
+	public String create(Qrcode qrcode, String realPath) {
+
+		logger.debug("[业务逻辑层]创建【二维码】");
+
+		if (!realPath.endsWith("/")) {
+			realPath += "/";
+		}
+
+		String filePath = "resources/images/qrcode/{?1}_{?2}_{?3}.jpg";
+
+		filePath = StringUtil.replace(filePath, UUID.randomUUID(), qrcode.getSceneId(), qrcode.getDescription());
+
+		logger.debug(filePath);
+
+		weiXinApiInvoker.downQrcodeImage(new WeiXinQrcodeCreateParam("QR_LIMIT_SCENE", new WeiXinActionInfo(
+				new WeiXinScene(qrcode.getSceneId()))), realPath + filePath);
+
+		return filePath;
 	}
 	
 }

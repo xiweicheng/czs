@@ -16,6 +16,12 @@ public class WeiXinQrcodeCreateParam {
 		this.action_info = action_info;
 	}
 
+	public WeiXinQrcodeCreateParam(String action_name, WeiXinActionInfo action_info) {
+		super();
+		this.action_name = action_name;
+		this.action_info = action_info;
+	}
+
 	public String getExpire_seconds() {
 		return expire_seconds;
 	}

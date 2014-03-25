@@ -262,7 +262,9 @@ public class WeiXinApiInvoker {
 
 			WeiXinButton weiXinButton = new WeiXinButton("使用帮助");
 			List<WeiXinButton> sub_button = new ArrayList<>();
-			sub_button.add(new WeiXinViewButton("商家入驻", propUtil.getRedirectUrl() + "/weiXin/businessAdd.do"));
+//			sub_button.add(new WeiXinViewButton("商家入驻", propUtil.getRedirectUrl() + "/weiXin/businessAdd.do"));
+			sub_button.add(new WeiXinClickButton("商家入驻", "evt_key_03"));
+			sub_button.add(new WeiXinClickButton("下载二维码", "evt_key_04"));
 
 			weiXinButton.setSub_button(sub_button);
 			button.add(weiXinButton);
@@ -376,12 +378,16 @@ public class WeiXinApiInvoker {
 	 * @modification 2014年3月22日 下午10:00:58
 	 * @return
 	 */
-	public String getWebpageCodeUrl(String state) {
+	public String getWebpageCodeUrl(String requestMapping, String state) {
 		logger.debug("网页授权验证code获取的URL");
+		
+		if(!requestMapping.startsWith("/")){
+			requestMapping = "/" + requestMapping;
+		}
 
 		try {
 			String url = StringUtil.replaceByKV(propUtil.getWebpageCodeGetUrl(), "appid", propUtil.getAppid(), "state",
-					state, "redirect_uri", URLEncoder.encode(propUtil.getRedirectUrl() + "/business/add.do", "UTF-8"));
+					state, "redirect_uri", URLEncoder.encode(propUtil.getRedirectUrl() + requestMapping, "UTF-8"));
 			logger.debug(url);
 			return url;
 		} catch (UnsupportedEncodingException e) {

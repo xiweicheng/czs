@@ -29,6 +29,7 @@ import com.sizheng.afl.pojo.model.WeiXinMsg;
 import com.sizheng.afl.pojo.model.WeiXinUserInfo;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IWeiXinService;
+import com.sizheng.afl.util.StringUtil;
 
 /**
  * 【微信】业务逻辑实现.
@@ -198,6 +199,15 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			// weiXinService.click(bean, locale);
 		} else if (WeiXinEventKey.EVT_KEY_02.getValue().equals(eventKey)) {
 			// weiXinService.click(bean, locale);
+		} else if (WeiXinEventKey.EVT_KEY_03.getValue().equals(eventKey)) {
+			String url = weiXinApiInvoker.getWebpageCodeUrl("business/add.do", bean.getFromUserName());
+			weiXinApiInvoker.sendServiceMsg(bean.getFromUserName(),
+					StringUtil.replace("<a href='{?1}'>{?2}</a>", url, "点击确认入驻"));
+			 
+		} else if (WeiXinEventKey.EVT_KEY_04.getValue().equals(eventKey)) {
+			String url = weiXinApiInvoker.getWebpageCodeUrl("qrcode/input.do", bean.getFromUserName());
+			weiXinApiInvoker.sendServiceMsg(bean.getFromUserName(),
+					StringUtil.replace("<a href='{?1}'>{?2}</a>", url, "点击进入配置界面"));
 		}
 
 		return false;
@@ -230,8 +240,8 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 	}
 
 	@Override
-	public String getWebpageCodeUrl(String state) {
-		return weiXinApiInvoker.getWebpageCodeUrl(state);
+	public String getWebpageCodeUrl(String reqMapping, String state) {
+		return weiXinApiInvoker.getWebpageCodeUrl(reqMapping, state);
 	}
 
 	@Override
