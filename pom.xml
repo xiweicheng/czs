@@ -180,6 +180,30 @@
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.0</version>
+				<configuration>
+					<uriEncoding>UTF-8</uriEncoding>
+					<path>/</path>
+					<!--在这里定义端口号 -->
+					<port>80</port>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<!-- <configuration>
+					<outputDirectory>/</outputDirectory>
+					<finalName>test.jar</finalName>
+					<attach>false</attach>
+				</configuration> -->
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
