@@ -230,8 +230,8 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 	}
 
 	@Override
-	public String getWebpageCodeUrl() {
-		return weiXinApiInvoker.getWebpageCodeUrl();
+	public String getWebpageCodeUrl(String state) {
+		return weiXinApiInvoker.getWebpageCodeUrl(state);
 	}
 
 	@Override

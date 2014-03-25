@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.model.WeiXinButton;
 import com.sizheng.afl.pojo.model.WeiXinClickButton;
 import com.sizheng.afl.pojo.model.WeiXinCustomMsg;
@@ -251,36 +252,40 @@ public class WeiXinApiInvoker {
 	 */
 	public boolean createMenu() {
 
-		WeiXinMenu weiXinMenu = new WeiXinMenu();
-		List<WeiXinButton> button = new ArrayList<>();
-		button.add(new WeiXinClickButton("我要请假", "evt_key_01"));
-		button.add(new WeiXinClickButton("允许请假", "evt_key_02"));
+		// 先删除以前创建的菜单.
+		if (deleteMenu()) {
 
-		WeiXinButton weiXinButton = new WeiXinButton("使用帮助");
-		List<WeiXinButton> sub_button = new ArrayList<>();
-		sub_button.add(new WeiXinViewButton("打开网页", "http://202.120.2.86/afl/weiXin/view01.do"));
+			WeiXinMenu weiXinMenu = new WeiXinMenu();
+			List<WeiXinButton> button = new ArrayList<>();
+			button.add(new WeiXinClickButton("我要请假", "evt_key_01"));
+			button.add(new WeiXinClickButton("允许请假", "evt_key_02"));
 
-		weiXinButton.setSub_button(sub_button);
-		button.add(weiXinButton);
+			WeiXinButton weiXinButton = new WeiXinButton("使用帮助");
+			List<WeiXinButton> sub_button = new ArrayList<>();
+			sub_button.add(new WeiXinViewButton("商家入驻", propUtil.getRedirectUrl() + "/weiXin/businessAdd.do"));
 
-		weiXinMenu.setButton(button);
+			weiXinButton.setSub_button(sub_button);
+			button.add(weiXinButton);
 
-		JSONObject invoke = invoke(
-				StringUtil.replaceByKV(propUtil.getMenuCreateUrl(), "accessToken", getAccessToken()),
-				JsonUtil.toJson(weiXinMenu));
+			weiXinMenu.setButton(button);
 
-		if (invoke.containsKey("errcode")) {
-			logger.info(invoke.getString("errcode"));
-			logger.info(invoke.getString("errmsg"));
-			if (invoke.getLongValue("errcode") == 0) {
-				return true;
-			} else if (invoke.getLongValue("errcode") == 42001) {
-				logger.debug("[access token]过期,重新获取!");
-				if (initAccessToken()) {
-					logger.debug("[access token]过期,重新获取成功!");
-					return createMenu();
-				} else {
-					logger.debug("[access token]过期,重新获取失败!");
+			JSONObject invoke = invoke(
+					StringUtil.replaceByKV(propUtil.getMenuCreateUrl(), "accessToken", getAccessToken()),
+					JsonUtil.toJson(weiXinMenu));
+
+			if (invoke.containsKey("errcode")) {
+				logger.info(invoke.getString("errcode"));
+				logger.info(invoke.getString("errmsg"));
+				if (invoke.getLongValue("errcode") == 0) {
+					return true;
+				} else if (invoke.getLongValue("errcode") == 42001) {
+					logger.debug("[access token]过期,重新获取!");
+					if (initAccessToken()) {
+						logger.debug("[access token]过期,重新获取成功!");
+						return createMenu();
+					} else {
+						logger.debug("[access token]过期,重新获取失败!");
+					}
 				}
 			}
 		}
@@ -364,21 +369,6 @@ public class WeiXinApiInvoker {
 	}
 
 	/**
-	 * 获取网页授权验证code
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年3月22日 下午9:37:52
-	 * @modification 2014年3月22日 下午9:37:52
-	 * @return
-	 */
-	public String getWebpageCode() {
-		logger.debug("获取网页授权验证code");
-
-		return invokeSimple(StringUtil.replaceByKV(propUtil.getWebpageCodeGetUrl(), "appid", propUtil.getAppid(),
-				"redirect_uri", "http://202.120.2.86/afl/weiXin/view01"), StringUtil.EMPTY);
-	}
-
-	/**
 	 * 获取网页授权验证code的URL
 	 * 
 	 * @author xiweicheng
@@ -386,12 +376,14 @@ public class WeiXinApiInvoker {
 	 * @modification 2014年3月22日 下午10:00:58
 	 * @return
 	 */
-	public String getWebpageCodeUrl() {
+	public String getWebpageCodeUrl(String state) {
 		logger.debug("网页授权验证code获取的URL");
 
 		try {
-			return StringUtil.replaceByKV(propUtil.getWebpageCodeGetUrl(), "appid", propUtil.getAppid(),
-					"redirect_uri", URLEncoder.encode("http://202.120.2.86/afl/weiXin/view02.do", "UTF-8"));
+			String url = StringUtil.replaceByKV(propUtil.getWebpageCodeGetUrl(), "appid", propUtil.getAppid(), "state",
+					state, "redirect_uri", URLEncoder.encode(propUtil.getRedirectUrl() + "/business/add.do", "UTF-8"));
+			logger.debug(url);
+			return url;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
@@ -492,7 +484,7 @@ public class WeiXinApiInvoker {
 				if (!file.exists()) {
 					file.mkdirs();
 				}
-				
+
 				file = new File(file, StringUtil.replace("{?1}_{?2}.jpg", fileName,
 						DateUtil.format(DateUtil.now(), DateUtil.FORMAT5)));
 			} else {
@@ -547,5 +539,91 @@ public class WeiXinApiInvoker {
 	 */
 	public boolean downQrcodeImage(WeiXinQrcodeCreateParam param, String filePath) {
 		return downQrcodeImage(getQrcodeUrl(param), filePath);
+	}
+
+	/**
+	 * 返回access token.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月25日 下午2:08:59
+	 * @modification 2014年3月25日 下午2:08:59
+	 * @param code
+	 * @return
+	 */
+	public WeiXinAccessToken getAccessToken(String code) {
+
+		logger.debug("[微信API调用]通过code换取网页授权access_token");
+
+		JSONObject invoke = invoke(StringUtil.replaceByKV(propUtil.getAccessTokenGetUrl(), "appid",
+				propUtil.getAppid(), "secret", propUtil.getSecret(), "code", code), StringUtil.EMPTY);
+
+		if (invoke.containsKey("errcode")) {
+			logger.error(invoke.getString("errcode"));
+			logger.error(invoke.getString("errmsg"));
+			return new WeiXinAccessToken();
+		} else {
+			return JsonUtil.jsonObj2Object(invoke, WeiXinAccessToken.class);
+		}
+	}
+
+	/**
+	 * 刷新access token.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月25日 下午2:30:15
+	 * @modification 2014年3月25日 下午2:30:15
+	 * @param refreshToken
+	 * @return
+	 */
+	public WeiXinAccessToken refreshAccessToken(String refreshToken) {
+
+		logger.debug("[微信API调用]刷新网页授权access_token");
+
+		JSONObject invoke = invoke(StringUtil.replaceByKV(propUtil.getAccessTokenRefreshUrl(), "appid",
+				propUtil.getAppid(), "refresh_token", refreshToken), StringUtil.EMPTY);
+
+		if (invoke.containsKey("errcode")) {
+			logger.error(invoke.getString("errcode"));
+			logger.error(invoke.getString("errmsg"));
+			return new WeiXinAccessToken();
+		} else {
+			return JsonUtil.jsonObj2Object(invoke, WeiXinAccessToken.class);
+		}
+	}
+
+	/**
+	 * 获取用户信息
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月25日 下午2:41:16
+	 * @modification 2014年3月25日 下午2:41:16
+	 * @param accessToken
+	 * @param openId
+	 * @return
+	 */
+	public WeiXinUserInfo getUserInfo(String accessToken, String openId) {
+		logger.debug("[微信API调用]获取用户信息");
+
+		JSONObject invoke = invoke(
+				StringUtil.replaceByKV(propUtil.getWebUserInfoGetUrl(), "access_token", accessToken, "openid", openId),
+				StringUtil.EMPTY);
+
+		if (invoke.containsKey("errcode")) {
+			logger.info(invoke.getString("errcode"));
+			logger.info(invoke.getString("errmsg"));
+			if (invoke.getLongValue("errcode") == 42001) {
+				logger.debug("[access token]过期,重新获取!");
+				if (initAccessToken()) {
+					logger.debug("[access token]过期,重新获取成功!");
+					return getUserInfo(accessToken, openId);
+				} else {
+					logger.debug("[access token]过期,重新获取失败!");
+				}
+			}
+		} else {
+			return JsonUtil.jsonObj2Object(invoke, WeiXinUserInfo.class);
+		}
+
+		return new WeiXinUserInfo();
 	}
 }
