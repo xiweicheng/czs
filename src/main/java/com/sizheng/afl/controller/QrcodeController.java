@@ -254,6 +254,11 @@ public class QrcodeController extends BaseController {
 	@RequestMapping("create")
 	public String create(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Qrcode qrcode) {
 
+		if (businessService.isQrcodeLimited(locale, qrcode.getOpenId())) {
+			model.addAttribute("message", "二维码生成数量达到限制值!");
+			return "result";
+		}
+
 		String realPath = request.getSession().getServletContext().getRealPath("/");
 
 		logger.debug(realPath);

@@ -20,6 +20,7 @@ import com.sizheng.afl.dao.IBusinessDao;
 import com.sizheng.afl.pojo.model.Business;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.IQrcodeService;
 
 /**
  * 【商家】业务逻辑实现.
@@ -45,6 +46,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 	@Autowired
 	PropUtil propUtil;
+
+	@Autowired
+	IQrcodeService qrcodeService;
 
 	@Override
 	public boolean save(Locale locale, Business business) {
@@ -105,10 +109,13 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		if (list.size() > 0) {
 			business2 = (com.sizheng.afl.pojo.entity.Business) list.get(0);
-			BeanUtils.copyProperties(business, business2);
+			BeanUtils.copyProperties(business, business2, "qrcodeLimit");
 			hibernateTemplate.update(business2);
 		} else {
 			BeanUtils.copyProperties(business, business2);
+			business2.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
+			business2.setIsDeleted((short) 0);
+
 			hibernateTemplate.save(business2);
 		}
 
@@ -156,6 +163,15 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		return list.size() > 0;
 
+	}
+
+	@Override
+	public boolean isQrcodeLimited(Locale locale, String openId) {
+
+		Business business = new Business();
+		business.setOpenId(openId);
+
+		return qrcodeService.queryByOpenId(locale, openId).size() >= get(locale, business).getQrcodeLimit();
 	}
 
 }

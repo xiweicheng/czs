@@ -110,4 +110,6 @@ public interface IBusinessService extends IBaseService {
 	 * @return
 	 */
 	boolean exists(Locale locale, Business business);
+
+	boolean isQrcodeLimited(Locale locale, String openId);
 }

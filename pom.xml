@@ -137,6 +137,13 @@
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
 		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.1</version>
+		</dependency>
+            
             
 		<!-- <dependency>
 			<groupId>jstl</groupId>
