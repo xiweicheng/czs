@@ -3,7 +3,6 @@
  */
 package com.sizheng.afl.pojo.model;
 
-
 import java.io.Serializable;
 
 /**
@@ -17,8 +16,14 @@ import java.io.Serializable;
  * 
  */
 public class Qrcode implements Serializable {
+	/** sceneId [String] 使用参数标识 */
 	private String sceneId;
+	/** description [String] 使用描述 */
 	private String description;
+	/** category [String] 二维码使用场景分类 */
+	private String category;
+	/** openId [String] */
+	private String openId;
 
 	public String getSceneId() {
 		return sceneId;
@@ -34,6 +39,22 @@ public class Qrcode implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
 	}
 
 }

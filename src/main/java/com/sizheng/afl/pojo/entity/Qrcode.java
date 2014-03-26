@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-3-25 17:53:07 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-3-26 14:35:46 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,15 +21,26 @@ public class Qrcode implements java.io.Serializable {
 	private Long sceneId;
 	private Long useLimit;
 	private Long useTimes;
+	private Long categoryId;
+	private String ticket;
+	private String url;
+	private String filePath;
+	private String type;
 
 	public Qrcode() {
 	}
 
-	public Qrcode(String openId, Long sceneId, Long useLimit, Long useTimes) {
+	public Qrcode(String openId, Long sceneId, Long useLimit, Long useTimes, Long categoryId, String ticket,
+			String url, String filePath, String type) {
 		this.openId = openId;
 		this.sceneId = sceneId;
 		this.useLimit = useLimit;
 		this.useTimes = useTimes;
+		this.categoryId = categoryId;
+		this.ticket = ticket;
+		this.url = url;
+		this.filePath = filePath;
+		this.type = type;
 	}
 
 	@Id
@@ -77,6 +88,51 @@ public class Qrcode implements java.io.Serializable {
 
 	public void setUseTimes(Long useTimes) {
 		this.useTimes = useTimes;
+	}
+
+	@Column(name = "category_id")
+	public Long getCategoryId() {
+		return this.categoryId;
+	}
+
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	@Column(name = "ticket", length = 1000)
+	public String getTicket() {
+		return this.ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
+	}
+
+	@Column(name = "url", length = 1000)
+	public String getUrl() {
+		return this.url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	@Column(name = "filePath", length = 1000)
+	public String getFilePath() {
+		return this.filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	@Column(name = "type", length = 50)
+	public String getType() {
+		return this.type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

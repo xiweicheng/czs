@@ -78,7 +78,7 @@ public class BusinessController extends BaseController {
 				return "business/input";
 			} else {
 				model.addAttribute("message", "商家入驻失败!");
-				return "business/result";
+				return "result";
 			}
 		}
 	}
@@ -108,7 +108,7 @@ public class BusinessController extends BaseController {
 			model.addAttribute("message", "商家信息更新失败!");
 		}
 
-		return "business/result";
+		return "result";
 	}
 
 	/**

@@ -12,7 +12,7 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>二维码生成</title>
+<title>二维码发送</title>
 <link rel="stylesheet"
 	href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
 <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
@@ -32,7 +32,22 @@
 			<h1 id="v001_heading">餐助手</h1>
 		</div>
 		<div data-role="content">
-			<img alt="二维码" src="${imgUrl}">
+			<a href="#">
+				<div style="text-align: center">
+					<img style="width: 100%;" src="${qrcode.url}">
+				</div>
+			</a>
+			<form action="qrcode/sendMail.do">
+				<input type="hidden" name="filePath" value="${qrcode.filePath}">
+				<input type="hidden" name="ticket" value="${qrcode.ticket}">
+				<input type="hidden" name="url" value="${qrcode.url}">
+				<input type="hidden" name="openId" value="${openId}">
+				<div data-role="fieldcontain">
+					<label for="textinput5"> E-mail </label> <input name="mail"
+						id="textinput5" placeholder="" value="${business.mail}" type="email">
+				</div>
+				<input type="submit" value="发送到邮箱">
+			</form>
 		</div>
 		<div data-theme="a" data-role="footer" data-position="fixed">
 			<h3>餐助手-版权所有</h3>

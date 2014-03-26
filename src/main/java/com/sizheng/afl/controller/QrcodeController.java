@@ -20,10 +20,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.pojo.entity.Category;
+import com.sizheng.afl.pojo.model.Business;
 import com.sizheng.afl.pojo.model.Qrcode;
+import com.sizheng.afl.pojo.model.WeiXinQrcode;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
+import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.ICategoryService;
 import com.sizheng.afl.service.IQrcodeService;
 
 /**
@@ -44,6 +49,12 @@ public class QrcodeController extends BaseController {
 
 	@Autowired
 	IQrcodeService qrcodeService;
+
+	@Autowired
+	ICategoryService categoryService;
+
+	@Autowired
+	IBusinessService businessService;
 
 	/**
 	 * 添加【二维码】.
@@ -233,6 +244,10 @@ public class QrcodeController extends BaseController {
 
 	@RequestMapping("input")
 	public String input(HttpServletRequest request, Locale locale, Model model) {
+
+		List<Category> list = categoryService.listByType("qrcode");
+		model.addAttribute("categoryList", list);
+
 		return "qrcode/input";
 	}
 
@@ -240,13 +255,45 @@ public class QrcodeController extends BaseController {
 	public String create(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Qrcode qrcode) {
 
 		String realPath = request.getSession().getServletContext().getRealPath("/");
+
 		logger.debug(realPath);
 
-		String imgUrl = qrcodeService.create(qrcode, realPath);
+		WeiXinQrcode weiXinQrcode = qrcodeService.create(qrcode, realPath);
 
-		model.addAttribute("imgUrl", imgUrl);
+		model.addAttribute("qrcode", weiXinQrcode);
+		model.addAttribute("openId", qrcode.getOpenId());
+
+		Business business = new Business();
+		business.setOpenId(qrcode.getOpenId());
+
+		Business business2 = businessService.get(locale, business);
+		model.addAttribute("business", business2);
 
 		return "qrcode/create";
 	}
 
+	@RequestMapping("sendMail")
+	public String sendMail(HttpServletRequest request, Locale locale, Model model) {
+
+		String filePath = request.getParameter("filePath");
+		String url = request.getParameter("url");
+		String ticket = request.getParameter("ticket");
+		String mail = request.getParameter("mail");
+
+		if (qrcodeService.sendMail(filePath, url, ticket, mail)) {
+			model.addAttribute("message", "发送成功!");
+		} else {
+			model.addAttribute("message", "发送失败!");
+		}
+
+		return "result";
+	}
+
+	@RequestMapping("buy")
+	public String buy(HttpServletRequest request, Locale locale, Model model) {
+
+		model.addAttribute("message", "页面建设中...");
+
+		return "qrcode/buy";
+	}
 }

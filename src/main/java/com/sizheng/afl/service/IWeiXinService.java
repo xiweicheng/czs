@@ -118,7 +118,7 @@ public interface IWeiXinService extends IBaseService {
 
 	boolean unsubscribe(WeiXinBaseMsg bean, Locale locale);
 
-	boolean click(WeiXinBaseMsg bean, Locale locale);
+	String click(WeiXinBaseMsg bean, Locale locale);
 
 	boolean verifyFail(WeiXinMsg bean, Locale locale);
 

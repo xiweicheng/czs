@@ -90,5 +90,9 @@ public final class SysConstant {
 	public static final String ACTION_DEFSHORTDATA_WEBSITE = "{TRIGGER.STATUS}: {TRIGGER.NAME}";
 	/** ACTION_DEFLONGDATA_WEBSITE [String] */
 	public static final String ACTION_DEFLONGDATA_WEBSITE = "告警等级：{TRIGGER.NSEVERITY}\r\n监控URL：{HOST.NAME}\r\n告警时间：{EVENT.DATE} {EVENT.TIME}\r\n告警描述：{TRIGGER.NAME}";
+	/** QR_LIMIT_SCENE [String] 永久二维码 */
+	public static final String QR_LIMIT_SCENE = "QR_LIMIT_SCENE";
+	/** QR_SCENE [String] 临时二维码 */
+	public static final String QR_SCENE = "QR_SCENE";
 
 }

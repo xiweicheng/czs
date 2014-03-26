@@ -20,14 +20,18 @@ import com.sizheng.afl.component.SimpleMailSender;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IWeiXinDao;
 import com.sizheng.afl.pojo.entity.Message;
+import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.entity.Subscriber;
 import com.sizheng.afl.pojo.entity.User;
+import com.sizheng.afl.pojo.model.Business;
 import com.sizheng.afl.pojo.model.WeiXin;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.model.WeiXinEventKey;
 import com.sizheng.afl.pojo.model.WeiXinMsg;
 import com.sizheng.afl.pojo.model.WeiXinUserInfo;
 import com.sizheng.afl.pojo.vo.PageResult;
+import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.IQrcodeService;
 import com.sizheng.afl.service.IWeiXinService;
 import com.sizheng.afl.util.StringUtil;
 
@@ -58,6 +62,12 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 	@Autowired
 	SimpleMailSender simpleMailSender;
+
+	@Autowired
+	IBusinessService businessService;
+
+	@Autowired
+	IQrcodeService qrcodeService;
 
 	@Override
 	public boolean save(Locale locale, WeiXin weiXin) {
@@ -189,28 +199,61 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 	}
 
 	@Override
-	public boolean click(WeiXinBaseMsg bean, Locale locale) {
+	public String click(WeiXinBaseMsg bean, Locale locale) {
 		logger.debug("[业务逻辑层]菜单单击事件");
 
 		// 菜单项对应的键值
 		String eventKey = bean.getEventKey();
 
 		if (WeiXinEventKey.EVT_KEY_01.getValue().equals(eventKey)) {
-			// weiXinService.click(bean, locale);
 		} else if (WeiXinEventKey.EVT_KEY_02.getValue().equals(eventKey)) {
-			// weiXinService.click(bean, locale);
-		} else if (WeiXinEventKey.EVT_KEY_03.getValue().equals(eventKey)) {
-			String url = weiXinApiInvoker.getWebpageCodeUrl("business/add.do", bean.getFromUserName());
-			weiXinApiInvoker.sendServiceMsg(bean.getFromUserName(),
-					StringUtil.replace("<a href='{?1}'>{?2}</a>", url, "点击确认入驻"));
-			 
+		} else if (WeiXinEventKey.EVT_KEY_03.getValue().equals(eventKey)) {// 商家入驻
+
+			Business business = new Business();
+			business.setOpenId(bean.getFromUserName());
+
+			// 判断商家是否已经入驻
+			if (businessService.exists(locale, business)) {
+				// 已经入驻,发送信息提示,和完善商家信息链接.
+				// 这里有商家入驻->取消->再次入驻 的情况
+				String url = weiXinApiInvoker.getWebpageCodeUrl(
+						StringUtil.replaceByKV("business/input.do?openid={openId}", "openId", bean.getFromUserName()),
+						bean.getFromUserName());
+				return StringUtil.replace("您已经是入驻商家!您可以点击下面链接去修改或者完善自己的商家信息!\n\n<a href='{?1}'>{?2}</a>", url,
+						"[点击此]完善商家信息");
+			} else {
+				// 未入驻,发送确认入驻链接.
+				return StringUtil.replace("入驻为商家后,即可享受我们平台提供的便捷顾客与商家之间的优质桥梁服务!\n\n<a href='{?1}'>{?2}</a>",
+						weiXinApiInvoker.getWebpageCodeUrl("business/add.do", bean.getFromUserName()), "[点击此]确认入驻");
+			}
+
 		} else if (WeiXinEventKey.EVT_KEY_04.getValue().equals(eventKey)) {
-			String url = weiXinApiInvoker.getWebpageCodeUrl("qrcode/input.do", bean.getFromUserName());
-			weiXinApiInvoker.sendServiceMsg(bean.getFromUserName(),
-					StringUtil.replace("<a href='{?1}'>{?2}</a>", url, "点击进入配置界面"));
+
+			Business business = new Business();
+			business.setOpenId(bean.getFromUserName());
+
+			Business business2 = businessService.get(locale, business);
+
+			if (business2 == null) {
+				return StringUtil.replace("您还不是入驻商家,确认要入驻吗?\n\n<a href='{?1}'>{?2}</a>",
+						weiXinApiInvoker.getWebpageCodeUrl("business/add.do", bean.getFromUserName()), "[点击此]确认入驻");
+			} else {
+
+				// 判断二维码使用的数量
+				List<Qrcode> list = qrcodeService.queryByOpenId(locale, bean.getFromUserName());
+
+				if (list.size() >= business2.getQrcodeLimit()) {
+					return StringUtil.replace("您可使用的二维码达到最大限制[{?3}],您可以点击下面链接进行购买!\n\n<a href='{?1}'>{?2}</a>",
+							weiXinApiInvoker.getWebpageCodeUrl("qrcode/buy.do", bean.getFromUserName()), "[点击此]进入购买界面",
+							business2.getQrcodeLimit());
+				}
+
+				return StringUtil.replace("<a href='{?1}'>{?2}</a>",
+						weiXinApiInvoker.getWebpageCodeUrl("qrcode/input.do", bean.getFromUserName()), "[点击此]进入配置界面");
+			}
 		}
 
-		return false;
+		return null;
 	}
 
 	@Override

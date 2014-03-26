@@ -60,6 +60,15 @@ public class PropUtil {
 	@Value("#{systemProperties['weixin.api.url.web.user.info.get']}")
 	private String webUserInfoGetUrl;
 
+	@Value("#{systemProperties['qrcode.use.limit.time']}")
+	private String qrcodeUseLimitTime;
+
+	@Value("#{systemProperties['qrcode.scene.id.max']}")
+	private long qrcodeSceneIdMax;
+
+	@Value("#{systemProperties['qrcode.business.max.default']}")
+	private long qrcodeBusinessMaxDefault;
+
 	public boolean isLogReqbody() {
 		return logReqbody;
 	}
@@ -130,6 +139,18 @@ public class PropUtil {
 
 	public String getWebUserInfoGetUrl() {
 		return webUserInfoGetUrl;
+	}
+
+	public String getQrcodeUseLimitTime() {
+		return qrcodeUseLimitTime;
+	}
+
+	public long getQrcodeSceneIdMax() {
+		return qrcodeSceneIdMax;
+	}
+
+	public long getQrcodeBusinessMaxDefault() {
+		return qrcodeBusinessMaxDefault;
 	}
 
 }

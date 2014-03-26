@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
+import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.dao.IBusinessDao;
 import com.sizheng.afl.pojo.model.Business;
 import com.sizheng.afl.pojo.vo.PageResult;
@@ -42,6 +43,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	@Autowired
 	ApiInvoker apiInvoker;
 
+	@Autowired
+	PropUtil propUtil;
+
 	@Override
 	public boolean save(Locale locale, Business business) {
 
@@ -49,6 +53,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		com.sizheng.afl.pojo.entity.Business business2 = new com.sizheng.afl.pojo.entity.Business();
 		business2.setOpenId(business.getOpenId());
+		business2.setIsDeleted((short) 0);
+		business2.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
 
 		hibernateTemplate.save(business2);
 

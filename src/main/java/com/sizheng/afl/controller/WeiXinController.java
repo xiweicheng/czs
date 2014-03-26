@@ -16,13 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
+import com.sizheng.afl.pojo.model.WeiXinEventKey;
 import com.sizheng.afl.pojo.model.WeiXinEventType;
 import com.sizheng.afl.pojo.model.WeiXinMsg;
 import com.sizheng.afl.pojo.model.WeiXinMsgType;
@@ -57,25 +57,6 @@ public class WeiXinController extends BaseController {
 
 	@Autowired
 	PropUtil propUtil;
-
-	/**
-	 * 验证【微信】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年03月19日 02:07:25
-	 * @modification 2014年03月19日 02:07:25
-	 * @return
-	 */
-	// @RequestMapping("verify")
-	@ResponseBody
-	public String verify(@ModelAttribute WeiXinMsg weiXinMsg, Locale locale) {
-
-		if (weixinVerify(weiXinMsg, locale)) {
-			return weiXinMsg.getEchostr();
-		}
-
-		return StringUtil.EMPTY;
-	}
 
 	/**
 	 * 微信验证.
@@ -124,7 +105,7 @@ public class WeiXinController extends BaseController {
 	public void verify(@ModelAttribute WeiXinMsg weiXinMsg, @RequestBody String reqBody, HttpServletResponse response,
 			Locale locale) {
 
-		logger.debug("响应消息【微信】");
+		logger.debug("响应微信服务器消息【微信】");
 
 		logger.info(XmlUtil.format(reqBody));
 
@@ -168,8 +149,25 @@ public class WeiXinController extends BaseController {
 					weiXinService.unsubscribe(bean, locale);
 					writeText(response, bean, "期待您的再次回来!");
 				} else if (WeiXinEventType.CLICK.getValue().equals(event)) { // 菜单点击事件
-					weiXinService.click(bean, locale);
-					// writeText(response, bean, "点击菜单拉取消息时的事件推送!");
+
+					// 菜单项对应的键值
+					String eventKey = bean.getEventKey();
+
+					if (WeiXinEventKey.EVT_KEY_01.getValue().equals(eventKey)) {
+						writeText(response, bean, eventKey);
+					} else if (WeiXinEventKey.EVT_KEY_02.getValue().equals(eventKey)) {
+						writeText(response, bean, eventKey);
+					} else {
+
+						String result = weiXinService.click(bean, locale);
+
+						// 需要客服消息回复的处理.
+						if (StringUtil.isNotEmpty(result)) {
+							writeText(response, bean, result);
+						} else {
+							WebUtil.writeString(response, StringUtil.EMPTY);
+						}
+					}
 				} else if (WeiXinEventType.VIEW.getValue().equals(event)) { // 菜单点击事件
 					weiXinService.view(bean, locale);
 					writeText(response, bean, "点击菜单跳转链接时的事件推送!");
@@ -183,8 +181,7 @@ public class WeiXinController extends BaseController {
 
 			} else if (WeiXinMsgType.TEXT.getValue().equals(msgType)) {
 				// TODO
-//				writeText(response, bean, "文本消息!");
-				writeText(response, bean, "<a href='http://www.baidu.com'>百度一下!</a>");
+				writeText(response, bean, "文本消息!");
 
 			} else if (WeiXinMsgType.IMAGE.getValue().equals(msgType)) {
 				// TODO
@@ -239,7 +236,6 @@ public class WeiXinController extends BaseController {
 
 		WebUtil.writeString(response, resp);
 	}
-
 
 	@RequestMapping("businessAdd")
 	public String businessAdd(HttpServletRequest request, Locale locale, Model model) {

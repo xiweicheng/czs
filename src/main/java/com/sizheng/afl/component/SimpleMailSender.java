@@ -1,8 +1,11 @@
 package com.sizheng.afl.component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -14,7 +17,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,6 +40,8 @@ import com.sizheng.afl.util.StringUtil;
  */
 @Component
 public class SimpleMailSender {
+
+	private static Logger logger = Logger.getLogger(SimpleMailSender.class);
 
 	@Value("#{systemProperties['java.mail.toAddress']}")
 	private String toAddress;
@@ -218,6 +225,79 @@ public class SimpleMailSender {
 		} catch (MessagingException ex) {
 			ex.printStackTrace();
 		}
+		return false;
+	}
+
+	/**
+	 * 发送带附件的邮件.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月26日 下午3:33:23
+	 * @modification 2014年3月26日 下午3:33:23
+	 * @param toAddr
+	 * @param filePath
+	 * @param title
+	 * @param content
+	 *            TODO
+	 * @return
+	 */
+	public boolean sendMailWithAttachment(String toAddr, String filePath, String title, String content) {
+
+		try {
+			Properties props = new Properties();
+			props.put("mail.smtp.host", "smtp.163.com");
+			props.put("mail.smtp.port", String.valueOf(25));
+			props.put("mail.smtp.auth", "true");
+
+			Session session = Session.getDefaultInstance(props, null);
+			Transport transport = session.getTransport("smtp");
+			transport.connect("smtp.163.com", "xiweicheng1987@163.com", "1987826");
+
+			MimeMessage msg = new MimeMessage(session);
+			msg.setSentDate(new Date());
+			InternetAddress fromAddress = new InternetAddress("xiweicheng1987@163.com");
+			msg.setFrom(fromAddress);
+
+			InternetAddress[] toAddress = new InternetAddress[1];
+			toAddress[0] = new InternetAddress(toAddr);
+
+			msg.setRecipients(Message.RecipientType.TO, toAddress);
+			msg.setSubject(title, "UTF-8");
+
+			MimeMultipart multi = new MimeMultipart();
+			BodyPart bodyPart = new MimeBodyPart(); // 第一个BodyPart.主要写一些一般的信件内容。
+			// 设置HTML内容
+			// bodyPart.setContent(content, "text/html; charset=utf-8");
+			bodyPart.setText(content);
+			// 压入第一个BodyPart到MimeMultipart对象中。
+			multi.addBodyPart(bodyPart);
+
+			FileDataSource fds = new FileDataSource(filePath); // 必须存在的文档，否则throw异常。
+
+			BodyPart fileBodyPart = new MimeBodyPart(); // 第二个BodyPart
+
+			fileBodyPart.setDataHandler(new DataHandler(fds)); // 字符流形式装入文件
+			try {
+				fileBodyPart.setFileName(MimeUtility.encodeText(fds.getName(), "UTF-8", "B"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} // 设置文件名，可以不是原来的文件名。
+
+			multi.addBodyPart(fileBodyPart);
+			// MimeMultPart作为Content加入message
+			msg.setContent(multi);
+
+			msg.setFileName(filePath);
+			msg.saveChanges();
+			transport.sendMessage(msg, msg.getAllRecipients());
+
+			return true;
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		}
+
 		return false;
 	}
 }

@@ -1,5 +1,7 @@
 package com.sizheng.afl.component;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -53,6 +55,15 @@ public class SimpleMailSenderTest extends BaseTest {
 	@Test
 	public void sendHtmlTest() {
 		simpleMailSender.sendHtml("你好", "<body><a href='http://www.baidu.com'>百度一下!</a></body>");
+	}
+
+	@Test
+	public void sendMailWithAttachment() {
+		assertTrue(simpleMailSender
+				.sendMailWithAttachment(
+						"xiweicheng@yeah.net",
+						"C:\\Users\\thinkpad\\git\\afl\\src\\main\\webapp\\resources\\images\\qrcode\\gQHG7zoAAAAAAAAAASxodHRwOi8vd2VpeGluLnFxLmNvbS9xL3pFeG9rM2ZseTRTeVZHalB0bUJVAAIEUpMxUwMEAAAAAA==_2_嗯啦.jpg",
+						"二维码", "xxx"));
 	}
 
 }

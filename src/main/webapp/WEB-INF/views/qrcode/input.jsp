@@ -12,7 +12,7 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>台桌二维码生成</title>
+<title>二维码配置</title>
 <link rel="stylesheet"
 	href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
 <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
@@ -33,13 +33,23 @@
 		</div>
 		<div data-role="content">
 			<form action="qrcode/create.do">
+				<input type="hidden" name="openId" value="${param.state}">
+				<!-- <div data-role="fieldcontain">
+					<label for="textinput1"> 编号(1-100000) </label> <input
+						name="sceneId" id="textinput1" placeholder="" value="1"
+						type="number">
+				</div> -->
 				<div data-role="fieldcontain">
-					<label for="textinput1"> 台桌编号(1-100000) </label> <input name="sceneId"
-						id="textinput1" placeholder="" value="" type="number">
+					<label for="textinput2"> 说明 </label> <input name="description"
+						id="textinput2" placeholder="" value="" type="text">
 				</div>
 				<div data-role="fieldcontain">
-					<label for="textinput2"> 台桌说明 </label> <input name="description"
-						id="textinput2" placeholder="" value="" type="text">
+					<label for="selectmenu1"> 分类 </label> <select id="selectmenu1"
+						data-native-menu="false" name="category">
+						<c:forEach var="category" items="${categoryList}" >
+							<option value="${category.id}">${category.name}</option>
+						</c:forEach>
+					</select>
 				</div>
 				<input type="submit" value="生成">
 			</form>

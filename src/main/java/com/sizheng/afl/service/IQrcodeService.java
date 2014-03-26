@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
 import com.sizheng.afl.pojo.model.Qrcode;
+import com.sizheng.afl.pojo.model.WeiXinQrcode;
 import com.sizheng.afl.pojo.vo.PageResult;
 
 /**
@@ -111,5 +112,9 @@ public interface IQrcodeService extends IBaseService {
 	 */
 	boolean exists(Locale locale, Qrcode qrcode);
 
-	String create(Qrcode qrcode, String realPath);
+	WeiXinQrcode create(Qrcode qrcode, String realPath);
+
+	boolean sendMail(String filePath, String url, String ticket, String toAddr);
+
+	List<com.sizheng.afl.pojo.entity.Qrcode> queryByOpenId(Locale locale, String openId);
 }

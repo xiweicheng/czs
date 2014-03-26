@@ -70,6 +70,7 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<util:properties id="systemProperties" location="classpath:system.properties" />
+	<util:properties id="writableProperties" location="classpath:writable.properties" />
 
 	<beans:bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">

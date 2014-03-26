@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -36,10 +36,9 @@ import com.sizheng.afl.pojo.model.WeiXinClickButton;
 import com.sizheng.afl.pojo.model.WeiXinCustomMsg;
 import com.sizheng.afl.pojo.model.WeiXinCustomText;
 import com.sizheng.afl.pojo.model.WeiXinMenu;
+import com.sizheng.afl.pojo.model.WeiXinQrcode;
 import com.sizheng.afl.pojo.model.WeiXinQrcodeCreateParam;
 import com.sizheng.afl.pojo.model.WeiXinUserInfo;
-import com.sizheng.afl.pojo.model.WeiXinViewButton;
-import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.JsonUtil;
 import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
@@ -61,9 +60,11 @@ public class WeiXinApiInvoker {
 	SimpleMailSender simpleMailSender;
 
 	/** accessToken [String] access token */
-	private String accessToken = "m4I69V04Y-ziehmwYr1_dgbTs_hxkavjfZePuGKX6hogVwyVkqnqY8C4360A5CFP-QSWYnoIi1VBRKwNtUXstpH6P6UysHwHfNaix4Bd-nAtCVR5GgrN3iCrpuLT9Bk8K5n8fkaiCHgHRvKVV8x6fA";
+	@Value("#{writableProperties['weixin.api.url.access.token']}")
+	private String accessToken;
 	/** expiresIn [long] access token 过期时间(默认两个小时) */
-	private long expiresIn = 7200L;
+	@Value("#{writableProperties['weixin.api.url.access.expires.in']}")
+	private long expiresIn;
 
 	public String getAccessToken() {
 		return accessToken;
@@ -202,8 +203,14 @@ public class WeiXinApiInvoker {
 		if (invoke.containsKey("access_token")) {
 			setAccessToken(invoke.getString("access_token"));
 			setExpiresIn(invoke.getLongValue("expires_in"));
+
+			// 将access token写入系统配置中,以便下次系统启动后使用.因为这个资源有获取次数限制.
+			com.sizheng.afl.util.PropUtil.save("weixin.api.url.access.token", getAccessToken());
+			com.sizheng.afl.util.PropUtil.save("weixin.api.url.access.expires.in", String.valueOf(getExpiresIn()));
+
 			logger.info(getAccessToken());
 			logger.info(getExpiresIn());
+
 			return true;
 		} else if (invoke.containsKey("errcode")) {
 			logger.info(invoke.getString("errmsg"));
@@ -262,7 +269,6 @@ public class WeiXinApiInvoker {
 
 			WeiXinButton weiXinButton = new WeiXinButton("使用帮助");
 			List<WeiXinButton> sub_button = new ArrayList<>();
-//			sub_button.add(new WeiXinViewButton("商家入驻", propUtil.getRedirectUrl() + "/weiXin/businessAdd.do"));
 			sub_button.add(new WeiXinClickButton("商家入驻", "evt_key_03"));
 			sub_button.add(new WeiXinClickButton("下载二维码", "evt_key_04"));
 
@@ -380,8 +386,8 @@ public class WeiXinApiInvoker {
 	 */
 	public String getWebpageCodeUrl(String requestMapping, String state) {
 		logger.debug("网页授权验证code获取的URL");
-		
-		if(!requestMapping.startsWith("/")){
+
+		if (!requestMapping.startsWith("/")) {
 			requestMapping = "/" + requestMapping;
 		}
 
@@ -468,59 +474,43 @@ public class WeiXinApiInvoker {
 	 * @param filePath
 	 * @return
 	 */
-	public boolean downQrcodeImage(String url, String filePath) {
+	public boolean downQrcodeImage(String url, final String fileName) {
+
+		logger.debug("下载二维码图片");
 
 		logger.debug(url);
-
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-
-		HttpGet httpGet = new HttpGet(url);
-
-		String fileName = null;
-
-		final String outFilePath;
+		logger.debug(fileName);
 
 		try {
-			fileName = new URL(url).getQuery().split("=")[1];
-			logger.debug(fileName);
-
-			File file = new File(filePath);
-
-			if (!filePath.endsWith(".jpg")) {
-				if (!file.exists()) {
-					file.mkdirs();
-				}
-
-				file = new File(file, StringUtil.replace("{?1}_{?2}.jpg", fileName,
-						DateUtil.format(DateUtil.now(), DateUtil.FORMAT5)));
-			} else {
-				File parentFile = file.getParentFile();
-				if (!parentFile.exists()) {
-					parentFile.mkdirs();
-				}
+			File parentFile = new File(fileName).getParentFile();
+			if (!parentFile.exists()) {
+				parentFile.mkdirs();
 			}
-
-			outFilePath = file.getAbsolutePath();
-			logger.debug(outFilePath);
 
 		} catch (Exception e1) {
 			e1.printStackTrace();
+			logger.error(e1.getMessage(), e1);
 			return false;
 		}
 
 		try {
-			return httpclient.execute(httpGet, new ResponseHandler<Boolean>() {
+
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+
+			return httpclient.execute(new HttpGet(url), new ResponseHandler<Boolean>() {
 
 				@Override
 				public Boolean handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 					final StatusLine statusLine = response.getStatusLine();
 					final HttpEntity entity = response.getEntity();
+
 					if (statusLine.getStatusCode() >= 300) {
 						EntityUtils.consume(entity);
+						logger.error("下载二维码异常! 异常信息: " + statusLine.getStatusCode() + statusLine.getReasonPhrase());
 						throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
 					}
 
-					entity.writeTo(new FileOutputStream(outFilePath));
+					entity.writeTo(new FileOutputStream(fileName));
 
 					return true;
 				}
@@ -528,6 +518,7 @@ public class WeiXinApiInvoker {
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 		return false;
@@ -543,8 +534,39 @@ public class WeiXinApiInvoker {
 	 * @param filePath
 	 * @return
 	 */
-	public boolean downQrcodeImage(WeiXinQrcodeCreateParam param, String filePath) {
-		return downQrcodeImage(getQrcodeUrl(param), filePath);
+	public WeiXinQrcode downQrcodeImage(WeiXinQrcodeCreateParam param, String filePath) {
+		try {
+			String qrcodeUrl = null;
+
+			JSONObject ticketJsonObject = getTicket(param);
+
+			String ticket = null;
+
+			if (ticketJsonObject != null && ticketJsonObject.containsKey("ticket")) {
+				try {
+					ticket = ticketJsonObject.getString("ticket");
+					qrcodeUrl = StringUtil.replaceByKV(propUtil.getShowqrcodeUrl(), "ticket",
+							URLEncoder.encode(ticket, "UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (StringUtil.isNotEmpty(ticket)) {
+				filePath = StringUtil.replaceByKV(filePath, "ticket", ticket);
+
+				logger.debug(filePath);
+
+				if (downQrcodeImage(qrcodeUrl, filePath)) {
+					return new WeiXinQrcode(qrcodeUrl, ticket, filePath);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		}
+
+		return null;
 	}
 
 	/**

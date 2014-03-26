@@ -15,6 +15,7 @@
 	</table-filter>
 	<table-filter match-name="business" match-catalog="afl"></table-filter>
 	<table-filter match-name="qrcode" match-catalog="afl"></table-filter>
+	<table-filter match-name="category" match-catalog="afl"></table-filter>
 	<table catalog="afl" name="subscriber">
 		<column name="id"></column>
 		<column name="user_name"></column>

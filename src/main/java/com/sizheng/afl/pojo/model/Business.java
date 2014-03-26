@@ -22,6 +22,16 @@ public class Business implements Serializable {
 	private String address;
 	private String mail;
 	private String introduce;
+	private String phoneNumber;
+	private Long qrcodeLimit;
+
+	public Long getQrcodeLimit() {
+		return qrcodeLimit;
+	}
+
+	public void setQrcodeLimit(Long qrcodeLimit) {
+		this.qrcodeLimit = qrcodeLimit;
+	}
 
 	public String getOpenId() {
 		return openId;
@@ -61,6 +71,14 @@ public class Business implements Serializable {
 
 	public void setIntroduce(String introduce) {
 		this.introduce = introduce;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }
