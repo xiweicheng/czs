@@ -2,11 +2,13 @@ package com.sizheng.afl.pojo.entity;
 
 // Generated 2014-3-27 12:40:52 by Hibernate Tools 3.4.0.CR1
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -25,6 +27,7 @@ public class User implements java.io.Serializable {
 	private BigDecimal latitude;
 	private BigDecimal longitude;
 	private BigDecimal precision;
+	private String consumeCode;
 
 	public User() {
 	}
@@ -34,7 +37,7 @@ public class User implements java.io.Serializable {
 	}
 
 	public User(String userName, Long createTime, Short isDeleted, Integer times, BigDecimal latitude,
-			BigDecimal longitude, BigDecimal precision) {
+			BigDecimal longitude, BigDecimal precision, String consumeCode) {
 		this.userName = userName;
 		this.createTime = createTime;
 		this.isDeleted = isDeleted;
@@ -42,6 +45,7 @@ public class User implements java.io.Serializable {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.precision = precision;
+		this.consumeCode = consumeCode;
 	}
 
 	@Id
@@ -116,6 +120,15 @@ public class User implements java.io.Serializable {
 
 	public void setPrecision(BigDecimal precision) {
 		this.precision = precision;
+	}
+
+	@Column(name = "consume_code", length = 500)
+	public String getConsumeCode() {
+		return consumeCode;
+	}
+
+	public void setConsumeCode(String consumeCode) {
+		this.consumeCode = consumeCode;
 	}
 
 }

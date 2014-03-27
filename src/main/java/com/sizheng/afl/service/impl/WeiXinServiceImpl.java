@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
+import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.component.SimpleMailSender;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IWeiXinDao;
@@ -68,6 +69,9 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 	@Autowired
 	IQrcodeService qrcodeService;
+
+	@Autowired
+	PropUtil propUtil;
 
 	@Override
 	public boolean save(Locale locale, WeiXin weiXin) {
@@ -206,7 +210,36 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		String eventKey = bean.getEventKey();
 
 		if (WeiXinEventKey.EVT_KEY_01.getValue().equals(eventKey)) {
+
+			User user = new User();
+			user.setUserName(bean.getFromUserName());
+
+			List list = hibernateTemplate.findByExample(user);
+
+			if (list.size() > 0) {
+				User user2 = (User) list.get(0);
+
+				if (StringUtil.isEmpty(user2.getConsumeCode())) {
+					return "您没有消费记录!";
+				} else {
+					// TODO 结账
+					return StringUtil.replace("<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]确认结账</a>",
+							propUtil.getRedirectUrl() + "/consumer/bill.do", bean.getFromUserName(),
+							user2.getConsumeCode());
+				}
+			} else {
+				return null;
+			}
+
 		} else if (WeiXinEventKey.EVT_KEY_02.getValue().equals(eventKey)) {
+			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]消费记录</a>", propUtil.getRedirectUrl()
+					+ "/consumer/record.do", bean.getFromUserName());
+			String url2 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]呼叫服务</a>", propUtil.getRedirectUrl()
+					+ "/consumer/call.do", bean.getFromUserName());
+			String url3 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]菜单一览</a>", propUtil.getRedirectUrl()
+					+ "/consumer/list.do", bean.getFromUserName());
+
+			return StringUtil.replace("{?1}\n\n{?2}\n\n{?3}", url1, url2, url3);
 		} else if (WeiXinEventKey.EVT_KEY_03.getValue().equals(eventKey)) {// 商家入驻
 
 			Business business = new Business();

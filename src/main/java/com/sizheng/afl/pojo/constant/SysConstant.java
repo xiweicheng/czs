@@ -98,4 +98,8 @@ public final class SysConstant {
 	/** QR_TYPE_TZ [String] 二维码类型 台桌 */
 	public static final String QR_TYPE_TZ = "TZ";
 
+	public static final Short CONSUME_STATUS_STOP = 0;
+	public static final Short CONSUME_STATUS_ONGOING = 1;
+	public static final Short CONSUME_STATUS_DISABLE = 2;
+
 }

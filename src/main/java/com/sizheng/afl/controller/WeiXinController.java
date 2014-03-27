@@ -22,7 +22,6 @@ import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
-import com.sizheng.afl.pojo.model.WeiXinEventKey;
 import com.sizheng.afl.pojo.model.WeiXinEventType;
 import com.sizheng.afl.pojo.model.WeiXinMsg;
 import com.sizheng.afl.pojo.model.WeiXinMsgType;
@@ -136,20 +135,13 @@ public class WeiXinController extends BaseController {
 					// 菜单项对应的键值
 					String eventKey = bean.getEventKey();
 
-					if (WeiXinEventKey.EVT_KEY_01.getValue().equals(eventKey)) {
-						writeText(response, bean, eventKey);
-					} else if (WeiXinEventKey.EVT_KEY_02.getValue().equals(eventKey)) {
-						writeText(response, bean, eventKey);
+					String result = weiXinService.click(bean, locale);
+
+					// 需要客服消息回复的处理.
+					if (StringUtil.isNotEmpty(result)) {
+						writeText(response, bean, result);
 					} else {
-
-						String result = weiXinService.click(bean, locale);
-
-						// 需要客服消息回复的处理.
-						if (StringUtil.isNotEmpty(result)) {
-							writeText(response, bean, result);
-						} else {
-							WebUtil.writeString(response, StringUtil.EMPTY);
-						}
+						WebUtil.writeString(response, StringUtil.EMPTY);
 					}
 				} else if (WeiXinEventType.VIEW.getValue().equals(event)) { // 菜单点击事件
 					weiXinService.view(bean, locale);

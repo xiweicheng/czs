@@ -264,11 +264,17 @@ public class WeiXinApiInvoker {
 
 			WeiXinMenu weiXinMenu = new WeiXinMenu();
 			List<WeiXinButton> button = new ArrayList<>();
-			button.add(new WeiXinClickButton("我要请假", "evt_key_01"));
-			button.add(new WeiXinClickButton("允许请假", "evt_key_02"));
 
-			WeiXinButton weiXinButton = new WeiXinButton("使用帮助");
+			WeiXinButton weiXinButton = new WeiXinButton("食客服务");
 			List<WeiXinButton> sub_button = new ArrayList<>();
+			sub_button.add(new WeiXinClickButton("我要结账", "evt_key_01"));
+			sub_button.add(new WeiXinClickButton("服务列表", "evt_key_02"));
+
+			weiXinButton.setSub_button(sub_button);
+			button.add(weiXinButton);
+
+			weiXinButton = new WeiXinButton("商家服务");
+			sub_button = new ArrayList<>();
 			sub_button.add(new WeiXinClickButton("商家入驻", "evt_key_03"));
 			sub_button.add(new WeiXinClickButton("下载二维码", "evt_key_04"));
 
@@ -532,7 +538,8 @@ public class WeiXinApiInvoker {
 	 * @modification 2014年3月23日 下午10:31:21
 	 * @param param
 	 * @param path
-	 * @param realPath TODO
+	 * @param realPath
+	 *            TODO
 	 * @return
 	 */
 	public WeiXinQrcode downQrcodeImage(WeiXinQrcodeCreateParam param, String path, String realPath) {

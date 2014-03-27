@@ -23,6 +23,7 @@ import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.entity.Subscriber;
+import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.model.Business;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.model.WeiXinEventType;
@@ -224,6 +225,34 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			nickName = bean.getFromUserName();
 		}
 
+		// 获取商家信息.
+		com.sizheng.afl.pojo.entity.Business business = new com.sizheng.afl.pojo.entity.Business();
+		business.setOpenId(qrcode2.getOpenId());
+
+		List list3 = hibernateTemplate.findByExample(business);
+
+		String businessName = null;
+
+		if (list3.size() > 0) {
+			businessName = ((com.sizheng.afl.pojo.entity.Business) list3.get(0)).getName();
+		}
+
+		if (StringUtil.isEmpty(businessName)) {
+			businessName = "本店";
+		} else {
+			businessName = businessName;
+		}
+		
+		businessName = StringUtil.replace("<a href='{?1}?openId={?3}'>{?2}</a>", propUtil.getRedirectUrl()
+				+ "/business/info.do", businessName,
+				qrcode2.getOpenId());
+		
+		// 在user表中记录对应的商家id
+		User user = new User();
+		user.setUserName(bean.getFromUserName());
+
+		List list4 = hibernateTemplate.findByExample(user);
+
 		// 判断是否存在对该商家的消费记录.
 		BusinessConsumer businessConsumer1 = new BusinessConsumer();
 		businessConsumer1.setBusinessId(qrcode2.getOpenId());
@@ -248,9 +277,16 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			businessConsumer.setConsumeTimes(businessConsumer.getConsumeTimes() + 1);
 			businessConsumer.setLastConsumeTime(DateUtil.now());
 			businessConsumer.setSceneId(Long.valueOf(qrsceneId));
-			businessConsumer.setStatus((short) 1);// 消费中
+			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_ONGOING);// 消费中
 
 			hibernateTemplate.update(businessConsumer);
+
+			if (list4.size() > 0) {
+				User user2 = (User) list4.get(0);
+				user2.setConsumeCode(businessConsumer.getConsumeCode());
+
+				hibernateTemplate.update(user2);
+			}
 
 			// 通知商家
 			weiXinApiInvoker.sendServiceMsg(
@@ -258,8 +294,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 					StringUtil.replace("顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}", nickName,
 							businessConsumer.getConsumeTimes(), qrsceneId));
 
-			return StringUtil.replace("这是您第[{?1}]次光顾本店!谢谢您的亲睐!\n\n您的结账消费码: {?2}", businessConsumer.getConsumeTimes(),
-					qrsceneId);
+			return StringUtil.replace("这是您第[{?1}]次光顾{?3}店!谢谢您的亲睐!\n\n您的结账消费码: {?2}",
+					businessConsumer.getConsumeTimes(), qrsceneId, businessName);
 		} else {
 			// 第一次来此商家消费 新顾客 告知消费者&商家
 			BusinessConsumer businessConsumer = new BusinessConsumer();
@@ -269,15 +305,22 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			businessConsumer.setLastConsumeTime(DateUtil.now());
 			businessConsumer.setConsumeCode(UUID.randomUUID().toString());// 区别消费个人
 			businessConsumer.setSceneId(Long.valueOf(qrsceneId));// 区别消费群体
-			businessConsumer.setStatus((short) 1);// 消费中
+			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_ONGOING);// 消费中
 
 			hibernateTemplate.save(businessConsumer);
+
+			if (list4.size() > 0) {
+				User user2 = (User) list4.get(0);
+				user2.setConsumeCode(businessConsumer.getConsumeCode());
+
+				hibernateTemplate.update(user2);
+			}
 
 			// 通知商家
 			weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(),
 					StringUtil.replace("顾客[{?1}]首次光顾!\n\n结账消费码:{?2}", nickName, qrsceneId));
 
-			return StringUtil.replace("这是您[首次]光顾本店!谢谢您的亲睐!\n\n您的结账消费码: {?1}", qrsceneId);
+			return StringUtil.replace("这是您[首次]光顾{?2}店!谢谢您的亲睐!\n\n您的结账消费码: {?1}", qrsceneId, businessName);
 		}
 	}
 

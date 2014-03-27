@@ -270,4 +270,20 @@ public class BusinessController extends BaseController {
 		return new ResultMsg(reqBody.getId(), pageResult.getList(), pageResult.getTotal());
 	}
 
+	@RequestMapping("info")
+	public String info(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		logger.debug("信息【商家】");
+
+		Business business = new Business();
+		business.setOpenId(openId);
+
+		Business business2 = businessService.get(locale, business);
+
+		model.addAttribute("business", business2);
+
+		return "business/info";
+
+	}
+
 }
