@@ -112,4 +112,7 @@ public interface ICategoryService extends IBaseService {
 	boolean exists(Locale locale, Category category);
 
 	List<com.sizheng.afl.pojo.entity.Category> listByType(String string);
+
+	com.sizheng.afl.pojo.entity.Category getBycategoryId(Long categoryId);
+
 }

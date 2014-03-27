@@ -531,10 +531,12 @@ public class WeiXinApiInvoker {
 	 * @creation 2014年3月23日 下午10:31:21
 	 * @modification 2014年3月23日 下午10:31:21
 	 * @param param
-	 * @param filePath
+	 * @param path
+	 * @param realPath TODO
 	 * @return
 	 */
-	public WeiXinQrcode downQrcodeImage(WeiXinQrcodeCreateParam param, String filePath) {
+	public WeiXinQrcode downQrcodeImage(WeiXinQrcodeCreateParam param, String path, String realPath) {
+
 		try {
 			String qrcodeUrl = null;
 
@@ -553,12 +555,15 @@ public class WeiXinApiInvoker {
 			}
 
 			if (StringUtil.isNotEmpty(ticket)) {
-				filePath = StringUtil.replaceByKV(filePath, "ticket", ticket);
+				path = StringUtil.replaceByKV(path, "ticket", ticket);
 
-				logger.debug(filePath);
+				logger.debug(path);
+
+				// 文件的本地存储路径 ex:c:/aaa/aa.jpg
+				String filePath = realPath + path;
 
 				if (downQrcodeImage(qrcodeUrl, filePath)) {
-					return new WeiXinQrcode(qrcodeUrl, ticket, filePath);
+					return new WeiXinQrcode(qrcodeUrl, ticket, filePath, path);
 				}
 			}
 		} catch (Exception e) {

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
 import com.sizheng.afl.pojo.model.Business;
+import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.vo.PageResult;
 
 /**
@@ -111,5 +112,27 @@ public interface IBusinessService extends IBaseService {
 	 */
 	boolean exists(Locale locale, Business business);
 
+	/**
+	 * 二维码达到限制.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月27日 上午11:18:33
+	 * @modification 2014年3月27日 上午11:18:33
+	 * @param locale
+	 * @param openId
+	 * @return
+	 */
 	boolean isQrcodeLimited(Locale locale, String openId);
+
+	/**
+	 * 添加食客.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月27日 上午11:17:52
+	 * @modification 2014年3月27日 上午11:17:52
+	 * @param locale TODO
+	 * @param bean
+	 * @return
+	 */
+	String addConsumer(Locale locale, WeiXinBaseMsg bean);
 }

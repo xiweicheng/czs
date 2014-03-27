@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2014-3-27 12:40:52 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.sizheng.afl.pojo.entity.BusinessConsumer" table="business_consumer" catalog="afl">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="businessId" type="string">
+            <column name="business_id">
+                <comment>&#201;&#204;&#188;&#210;openid</comment>
+            </column>
+        </property>
+        <property name="consumerId" type="string">
+            <column name="consumer_id">
+                <comment>&#202;&#179;&#191;&#205;openid</comment>
+            </column>
+        </property>
+        <property name="consumeTimes" type="java.lang.Long">
+            <column name="consume_times">
+                <comment>&#202;&#179;&#191;&#205;&#212;&#218;&#184;&#196;&#201;&#204;&#188;&#210;&#207;&#251;&#183;&#209;&#180;&#206;&#202;&#253;</comment>
+            </column>
+        </property>
+        <property name="lastConsumeTime" type="timestamp">
+            <column name="last_consume_time" length="19">
+                <comment>&#202;&#179;&#191;&#205;&#212;&#218;&#184;&#195;&#201;&#204;&#188;&#210;&#215;&#238;&#186;&#243;&#207;&#251;&#183;&#209;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="sceneId" type="java.lang.Long">
+            <column name="scene_id" />
+        </property>
+        <property name="consumeCode" type="string">
+            <column name="consume_code" length="500" />
+        </property>
+        <property name="status" type="java.lang.Short">
+            <column name="status">
+                <comment>
+                &#207;&#251;&#183;&#209;&#215;&#180;&#204;&#172;-&gt;1:&#207;&#251;&#183;&#209;&#189;&#248;&#208;&#208;&#214;&#208;;0:&#207;&#251;&#183;&#209;&#189;&#225;&#202;&#248;;2:&#189;&#251;&#214;&#185;&#207;&#251;&#183;&#209;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -30,6 +30,7 @@ import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.ICategoryService;
 import com.sizheng.afl.service.IQrcodeService;
+import com.sizheng.afl.util.WebUtil;
 
 /**
  * 【二维码】请求控制层.
@@ -130,9 +131,11 @@ public class QrcodeController extends BaseController {
 		// 参数验证
 		// Assert.notNull(qrcode.get);
 
-		Qrcode getQrcode = qrcodeService.get(locale, qrcode);
+		// Qrcode getQrcode = qrcodeService.get(locale, qrcode);
 
-		return new ResultMsg(true, reqBody.getId(), getQrcode);
+		// return new ResultMsg(true, reqBody.getId(), getQrcode);
+
+		return null;
 	}
 
 	/**
@@ -253,7 +256,7 @@ public class QrcodeController extends BaseController {
 
 	@RequestMapping("create")
 	public String create(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Qrcode qrcode) {
-
+		// 二维码生成数量限制判断
 		if (businessService.isQrcodeLimited(locale, qrcode.getOpenId())) {
 			model.addAttribute("message", "二维码生成数量达到限制值!");
 			return "result";
@@ -263,7 +266,7 @@ public class QrcodeController extends BaseController {
 
 		logger.debug(realPath);
 
-		WeiXinQrcode weiXinQrcode = qrcodeService.create(qrcode, realPath);
+		WeiXinQrcode weiXinQrcode = qrcodeService.create(qrcode, realPath, WebUtil.calcServerBaseUrl(request));
 
 		model.addAttribute("qrcode", weiXinQrcode);
 		model.addAttribute("openId", qrcode.getOpenId());

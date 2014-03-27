@@ -6,6 +6,7 @@ package com.sizheng.afl.service.impl;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -16,11 +17,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
 import com.sizheng.afl.component.PropUtil;
+import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IBusinessDao;
+import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.Qrcode;
+import com.sizheng.afl.pojo.entity.Subscriber;
 import com.sizheng.afl.pojo.model.Business;
+import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
+import com.sizheng.afl.pojo.model.WeiXinEventType;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IQrcodeService;
+import com.sizheng.afl.util.DateUtil;
+import com.sizheng.afl.util.StringUtil;
 
 /**
  * 【商家】业务逻辑实现.
@@ -49,6 +59,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 	@Autowired
 	IQrcodeService qrcodeService;
+
+	@Autowired
+	WeiXinApiInvoker weiXinApiInvoker;
 
 	@Override
 	public boolean save(Locale locale, Business business) {
@@ -172,6 +185,100 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		business.setOpenId(openId);
 
 		return qrcodeService.queryByOpenId(locale, openId).size() >= get(locale, business).getQrcodeLimit();
+	}
+
+	@Override
+	public String addConsumer(Locale locale, WeiXinBaseMsg bean) {
+
+		String event = bean.getEvent();
+		String qrsceneId = null;
+		String ticket = bean.getTicket();
+
+		if (WeiXinEventType.SUBSCRIBE.getValue().equals(event)) {
+			qrsceneId = bean.getEventKey().split(SysConstant.UNDERLINE)[1];// qrscene_123123
+		} else if (WeiXinEventType.SCAN.getValue().equals(event)) {
+			qrsceneId = bean.getEventKey();
+		}
+
+		Qrcode qrcode = new Qrcode();
+		qrcode.setSceneId(Long.valueOf(qrsceneId));
+		qrcode.setTicket(ticket);
+		Qrcode qrcode2 = qrcodeService.get(locale, qrcode);
+
+		if (qrcode2 == null) {
+			logger.error(StringUtil
+					.replace("该二维码没有被登记过,或者失效已被删除!二维码信息: scene id->{?1} ticket->{?2}", qrsceneId, ticket));
+			return "该二维码已经失效!";
+		}
+
+		Subscriber subscriber = new Subscriber();
+		subscriber.setUserName(bean.getFromUserName());
+
+		List list2 = hibernateTemplate.findByExample(subscriber);
+
+		String nickName = null;
+
+		if (list2.size() > 0) {
+			nickName = ((Subscriber) list2.get(0)).getNickname();
+		} else {
+			nickName = bean.getFromUserName();
+		}
+
+		// 判断是否存在对该商家的消费记录.
+		BusinessConsumer businessConsumer1 = new BusinessConsumer();
+		businessConsumer1.setBusinessId(qrcode2.getOpenId());
+		businessConsumer1.setConsumerId(bean.getFromUserName());
+
+		List list = hibernateTemplate.findByExample(businessConsumer1);
+
+		if (list.size() > 0) {
+
+			// 回头客 告知消费者&商家,消费了多少次,最后消费时间.
+			BusinessConsumer businessConsumer = (BusinessConsumer) list.get(0);
+
+			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 1) {
+				return "您已经扫描过该二维码,还未结束消费;处于消费中...";
+			}
+
+			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 2) {
+				return "您处于禁止扫描状态!";
+			}
+
+			businessConsumer.setConsumeCode(UUID.randomUUID().toString());
+			businessConsumer.setConsumeTimes(businessConsumer.getConsumeTimes() + 1);
+			businessConsumer.setLastConsumeTime(DateUtil.now());
+			businessConsumer.setSceneId(Long.valueOf(qrsceneId));
+			businessConsumer.setStatus((short) 1);// 消费中
+
+			hibernateTemplate.update(businessConsumer);
+
+			// 通知商家
+			weiXinApiInvoker.sendServiceMsg(
+					qrcode2.getOpenId(),
+					StringUtil.replace("顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}", nickName,
+							businessConsumer.getConsumeTimes(), qrsceneId));
+
+			return StringUtil.replace("这是您第[{?1}]次光顾本店!谢谢您的亲睐!\n\n您的结账消费码: {?2}", businessConsumer.getConsumeTimes(),
+					qrsceneId);
+		} else {
+			// 第一次来此商家消费 新顾客 告知消费者&商家
+			BusinessConsumer businessConsumer = new BusinessConsumer();
+			businessConsumer.setBusinessId(qrcode2.getOpenId());
+			businessConsumer.setConsumerId(bean.getFromUserName());
+			businessConsumer.setConsumeTimes(Long.valueOf(1));// 第一次记录为1
+			businessConsumer.setLastConsumeTime(DateUtil.now());
+			businessConsumer.setConsumeCode(UUID.randomUUID().toString());// 区别消费个人
+			businessConsumer.setSceneId(Long.valueOf(qrsceneId));// 区别消费群体
+			businessConsumer.setStatus((short) 1);// 消费中
+
+			hibernateTemplate.save(businessConsumer);
+
+			// 通知商家
+			weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(),
+					StringUtil.replace("顾客[{?1}]首次光顾!\n\n结账消费码:{?2}", nickName, qrsceneId));
+
+			return StringUtil.replace("这是您[首次]光顾本店!谢谢您的亲睐!\n\n您的结账消费码: {?1}", qrsceneId);
+		}
 	}
 
 }

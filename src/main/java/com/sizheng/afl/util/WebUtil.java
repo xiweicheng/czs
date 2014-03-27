@@ -339,4 +339,42 @@ public final class WebUtil {
 
 		return session == null ? null : session.getId();
 	}
+
+	/**
+	 * 计算服务端baseUrl. ex:http://www.abc:80/contextPath OR http://www.abc:80
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月27日 上午10:24:37
+	 * @modification 2014年3月27日 上午10:24:37
+	 * @param request
+	 * @return
+	 */
+	public static String calcServerBaseUrl(HttpServletRequest request) {
+
+		logger.debug("[工具类]计算服务端base url.");
+
+		String serverBaseUrl = null;
+
+		String cxtPath = request.getContextPath();
+		
+		if (StringUtil.isEmpty(cxtPath)) {
+			serverBaseUrl = StringUtil.replace("{?1}://{?2}:{?3}", request.getScheme(), request.getServerName(),
+					request.getServerPort());
+		} else {
+			if (cxtPath.startsWith("/")) {
+				cxtPath = cxtPath.substring(1);
+			}
+
+			if (cxtPath.endsWith("/")) {
+				cxtPath = cxtPath.substring(0, cxtPath.length() - 1);
+			}
+
+			serverBaseUrl = StringUtil.replace("{?1}://{?2}:{?3}/{?4}", request.getScheme(), request.getServerName(),
+					request.getServerPort(), cxtPath);
+		}
+
+		logger.debug(serverBaseUrl);
+
+		return serverBaseUrl;
+	}
 }

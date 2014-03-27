@@ -95,4 +95,7 @@ public final class SysConstant {
 	/** QR_SCENE [String] 临时二维码 */
 	public static final String QR_SCENE = "QR_SCENE";
 
+	/** QR_TYPE_TZ [String] 二维码类型 台桌 */
+	public static final String QR_TYPE_TZ = "TZ";
+
 }

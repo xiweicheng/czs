@@ -6,9 +6,12 @@ package com.sizheng.afl.controller;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +24,7 @@ import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.ITestService;
+import com.sizheng.afl.util.StringUtil;
 
 /**
  * 【测试】请求控制层.
@@ -250,6 +254,21 @@ public class TestController extends BaseController {
 		// 参数验证
 
 		return test.getDescription();
+	}
+
+	@RequestMapping("test")
+	public String test(HttpServletRequest request, Locale locale, Model model) {
+		logger.debug(request.getScheme());
+		logger.debug(request.getServerName());
+		logger.debug(request.getServerPort());
+		logger.debug(request.getServletPath());
+		logger.debug(request.getContextPath());
+
+		String serverBaseUrl = StringUtil.replace("{?1}://{?2}:{?3}/{?4}", request.getScheme(),
+				request.getServerName(), request.getServerPort(), request.getContextPath());
+		logger.debug(serverBaseUrl);
+
+		return "";
 	}
 
 }

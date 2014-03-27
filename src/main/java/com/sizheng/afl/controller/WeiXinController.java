@@ -26,6 +26,8 @@ import com.sizheng.afl.pojo.model.WeiXinEventKey;
 import com.sizheng.afl.pojo.model.WeiXinEventType;
 import com.sizheng.afl.pojo.model.WeiXinMsg;
 import com.sizheng.afl.pojo.model.WeiXinMsgType;
+import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.IQrcodeService;
 import com.sizheng.afl.service.IWeiXinService;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.EncoderUtil;
@@ -58,38 +60,11 @@ public class WeiXinController extends BaseController {
 	@Autowired
 	PropUtil propUtil;
 
-	/**
-	 * 微信验证.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年3月20日 下午12:59:04
-	 * @modification 2014年3月20日 下午12:59:04
-	 * @param weiXinMsg
-	 * @param locale
-	 */
-	private boolean weixinVerify(WeiXinMsg weiXinMsg, Locale locale) {
+	@Autowired
+	IBusinessService businessService;
 
-		logger.debug("验证【微信】");
-
-		try {
-
-			if (weiXinMsg != null) {
-				String[] arr = new String[] { propUtil.getToken(), weiXinMsg.getTimestamp(), weiXinMsg.getNonce() };
-				Arrays.sort(arr);
-				String join = StringUtil.join(SysConstant.EMPTY, arr);
-				String encode = EncoderUtil.encodeBySHA1(join);
-
-				if (encode.equals(weiXinMsg.getSignature())) {
-					return true;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		}
-
-		return false;
-	}
+	@Autowired
+	IQrcodeService qrcodeService;
 
 	/**
 	 * 接收微信服务器消息并相应.
@@ -139,8 +114,16 @@ public class WeiXinController extends BaseController {
 					// 扫描带参数二维码事件
 					// 用户未关注时，进行关注后的事件推送
 					if (eventKey != null && eventKey.startsWith("qrscene_")) {
-						// TODO
-						writeText(response, bean, "扫描带参数二维码事件,用户未关注时，进行关注后的事件推送!");
+						weiXinService.subscribe(bean, locale);
+
+						// 台桌二维码扫描
+						if (SysConstant.QR_TYPE_TZ.equals(qrcodeService.getQrCodeType(locale,
+								eventKey.split(SysConstant.UNDERLINE)[1]))) {
+							String result = businessService.addConsumer(locale, bean);
+							writeText(response, bean, result);
+						} else {
+							WebUtil.writeString(response, StringUtil.EMPTY);
+						}
 					} else {
 						weiXinService.subscribe(bean, locale);
 						writeText(response, bean, "欢迎您的订阅!");
@@ -175,8 +158,14 @@ public class WeiXinController extends BaseController {
 					weiXinService.location(bean, locale);
 					writeText(response, bean, "获取到您的地理位置!");
 				} else if (WeiXinEventType.SCAN.getValue().equals(event)) {// 扫描带参数二维码事件
-					// TODO
-					writeText(response, bean, "扫描带参数二维码事件,用户已关注时的事件推送!");
+
+					if (SysConstant.QR_TYPE_TZ.equals(qrcodeService.getQrCodeType(locale, bean.getEventKey()))) {
+						String result = businessService.addConsumer(locale, bean);
+						writeText(response, bean, result);
+					} else {
+						// TODO
+						writeText(response, bean, "不识别二维码类型!");
+					}
 				}
 
 			} else if (WeiXinMsgType.TEXT.getValue().equals(msgType)) {
@@ -221,6 +210,39 @@ public class WeiXinController extends BaseController {
 	}
 
 	/**
+	 * 微信验证.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月20日 下午12:59:04
+	 * @modification 2014年3月20日 下午12:59:04
+	 * @param weiXinMsg
+	 * @param locale
+	 */
+	private boolean weixinVerify(WeiXinMsg weiXinMsg, Locale locale) {
+
+		logger.debug("验证【微信】");
+
+		try {
+
+			if (weiXinMsg != null) {
+				String[] arr = new String[] { propUtil.getToken(), weiXinMsg.getTimestamp(), weiXinMsg.getNonce() };
+				Arrays.sort(arr);
+				String join = StringUtil.join(SysConstant.EMPTY, arr);
+				String encode = EncoderUtil.encodeBySHA1(join);
+
+				if (encode.equals(weiXinMsg.getSignature())) {
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		}
+
+		return false;
+	}
+
+	/**
 	 * 回复文本[text]类型消息
 	 * 
 	 * @author xiweicheng
@@ -241,12 +263,6 @@ public class WeiXinController extends BaseController {
 	public String businessAdd(HttpServletRequest request, Locale locale, Model model) {
 		model.addAttribute("url", weiXinService.getWebpageCodeUrl("business/add.do", "param-state"));
 		return "weixin/business-add";
-	}
-
-	@RequestMapping("view02")
-	public String view02(HttpServletRequest request, Locale locale, Model model) {
-		model.addAttribute("title", "测试标题2");
-		return "view02";
 	}
 
 	@RequestMapping("test")
