@@ -21,6 +21,7 @@ import com.sizheng.afl.component.SimpleMailSender;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IQrcodeDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.entity.Category;
 import com.sizheng.afl.pojo.model.Qrcode;
 import com.sizheng.afl.pojo.model.WeiXinActionInfo;
 import com.sizheng.afl.pojo.model.WeiXinQrcode;
@@ -28,6 +29,7 @@ import com.sizheng.afl.pojo.model.WeiXinQrcodeCreateParam;
 import com.sizheng.afl.pojo.model.WeiXinScene;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.ICategoryService;
 import com.sizheng.afl.service.IQrcodeService;
 import com.sizheng.afl.util.StringUtil;
 
@@ -68,6 +70,9 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 	@Autowired
 	IBusinessService businessService;
 
+	@Autowired
+	ICategoryService categoryService;
+
 	@Override
 	public boolean save(Locale locale, Qrcode qrcode) {
 
@@ -87,12 +92,13 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 	}
 
 	@Override
-	public Qrcode get(Locale locale, Qrcode qrcode) {
+	public com.sizheng.afl.pojo.entity.Qrcode get(Locale locale, com.sizheng.afl.pojo.entity.Qrcode qrcode) {
 
 		logger.debug("[业务逻辑层]获取【二维码】");
 
-		// TODO
-		return null;
+		List list = hibernateTemplate.findByExample(qrcode);
+
+		return (com.sizheng.afl.pojo.entity.Qrcode) (list.size() > 0 ? list.get(0) : null);
 	}
 
 	@Override
@@ -174,7 +180,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 	}
 
 	@Override
-	public WeiXinQrcode create(Qrcode qrcode, String realPath) {
+	public WeiXinQrcode create(Qrcode qrcode, String realPath, String serverBaseUrl) {
 
 		logger.debug("[业务逻辑层]创建【二维码】");
 
@@ -190,14 +196,16 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 		// scene id生产策略, scene id[1-100000],资源有限.scene需要自己的管理配置界面.
 		// 当收回scene id时,需要通知使用商家.
 
-		String filePath = realPath + "resources/images/qrcode/{ticket}_{sceneId}_{description}.jpg";
-		filePath = StringUtil.replaceByKV(filePath, "sceneId", qrcode.getSceneId(), "description",
-				qrcode.getDescription());
+		String filePath = StringUtil.replaceByKV("resources/images/qrcode/{ticket}_{sceneId}_{description}.jpg",
+				"sceneId", qrcode.getSceneId(), "description", qrcode.getDescription());
 
 		WeiXinQrcode weiXinQrcode = weiXinApiInvoker.downQrcodeImage(new WeiXinQrcodeCreateParam("QR_LIMIT_SCENE",
-				new WeiXinActionInfo(new WeiXinScene(qrcode.getSceneId()))), filePath);
+				new WeiXinActionInfo(new WeiXinScene(qrcode.getSceneId()))), filePath, realPath);
 
 		if (weiXinQrcode != null && StringUtil.isNotEmpty(weiXinQrcode.getUrl())) {
+
+			weiXinQrcode.setMyUrl(serverBaseUrl + "/" + weiXinQrcode.getPath());
+
 			// 检查设置 sceneid 的二维码是否已经生产.
 			com.sizheng.afl.pojo.entity.Qrcode qrcode1 = new com.sizheng.afl.pojo.entity.Qrcode();
 			qrcode1.setSceneId(Long.valueOf(qrcode.getSceneId()));
@@ -221,6 +229,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 				qrcode2.setUrl(weiXinQrcode.getUrl());
 				qrcode2.setFilePath(weiXinQrcode.getFilePath());
 				qrcode2.setType(SysConstant.QR_LIMIT_SCENE);
+				qrcode2.setMyUrl(weiXinQrcode.getMyUrl());
 
 				hibernateTemplate.save(qrcode2);
 				logger.error("二维码创建成功!");
@@ -235,16 +244,46 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 
 	@Override
 	public boolean sendMail(String filePath, String url, String ticket, String toAddr) {
+
+		logger.debug("[业务逻辑层]邮件发送【二维码】");
+
 		return simpleMailSender.sendMailWithAttachment(toAddr, filePath, "二维码[" + ticket + "]",
 				StringUtil.replace("附件为二维码文件, 直接链接地址: {?1}", url));
 	}
 
 	@Override
 	public List<com.sizheng.afl.pojo.entity.Qrcode> queryByOpenId(Locale locale, String openId) {
+
+		logger.debug("[业务逻辑层]根据openid查询【二维码】");
+
 		com.sizheng.afl.pojo.entity.Qrcode qrcode = new com.sizheng.afl.pojo.entity.Qrcode();
 		qrcode.setOpenId(openId);
 
 		return hibernateTemplate.findByExample(qrcode);
+	}
+
+	@Override
+	public String getQrCodeType(Locale locale, String sceneId) {
+
+		logger.debug("[业务逻辑层]获取类型【二维码】");
+
+		com.sizheng.afl.pojo.entity.Qrcode qrcode = new com.sizheng.afl.pojo.entity.Qrcode();
+		qrcode.setSceneId(Long.valueOf(sceneId));
+
+		List list = hibernateTemplate.findByExample(qrcode);
+
+		if (list.size() > 0) {
+			Long categoryId = ((com.sizheng.afl.pojo.entity.Qrcode) list.get(0)).getCategoryId();
+			Category category = categoryService.getBycategoryId(categoryId);
+
+			if (category != null) {
+				return category.getValue();
+			} else {
+				logger.error("该二维码对应的分类不存在!");
+			}
+		}
+
+		return null;
 	}
 
 }

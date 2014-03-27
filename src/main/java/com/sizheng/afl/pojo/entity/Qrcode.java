@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-3-26 14:35:46 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-3-27 12:40:52 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,12 +26,13 @@ public class Qrcode implements java.io.Serializable {
 	private String url;
 	private String filePath;
 	private String type;
+	private String myUrl;
 
 	public Qrcode() {
 	}
 
 	public Qrcode(String openId, Long sceneId, Long useLimit, Long useTimes, Long categoryId, String ticket,
-			String url, String filePath, String type) {
+			String url, String filePath, String type, String myUrl) {
 		this.openId = openId;
 		this.sceneId = sceneId;
 		this.useLimit = useLimit;
@@ -41,6 +42,7 @@ public class Qrcode implements java.io.Serializable {
 		this.url = url;
 		this.filePath = filePath;
 		this.type = type;
+		this.myUrl = myUrl;
 	}
 
 	@Id
@@ -133,6 +135,15 @@ public class Qrcode implements java.io.Serializable {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	@Column(name = "my_url", length = 1000)
+	public String getMyUrl() {
+		return this.myUrl;
+	}
+
+	public void setMyUrl(String myUrl) {
+		this.myUrl = myUrl;
 	}
 
 }

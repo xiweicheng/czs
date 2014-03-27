@@ -118,11 +118,20 @@ public class CategoryServiceImpl extends BaseServiceImpl implements ICategorySer
 	@Override
 	public List<com.sizheng.afl.pojo.entity.Category> listByType(String type) {
 
+		logger.debug("[业务逻辑层]通过类型查询【分类】");
+
 		com.sizheng.afl.pojo.entity.Category category = new com.sizheng.afl.pojo.entity.Category();
 		category.setType(type);
 		category.setIsDeleted((short) 0);
 
 		return hibernateTemplate.findByExample(category);
 	}
-	
+
+	@Override
+	public com.sizheng.afl.pojo.entity.Category getBycategoryId(Long categoryId) {
+
+		logger.debug("[业务逻辑层]通过id查询【分类】");
+
+		return hibernateTemplate.get(com.sizheng.afl.pojo.entity.Category.class, categoryId);
+	}
 }

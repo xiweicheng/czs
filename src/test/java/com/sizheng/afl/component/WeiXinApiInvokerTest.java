@@ -72,7 +72,7 @@ public class WeiXinApiInvokerTest extends BaseTest {
 	public void downQrcodeImage() {
 		WeiXinQrcodeCreateParam param = new WeiXinQrcodeCreateParam("1800", "QR_SCENE", new WeiXinActionInfo(
 				new WeiXinScene("123")));
-		assertNotNull(weiXinApiInvoker.downQrcodeImage(param, "D:/qrcode-img/test.jpg"));
+		assertNotNull(weiXinApiInvoker.downQrcodeImage(param, "D:/qrcode-img/test.jpg", null));
 	}
 
 }

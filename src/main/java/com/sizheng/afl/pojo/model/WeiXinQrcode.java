@@ -5,16 +5,19 @@ public class WeiXinQrcode {
 	private String url;
 	private String ticket;
 	private String filePath;
+	private String path;// 文件相对上下文的路径.
+	private String myUrl;// 自己服务器的文件URL.
 
 	public WeiXinQrcode() {
 		super();
 	}
 
-	public WeiXinQrcode(String url, String ticket, String filePath) {
+	public WeiXinQrcode(String url, String ticket, String filePath, String path) {
 		super();
 		this.url = url;
 		this.ticket = ticket;
 		this.filePath = filePath;
+		this.path = path;
 	}
 
 	public String getUrl() {
@@ -39,6 +42,22 @@ public class WeiXinQrcode {
 
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getMyUrl() {
+		return myUrl;
+	}
+
+	public void setMyUrl(String myUrl) {
+		this.myUrl = myUrl;
 	}
 
 }

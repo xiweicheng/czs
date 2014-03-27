@@ -55,7 +55,7 @@ public interface IQrcodeService extends IBaseService {
 	 * @param qrcode
 	 * @return
 	 */
-	Qrcode get(Locale locale, Qrcode qrcode);
+	com.sizheng.afl.pojo.entity.Qrcode get(Locale locale, com.sizheng.afl.pojo.entity.Qrcode qrcode);
 	
 	/**
 	 * 更新【二维码】.
@@ -112,9 +112,20 @@ public interface IQrcodeService extends IBaseService {
 	 */
 	boolean exists(Locale locale, Qrcode qrcode);
 
-	WeiXinQrcode create(Qrcode qrcode, String realPath);
+	WeiXinQrcode create(Qrcode qrcode, String realPath, String serverBaseUrl);
 
 	boolean sendMail(String filePath, String url, String ticket, String toAddr);
 
 	List<com.sizheng.afl.pojo.entity.Qrcode> queryByOpenId(Locale locale, String openId);
+
+	/**
+	 * 取得二维码类型.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月27日 下午1:25:33
+	 * @modification 2014年3月27日 下午1:25:33
+	 * @param sceneId
+	 * @return
+	 */
+	String getQrCodeType(Locale locale, String sceneId);
 }
