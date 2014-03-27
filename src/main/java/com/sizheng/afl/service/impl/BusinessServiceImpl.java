@@ -237,7 +237,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			BusinessConsumer businessConsumer = (BusinessConsumer) list.get(0);
 
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 1) {
-				return "您已经扫描过该二维码,还未结束消费;处于消费中...";
+				return StringUtil.replace("您已经扫描过该二维码,还未结束消费,处于消费中...\n\n结账消费码: {?1}", businessConsumer.getSceneId());
 			}
 
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 2) {
