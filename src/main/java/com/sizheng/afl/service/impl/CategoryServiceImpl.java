@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
 import com.sizheng.afl.dao.ICategoryDao;
-import com.sizheng.afl.pojo.model.Category;
+import com.sizheng.afl.pojo.entity.Category;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.ICategoryService;
 

@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-3-27 12:40:52 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-3-28 9:50:46 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,12 +25,13 @@ public class Business implements java.io.Serializable {
 	private String introduce;
 	private String phoneNumber;
 	private Long qrcodeLimit;
+	private String dynamicCode;
 
 	public Business() {
 	}
 
 	public Business(String openId, Short isDeleted, String name, String address, String mail, String introduce,
-			String phoneNumber, Long qrcodeLimit) {
+			String phoneNumber, Long qrcodeLimit, String dynamicCode) {
 		this.openId = openId;
 		this.isDeleted = isDeleted;
 		this.name = name;
@@ -39,6 +40,7 @@ public class Business implements java.io.Serializable {
 		this.introduce = introduce;
 		this.phoneNumber = phoneNumber;
 		this.qrcodeLimit = qrcodeLimit;
+		this.dynamicCode = dynamicCode;
 	}
 
 	@Id
@@ -122,6 +124,15 @@ public class Business implements java.io.Serializable {
 
 	public void setQrcodeLimit(Long qrcodeLimit) {
 		this.qrcodeLimit = qrcodeLimit;
+	}
+
+	@Column(name = "dynamic_code")
+	public String getDynamicCode() {
+		return this.dynamicCode;
+	}
+
+	public void setDynamicCode(String dynamicCode) {
+		this.dynamicCode = dynamicCode;
 	}
 
 }

@@ -6,6 +6,7 @@ package com.sizheng.afl.util;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Map;
+import java.util.Random;
 
 import com.sizheng.afl.pojo.constant.SysConstant;
 
@@ -25,6 +26,8 @@ public final class NumberUtil {
 	public static final String EMPTY = "";
 
 	public static NumberFormat format = new DecimalFormat("0");
+
+	public static Random random = new Random();
 
 	private NumberUtil() {
 		super();
@@ -230,5 +233,24 @@ public final class NumberUtil {
 		}
 
 		return false;
+	}
+
+	/**
+	 * 产生指定长度的随机数.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月28日 上午11:05:33
+	 * @modification 2014年3月28日 上午11:05:33
+	 * @param length
+	 * @return
+	 */
+	public static String random(int length) {
+		StringBuffer sBuffer = new StringBuffer();
+
+		for (int i = 0; i < length; i++) {
+			sBuffer.append(random.nextInt(10));
+		}
+
+		return sBuffer.toString();
 	}
 }

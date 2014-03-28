@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-3-27 12:40:52 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-3-28 9:50:46 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Qrcode" table="qrcode" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -42,6 +42,11 @@
         <property name="myUrl" type="string">
             <column name="my_url" length="1000">
                 <comment>&#182;&#254;&#206;&#172;&#194;&#235;&#212;&#218;&#215;&#212;&#188;&#186;&#183;&#254;&#206;&#241;&#198;&#247;&#181;&#196;url.</comment>
+            </column>
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="1000">
+                <comment>&#182;&#254;&#206;&#172;&#194;&#235;&#195;&#232;&#202;&#246;</comment>
             </column>
         </property>
     </class>

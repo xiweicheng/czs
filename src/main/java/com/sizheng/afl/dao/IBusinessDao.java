@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.sizheng.afl.pojo.model.Business;
+import com.sizheng.afl.pojo.entity.Business;
 
 /**
  * 【商家】持久化接口层.

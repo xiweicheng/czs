@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseDaoImpl;
 import com.sizheng.afl.dao.ICategoryDao;
-import com.sizheng.afl.pojo.model.Category;
+import com.sizheng.afl.pojo.entity.Category;
 
 /**
  * 【分类】持久化实现层.

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseDaoImpl;
 import com.sizheng.afl.dao.IQrcodeDao;
-import com.sizheng.afl.pojo.model.Qrcode;
+import com.sizheng.afl.pojo.entity.Qrcode;
 
 /**
  * 【二维码】持久化实现层.

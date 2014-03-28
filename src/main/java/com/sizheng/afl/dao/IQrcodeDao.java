@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.sizheng.afl.pojo.model.Qrcode;
+import com.sizheng.afl.pojo.entity.Qrcode;
 
 /**
  * 【二维码】持久化接口层.

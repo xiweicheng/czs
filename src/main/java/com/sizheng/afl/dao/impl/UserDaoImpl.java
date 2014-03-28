@@ -1,5 +1,5 @@
 /**
- * ConsumerDaoImpl.java
+ * UserDaoImpl.java
  */
 package com.sizheng.afl.dao.impl;
 
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseDaoImpl;
-import com.sizheng.afl.dao.IConsumerDao;
-import com.sizheng.afl.pojo.model.Consumer;
+import com.sizheng.afl.dao.IUserDao;
+import com.sizheng.afl.pojo.entity.User;
 
 /**
- * 【消费者】持久化实现层.
+ * 【用户】持久化实现层.
  * 
- * @creation 2014年03月27日 09:57:33
- * @modification 2014年03月27日 09:57:33
+ * @creation 2014年03月28日 10:02:03
+ * @modification 2014年03月28日 10:02:03
  * @company Skycloud
  * @author xiweicheng
  * @version 1.0
@@ -26,10 +26,10 @@ import com.sizheng.afl.pojo.model.Consumer;
  */
 @Repository
 @Transactional
-public class ConsumerDaoImpl extends BaseDaoImpl implements IConsumerDao {
+public class UserDaoImpl extends BaseDaoImpl implements IUserDao {
 
 	@Override
-	public List<Map<String, Object>> query(Locale locale, Consumer consumer, Long start, Long limit) {
+	public List<Map<String, Object>> query(Locale locale, User user, Long start, Long limit) {
 		
 		// TODO
 		
@@ -37,7 +37,7 @@ public class ConsumerDaoImpl extends BaseDaoImpl implements IConsumerDao {
 	}
 
 	@Override
-	public long queryCount(Locale locale, Consumer consumer) {
+	public long queryCount(Locale locale, User user) {
 	
 		// TODO
 	

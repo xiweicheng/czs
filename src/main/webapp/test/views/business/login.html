@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户登录</title>
+<link href="../../../../resources/semantic/css/semantic.min.css"
+	rel="stylesheet" type="text/css">
+<script src="../../../../resources/js/lib/jquery-1.10.2.min.js"
+	charset="utf-8"></script>
+<script src="../../../../resources/semantic/javascript/semantic.min.js"
+	charset="utf-8"></script>
+</head>
+<body>
+	<div>
+		<div style="height: 150px;"></div>
+		<!-- 顶部填充 -->
+
+		<!-- 登陆框 -->
+		<form action="business/verify.do">
+		<div class="ui form segment" style="width: 300px; margin: 0 auto;">
+			<div class="field">
+				<label>Password</label>
+				<div class="ui left labeled icon input">
+					<input type="password" name="dynamicCode"> <i
+						class="lock icon"></i>
+					<div class="ui corner label">
+						<i class="icon asterisk"></i>
+					</div>
+				</div>
+			</div>
+			<div style="text-align: center;">
+				<div class="ui blue submit button" id="submitBtn">Login</div>
+			</div>
+		</div>
+		</form>
+	</div>
+	<script type="text/javascript">
+		$('#submitBtn').click(function() {
+			$('form').submit();
+		});
+	</script>
+</body>
+</html>

@@ -77,6 +77,33 @@ public class SimpleMailSender {
 	}
 
 	/**
+	 * 发送简单文本邮件.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月21日 上午11:26:30
+	 * @modification 2014年3月21日 上午11:26:30
+	 * @param subject
+	 *            标题
+	 * @param content
+	 *            内容
+	 * @return
+	 */
+	public boolean sendText(String subject, String content, String toAddr) {
+		MailSenderInfo mailInfo = new MailSenderInfo();
+		mailInfo.setMailServerHost("smtp.163.com");
+		mailInfo.setMailServerPort("25");
+		mailInfo.setValidate(true);
+		mailInfo.setUserName("xiweicheng1987@163.com");
+		mailInfo.setPassword("1987826");// 您的邮箱密码
+		mailInfo.setFromAddress("xiweicheng1987@163.com");
+		mailInfo.setToAddress(toAddr);
+		mailInfo.setSubject(subject);
+		mailInfo.setContent(content);
+
+		return sendTextMail(mailInfo);
+	}
+
+	/**
 	 * 发送格式化简单文本邮件.
 	 * 
 	 * @author xiweicheng
@@ -152,7 +179,7 @@ public class SimpleMailSender {
 			authenticator = new MyAuthenticator(mailInfo.getUserName(), mailInfo.getPassword());
 		}
 		// 根据邮件会话属性和密码验证器构造一个发送邮件的session
-		Session sendMailSession = Session.getDefaultInstance(pro, authenticator);
+		Session sendMailSession = Session.getInstance(pro, authenticator);
 		try {
 			// 根据session创建一个邮件消息
 			Message mailMessage = new MimeMessage(sendMailSession);
@@ -194,7 +221,7 @@ public class SimpleMailSender {
 			authenticator = new MyAuthenticator(mailInfo.getUserName(), mailInfo.getPassword());
 		}
 		// 根据邮件会话属性和密码验证器构造一个发送邮件的session
-		Session sendMailSession = Session.getDefaultInstance(pro, authenticator);
+		Session sendMailSession = Session.getInstance(pro, authenticator);
 		try {
 			// 根据session创建一个邮件消息
 			Message mailMessage = new MimeMessage(sendMailSession);
@@ -249,7 +276,7 @@ public class SimpleMailSender {
 			props.put("mail.smtp.port", String.valueOf(25));
 			props.put("mail.smtp.auth", "true");
 
-			Session session = Session.getDefaultInstance(props, null);
+			Session session = Session.getInstance(props, null);
 			Transport transport = session.getTransport("smtp");
 			transport.connect("smtp.163.com", "xiweicheng1987@163.com", "1987826");
 

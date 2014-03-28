@@ -22,12 +22,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.WeiXinApiInvoker;
-import com.sizheng.afl.pojo.model.Business;
+import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.util.StringUtil;
+import com.sizheng.afl.util.WebUtil;
 
 /**
  * 【商家】请求控制层.
@@ -283,6 +285,74 @@ public class BusinessController extends BaseController {
 		model.addAttribute("business", business2);
 
 		return "business/info";
+
+	}
+
+	@RequestMapping("login")
+	public String login(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		logger.debug("商家登录输入【商家】");
+
+		return "business/login";
+
+	}
+
+	@RequestMapping("verify")
+	public String verify(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId,
+			@RequestParam("dynamicCode") String dynamicCode) {
+
+		logger.debug("商家登录验证【商家】");
+
+		Business business = new Business();
+		business.setOpenId(openId);
+		business.setDynamicCode(dynamicCode);
+
+		Business business2 = businessService.get(locale, business);
+
+		if (business2 != null && StringUtil.isNotEmpty(business2.getOpenId())) {
+			// model.addAttribute("message", "登录成功!");
+
+			return "business/main";
+		} else {
+			model.addAttribute("message", "登录失败!");
+
+			return "result";
+		}
+	}
+
+	@RequestMapping("sendLink")
+	public String sendLink(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		logger.debug("发送登录链接【商家】");
+
+		Business business = new Business();
+		business.setOpenId(openId);
+
+		Business business2 = businessService.get(locale, business);
+
+		model.addAttribute("business", business2);
+
+		return "business/sendLink";
+
+	}
+
+	@RequestMapping("sendMail")
+	public String sendMail(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId, @RequestParam("mail") String mail) {
+
+		logger.debug("发送登录链接到邮箱【商家】");
+
+		Business business = new Business();
+		business.setOpenId(openId);
+		business.setMail(mail);
+
+		String serverBaseUrl = WebUtil.calcServerBaseUrl(request);
+
+		String dynamicCode = businessService.sendMail(locale, business, serverBaseUrl);
+
+		model.addAttribute("message", StringUtil.replace("您的动态登录密码:{?1}", dynamicCode));
+
+		return "result";
 
 	}
 

@@ -1,5 +1,5 @@
 /**
- * ConsumerServiceImpl.java
+ * UserServiceImpl.java
  */
 package com.sizheng.afl.service.impl;
 
@@ -14,20 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
-import com.sizheng.afl.dao.IConsumerDao;
+import com.sizheng.afl.dao.IUserDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.User;
-import com.sizheng.afl.pojo.model.Consumer;
 import com.sizheng.afl.pojo.vo.PageResult;
-import com.sizheng.afl.service.IConsumerService;
+import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.util.StringUtil;
 
 /**
- * 【消费者】业务逻辑实现.
+ * 【用户】业务逻辑实现.
  * 
- * @creation 2014年03月27日 09:57:33
- * @modification 2014年03月27日 09:57:33
+ * @creation 2014年03月28日 10:02:03
+ * @modification 2014年03月28日 10:02:03
  * @company Skycloud
  * @author xiweicheng
  * @version 1.0
@@ -35,86 +34,86 @@ import com.sizheng.afl.util.StringUtil;
  */
 @Service
 @Transactional
-public class ConsumerServiceImpl extends BaseServiceImpl implements IConsumerService {
+public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 
-	private static Logger logger = Logger.getLogger(ConsumerServiceImpl.class);
+	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 
 	@Autowired
-	IConsumerDao consumerDao;
+	IUserDao userDao;
 
 	@Autowired
 	ApiInvoker apiInvoker;
 
 	@Override
-	public boolean save(Locale locale, Consumer consumer) {
-
-		logger.debug("[业务逻辑层]添加【消费者】");
-
+	public boolean save(Locale locale, User user) {
+		
+		logger.debug("[业务逻辑层]添加【用户】");
+		
 		// TODO
 		return true;
 	}
 
 	@Override
-	public boolean delete(Locale locale, Consumer consumer) {
-
-		logger.debug("[业务逻辑层]删除【消费者】");
-
+	public boolean delete(Locale locale, User user) {
+		
+		logger.debug("[业务逻辑层]删除【用户】");
+		
 		// TODO
 		return true;
 	}
 
 	@Override
-	public Consumer get(Locale locale, Consumer consumer) {
+	public User get(Locale locale, User user) {
+		
+		logger.debug("[业务逻辑层]获取【用户】");
+		
+		// TODO
+		return null;
+	}
 
-		logger.debug("[业务逻辑层]获取【消费者】");
+	@Override
+	public boolean update(Locale locale, User user) {
+		
+		logger.debug("[业务逻辑层]更新【用户】");
+		
+		// TODO
+		return true;
+	}
+	
+	@Override
+	public List<User> list(Locale locale) {
+
+		logger.debug("[业务逻辑层]列举【用户】");
+
+		// TODO
+		return null;
+	}
+	
+	@Override
+	public List<Map<String, Object>> query(Locale locale, User user) {
+
+		logger.debug("[业务逻辑层]查询【用户】(不分页)");
 
 		// TODO
 		return null;
 	}
 
 	@Override
-	public boolean update(Locale locale, Consumer consumer) {
+	public PageResult paging(Locale locale, User user, Long start, Long limit) {
 
-		logger.debug("[业务逻辑层]更新【消费者】");
-
-		// TODO
-		return true;
-	}
-
-	@Override
-	public List<Consumer> list(Locale locale) {
-
-		logger.debug("[业务逻辑层]列举【消费者】");
-
-		// TODO
-		return null;
-	}
-
-	@Override
-	public List<Map<String, Object>> query(Locale locale, Consumer consumer) {
-
-		logger.debug("[业务逻辑层]查询【消费者】(不分页)");
-
-		// TODO
-		return null;
-	}
-
-	@Override
-	public PageResult paging(Locale locale, Consumer consumer, Long start, Long limit) {
-
-		logger.debug("[业务逻辑层]查询【消费者】(分页)");
+		logger.debug("[业务逻辑层]查询【用户】(分页)");
 
 		PageResult pageResult = new PageResult();
 
 		// TODO
 		return pageResult;
 	}
-
+	
 	@Override
-	public boolean exists(Locale locale, Consumer consumer) {
-
-		logger.debug("[业务逻辑层]判断【消费者】是否存在");
-
+	public boolean exists(Locale locale, User user) {
+		
+		logger.debug("[业务逻辑层]判断【用户】是否存在");
+		
 		// TODO
 		return true;
 	}
@@ -157,5 +156,5 @@ public class ConsumerServiceImpl extends BaseServiceImpl implements IConsumerSer
 
 		return false;
 	}
-
+	
 }

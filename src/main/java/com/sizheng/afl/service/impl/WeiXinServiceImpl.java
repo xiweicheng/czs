@@ -20,11 +20,10 @@ import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.component.SimpleMailSender;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IWeiXinDao;
+import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.Message;
-import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.entity.Subscriber;
 import com.sizheng.afl.pojo.entity.User;
-import com.sizheng.afl.pojo.model.Business;
 import com.sizheng.afl.pojo.model.WeiXin;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.model.WeiXinEventKey;
@@ -223,21 +222,23 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 					return "您没有消费记录!";
 				} else {
 					// TODO 结账
-					return StringUtil.replace("<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]确认结账</a>",
-							propUtil.getRedirectUrl() + "/consumer/bill.do", bean.getFromUserName(),
-							user2.getConsumeCode());
+					return StringUtil
+							.replace("<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]确认结账</a>",
+									propUtil.getRedirectUrl() + "/user/bill.do", bean.getFromUserName(),
+									user2.getConsumeCode());
 				}
 			} else {
-				return null;
+				logger.error("用户信息不存在!");
+				return "您的信息不存在!";
 			}
 
 		} else if (WeiXinEventKey.EVT_KEY_02.getValue().equals(eventKey)) {
 			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]消费记录</a>", propUtil.getRedirectUrl()
-					+ "/consumer/record.do", bean.getFromUserName());
+					+ "/user/record.do", bean.getFromUserName());
 			String url2 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]呼叫服务</a>", propUtil.getRedirectUrl()
-					+ "/consumer/call.do", bean.getFromUserName());
+					+ "/user/call.do", bean.getFromUserName());
 			String url3 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]菜单一览</a>", propUtil.getRedirectUrl()
-					+ "/consumer/list.do", bean.getFromUserName());
+					+ "/user/list.do", bean.getFromUserName());
 
 			return StringUtil.replace("{?1}\n\n{?2}\n\n{?3}", url1, url2, url3);
 		} else if (WeiXinEventKey.EVT_KEY_03.getValue().equals(eventKey)) {// 商家入驻
@@ -262,28 +263,12 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 		} else if (WeiXinEventKey.EVT_KEY_04.getValue().equals(eventKey)) {
 
-			Business business = new Business();
-			business.setOpenId(bean.getFromUserName());
+			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]下载二维码</a>", propUtil.getRedirectUrl()
+					+ "/qrcode/download.do", bean.getFromUserName());
+			String url2 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]发送登录链接</a>", propUtil.getRedirectUrl()
+					+ "/business/sendLink.do", bean.getFromUserName());
 
-			Business business2 = businessService.get(locale, business);
-
-			if (business2 == null) {
-				return StringUtil.replace("您还不是入驻商家,确认要入驻吗?\n\n<a href='{?1}'>{?2}</a>",
-						weiXinApiInvoker.getWebpageCodeUrl("business/add.do", bean.getFromUserName()), "[点击此]确认入驻");
-			} else {
-
-				// 判断二维码使用的数量
-				List<Qrcode> list = qrcodeService.queryByOpenId(locale, bean.getFromUserName());
-
-				if (list.size() >= business2.getQrcodeLimit()) {
-					return StringUtil.replace("您可使用的二维码达到最大限制[{?3}],您可以点击下面链接进行购买!\n\n<a href='{?1}'>{?2}</a>",
-							weiXinApiInvoker.getWebpageCodeUrl("qrcode/buy.do", bean.getFromUserName()), "[点击此]进入购买界面",
-							business2.getQrcodeLimit());
-				}
-
-				return StringUtil.replace("<a href='{?1}'>{?2}</a>",
-						weiXinApiInvoker.getWebpageCodeUrl("qrcode/input.do", bean.getFromUserName()), "[点击此]进入配置界面");
-			}
+			return StringUtil.replace("{?1}\n\n{?2}", url1, url2);
 		}
 
 		return null;

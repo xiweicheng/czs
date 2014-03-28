@@ -1,5 +1,5 @@
 /**
- * ConsumerController.java
+ * UserController.java
  */
 package com.sizheng.afl.controller;
 
@@ -20,221 +20,217 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
-import com.sizheng.afl.component.WeiXinApiInvoker;
-import com.sizheng.afl.pojo.model.Consumer;
+import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
-import com.sizheng.afl.service.IConsumerService;
+import com.sizheng.afl.service.IUserService;
 
 /**
- * 【消费者】请求控制层.
+ * 【用户】请求控制层.
  * 
- * @creation 2014年03月27日 09:57:33
- * @modification 2014年03月27日 09:57:33
+ * @creation 2014年03月28日 10:02:03
+ * @modification 2014年03月28日 10:02:03
  * @company Skycloud
  * @author xiweicheng
  * @version 1.0
  * 
  */
 @Controller
-@RequestMapping(value = "consumer")
-public class ConsumerController extends BaseController {
+@RequestMapping(value = "user")
+public class UserController extends BaseController {
 
-	private static Logger logger = Logger.getLogger(ConsumerController.class);
-
-	@Autowired
-	IConsumerService consumerService;
+	private static Logger logger = Logger.getLogger(UserController.class);
 
 	@Autowired
-	WeiXinApiInvoker weiXinApiInvoker;
+	IUserService userService;
 
 	/**
-	 * 添加【消费者】.
+	 * 添加【用户】.
 	 * 
 	 * @author xiweicheng
-	 * @creation 2014年03月27日 09:57:33
-	 * @modification 2014年03月27日 09:57:33
+	 * @creation 2014年03月28日 10:02:03
+	 * @modification 2014年03月28日 10:02:03
 	 * @return
 	 */
 	// @RequestMapping("add")
 	@ResponseBody
 	public ResultMsg add(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("添加【消费者】");
+	
+		logger.debug("添加【用户】");
 
 		// TODO
 
-		Consumer consumer = getParam(reqBody, Consumer.class);
+		User user = getParam(reqBody, User.class);
 
 		// 参数验证
-		// Assert.notNull(consumer.get);
+		// Assert.notNull(user.get);
 
-		boolean saved = consumerService.save(locale, consumer);
+		boolean saved = userService.save(locale, user);
 
 		// TODO null->ID
 		return new ResultMsg(saved, reqBody.getId(), null);
 	}
 
 	/**
-	 * 删除【消费者】.
+	 * 删除【用户】.
 	 * 
 	 * @author xiweicheng
-	 * @creation 2014年03月27日 09:57:33
-	 * @modification 2014年03月27日 09:57:33
+	 * @creation 2014年03月28日 10:02:03
+	 * @modification 2014年03月28日 10:02:03
 	 * @return
 	 */
 	// @RequestMapping("delete")
 	@ResponseBody
 	public ResultMsg delete(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("删除【消费者】");
+	
+		logger.debug("删除【用户】");
 
 		// TODO
 
-		Consumer consumer = getParam(reqBody, Consumer.class);
+		User user = getParam(reqBody, User.class);
 
 		// 参数验证
-		// Assert.notNull(consumer.get);
+		// Assert.notNull(user.get);
 
-		boolean deleted = consumerService.delete(locale, consumer);
+		boolean deleted = userService.delete(locale, user);
 
 		return new ResultMsg(deleted, reqBody.getId());
 	}
 
 	/**
-	 * 获取【消费者】.
+	 * 获取【用户】.
 	 * 
 	 * @author xiweicheng
-	 * @creation 2014年03月27日 09:57:33
-	 * @modification 2014年03月27日 09:57:33
+	 * @creation 2014年03月28日 10:02:03
+	 * @modification 2014年03月28日 10:02:03
 	 * @return
 	 */
 	// @RequestMapping("get")
 	@ResponseBody
 	public ResultMsg get(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("获取【消费者】");
+	
+		logger.debug("获取【用户】");
 
 		// TODO
 
-		Consumer consumer = getParam(reqBody, Consumer.class);
-
+		User user = getParam(reqBody, User.class);
+		
 		// 参数验证
-		// Assert.notNull(consumer.get);
+		// Assert.notNull(user.get);
 
-		Consumer getConsumer = consumerService.get(locale, consumer);
+		User getUser = userService.get(locale, user);
 
-		return new ResultMsg(true, reqBody.getId(), getConsumer);
+		return new ResultMsg(true, reqBody.getId(), getUser);
 	}
-
+	
 	/**
-	 * 更新【消费者】.
+	 * 更新【用户】.
 	 * 
 	 * @author xiweicheng
-	 * @creation 2014年03月27日 09:57:33
-	 * @modification 2014年03月27日 09:57:33
+	 * @creation 2014年03月28日 10:02:03
+	 * @modification 2014年03月28日 10:02:03
 	 * @return
 	 */
 	// @RequestMapping("update")
 	@ResponseBody
 	public ResultMsg update(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("更新【消费者】");
+	
+		logger.debug("更新【用户】");
 
 		// TODO
 
-		Consumer consumer = getParam(reqBody, Consumer.class);
-
+		User user = getParam(reqBody, User.class);
+		
 		// 参数验证
-		// Assert.notNull(consumer.get);
+		// Assert.notNull(user.get);
 
-		boolean updated = consumerService.update(locale, consumer);
+		boolean updated = userService.update(locale, user);
 
 		return new ResultMsg(updated, reqBody.getId());
 	}
-
+	
 	/**
-	 * 列举【消费者】.
+	 * 列举【用户】.
 	 * 
 	 * @author xiweicheng
-	 * @creation 2014年03月27日 09:57:33
-	 * @modification 2014年03月27日 09:57:33
+	 * @creation 2014年03月28日 10:02:03
+	 * @modification 2014年03月28日 10:02:03
 	 * @return
 	 */
 	// @RequestMapping("list")
 	@ResponseBody
 	public ResultMsg list(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("列举【消费者】");
+	
+		logger.debug("列举【用户】");
 
 		// TODO
 
-		// Consumer consumer = getParam(reqBody, Consumer.class);
-
+		// User user = getParam(reqBody, User.class);
+		
 		// 参数验证
-		// Assert.notNull(consumer.get);
+		// Assert.notNull(user.get);
 
-		List<Consumer> consumerList = consumerService.list(locale);
+		List<User> userList = userService.list(locale);
 
-		return new ResultMsg(reqBody.getId(), consumerList);
+		return new ResultMsg(reqBody.getId(), userList);
 	}
-
+	
 	/**
-	 * 查询【消费者】(不分页).
+	 * 查询【用户】(不分页).
 	 * 
 	 * @author xiweicheng
-	 * @creation 2014年03月27日 09:57:33
-	 * @modification 2014年03月27日 09:57:33
+	 * @creation 2014年03月28日 10:02:03
+	 * @modification 2014年03月28日 10:02:03
 	 * @return
 	 */
 	// @RequestMapping("query")
 	@ResponseBody
 	public ResultMsg query(@RequestBody ReqBody reqBody, Locale locale) {
 
-		logger.debug("查询【消费者】");
+		logger.debug("查询【用户】");
 
 		// TODO
 
-		Consumer consumer = getParam(reqBody, Consumer.class);
+		User user = getParam(reqBody, User.class);
 
 		// 参数验证
-		// Assert.notNull(consumer.get);
+		// Assert.notNull(user.get);
 
-		List<Map<String, Object>> consumerList = consumerService.query(locale, consumer);
+		List<Map<String, Object>> userList = userService.query(locale, user);
 
-		return new ResultMsg(reqBody.getId(), consumerList);
+		return new ResultMsg(reqBody.getId(), userList);
 	}
 
 	/**
-	 * 查询【消费者】(分页).
+	 * 查询【用户】(分页).
 	 * 
 	 * @author xiweicheng
-	 * @creation 2014年03月27日 09:57:33
-	 * @modification 2014年03月27日 09:57:33
+	 * @creation 2014年03月28日 10:02:03
+	 * @modification 2014年03月28日 10:02:03
 	 * @return
 	 */
 	// @RequestMapping("paging")
 	@ResponseBody
 	public ResultMsg paging(@RequestBody ReqBody reqBody, Locale locale) {
 
-		logger.debug("查询【消费者】");
+		logger.debug("查询【用户】");
 
 		// TODO
 
-		Consumer consumer = getParam(reqBody, Consumer.class);
+		User user = getParam(reqBody, User.class);
 
 		// 参数验证
 		Assert.notNull(reqBody.getStart());
 		Assert.notNull(reqBody.getLimit());
+		
+		// Assert.notNull(user.get);
 
-		// Assert.notNull(consumer.get);
-
-		PageResult pageResult = consumerService.paging(locale, consumer, reqBody.getStart(), reqBody.getLimit());
+		PageResult pageResult = userService.paging(locale, user, reqBody.getStart(), reqBody.getLimit());
 
 		return new ResultMsg(reqBody.getId(), pageResult.getList(), pageResult.getTotal());
 	}
-
+	
 	@RequestMapping("bill")
 	public String bill(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId,
 			@RequestParam("consumeCode") String consumeCode) {
@@ -242,7 +238,7 @@ public class ConsumerController extends BaseController {
 		logger.debug("食客结账【消费者】");
 
 		// TODO
-		boolean result = consumerService.bill(locale, openId, consumeCode);
+		boolean result = userService.bill(locale, openId, consumeCode);
 
 		if (result) {
 			model.addAttribute("message", "您的消费金额: 188");
