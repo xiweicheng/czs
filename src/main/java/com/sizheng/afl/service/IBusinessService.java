@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
-import com.sizheng.afl.pojo.model.Business;
+import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.vo.PageResult;
 
@@ -135,4 +135,17 @@ public interface IBusinessService extends IBaseService {
 	 * @return
 	 */
 	String addConsumer(Locale locale, WeiXinBaseMsg bean);
+
+	/**
+	 * 发送动态登录链接到邮箱
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月28日 上午11:09:19
+	 * @modification 2014年3月28日 上午11:09:19
+	 * @param locale
+	 * @param business
+	 * @param serverBaseUrl TODO
+	 * @return
+	 */
+	String sendMail(Locale locale, Business business, String serverBaseUrl);
 }

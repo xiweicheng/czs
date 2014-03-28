@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
-import com.sizheng.afl.pojo.model.Category;
+import com.sizheng.afl.pojo.entity.Category;
 import com.sizheng.afl.pojo.vo.PageResult;
 
 /**

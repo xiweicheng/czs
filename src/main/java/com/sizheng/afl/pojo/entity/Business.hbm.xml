@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-3-27 12:40:52 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-3-28 9:50:46 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Business" table="business" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -31,6 +31,11 @@
         </property>
         <property name="qrcodeLimit" type="java.lang.Long">
             <column name="qrcode_limit" />
+        </property>
+        <property name="dynamicCode" type="string">
+            <column name="dynamic_code">
+                <comment>&#201;&#204;&#188;&#210;&#182;&#175;&#204;&#172;&#181;&#199;&#194;&#188;&#194;&#235;</comment>
+            </column>
         </property>
     </class>
 </hibernate-mapping>

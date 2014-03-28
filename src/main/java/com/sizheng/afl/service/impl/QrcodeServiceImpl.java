@@ -22,7 +22,7 @@ import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IQrcodeDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Category;
-import com.sizheng.afl.pojo.model.Qrcode;
+import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.model.WeiXinActionInfo;
 import com.sizheng.afl.pojo.model.WeiXinQrcode;
 import com.sizheng.afl.pojo.model.WeiXinQrcodeCreateParam;
@@ -185,7 +185,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 		logger.debug("[业务逻辑层]创建【二维码】");
 
 		// 设置scene id.
-		qrcode.setSceneId(String.valueOf(getUseableSceneId()));
+		qrcode.setSceneId(getUseableSceneId());
 
 		realPath = realPath.replace("\\", "/");
 
@@ -200,7 +200,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 				"sceneId", qrcode.getSceneId(), "description", qrcode.getDescription());
 
 		WeiXinQrcode weiXinQrcode = weiXinApiInvoker.downQrcodeImage(new WeiXinQrcodeCreateParam("QR_LIMIT_SCENE",
-				new WeiXinActionInfo(new WeiXinScene(qrcode.getSceneId()))), filePath, realPath);
+				new WeiXinActionInfo(new WeiXinScene(String.valueOf(qrcode.getSceneId())))), filePath, realPath);
 
 		if (weiXinQrcode != null && StringUtil.isNotEmpty(weiXinQrcode.getUrl())) {
 
@@ -220,7 +220,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 
 				// 记录二维码信息
 				com.sizheng.afl.pojo.entity.Qrcode qrcode2 = new com.sizheng.afl.pojo.entity.Qrcode();
-				qrcode2.setCategoryId(Long.valueOf(qrcode.getCategory()));
+				qrcode2.setCategoryId(qrcode.getCategoryId());
 				qrcode2.setOpenId(qrcode.getOpenId());
 				qrcode2.setSceneId(Long.valueOf(qrcode.getSceneId()));
 				qrcode2.setUseLimit(Long.valueOf(propUtil.getQrcodeUseLimitTime()));
@@ -230,6 +230,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 				qrcode2.setFilePath(weiXinQrcode.getFilePath());
 				qrcode2.setType(SysConstant.QR_LIMIT_SCENE);
 				qrcode2.setMyUrl(weiXinQrcode.getMyUrl());
+				qrcode2.setDescription(qrcode.getDescription());
 
 				hibernateTemplate.save(qrcode2);
 				logger.error("二维码创建成功!");

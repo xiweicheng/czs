@@ -17,12 +17,13 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.Category;
-import com.sizheng.afl.pojo.model.Business;
-import com.sizheng.afl.pojo.model.Qrcode;
+import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.model.WeiXinQrcode;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
@@ -30,6 +31,7 @@ import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.ICategoryService;
 import com.sizheng.afl.service.IQrcodeService;
+import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
 
 /**
@@ -303,5 +305,35 @@ public class QrcodeController extends BaseController {
 		model.addAttribute("message", "页面建设中...");
 
 		return "qrcode/buy";
+	}
+
+	@RequestMapping("download")
+	public String download(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		Business business = new Business();
+		business.setOpenId(openId);
+
+		Business business2 = businessService.get(locale, business);
+
+		if (business2 == null) {
+			model.addAttribute("message", "您还不是入驻商家,需要先商家入驻才能下载!");
+
+			return "result";
+		} else {
+
+			// 判断二维码使用的数量
+			List<Qrcode> list = qrcodeService.queryByOpenId(locale, openId);
+
+			if (list.size() >= business2.getQrcodeLimit()) {
+				model.addAttribute("message",
+						StringUtil.replace("您可使用的二维码达到最大限制[{?1}],需要先购买!", business2.getQrcodeLimit()));
+
+				return "result";
+			}
+
+			model.addAttribute("openId", openId);
+
+			return "forward:/qrcode/input.do";
+		}
 	}
 }

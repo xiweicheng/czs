@@ -17,20 +17,22 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
 import com.sizheng.afl.component.PropUtil;
+import com.sizheng.afl.component.SimpleMailSender;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IBusinessDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.entity.Subscriber;
 import com.sizheng.afl.pojo.entity.User;
-import com.sizheng.afl.pojo.model.Business;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.model.WeiXinEventType;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IQrcodeService;
 import com.sizheng.afl.util.DateUtil;
+import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 
 /**
@@ -64,6 +66,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	@Autowired
 	WeiXinApiInvoker weiXinApiInvoker;
 
+	@Autowired
+	SimpleMailSender simpleMailSender;
+
 	@Override
 	public boolean save(Locale locale, Business business) {
 
@@ -93,17 +98,12 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		logger.debug("[业务逻辑层]获取【商家】");
 
-		com.sizheng.afl.pojo.entity.Business business2 = new com.sizheng.afl.pojo.entity.Business();
-		business2.setOpenId(business.getOpenId());
-		List list = hibernateTemplate.findByExample(business2);
+		List list = hibernateTemplate.findByExample(business);
 
 		if (list.size() > 0) {
 			com.sizheng.afl.pojo.entity.Business business3 = (com.sizheng.afl.pojo.entity.Business) list.get(0);
 
-			Business business4 = new Business();
-			BeanUtils.copyProperties(business3, business4);
-
-			return business4;
+			return business3;
 		} else {
 			logger.debug("没有获取到商家信息:openid[" + business.getOpenId() + "]");
 		}
@@ -123,7 +123,12 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		if (list.size() > 0) {
 			business2 = (com.sizheng.afl.pojo.entity.Business) list.get(0);
-			BeanUtils.copyProperties(business, business2, "qrcodeLimit");
+			business2.setName(business.getName());
+			business2.setAddress(business.getAddress());
+			business2.setMail(business.getMail());
+			business2.setPhoneNumber(business.getPhoneNumber());
+			business2.setIntroduce(business.getIntroduce());
+
 			hibernateTemplate.update(business2);
 		} else {
 			BeanUtils.copyProperties(business, business2);
@@ -242,11 +247,10 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		} else {
 			businessName = businessName;
 		}
-		
+
 		businessName = StringUtil.replace("<a href='{?1}?openId={?3}'>{?2}</a>", propUtil.getRedirectUrl()
-				+ "/business/info.do", businessName,
-				qrcode2.getOpenId());
-		
+				+ "/business/info.do", businessName, qrcode2.getOpenId());
+
 		// 在user表中记录对应的商家id
 		User user = new User();
 		user.setUserName(bean.getFromUserName());
@@ -322,6 +326,37 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 			return StringUtil.replace("这是您[首次]光顾{?2}店!谢谢您的亲睐!\n\n您的结账消费码: {?1}", qrsceneId, businessName);
 		}
+	}
+
+	@Override
+	public String sendMail(Locale locale, Business business, String serverBaseUrl) {
+
+		logger.debug("[业务逻辑层]发送登录链接到邮箱");
+
+		String dynamicCode = NumberUtil.random(6);
+
+		logger.debug(dynamicCode);
+
+		Business business2 = new Business();
+		business2.setOpenId(business.getOpenId());
+
+		List list = hibernateTemplate.findByExample(business2);
+
+		if (list.size() > 0) {
+			business2 = (Business) list.get(0);
+			business2.setDynamicCode(dynamicCode);
+
+			hibernateTemplate.update(business2);
+		} else {
+			logger.error("商家信息不存在!");
+		}
+
+		// 发送邮件
+		simpleMailSender.sendText("商家登录链接",
+				StringUtil.replace("{?1}/business/login.do?openId={?2}", serverBaseUrl, business.getOpenId()),
+				business.getMail());
+
+		return dynamicCode;
 	}
 
 }

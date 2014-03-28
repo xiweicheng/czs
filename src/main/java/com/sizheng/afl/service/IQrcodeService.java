@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
-import com.sizheng.afl.pojo.model.Qrcode;
+import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.model.WeiXinQrcode;
 import com.sizheng.afl.pojo.vo.PageResult;
 

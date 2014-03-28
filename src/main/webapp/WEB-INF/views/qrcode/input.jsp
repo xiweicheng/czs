@@ -33,19 +33,14 @@
 		</div>
 		<div data-role="content">
 			<form action="qrcode/create.do">
-				<input type="hidden" name="openId" value="${param.state}">
-				<!-- <div data-role="fieldcontain">
-					<label for="textinput1"> 编号(1-100000) </label> <input
-						name="sceneId" id="textinput1" placeholder="" value="1"
-						type="number">
-				</div> -->
+				<input type="hidden" name="openId" value="${param.openId}">
 				<div data-role="fieldcontain">
 					<label for="textinput2"> 说明 </label> <input name="description"
 						id="textinput2" placeholder="" value="" type="text">
 				</div>
 				<div data-role="fieldcontain">
 					<label for="selectmenu1"> 分类 </label> <select id="selectmenu1"
-						data-native-menu="false" name="category">
+						data-native-menu="false" name="categoryId">
 						<c:forEach var="category" items="${categoryList}" >
 							<option value="${category.id}">${category.name}</option>
 						</c:forEach>

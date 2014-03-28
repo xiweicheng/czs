@@ -1,14 +1,12 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-3-27 12:40:52 by Hibernate Tools 3.4.0.CR1
-
-import static javax.persistence.GenerationType.IDENTITY;
+// Generated 2014-3-28 9:50:46 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -124,7 +122,7 @@ public class User implements java.io.Serializable {
 
 	@Column(name = "consume_code", length = 500)
 	public String getConsumeCode() {
-		return consumeCode;
+		return this.consumeCode;
 	}
 
 	public void setConsumeCode(String consumeCode) {

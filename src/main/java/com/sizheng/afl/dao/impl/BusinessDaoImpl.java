@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseDaoImpl;
 import com.sizheng.afl.dao.IBusinessDao;
-import com.sizheng.afl.pojo.model.Business;
+import com.sizheng.afl.pojo.entity.Business;
 
 /**
  * 【商家】持久化实现层.

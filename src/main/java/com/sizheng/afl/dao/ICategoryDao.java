@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.sizheng.afl.pojo.model.Category;
+import com.sizheng.afl.pojo.entity.Category;
 
 /**
  * 【分类】持久化接口层.

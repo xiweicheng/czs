@@ -15,7 +15,7 @@ public class BeanUtilTest {
 		Business business = new Business();
 		business.setAddress("xxxx");
 
-		com.sizheng.afl.pojo.model.Business business2 = new com.sizheng.afl.pojo.model.Business();
+		Business business2 = new Business();
 
 		BeanUtils.copyProperties(business2, business, "address");
 
@@ -27,9 +27,9 @@ public class BeanUtilTest {
 		Business business = new Business();
 		business.setAddress("xxxx");
 
-		com.sizheng.afl.pojo.model.Business business2 = new com.sizheng.afl.pojo.model.Business();
+		Business business2 = new Business();
 
-//		BeanUtilsBean.getInstance().copyProperties(business, business2);
+		// BeanUtilsBean.getInstance().copyProperties(business, business2);
 		org.apache.commons.beanutils.BeanUtils.copyProperties(business, business2);
 
 		Assert.assertEquals("xxxx", business.getAddress());
