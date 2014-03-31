@@ -5,6 +5,7 @@ package com.sizheng.afl.service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -126,4 +127,13 @@ public interface IMenuService extends IBaseService {
 	 * @return
 	 */
 	boolean upload(String calcServerBaseUrl, String realPath, MultipartFile imageFile, Locale locale, String openId);
+
+	/**
+	 * 查询【菜单】封装成MapList.
+	 * 
+	 * @param locale
+	 * @param menu
+	 * @return
+	 */
+	List<Map<String, Object>> queryMapList(Locale locale, Menu menu);
 }

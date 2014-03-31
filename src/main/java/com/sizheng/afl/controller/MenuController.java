@@ -5,6 +5,7 @@ package com.sizheng.afl.controller;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -116,14 +117,13 @@ public class MenuController extends BaseController {
 	@RequestMapping("add")
 	@ResponseBody
 	public ResultMsg add(HttpServletRequest request, Model model, Locale locale, @ModelAttribute Menu menu,
-			@RequestParam("_isDelete") String isDelete) {
+			@RequestParam(value = "_isDelete", required = false, defaultValue = "off") String isDelete) {
 
 		logger.debug("添加【菜单】");
 
 		Menu menu2 = new Menu();
 		menu2.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
 		menu2.setName(menu.getName());
-
 
 		if (menuService.exists(locale, menu2)) {
 			return new ResultMsg(false, new Msg(false, "该菜名已经存在!"));
@@ -282,9 +282,9 @@ public class MenuController extends BaseController {
 		Menu menu = new Menu();
 		menu.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
 
-		List<Menu> menuList = menuService.query(locale, menu);
+		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu);
 
-		model.addAttribute("menuList", menuList);
+		model.addAttribute("menuList", mapList);
 
 		return "menu/list";
 	}

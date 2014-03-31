@@ -157,7 +157,7 @@ public abstract class BaseDaoImpl implements IBaseDao {
 				QueryRunner queryRunner = new QueryRunner();
 
 				try {
-					mapList.add(queryRunner.query(conn, sql, new ScalarHandler<Object>(), params));
+					mapList.add(queryRunner.query(conn, sql, new ScalarHandler(), params));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

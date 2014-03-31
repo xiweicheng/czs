@@ -31,9 +31,27 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 	@Override
 	public List<Map<String, Object>> query(Locale locale, Menu menu, Long start, Long limit) {
 		
-		// TODO
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu.id,\n");
+		sqlSb.append("	menu.date_time,\n");
+		sqlSb.append("	menu.introduce,\n");
+		sqlSb.append("	menu.is_delete,\n");
+		sqlSb.append("	menu.`name`,\n");
+		sqlSb.append("	menu.price,\n");
+		sqlSb.append("	menu.privilege,\n");
+		sqlSb.append("	menu_category.`name` AS category,\n");
+		sqlSb.append("	menu_taste.`name` AS taste,\n");
+		sqlSb.append("	resources.path\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu\n");
+		sqlSb.append("INNER JOIN resources ON menu.resource_id = resources.id\n");
+		sqlSb.append("INNER JOIN menu_taste ON menu.taste_id = menu_taste.id\n");
+		sqlSb.append("INNER JOIN menu_category ON menu.category_id = menu_category.id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu.`owner` = ?\n");
 		
-		return null;
+		return getMapList(sqlSb, menu.getOwner());
 	}
 
 	@Override

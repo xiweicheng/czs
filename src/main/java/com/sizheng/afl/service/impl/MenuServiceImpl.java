@@ -6,6 +6,7 @@ package com.sizheng.afl.service.impl;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -164,6 +165,12 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 		}
 
 		return false;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryMapList(Locale locale, Menu menu) {
+
+		return menuDao.query(locale, menu, null, null);
 	}
 
 }

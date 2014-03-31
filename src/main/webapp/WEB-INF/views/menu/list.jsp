@@ -41,17 +41,16 @@
 			</div>
 			<div class="content">
 				<img class="ui large image left floated"
-					src="../../../resources/img/menu-default.jpg">
+					src="../../../${item.path}">
 
 				<div>
-					<b>分类:</b>凉菜<b>&nbsp;&nbsp;&nbsp;&nbsp;口味:</b>微辣
+					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}&nbsp;&nbsp;&nbsp;&nbsp;<b>添加时间:</b>${item.date_time}
+				</div>
+				<div>
+					<b>价格:</b>${item.price}&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>${item.privilege}
 				</div>
 				<p>
-					<b>介绍:</b>Te eum doming eirmod, nominati pertinacia argumentum ad
-					his. Ex eam alia facete scriptorem, est autem aliquip detraxit at.
-					Usu ocurreret referrentur at, cu epicurei appellantur vix. Cum ea
-					laoreet recteque electram, eos choro alterum definiebas in. Vim
-					dolorum definiebas an. Mei ex natum rebum iisque.
+					<b>介绍:</b>${item.introduce}
 				</p>
 				<div style="clear: both;"></div>
 			</div>
