@@ -30,17 +30,17 @@
 		<input type="hidden" name="openId" value="${param.openId}">
 		<div class="ui form segment" style="width: 300px; margin: 0 auto;">
 			<div class="field">
-				<label>Password</label>
+				<label>动态验证码</label>
 				<div class="ui left labeled icon input">
-					<input type="password" name="dynamicCode"> <i
+					<input type="password" name="dynamicCode" value="602500"> <i
 						class="lock icon"></i>
 					<div class="ui corner label">
 						<i class="icon asterisk"></i>
 					</div>
 				</div>
 			</div>
-			<div style="text-align: center;">
-				<div class="ui blue submit button" id="submitBtn">Login</div>
+			<div style="text-align:center;">
+				<div class="ui blue submit button" id="submitBtn">登录</div>
 			</div>
 		</div>
 		</form>

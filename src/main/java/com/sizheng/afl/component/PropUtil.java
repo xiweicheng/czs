@@ -63,6 +63,12 @@ public class PropUtil {
 	@Value("#{systemProperties['qrcode.use.limit.time']}")
 	private String qrcodeUseLimitTime;
 
+	@Value("#{systemProperties['path.menu.store']}")
+	private String menuStorePath;
+
+	@Value("#{systemProperties['path.qrcode.store']}")
+	private String qrcodeStorePath;
+
 	@Value("#{systemProperties['qrcode.scene.id.max']}")
 	private long qrcodeSceneIdMax;
 
@@ -151,6 +157,14 @@ public class PropUtil {
 
 	public long getQrcodeBusinessMaxDefault() {
 		return qrcodeBusinessMaxDefault;
+	}
+
+	public String getMenuStorePath() {
+		return menuStorePath;
+	}
+
+	public String getQrcodeStorePath() {
+		return qrcodeStorePath;
 	}
 
 }

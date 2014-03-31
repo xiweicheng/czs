@@ -17,6 +17,10 @@
 	<table-filter match-name="qrcode" match-catalog="afl"></table-filter>
 	<table-filter match-name="category" match-catalog="afl"></table-filter>
 	<table-filter match-name="business_consumer" match-catalog="afl"></table-filter>
+	<table-filter match-name="resources" match-catalog="afl"></table-filter>
+	<table-filter match-name="menu_category" match-catalog="afl"></table-filter>
+	<table-filter match-name="menu_taste" match-catalog="afl"></table-filter>
+	<table-filter match-name="menu" match-catalog="afl"></table-filter>
 	<table catalog="afl" name="subscriber">
 		<column name="id"></column>
 		<column name="user_name"></column>

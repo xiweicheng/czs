@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.WeiXinApiInvoker;
+import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.vo.PageResult;
@@ -311,6 +313,9 @@ public class BusinessController extends BaseController {
 
 		if (business2 != null && StringUtil.isNotEmpty(business2.getOpenId())) {
 			// model.addAttribute("message", "登录成功!");
+
+			HttpSession session = request.getSession();
+			session.setAttribute(SysConstant.SESSION_BUSINESS, business2);
 
 			return "business/main";
 		} else {

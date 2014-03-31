@@ -17,6 +17,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 
 /**
@@ -356,7 +357,7 @@ public final class WebUtil {
 		String serverBaseUrl = null;
 
 		String cxtPath = request.getContextPath();
-		
+
 		if (StringUtil.isEmpty(cxtPath)) {
 			serverBaseUrl = StringUtil.replace("{?1}://{?2}:{?3}", request.getScheme(), request.getServerName(),
 					request.getServerPort());
@@ -376,5 +377,47 @@ public final class WebUtil {
 		logger.debug(serverBaseUrl);
 
 		return serverBaseUrl;
+	}
+
+	/**
+	 * 返回servlet context的绝对路径
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月29日 下午4:25:29
+	 * @modification 2014年3月29日 下午4:25:29
+	 * @param request
+	 * @return
+	 */
+	public static String getRealPath(HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/");
+
+		if (!realPath.endsWith("/")) {
+			return realPath + "/";
+		}
+		return realPath;
+	}
+
+	/**
+	 * 获取session business
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月29日 下午7:10:27
+	 * @modification 2014年3月29日 下午7:10:27
+	 * @param request
+	 * @return
+	 */
+	public static Business getSessionBusiness(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+
+		Object attribute = session.getAttribute(SysConstant.SESSION_BUSINESS);
+
+		if (attribute != null) {
+			return (Business) attribute;
+		} else {
+			logger.error("session business不存在!");
+		}
+
+		return null;
 	}
 }

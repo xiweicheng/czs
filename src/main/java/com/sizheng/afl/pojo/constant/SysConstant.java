@@ -43,7 +43,7 @@ public final class SysConstant {
 	public static final String TRUE = "true";
 
 	public static final String DEFAULT_IP = "0.0.0.0";
-//	public static final String DEFAULT_PORT = "8050";
+	// public static final String DEFAULT_PORT = "8050";
 	public static final String DEFAULT_DNS = "0.0.0.0";
 
 	public static final int NUM_MINUS_1 = -1;
@@ -101,5 +101,11 @@ public final class SysConstant {
 	public static final Short CONSUME_STATUS_STOP = 0;
 	public static final Short CONSUME_STATUS_ONGOING = 1;
 	public static final Short CONSUME_STATUS_DISABLE = 2;
+	public static final String RESOURCES_IMAGE = "image";
+	public static final String SESSION_BUSINESS = "session_business";
+	public static final Short SHORT_0 = 0;
+	public static final Short SHORT_1 = 1;
+	public static final String CHECK_ON = "on";
+	public static final String CHECK_OFF = "off";
 
 }

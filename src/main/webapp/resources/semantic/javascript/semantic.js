@@ -1441,12 +1441,10 @@ $.fn.form = function(fields, parameters) {
           ;
           $field
             .each(function() {
-              var  
+              var
                 type       = $(this).prop('type'),
                 inputEvent = module.get.changeEvent(type)
               ;
-              if(settings.inline == true) {
-              }
               $(this)
                 .on(inputEvent + eventNamespace, module.event.field.change)
               ;
@@ -1535,7 +1533,7 @@ $.fn.form = function(fields, parameters) {
 
         get: {
           changeEvent: function(type) {
-            if(type == 'checkbox' || type == 'radio') {
+            if(type == 'checkbox' || type == 'radio' || type == 'hidden') {
               return 'change';
             }
             else {
@@ -4732,7 +4730,9 @@ $.fn.dropdown = function(parameters) {
                   : $choice.text(),
                 value   = ( $choice.data(metadata.value) !== undefined)
                   ? $choice.data(metadata.value)
-                  : text.toLowerCase(),
+                  : (typeof text === 'string')
+                      ? text.toLowerCase()
+                      : text,
                 callback = function() {
                   module.determine.selectAction(text, value);
                   $.proxy(settings.onChange, element)(value, text);
@@ -4848,7 +4848,7 @@ $.fn.dropdown = function(parameters) {
               : $module.data(metadata.value)
             ;
           },
-          item: function(value) {
+          item: function(value, strict) {
             var
               $selectedItem = false
             ;
@@ -4858,6 +4858,13 @@ $.fn.dropdown = function(parameters) {
                 ? module.get.value()
                 : module.get.text()
             ;
+            if(strict === undefined && value === '') {
+              module.debug('Ambiguous dropdown value using strict type check', value);
+              strict = true;
+            }
+            else {
+              strict = strict || false;
+            }
             if(value !== undefined) {
               $item
                 .each(function() {
@@ -4868,13 +4875,25 @@ $.fn.dropdown = function(parameters) {
                       : $choice.text(),
                     optionValue   = ( $choice.data(metadata.value) !== undefined )
                       ? $choice.data(metadata.value)
-                      : optionText.toLowerCase()
+                      : (typeof optionText === 'string')
+                        ? optionText.toLowerCase()
+                        : optionText
                   ;
-                  if( optionValue == value ) {
-                    $selectedItem = $(this);
+                  if(strict) {
+                    if( optionValue === value ) {
+                      $selectedItem = $(this);
+                    }
+                    else if( !$selectedItem && optionText === value ) {
+                      $selectedItem = $(this);
+                    }
                   }
-                  else if( !$selectedItem && optionText == value ) {
-                    $selectedItem = $(this);
+                  else {
+                    if( optionValue == value ) {
+                      $selectedItem = $(this);
+                    }
+                    else if( !$selectedItem && optionText == value ) {
+                      $selectedItem = $(this);
+                    }
                   }
                 })
               ;
@@ -4932,7 +4951,10 @@ $.fn.dropdown = function(parameters) {
           value: function(value) {
             module.debug('Adding selected value to hidden input', value, $input);
             if($input.size() > 0) {
-              $input.val(value);
+              $input
+                .val(value)
+                .trigger('change')
+              ;
             }
             else {
               $module.data(metadata.value, value);
@@ -5418,7 +5440,7 @@ $.extend( $.easing, {
 })( jQuery, window , document );
 /*
  * # Semantic - Modal
- * http://github.com/jlukic/semantic-ui/
+ * http://github.com/semantic-org/semantic-ui/
  *
  *
  * Copyright 2013 Contributors
@@ -5442,6 +5464,12 @@ $.fn.modal = function(parameters) {
     query           = arguments[0],
     methodInvoked   = (typeof query == 'string'),
     queryArguments  = [].slice.call(arguments, 1),
+
+    requestAnimationFrame = window.requestAnimationFrame
+      || window.mozRequestAnimationFrame
+      || window.webkitRequestAnimationFrame
+      || window.msRequestAnimationFrame
+      || function(callback) { setTimeout(callback, 0); },
 
     returnedValue
   ;
@@ -5483,7 +5511,7 @@ $.fn.modal = function(parameters) {
         initialize: function() {
           module.verbose('Initializing dimmer', $context);
 
-          if(typeof $.fn.dimmer === undefined) {
+          if($.fn.dimmer === undefined) {
             module.error(error.dimmer);
             return;
           }
@@ -5491,7 +5519,7 @@ $.fn.modal = function(parameters) {
             .dimmer({
               closable : false,
               useCSS   : true,
-              duration: {
+              duration : {
                 show     : settings.duration * 0.9,
                 hide     : settings.duration * 1.1
               }
@@ -5514,9 +5542,7 @@ $.fn.modal = function(parameters) {
             .on('click' + eventNamespace, module.event.close)
           ;
           $window
-            .on('resize' + eventNamespace, function() {
-              module.event.debounce(module.refresh, 50);
-            })
+            .on('resize' + eventNamespace, module.event.resize)
           ;
           module.instantiate();
         },
@@ -5628,7 +5654,7 @@ $.fn.modal = function(parameters) {
           },
           resize: function() {
             if( $dimmable.dimmer('is active') ) {
-              module.refresh();
+              requestAnimationFrame(module.refresh);
             }
           }
         },
@@ -5667,10 +5693,12 @@ $.fn.modal = function(parameters) {
               module.hideOthers(module.showModal);
             }
             else {
+              $.proxy(settings.onShow, element)();
               if(settings.transition && $.fn.transition !== undefined && $module.transition('is supported')) {
                 module.debug('Showing modal with css animations');
                 $module
                   .transition(settings.transition + ' in', settings.duration, function() {
+                    $.proxy(settings.onVisible, element)();
                     module.set.active();
                     callback();
                   })
@@ -5680,12 +5708,12 @@ $.fn.modal = function(parameters) {
                 module.debug('Showing modal with javascript');
                 $module
                   .fadeIn(settings.duration, settings.easing, function() {
+                    $.proxy(settings.onVisible, element)();
                     module.set.active();
                     callback();
                   })
                 ;
               }
-              $.proxy(settings.onShow, element)();
             }
           }
           else {
@@ -5747,9 +5775,11 @@ $.fn.modal = function(parameters) {
           }
           module.debug('Hiding modal');
           module.remove.keyboardShortcuts();
+          $.proxy(settings.onHide, element)();
           if(settings.transition && $.fn.transition !== undefined && $module.transition('is supported')) {
             $module
               .transition(settings.transition + ' out', settings.duration, function() {
+                $.proxy(settings.onHidden, element)();
                 module.remove.active();
                 module.restore.focus();
                 callback();
@@ -5759,13 +5789,13 @@ $.fn.modal = function(parameters) {
           else {
             $module
               .fadeOut(settings.duration, settings.easing, function() {
+                $.proxy(settings.onHidden, element)();
                 module.remove.active();
                 module.restore.focus();
                 callback();
               })
             ;
           }
-          $.proxy(settings.onHide, element)();
         },
 
         hideAll: function(callback) {
@@ -6126,6 +6156,10 @@ $.fn.modal.settings = {
 
   onShow        : function(){},
   onHide        : function(){},
+
+  onVisible     : function(){},
+  onHidden      : function(){},
+
   onApprove     : function(){ return true; },
   onDeny        : function(){ return true; },
 
@@ -6147,7 +6181,6 @@ $.fn.modal.settings = {
 
 
 })( jQuery, window , document );
-
 /*
  * # Semantic - Nag
  * http://github.com/jlukic/semantic-ui/
