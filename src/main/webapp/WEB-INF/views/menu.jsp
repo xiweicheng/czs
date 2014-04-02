@@ -15,19 +15,42 @@
 			<div class="header item">
 				<i class="user icon"></i> 我的信息
 			</div>
-			<a class="item"> 基本信息 </a> <a class="item"> 二维码 </a>
+			<a class="item" href="business/main.do" id="menu-item-business-main">
+				基本信息 </a>
 			<div class="header item">
-				<i class="globe icon"></i> 菜单管理
+				<i class="qr code icon"></i> 二维码
+			</div>
+			<a class="item" href="qrcode/download.do" id="menu-item-qrcode-main">
+				二维码生成</a>
+			<div class="header item">
+				<i class="setting icon"></i> 菜单管理
 			</div>
 			<a class="item" href="menu/list.do" id="menu-item-menu-list">
 				菜单一览 </a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
 				菜单添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
 				菜单图片 </a>
 			<div class="header item">
-				<i class="icon calendar"></i> 顾客管理
+				<i class="users icon"></i> 顾客管理
 			</div>
-			<a class="item"> 顾客一览 </a>
+			<a class="item" href="business/list.do" id="menu-item-business-list">顾客一览 </a>
 		</div>
 	</div>
+	
+	<script type="text/javascript">
+		jQuery(function($){
+			
+			try{
+			    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+			    	$('.ui.sidebar').sidebar("hide");
+			    }else{
+			    	$('.ui.sidebar').sidebar('show');
+			    }
+			}catch(e){
+				$('.ui.sidebar').sidebar('show');
+			}
+			
+			$('#menu-item-business-main').addClass('active');
+		});
+	</script>
 </body>
 </html>

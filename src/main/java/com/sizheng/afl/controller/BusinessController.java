@@ -194,29 +194,21 @@ public class BusinessController extends BaseController {
 	}
 
 	/**
-	 * 列举【商家】.
+	 * 顾客列举【商家】.
 	 * 
 	 * @author xiweicheng
 	 * @creation 2014年03月25日 02:46:32
 	 * @modification 2014年03月25日 02:46:32
 	 * @return
 	 */
-	// @RequestMapping("list")
-	@ResponseBody
-	public ResultMsg list(@RequestBody ReqBody reqBody, Locale locale) {
+	@RequestMapping("list")
+	public String list(HttpServletRequest request, Locale locale, Model model) {
 
-		logger.debug("列举【商家】");
+		logger.debug("顾客列举【商家】");
 
-		// TODO
+		model.addAttribute("message", "网站建设中...");
 
-		// Business business = getParam(reqBody, Business.class);
-
-		// 参数验证
-		// Assert.notNull(business.get);
-
-		List<Business> businessList = businessService.list(locale);
-
-		return new ResultMsg(reqBody.getId(), businessList);
+		return "result";
 	}
 
 	/**
@@ -290,6 +282,15 @@ public class BusinessController extends BaseController {
 
 	}
 
+	/**
+	 * 登录。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
 
@@ -299,6 +300,41 @@ public class BusinessController extends BaseController {
 
 	}
 
+	/**
+	 * 商家基本信息。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("main")
+	public String main(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("商家基本信息【商家】");
+
+		Business business = new Business();
+		business.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
+
+		Business business2 = businessService.get(locale, business);
+
+		model.addAttribute("business", business2);
+
+		return "business/main";
+
+	}
+
+	/**
+	 * 商家登录验证。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @param dynamicCode
+	 * @return
+	 */
 	@RequestMapping("verify")
 	public String verify(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId,
 			@RequestParam("dynamicCode") String dynamicCode) {
@@ -317,6 +353,8 @@ public class BusinessController extends BaseController {
 			HttpSession session = request.getSession();
 			session.setAttribute(SysConstant.SESSION_BUSINESS, business2);
 
+			model.addAttribute("business", business2);
+
 			return "business/main";
 		} else {
 			model.addAttribute("message", "登录失败!");
@@ -325,6 +363,15 @@ public class BusinessController extends BaseController {
 		}
 	}
 
+	/**
+	 * 发送登录链接。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
 	@RequestMapping("sendLink")
 	public String sendLink(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
 
@@ -341,6 +388,16 @@ public class BusinessController extends BaseController {
 
 	}
 
+	/**
+	 * 发送邮件。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @param mail
+	 * @return
+	 */
 	@RequestMapping("sendMail")
 	public String sendMail(HttpServletRequest request, Locale locale, Model model,
 			@RequestParam("openId") String openId, @RequestParam("mail") String mail) {

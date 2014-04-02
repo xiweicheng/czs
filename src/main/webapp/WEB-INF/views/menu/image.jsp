@@ -87,7 +87,7 @@
 			<i class="dropdown icon"></i> 图片一览
 		</div>
 		<div class="active content">
-			<div class="ui three items">
+			<div class="ui stackable items">
 				<c:forEach items="${imageList}" var="item">
 					<div class="item" style="min-height: 0px;" id="image-item-${item.id}">
 						<div class="image">

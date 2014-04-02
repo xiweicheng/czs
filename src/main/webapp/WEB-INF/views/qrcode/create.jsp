@@ -38,7 +38,7 @@
 				</div>
 			</a>
 			<form action="qrcode/sendMail.do">
-				<input type="hidden" name="filePath" value="${qrcode.filePath}">
+				<input type="hidden" name="filePath" value="${qrcode.path}">
 				<input type="hidden" name="ticket" value="${qrcode.ticket}">
 				<input type="hidden" name="url" value="${qrcode.url}">
 				<input type="hidden" name="openId" value="${openId}">

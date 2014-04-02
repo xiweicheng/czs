@@ -205,11 +205,11 @@
 	</div>
 
 	<!-- 图片选择modal -->
-	<div class="ui basic modal" id="select-image-modal">
+	<div class="ui modal" id="select-image-modal">
 		<i class="close icon"></i>
 		<div class="header">选择图片</div>
 		<div class="content">
-			<div class="ui three items" id="image-ui-items"
+			<div class="ui stackable items" id="image-ui-items"
 				style="height: 350px; overflow: auto;"></div>
 		</div>
 		<div class="actions">
@@ -324,10 +324,17 @@
 					} ]
 				},
 				category : {
-					identifier : 'category',
+					identifier : 'categoryId',
 					rules : [ {
 						type : 'empty',
 						prompt : '请选择分类!'
+					} ]
+				},
+				taste : {
+					identifier : 'tasteId',
+					rules : [ {
+						type : 'empty',
+						prompt : '请选择口味!'
 					} ]
 				},
 				price : {

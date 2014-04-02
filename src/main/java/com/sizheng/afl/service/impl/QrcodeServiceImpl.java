@@ -227,7 +227,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 				qrcode2.setUseTimes(Long.valueOf(0));
 				qrcode2.setTicket(weiXinQrcode.getTicket());
 				qrcode2.setUrl(weiXinQrcode.getUrl());
-				qrcode2.setFilePath(weiXinQrcode.getFilePath());
+				qrcode2.setFilePath(weiXinQrcode.getPath());
 				qrcode2.setType(SysConstant.QR_LIMIT_SCENE);
 				qrcode2.setMyUrl(weiXinQrcode.getMyUrl());
 				qrcode2.setDescription(qrcode.getDescription());

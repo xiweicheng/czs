@@ -253,11 +253,16 @@ public class QrcodeController extends BaseController {
 		List<Category> list = categoryService.listByType("qrcode");
 		model.addAttribute("categoryList", list);
 
-		return "qrcode/input";
+		return "qrcode/input2";
 	}
 
 	@RequestMapping("create")
 	public String create(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Qrcode qrcode) {
+
+		if (StringUtil.isEmpty(qrcode.getOpenId())) {
+			qrcode.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
+		}
+
 		// 二维码生成数量限制判断
 		if (businessService.isQrcodeLimited(locale, qrcode.getOpenId())) {
 			model.addAttribute("message", "二维码生成数量达到限制值!");
@@ -279,18 +284,18 @@ public class QrcodeController extends BaseController {
 		Business business2 = businessService.get(locale, business);
 		model.addAttribute("business", business2);
 
-		return "qrcode/create";
+		return "qrcode/create2";
 	}
 
 	@RequestMapping("sendMail")
 	public String sendMail(HttpServletRequest request, Locale locale, Model model) {
 
-		String filePath = request.getParameter("filePath");
+		String path = request.getParameter("filePath");
 		String url = request.getParameter("url");
 		String ticket = request.getParameter("ticket");
 		String mail = request.getParameter("mail");
 
-		if (qrcodeService.sendMail(filePath, url, ticket, mail)) {
+		if (qrcodeService.sendMail(WebUtil.getRealPath(request) + path, url, ticket, mail)) {
 			model.addAttribute("message", "发送成功!");
 		} else {
 			model.addAttribute("message", "发送失败!");
@@ -308,7 +313,10 @@ public class QrcodeController extends BaseController {
 	}
 
 	@RequestMapping("download")
-	public String download(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+	public String download(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "openId", required = false) String openId) {
+
+		openId = StringUtil.isEmpty(openId) ? WebUtil.getSessionBusiness(request).getOpenId() : openId;
 
 		Business business = new Business();
 		business.setOpenId(openId);
