@@ -67,7 +67,8 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 
 		logger.debug("[业务逻辑层]删除【菜单】");
 
-		// TODO
+		hibernateTemplate.delete(menu);
+
 		return true;
 	}
 
@@ -85,7 +86,8 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 
 		logger.debug("[业务逻辑层]更新【菜单】");
 
-		// TODO
+		hibernateTemplate.update(menu);
+
 		return true;
 	}
 

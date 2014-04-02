@@ -40,6 +40,7 @@
 	</div>
 </div>
 </script>
+
 </head>
 <body style="margin: 0px; padding: 0px;">
 	<!-- 侧边栏 -->
@@ -48,21 +49,23 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">菜单添加</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">菜单更新</h4>
 	<a id="error-msg-anchor"></a>
 
 	<div class="ui segment attached">
 		<form action="menu.add.do" id="add-menu-form">
+			<input type="hidden" name="id" value="${menu.id}">
 			<div class="ui warning form segment" id='add-menu-ui-form'>
 				<div class="ui error message" id="add-menu-ui-message"></div>
 				<div class="two fields">
 					<div class="field">
 						<label>菜名</label> <input placeholder="输入菜名" type="text"
-							name="name">
+							name="name" value="${menu.name}">
 					</div>
 					<div class="inline field">
 						<div class="ui checkbox" style="margin-top: 30px;">
-							<input type="checkbox" name="_isDelete"> <label>禁用
+							<input type="checkbox" name="_isDelete"
+								<c:if test="${menu.isDelete==1}">checked="checked"</c:if>><label>禁用
 								(勾选后该项菜对用户将不再可见)</label>
 						</div>
 					</div>
@@ -73,7 +76,7 @@
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
 							<i class="dropdown icon"></i> <input type="hidden"
-								name="categoryId">
+								name="categoryId" value="${menu.categoryId}">
 							<div class="menu" id="category-menu-items">
 								<c:forEach items="${menuCategoryList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -93,11 +96,12 @@
 				</div>
 				<div class="two fields">
 					<div class="field">
-						<label>价格</label> <input placeholder="价格" type="text" name="price">
+						<label>价格</label> <input placeholder="价格" type="text" name="price"
+							value="${menu.price}">
 					</div>
 					<div class="field">
 						<label>优惠</label> <input placeholder="优惠" type="text"
-							name="privilege">
+							name="privilege" value="${menu.privilege}">
 						<div class="ui red pointing above ui label">样例:7折输入 0.7
 							直减10元输入 10</div>
 					</div>
@@ -107,7 +111,8 @@
 						<label>口味</label>
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
-							<i class="dropdown icon"></i> <input type="hidden" name="tasteId">
+							<i class="dropdown icon"></i> <input type="hidden" name="tasteId"
+								value="${menu.tasteId}">
 							<div class="menu" id="taste-menu-items">
 								<c:forEach items="${menuTasteList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -128,14 +133,15 @@
 				<div class="two fields">
 					<div class="field">
 						<label>介绍</label>
-						<textarea name="introduce"></textarea>
+						<textarea name="introduce">${menu.introduce}</textarea>
 					</div>
 				</div>
 				<div class="two fields">
 					<div class="field">
-						<input type="hidden" name="resourceId" id="resourceId"> <label>图片</label>
-						<img class="rounded ui image" alt="图片"
-							src="../../../resources/img/menu-default.jpg" id="resourceImage">
+						<input type="hidden" name="resourceId" id="resourceId"
+							value="${menu.resourceId}"> <label>图片</label> <img
+							class="rounded ui image" alt="图片" src="../../../${extra_imgPath}"
+							id="resourceImage">
 					</div>
 					<div class="ui vertical animated button" style="margin-top: 20px;"
 						id="select-image-btn">
@@ -145,7 +151,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="ui blue submit button" id="add-menu-btn">添加</div>
+				<div class="ui blue submit button" id="add-menu-btn">更新</div>
 			</div>
 		</form>
 	</div>
@@ -209,8 +215,8 @@
 		<i class="close icon"></i>
 		<div class="header">选择图片</div>
 		<div class="content">
-			<div class="ui three items" id="image-ui-items"
-				style="height: 350px; overflow: auto;"></div>
+			<div class="ui three items" style="height: 350px; overflow: auto;"
+				id="image-ui-items"></div>
 		</div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
@@ -226,7 +232,7 @@
 
 	<script type="text/javascript">
 		jQuery(function($) {
-			$('#menu-item-menu-input').addClass('active');
+			$('#menu-item-menu-update').addClass('active');
 
 			$('.ui.dropdown').dropdown();
 
@@ -290,10 +296,10 @@
 					return true;
 				},
 				onApprove : function() {
+					return true;
 				}
 			});//.modal('attach events', '#select-image-btn', 'show');
-			
-			
+
 			$('#select-image-btn').click(function() {
 				$.ajax({
 					type : "POST",
@@ -349,10 +355,10 @@
 			$('#add-menu-ui-form').form('setting', {
 				onSuccess : function() {
 
-					$.post('menu/add.do', $('#add-menu-form').serialize(), function(data) {
+					$.post('menu/updateSubmit.do', $('#add-menu-form').serialize(), function(data) {
 
 						if (data.succeed) {
-							alert('添加成功!');
+							alert('更新成功!');
 						} else {
 							alert(data.msg.detail);
 						}

@@ -36,15 +36,20 @@
 	<div class="ui fluid accordion">
 
 		<c:forEach items="${menuList}" var="item">
-			<div class="title" data-menu-id="${item.id}">
-				<i class="dropdown icon"></i> ${item.name}
+			<div class="title" id="menu-item-title-${item.id}">
+				<i class="dropdown icon"></i> ${item.name} <a
+					style="float: right; margin-right: 10px;"
+					href="menu/update.do?id=${item.id}">修改</a> <a
+					style="float: right; margin-right: 10px;" href="javascript:void(0);"
+					onclick="menuDeleteHandler('${item.id}');">删除</a>
 			</div>
-			<div class="content">
-				<img class="ui large image left floated"
-					src="../../../${item.path}">
+			<div class="content" id="menu-item-content-${item.id}">
+				<img class="ui large image left floated" src="../../../${item.path}">
 
 				<div>
-					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}&nbsp;&nbsp;&nbsp;&nbsp;<b>添加时间:</b>${item.date_time}
+					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}&nbsp;&nbsp;&nbsp;&nbsp;<b>添加时间:</b>
+					<fmt:formatDate value="${item.date_time}"
+						pattern="yyyy/MM/dd hh:mm:ss" />
 				</div>
 				<div>
 					<b>价格:</b>${item.price}&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>${item.privilege}
@@ -60,13 +65,72 @@
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
 
+	<div class="ui basic modal" id="confirm-ui-modal">
+		<div class="header">确认提示</div>
+		<div class="content">
+			<div class="left">
+				<i class="warning icon"></i>
+			</div>
+			<div class="right">
+				<p>确认要删除吗?</p>
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui negative labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui positive right labeled icon button">
+					确认 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script type="text/javascript">
+		// 删除image id.
+		var deleteMenuId;
+
+		// 菜单删除
+		function menuDeleteHandler(id) {
+			deleteMenuId = id;
+			$('#confirm-ui-modal').modal('show');
+		}
+
 		jQuery(function($) {
 			$('#menu-item-menu-list').addClass('active');
 			$('.ui.accordion').accordion("setting", {
 				onOpen : function() {
 					//alert("open...");
 					$.post('menu/detail.do', {}, function() {
+					});
+				}
+			});
+
+			$('#confirm-ui-modal').modal({
+				closable : false,
+				onApprove : function() {
+					$.ajax({
+						type : "POST",
+						url : 'menu/delete.do',
+						contentType : 'application/json',
+						processData : false,
+						dataType : "json",
+						data : JSON.stringify({
+							params : {
+								id : deleteMenuId
+							}
+						}),
+						success : function(msg) {
+							if (msg.succeed) {
+								$('#menu-item-title-' + deleteMenuId).remove();
+								$('#menu-item-content-' + deleteMenuId).remove();
+								return true;
+							} else {
+								alert('删除失败!')
+								return false;
+							}
+						}
 					});
 				}
 			});

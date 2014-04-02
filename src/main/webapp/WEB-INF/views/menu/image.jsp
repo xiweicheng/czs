@@ -89,10 +89,12 @@
 		<div class="active content">
 			<div class="ui three items">
 				<c:forEach items="${imageList}" var="item">
-					<div class="item" style="min-height:0px;">
+					<div class="item" style="min-height: 0px;" id="image-item-${item.id}">
 						<div class="image">
 							<img src="../../../${item.path}"> <a
-								class="like ui corner label"> <i class="like icon"></i>
+								class="like ui corner label"
+								onclick="deleteHandler('${item.id}');"> <i
+								class="remove icon"></i>
 							</a>
 						</div>
 						<div class="content" style="display: block;">
@@ -107,13 +109,70 @@
 		</div>
 	</div>
 
+	<div class="ui basic modal" id="confirm-ui-modal">
+		<div class="header">确认提示</div>
+		<div class="content">
+			<div class="left">
+				<i class="warning icon"></i>
+			</div>
+			<div class="right">
+				<p>确认要删除吗?</p>
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui negative labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui positive right labeled icon button">
+					确认 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
 
 	<script type="text/javascript">
+		// 删除image id.
+		var deleteImgId;
+		// 删除选择图片
+		function deleteHandler(id) {
+			deleteImgId = id;
+			$('#confirm-ui-modal').modal('show');
+		}
+
 		jQuery(function($) {
 			$('#menu-item-menu-image').addClass('active');
 			$('.ui.accordion').accordion();
+
+			$('#confirm-ui-modal').modal({
+				closable : false,
+				onApprove : function() {
+					$.ajax({
+						type : "POST",
+						url : 'resources/delete.do',
+						contentType : 'application/json',
+						processData : false,
+						dataType : "json",
+						data : JSON.stringify({
+							params : {
+								id : deleteImgId
+							}
+						}),
+						success : function(msg) {
+							if (msg.succeed) {
+								$('#image-item-' + deleteImgId).remove();
+								return true;
+							} else {
+								alert('删除失败!')
+								return false;
+							}
+						}
+					});
+				}
+			});
 		});
 	</script>
 </body>
