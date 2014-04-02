@@ -18,8 +18,28 @@
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-1.10.2.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.js"
+<script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tmpl.min.js"
+	charset="utf-8"></script>
+
+<script id="imageItemTpl" type="text/x-jquery-tmpl">
+<div class="item" style="min-height: 0px;"
+	onclick="selectImage(this, '{{html id}}', '{{html path}}')">
+	<div class="image">
+		<img src="../../../{{html path}}"> <a
+			class="like ui corner label"> <i class="like icon"></i>
+		</a>
+	</div>
+	<div class="content">
+		<div class="meta">
+			{{html dateTime}}
+		</div>
+		<div class="name">{{html name}}</div>
+		<!-- <p class="description"></p> -->
+	</div>
+</div>
+</script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 	<!-- 侧边栏 -->
@@ -28,7 +48,7 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">增加菜单</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">菜单添加</h4>
 	<a id="error-msg-anchor"></a>
 
 	<div class="ui segment attached">
@@ -185,29 +205,12 @@
 	</div>
 
 	<!-- 图片选择modal -->
-	<div class="ui modal" id="select-image-modal">
+	<div class="ui basic modal" id="select-image-modal">
 		<i class="close icon"></i>
 		<div class="header">选择图片</div>
 		<div class="content">
-			<div class="ui three items" style="height: 350px; overflow: auto;">
-				<c:forEach items="${imageList}" var="item">
-					<div class="item"
-						onclick="selectImage(this, '${item.id}', '${item.path}')">
-						<div class="image">
-							<img src="../../../${item.path}"> <a
-								class="like ui corner label"> <i class="like icon"></i>
-							</a>
-						</div>
-						<div class="content">
-							<div class="meta">
-								<fmt:formatDate value="${item.dateTime}" pattern="yyyy/MM/dd" />
-							</div>
-							<div class="name">${item.name}</div>
-							<!-- <p class="description"></p> -->
-						</div>
-					</div>
-				</c:forEach>
-			</div>
+			<div class="ui three items" id="image-ui-items"
+				style="height: 350px; overflow: auto;"></div>
 		</div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
@@ -288,7 +291,29 @@
 				},
 				onApprove : function() {
 				}
-			}).modal('attach events', '#select-image-btn', 'show');
+			});//.modal('attach events', '#select-image-btn', 'show');
+			
+			
+			$('#select-image-btn').click(function() {
+				$.ajax({
+					type : "POST",
+					url : 'resources/list.do',
+					contentType : 'application/json',
+					processData : false,
+					dataType : "json",
+					//data : JSON.stringify({}),
+					success : function(msg) {
+						if (msg.succeed) {
+
+							$("#imageItemTpl").tmpl(msg.value).appendTo($('#image-ui-items').empty());
+
+							$('#select-image-modal').modal('show');
+						} else {
+							alert('获取图片失败!')
+						}
+					}
+				});
+			});
 
 			$('#add-menu-ui-form').form({
 				name : {
@@ -323,7 +348,7 @@
 
 			$('#add-menu-ui-form').form('setting', {
 				onSuccess : function() {
-					
+
 					$.post('menu/add.do', $('#add-menu-form').serialize(), function(data) {
 
 						if (data.succeed) {

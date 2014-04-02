@@ -19,10 +19,10 @@
 			<div class="header item">
 				<i class="globe icon"></i> 菜单管理
 			</div>
-			<a class="item" href="menu/list.do" id="menu-item-menu-list"> 菜单一览 </a> <a class="item"
-				href="menu/input.do" id="menu-item-menu-input"> 菜单添加 </a>
-				<a class="item"
-				href="menu/image.do" id="menu-item-menu-image"> 菜单图片 </a>
+			<a class="item" href="menu/list.do" id="menu-item-menu-list">
+				菜单一览 </a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
+				菜单添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
+				菜单图片 </a>
 			<div class="header item">
 				<i class="icon calendar"></i> 顾客管理
 			</div>

@@ -95,14 +95,6 @@ public class MenuController extends BaseController {
 
 		model.addAttribute("menuTasteList", list2);
 
-		Resources resources = new Resources();
-		resources.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
-		resources.setIsDelete(SysConstant.SHORT_0);
-
-		List<Resources> list3 = resourcesService.query(locale, resources);
-
-		model.addAttribute("imageList", list3);
-
 		return "menu/input";
 	}
 
@@ -124,6 +116,7 @@ public class MenuController extends BaseController {
 		Menu menu2 = new Menu();
 		menu2.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
 		menu2.setName(menu.getName());
+		menu2.setIsDelete(SysConstant.SHORT_FALSE);
 
 		if (menuService.exists(locale, menu2)) {
 			return new ResultMsg(false, new Msg(false, "该菜名已经存在!"));
@@ -131,12 +124,54 @@ public class MenuController extends BaseController {
 
 		menu.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
 		menu.setDateTime(DateUtil.now());
-		menu.setIsDelete(SysConstant.CHECK_ON.equals(isDelete) ? SysConstant.SHORT_1 : SysConstant.SHORT_0);
+		menu.setIsDelete(SysConstant.CHECK_ON.equals(isDelete) ? SysConstant.SHORT_TRUE : SysConstant.SHORT_FALSE);
 
 		if (menuService.save(locale, menu)) {
 			return new ResultMsg(true);
 		} else {
 			return new ResultMsg(false, new Msg(false, "添加失败!"));
+		}
+	}
+
+	/**
+	 * 更新提交【菜单】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月2日 下午3:42:53
+	 * @modification 2014年4月2日 下午3:42:53
+	 * @param request
+	 * @param model
+	 * @param locale
+	 * @param menu
+	 * @param isDelete
+	 * @return
+	 */
+	@RequestMapping("updateSubmit")
+	@ResponseBody
+	public ResultMsg updateSubmit(HttpServletRequest request, Model model, Locale locale, @ModelAttribute Menu menu,
+			@RequestParam(value = "_isDelete", required = false, defaultValue = "off") String isDelete) {
+
+		logger.debug("添加【菜单】");
+
+		Menu menu2 = new Menu();
+		menu2.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
+		menu2.setName(menu.getName());
+		menu2.setIsDelete(SysConstant.SHORT_FALSE);
+
+		List<Menu> menuList = menuService.query(locale, menu2);
+
+		if (menuList.size() > 0 && !menuList.get(0).getId().equals(menu.getId())) {
+			return new ResultMsg(false, new Msg(false, "该菜名已经存在!"));
+		}
+
+		menu.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
+		menu.setDateTime(DateUtil.now());
+		menu.setIsDelete(SysConstant.CHECK_ON.equals(isDelete) ? SysConstant.SHORT_TRUE : SysConstant.SHORT_FALSE);
+
+		if (menuService.update(locale, menu)) {
+			return new ResultMsg(true);
+		} else {
+			return new ResultMsg(false, new Msg(false, "更新失败!"));
 		}
 	}
 
@@ -196,18 +231,16 @@ public class MenuController extends BaseController {
 	 * @modification 2014年03月29日 08:37:31
 	 * @return
 	 */
-	// @RequestMapping("delete")
+	@RequestMapping("delete")
 	@ResponseBody
 	public ResultMsg delete(@RequestBody ReqBody reqBody, Locale locale) {
 
 		logger.debug("删除【菜单】");
 
-		// TODO
-
 		Menu menu = getParam(reqBody, Menu.class);
 
 		// 参数验证
-		// Assert.notNull(menu.get);
+		Assert.notNull(menu.getId());
 
 		boolean deleted = menuService.delete(locale, menu);
 
@@ -248,22 +281,49 @@ public class MenuController extends BaseController {
 	 * @modification 2014年03月29日 08:37:31
 	 * @return
 	 */
-	// @RequestMapping("update")
-	@ResponseBody
-	public ResultMsg update(@RequestBody ReqBody reqBody, Locale locale) {
+	@RequestMapping("update")
+	public String update(HttpServletRequest request, @ModelAttribute Menu menu, Locale locale, Model model) {
 
 		logger.debug("更新【菜单】");
 
-		// TODO
-
-		Menu menu = getParam(reqBody, Menu.class);
-
 		// 参数验证
-		// Assert.notNull(menu.get);
+		Assert.notNull(menu.getId());
 
-		boolean updated = menuService.update(locale, menu);
+		String openId = WebUtil.getSessionBusiness(request).getOpenId();
 
-		return new ResultMsg(updated, reqBody.getId());
+		// 菜单分类List获取
+		MenuCategory menuCategory = new MenuCategory();
+		menuCategory.setOwner(openId);
+		menuCategory.setIsDelete(SysConstant.SHORT_FALSE);
+
+		List<MenuCategory> menuCategoryList = menuCategoryService.query(locale, menuCategory);
+
+		model.addAttribute("menuCategoryList", menuCategoryList);
+
+		MenuTaste menuTaste = new MenuTaste();
+		menuTaste.setOwner(openId);
+		menuTaste.setIsDelete(SysConstant.SHORT_FALSE);
+
+		// 菜单口味List获取
+		List<MenuTaste> menuTasteList = menuTasteService.query(locale, menuTaste);
+
+		model.addAttribute("menuTasteList", menuTasteList);
+
+		// 菜单获取
+		Menu menu2 = menuService.get(Menu.class, menu.getId());
+
+		model.addAttribute("menu", menu2);
+
+		if (StringUtil.isNotEmpty(menu2.getResourceId())) {
+			// 菜单图片资源获取
+			Resources resources = resourcesService.get(Resources.class, menu2.getResourceId());
+
+			if (resources != null) {
+				model.addAttribute("extra_imgPath", resources.getPath());
+			}
+		}
+
+		return "menu/update";
 	}
 
 	/**

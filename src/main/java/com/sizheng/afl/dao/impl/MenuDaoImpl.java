@@ -45,9 +45,9 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	resources.path\n");
 		sqlSb.append("FROM\n");
 		sqlSb.append("	menu\n");
-		sqlSb.append("INNER JOIN resources ON menu.resource_id = resources.id\n");
-		sqlSb.append("INNER JOIN menu_taste ON menu.taste_id = menu_taste.id\n");
-		sqlSb.append("INNER JOIN menu_category ON menu.category_id = menu_category.id\n");
+		sqlSb.append("LEFT JOIN resources ON menu.resource_id = resources.id\n");
+		sqlSb.append("LEFT JOIN menu_taste ON menu.taste_id = menu_taste.id\n");
+		sqlSb.append("LEFT JOIN menu_category ON menu.category_id = menu_category.id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu.`owner` = ?\n");
 		

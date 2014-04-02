@@ -54,7 +54,8 @@ public class ResourcesServiceImpl extends BaseServiceImpl implements IResourcesS
 		
 		logger.debug("[业务逻辑层]删除【资源】");
 		
-		// TODO
+		hibernateTemplate.delete(resources);
+
 		return true;
 	}
 
