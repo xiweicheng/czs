@@ -251,6 +251,17 @@ public class WeiXinController extends BaseController {
 		WebUtil.writeString(response, resp);
 	}
 
+	/**
+	 * 添加商家
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月3日 下午2:01:36
+	 * @modification 2014年4月3日 下午2:01:36
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("businessAdd")
 	public String businessAdd(HttpServletRequest request, Locale locale, Model model) {
 		model.addAttribute("url", weiXinService.getWebpageCodeUrl("business/add.do", "param-state"));

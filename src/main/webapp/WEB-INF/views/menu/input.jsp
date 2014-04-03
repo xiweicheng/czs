@@ -159,11 +159,9 @@
 		<i class="close icon"></i>
 		<div class="header">添加分类</div>
 		<div class="content">
-			<div class="left">
-				<div class="ui form">
-					<div class="field">
-						<label>输入分类</label> <input type="text" id="category-text">
-					</div>
+			<div class="ui form">
+				<div class="field">
+					<label>输入分类</label> <input type="text" id="category-text">
 				</div>
 			</div>
 		</div>
@@ -184,11 +182,9 @@
 		<i class="close icon"></i>
 		<div class="header">添加口味</div>
 		<div class="content">
-			<div class="left">
-				<div class="ui form">
-					<div class="field">
-						<label>输入口味</label> <input type="text" id="taste-text">
-					</div>
+			<div class="ui form">
+				<div class="field">
+					<label>输入口味</label> <input type="text" id="taste-text">
 				</div>
 			</div>
 		</div>
@@ -291,9 +287,8 @@
 				},
 				onApprove : function() {
 				}
-			});//.modal('attach events', '#select-image-btn', 'show');
-			
-			
+			});
+
 			$('#select-image-btn').click(function() {
 				$.ajax({
 					type : "POST",
@@ -364,20 +359,14 @@
 							alert(data.msg.detail);
 						}
 					});
-					//alert('success');
 				},
 				onFailure : function() {
 					$("html,body").animate({
 						scrollTop : $("#error-msg-anchor").offset().top
 					}, 500);
-					//alert('输入有误!');
 				}
 			});
 
-			/* $('#add-menu-btn').click(function() {
-				//$('#add-menu-ui-form').form('validate form');
-				$('#add-menu-ui-form').form('submit');
-			}); */
 		});
 
 		/**选中图片 **/

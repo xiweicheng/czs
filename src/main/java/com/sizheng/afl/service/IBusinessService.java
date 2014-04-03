@@ -148,4 +148,28 @@ public interface IBusinessService extends IBaseService {
 	 * @return
 	 */
 	String sendMail(Locale locale, Business business, String serverBaseUrl);
+
+	/**
+	 * 生成登录动态二维码.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月3日 下午1:41:31
+	 * @modification 2014年4月3日 下午1:41:31
+	 * @param locale
+	 * @param business
+	 * @return
+	 */
+	String createDynamicCode(Locale locale, Business business);
+
+	/**
+	 * 查询消费用户.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月3日 下午5:02:20
+	 * @modification 2014年4月3日 下午5:02:20
+	 * @param locale
+	 * @param business
+	 * @return
+	 */
+	List<Map<String, Object>> listCustomer(Locale locale, Business business);
 }

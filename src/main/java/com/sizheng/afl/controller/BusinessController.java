@@ -30,6 +30,7 @@ import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
 
@@ -112,7 +113,7 @@ public class BusinessController extends BaseController {
 			model.addAttribute("message", "商家信息更新失败!");
 		}
 
-		return "result";
+		return "business/main";
 	}
 
 	/**
@@ -206,9 +207,29 @@ public class BusinessController extends BaseController {
 
 		logger.debug("顾客列举【商家】");
 
-		model.addAttribute("message", "网站建设中...");
+		Business business = new Business();
+		business.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
 
-		return "result";
+		List<Map<String, Object>> customerList = businessService.listCustomer(locale, business);
+
+		int ongoing = 0;
+		int disabled = 0;
+
+		for (Map<String, Object> map : customerList) {
+			if (SysConstant.NUM_1 == NumberUtil.getInteger(map, "status")) {
+				ongoing++;
+			} else if (SysConstant.NUM_2 == NumberUtil.getInteger(map, "status")) {
+				disabled++;
+			}
+		}
+
+		model.addAttribute("customerList", customerList);
+		model.addAttribute("total", customerList.size());
+		model.addAttribute("ongoing", ongoing);
+		model.addAttribute("disabled", disabled);
+		model.addAttribute("over", customerList.size() - ongoing - disabled);
+
+		return "business/customer-list";
 	}
 
 	/**
@@ -359,7 +380,7 @@ public class BusinessController extends BaseController {
 		} else {
 			model.addAttribute("message", "登录失败!");
 
-			return "result";
+			return "error";
 		}
 	}
 

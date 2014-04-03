@@ -46,5 +46,17 @@ public interface IBusinessDao {
 	 * @return
 	 */
 	long queryCount(Locale locale, Business business);
+
+	/**
+	 * 查询列举消费用户.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月3日 下午5:04:00
+	 * @modification 2014年4月3日 下午5:04:00
+	 * @param locale
+	 * @param business
+	 * @return
+	 */
+	List<Map<String, Object>> listCustomer(Locale locale, Business business);
 	
 }

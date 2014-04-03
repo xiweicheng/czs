@@ -40,20 +40,25 @@
 				<i class="dropdown icon"></i> ${item.name} <a
 					style="float: right; margin-right: 10px;"
 					href="menu/update.do?id=${item.id}">修改</a> <a
-					style="float: right; margin-right: 10px;" href="javascript:void(0);"
+					style="float: right; margin-right: 10px;"
+					href="javascript:void(0);"
 					onclick="menuDeleteHandler('${item.id}');">删除</a>
 			</div>
 			<div class="content" id="menu-item-content-${item.id}">
 				<img class="ui large image left floated" src="../../../${item.path}">
 
-				<div>
-					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}&nbsp;&nbsp;&nbsp;&nbsp;<b>添加时间:</b>
+				<div style="padding-bottom: 10px;">
+					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}
+				</div>
+				<div style="padding-bottom: 10px;">
+					<b>价格:</b>${item.price}&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>${item.privilege}
+				</div>
+				<div style="padding-bottom: 10px;">
+					<b>添加时间:</b>
 					<fmt:formatDate value="${item.date_time}"
 						pattern="yyyy/MM/dd hh:mm:ss" />
 				</div>
-				<div>
-					<b>价格:</b>${item.price}&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>${item.privilege}
-				</div>
+
 				<p>
 					<b>介绍:</b>${item.introduce}
 				</p>

@@ -35,47 +35,14 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">信息提示</h4>
 	<div class="ui segment attached">
-		<div class="ui relaxed celled list">
-			<div class="item">
-				<i class="user outline icon"></i>
-				<div class="content">
-					<div class="header">店名</div>
-					${business.name}
-				</div>
-			</div>
-			<div class="item">
-				<i class="home outline icon"></i>
-				<div class="content">
-					<div class="header">地址</div>
-					${business.address}
-				</div>
-			</div>
-			<div class="item">
-				<i class="phone outline icon"></i>
-				<div class="content">
-					<div class="header">电话</div>
-					${business.phoneNumber}
-				</div>
-			</div>
-			<div class="item">
-				<i class="mail outline icon"></i>
-				<div class="content">
-					<div class="header">E-mail</div>
-					${business.mail}
-				</div>
-			</div>
-			<div class="item">
-				<i class="comment outline icon"></i>
-				<div class="content">
-					<div class="header">介绍</div>
-					${business.introduce}
-				</div>
-			</div>
+		<div class="ui message">
+			<div class="header">详细信息</div>
+			<p>${message}</p>
 		</div>
 	</div>
 
 	<!-- footer -->
-	<%@ include file="../footer.jsp"%>
+	<%@ include file="footer.jsp"%>
 
 	<script type="text/javascript">
 		jQuery(function($) {

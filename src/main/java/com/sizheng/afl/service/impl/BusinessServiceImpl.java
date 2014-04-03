@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,12 +73,10 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		logger.debug("[业务逻辑层]添加【商家】");
 
-		com.sizheng.afl.pojo.entity.Business business2 = new com.sizheng.afl.pojo.entity.Business();
-		business2.setOpenId(business.getOpenId());
-		business2.setIsDeleted((short) 0);
-		business2.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
+		business.setIsDeleted((short) 0);
+		business.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
 
-		hibernateTemplate.save(business2);
+		hibernateTemplate.save(business);
 
 		return true;
 	}
@@ -116,26 +113,25 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		logger.debug("[业务逻辑层]更新【商家】");
 
-		com.sizheng.afl.pojo.entity.Business business2 = new com.sizheng.afl.pojo.entity.Business();
+		Business business2 = new Business();
 		business2.setOpenId(business.getOpenId());
 
 		List list = hibernateTemplate.findByExample(business2);
 
 		if (list.size() > 0) {
-			business2 = (com.sizheng.afl.pojo.entity.Business) list.get(0);
-			business2.setName(business.getName());
-			business2.setAddress(business.getAddress());
-			business2.setMail(business.getMail());
-			business2.setPhoneNumber(business.getPhoneNumber());
-			business2.setIntroduce(business.getIntroduce());
+			Business business3 = (Business) list.get(0);
+			business3.setName(business.getName());
+			business3.setAddress(business.getAddress());
+			business3.setMail(business.getMail());
+			business3.setPhoneNumber(business.getPhoneNumber());
+			business3.setIntroduce(business.getIntroduce());
 
-			hibernateTemplate.update(business2);
+			hibernateTemplate.update(business3);
 		} else {
-			BeanUtils.copyProperties(business, business2);
-			business2.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
-			business2.setIsDeleted((short) 0);
+			business.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
+			business.setIsDeleted((short) 0);
 
-			hibernateTemplate.save(business2);
+			hibernateTemplate.save(business);
 		}
 
 		return true;
@@ -357,6 +353,38 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				business.getMail());
 
 		return dynamicCode;
+	}
+
+	@Override
+	public String createDynamicCode(Locale locale, Business business) {
+
+		logger.debug("[业务逻辑层]生成登录动态码");
+
+		String dynamicCode = NumberUtil.random(6);
+
+		logger.debug(dynamicCode);
+
+		Business business2 = new Business();
+		business2.setOpenId(business.getOpenId());
+
+		List list = hibernateTemplate.findByExample(business2);
+
+		if (list.size() > 0) {
+			business2 = (Business) list.get(0);
+			business2.setDynamicCode(dynamicCode);
+
+			hibernateTemplate.update(business2);
+		} else {
+			logger.error("商家信息不存在!");
+		}
+
+		return dynamicCode;
+	}
+
+	@Override
+	public List<Map<String, Object>> listCustomer(Locale locale, Business business) {
+
+		return businessDao.listCustomer(locale, business);
 	}
 
 }

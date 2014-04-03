@@ -41,7 +41,6 @@
 
 	<script type="text/javascript">
 		jQuery(function($) {
-			$('#menu-item-business-main').addClass('active');
 		});
 	</script>
 </body>

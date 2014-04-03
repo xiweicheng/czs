@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -13,6 +14,8 @@
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-1.10.2.min.js"
+	charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tablesort.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.js"
 	charset="utf-8"></script>
@@ -28,57 +31,59 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">基本信息</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">顾客一览</h4>
 	<div class="ui segment attached">
-		<div class="ui button" id="business-update-ui-btn">修改信息</div>
-		<div class="ui relaxed celled list">
-			<div class="item">
-				<i class="user outline icon"></i>
-				<div class="content">
-					<div class="header">店名</div>
-					${business.name}
-				</div>
-			</div>
-			<div class="item">
-				<i class="home outline icon"></i>
-				<div class="content">
-					<div class="header">地址</div>
-					${business.address}
-				</div>
-			</div>
-			<div class="item">
-				<i class="phone outline icon"></i>
-				<div class="content">
-					<div class="header">电话</div>
-					${business.phoneNumber}
-				</div>
-			</div>
-			<div class="item">
-				<i class="mail outline icon"></i>
-				<div class="content">
-					<div class="header">E-mail</div>
-					${business.mail}
-				</div>
-			</div>
-			<div class="item">
-				<i class="comment outline icon"></i>
-				<div class="content">
-					<div class="header">介绍</div>
-					${business.introduce}
-				</div>
-			</div>
-		</div>
+		<!-- <div class="ui button" id="business-update-ui-btn">修改信息</div> -->
+		<table class="ui sortable table segment" style="display: table;">
+			<thead>
+				<tr>
+					<th class="">头像</th>
+					<th class="">名称</th>
+					<th class="">性别</th>
+					<th class="">状态</th>
+					<th class="">消费次数</th>
+					<th class="sorted descending">最后消费时间</th>
+					<th class="">位置描述</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${customerList}" var="item">
+					<tr>
+						<td><img class="ui avatar image" src="${item.headimgurl}"></td>
+						<td class="">${item.nickname}</td>
+						<td class=""><c:if test="${item.sex=='2'}">女</c:if> <c:if
+								test="${item.sex=='1'}">男</c:if> <c:if
+								test="${item.sex=='0'}">未知</c:if></td>
+						<td class=""><c:if test="${item.status=='0'}"><i class="stop icon"></i>消费终止</c:if> <c:if
+								test="${item.status=='1'}"><i class="play icon"></i>消费中</c:if> <c:if
+								test="${item.status=='2'}"><i class="ban circle icon"></i>消费禁止</c:if></td>
+						<td class="">${item.consume_times}</td>
+						<td class=""><fmt:formatDate
+								value="${item.last_consume_time}" pattern="yyyy/MM/dd hh:mm:ss" /></td>
+						<td class="">${item.description}</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+			<tfoot>
+				<tr>
+					<th>消费中 ${ongoing} 人</th>
+					<th>消费禁止 ${disabled} 人</th>
+					<th>消费终止 ${over} 人</th>
+					<th>总计 ${total} 人</th>
+				</tr>
+			</tfoot>
+		</table>
 	</div>
 
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
 
 
-	<!-- 信息修改modal -->
+	<%-- <!-- 信息修改modal -->
 	<div class="ui modal" id="business-update-modal">
 		<i class="close icon"></i>
 		<div class="header">信息修改</div>
-		<div class="content" style="padding-top:0px; padding-bottom:0px;">
+		<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 			<form action="business/update.do" id="business-update-form">
 				<input type="hidden" name="openId" value="${business.openId}">
 				<div class="ui warning form segment" id='business-update-ui-form'>
@@ -117,13 +122,16 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> --%>
 
 	<script type="text/javascript">
 		jQuery(function($) {
-			$('#menu-item-business-main').addClass('active');
 
-			$('#business-update-modal').modal({
+			$('table').tablesort().data('tablesort');
+
+			$('#menu-item-business-list').addClass('active');
+
+			/* $('#business-update-modal').modal({
 				closable : false,
 				onDeny : function() {
 					return true;
@@ -162,7 +170,7 @@
 						prompt : '请输入介绍!'
 					} ]
 				}
-			});
+			}); */
 
 			/* $('#business-update-ui-form').form('setting', {
 				onSuccess : function() {

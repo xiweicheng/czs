@@ -247,19 +247,14 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			business.setOpenId(bean.getFromUserName());
 
 			// 判断商家是否已经入驻
-			if (businessService.exists(locale, business)) {
-				// 已经入驻,发送信息提示,和完善商家信息链接.
-				// 这里有商家入驻->取消->再次入驻 的情况
-				String url = weiXinApiInvoker.getWebpageCodeUrl(
-						StringUtil.replaceByKV("business/input.do?openid={openId}", "openId", bean.getFromUserName()),
-						bean.getFromUserName());
-				return StringUtil.replace("您已经是入驻商家!您可以点击下面链接去修改或者完善自己的商家信息!\n\n<a href='{?1}'>{?2}</a>", url,
-						"[点击此]完善商家信息");
-			} else {
-				// 未入驻,发送确认入驻链接.
-				return StringUtil.replace("入驻为商家后,即可享受我们平台提供的便捷顾客与商家之间的优质桥梁服务!\n\n<a href='{?1}'>{?2}</a>",
-						weiXinApiInvoker.getWebpageCodeUrl("business/add.do", bean.getFromUserName()), "[点击此]确认入驻");
+			if (!businessService.exists(locale, business)) {
+				businessService.save(locale, business);
 			}
+
+			String dynamicCode = businessService.createDynamicCode(locale, business);
+
+			return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}'>[点击此]入驻登录</a>",
+					propUtil.getRedirectUrl(), "/business/verify.do", bean.getFromUserName(), dynamicCode);
 
 		} else if (WeiXinEventKey.EVT_KEY_04.getValue().equals(eventKey)) {
 
