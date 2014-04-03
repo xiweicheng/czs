@@ -108,12 +108,11 @@ public class BusinessController extends BaseController {
 		logger.debug("信息输入【商家】");
 
 		if (businessService.update(locale, business)) {
-			model.addAttribute("message", "商家信息更新成功!");
+			return "forward:main.do";
 		} else {
 			model.addAttribute("message", "商家信息更新失败!");
+			return "result";
 		}
-
-		return "business/main";
 	}
 
 	/**
