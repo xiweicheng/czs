@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Menu;
+import com.sizheng.afl.pojo.entity.MenuBill;
 import com.sizheng.afl.pojo.entity.MenuCategory;
 import com.sizheng.afl.pojo.entity.MenuTaste;
 import com.sizheng.afl.pojo.entity.Resources;
@@ -36,6 +37,7 @@ import com.sizheng.afl.service.IMenuCategoryService;
 import com.sizheng.afl.service.IMenuService;
 import com.sizheng.afl.service.IMenuTasteService;
 import com.sizheng.afl.service.IResourcesService;
+import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
@@ -67,6 +69,9 @@ public class MenuController extends BaseController {
 
 	@Autowired
 	IResourcesService resourcesService;
+
+	@Autowired
+	IUserService userService;
 
 	/**
 	 * 添加【菜单】.
@@ -347,6 +352,53 @@ public class MenuController extends BaseController {
 		model.addAttribute("menuList", mapList);
 
 		return "menu/list";
+	}
+
+	/**
+	 * 顾客点菜列举【菜单】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月29日 08:37:31
+	 * @modification 2014年03月29日 08:37:31
+	 * @return
+	 */
+	@RequestMapping("free/list4bill")
+	public String list4bill(HttpServletRequest request, Model model, Locale locale,
+			@RequestParam("openId") String openId) {
+
+		logger.debug("顾客点菜列举【菜单】");
+
+		String businessOpenId = userService.getBusiness(locale, openId);
+
+		Menu menu = new Menu();
+		menu.setOwner(businessOpenId);
+
+		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu);
+
+		model.addAttribute("menuList", mapList);
+
+		return "menu/list-bill";
+	}
+
+	/**
+	 * 顾客点菜列举【菜单】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月29日 08:37:31
+	 * @modification 2014年03月29日 08:37:31
+	 * @return
+	 */
+	@RequestMapping("free/billDeal")
+	@ResponseBody
+	public ResultMsg billDeal(HttpServletRequest request, Model model, Locale locale, @ModelAttribute MenuBill menuBill) {
+
+		logger.debug("顾客点菜【菜单】");
+
+		Assert.notNull(menuBill.getConsumerId());
+
+		boolean value = menuService.billDeal(locale, menuBill);
+
+		return new ResultMsg(value);
 	}
 
 	/**

@@ -46,5 +46,17 @@ public interface IUserDao {
 	 * @return
 	 */
 	long queryCount(Locale locale, User user);
-	
+
+	/**
+	 * 查询顾客的消费菜单.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月4日 上午11:08:03
+	 * @modification 2014年4月4日 上午11:08:03
+	 * @param locale
+	 * @param consumeCode
+	 * @return
+	 */
+	List<Map<String, Object>> queryMenuBill(Locale locale, String consumeCode);
+
 }

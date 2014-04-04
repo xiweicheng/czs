@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2014-4-4 9:54:03 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.sizheng.afl.pojo.entity.MenuBill" table="menu_bill" catalog="afl">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="menuId" type="java.lang.Long">
+            <column name="menu_id" />
+        </property>
+        <property name="consumerId" type="string">
+            <column name="consumer_id">
+                <comment>&#185;&#203;&#191;&#205;openid</comment>
+            </column>
+        </property>
+        <property name="consumeCode" type="string">
+            <column name="consume_code" length="500" />
+        </property>
+        <property name="dateTime" type="timestamp">
+            <column name="date_time" length="19" />
+        </property>
+        <property name="status" type="java.lang.Short">
+            <column name="status">
+                <comment>0:&#180;&#253;&#182;&#168;;1:&#200;&#183;&#182;&#168;;2:&#205;&#203;&#182;&#169;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

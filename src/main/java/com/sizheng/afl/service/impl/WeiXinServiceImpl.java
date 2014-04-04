@@ -258,12 +258,10 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 		} else if (WeiXinEventKey.EVT_KEY_04.getValue().equals(eventKey)) {
 
-			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]下载二维码</a>", propUtil.getRedirectUrl()
-					+ "/qrcode/download.do", bean.getFromUserName());
-			String url2 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]发送登录链接</a>", propUtil.getRedirectUrl()
+			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]发送登录链接</a>", propUtil.getRedirectUrl()
 					+ "/business/sendLink.do", bean.getFromUserName());
 
-			return StringUtil.replace("{?1}\n\n{?2}", url1, url2);
+			return StringUtil.replace("{?1}", url1);
 		}
 
 		return null;

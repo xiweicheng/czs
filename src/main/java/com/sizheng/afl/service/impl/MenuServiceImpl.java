@@ -21,7 +21,9 @@ import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.dao.IMenuDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Menu;
+import com.sizheng.afl.pojo.entity.MenuBill;
 import com.sizheng.afl.pojo.entity.Resources;
+import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IMenuService;
 import com.sizheng.afl.util.DateUtil;
@@ -128,7 +130,8 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public boolean upload(String calcServerBaseUrl, String realPath, MultipartFile imageFile, Locale locale, String openId) {
+	public boolean upload(String calcServerBaseUrl, String realPath, MultipartFile imageFile, Locale locale,
+			String openId) {
 
 		logger.debug("[业务逻辑层]上传图片");
 
@@ -173,6 +176,28 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	public List<Map<String, Object>> queryMapList(Locale locale, Menu menu) {
 
 		return menuDao.query(locale, menu, null, null);
+	}
+
+	@Override
+	public boolean billDeal(Locale locale, MenuBill menuBill) {
+
+		User user = new User();
+		user.setUserName(menuBill.getConsumerId());
+
+		List list = hibernateTemplate.findByExample(user);
+
+		if (list.size() > 0) {
+			menuBill.setConsumeCode(((User) list.get(0)).getConsumeCode());
+			menuBill.setDateTime(DateUtil.now());
+
+			hibernateTemplate.save(menuBill);
+
+			return true;
+		} else {
+			logger.error("顾客用户不存在! openId:" + menuBill.getConsumerId());
+		}
+
+		return false;
 	}
 
 }

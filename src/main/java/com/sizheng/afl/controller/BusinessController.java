@@ -168,32 +168,6 @@ public class BusinessController extends BaseController {
 	}
 
 	/**
-	 * 更新【商家】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年03月25日 02:46:32
-	 * @modification 2014年03月25日 02:46:32
-	 * @return
-	 */
-	// @RequestMapping("update")
-	@ResponseBody
-	public ResultMsg update(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("更新【商家】");
-
-		// TODO
-
-		Business business = getParam(reqBody, Business.class);
-
-		// 参数验证
-		// Assert.notNull(business.get);
-
-		boolean updated = businessService.update(locale, business);
-
-		return new ResultMsg(updated, reqBody.getId());
-	}
-
-	/**
 	 * 顾客列举【商家】.
 	 * 
 	 * @author xiweicheng
@@ -432,9 +406,12 @@ public class BusinessController extends BaseController {
 
 		String dynamicCode = businessService.sendMail(locale, business, serverBaseUrl);
 
-		model.addAttribute("message", StringUtil.replace("您的动态登录密码:{?1}", dynamicCode));
+		String loginUrl = StringUtil.replace("{?1}/business/login.do?openId={?2}", serverBaseUrl, openId);
 
-		return "result";
+		model.addAttribute("message", StringUtil.replace(
+				"登录链接已经发到您的邮箱,请查收!<br/><br/>您的动态登录密码:{?1}<br/><br/><a href='{?2}'>也可点此登录</a>", dynamicCode, loginUrl));
+
+		return "error";
 
 	}
 

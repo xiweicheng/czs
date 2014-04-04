@@ -30,18 +30,40 @@ public class UserDaoImpl extends BaseDaoImpl implements IUserDao {
 
 	@Override
 	public List<Map<String, Object>> query(Locale locale, User user, Long start, Long limit) {
-		
+
 		// TODO
-		
+
 		return null;
 	}
 
 	@Override
 	public long queryCount(Locale locale, User user) {
-	
+
 		// TODO
-	
+
 		return 0L;
 	}
-	
+
+	@Override
+	public List<Map<String, Object>> queryMenuBill(Locale locale, String consumeCode) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu_bill.id,\n");
+		sqlSb.append("	menu_bill.menu_id,\n");
+		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	menu_bill.date_time,\n");
+		sqlSb.append("	menu.`name`,\n");
+		sqlSb.append("	menu.price,\n");
+		sqlSb.append("	menu.privilege\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu_bill\n");
+		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu_bill.consume_code = ?\n");
+		sqlSb.append("AND menu_bill.`status` = 1\n");
+
+		return getMapList(sqlSb, consumeCode);
+	}
+
 }

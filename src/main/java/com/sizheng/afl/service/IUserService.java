@@ -111,5 +111,28 @@ public interface IUserService extends IBaseService {
 	 */
 	boolean exists(Locale locale, User user);
 
-	boolean bill(Locale locale, String openId, String consumeCode);
+	/**
+	 * 结账
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月3日 下午9:54:19
+	 * @modification 2014年4月3日 下午9:54:19
+	 * @param locale
+	 * @param openId
+	 * @param consumeCode
+	 * @return
+	 */
+	Double bill(Locale locale, String openId, String consumeCode);
+
+	/**
+	 * 获取顾客所在商家的ID.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月3日 下午9:47:41
+	 * @modification 2014年4月3日 下午9:47:41
+	 * @param locale
+	 * @param openId
+	 * @return
+	 */
+	String getBusiness(Locale locale, String openId);
 }

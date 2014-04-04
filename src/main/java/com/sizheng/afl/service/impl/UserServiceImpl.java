@@ -20,6 +20,7 @@ import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IUserService;
+import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 
 /**
@@ -46,40 +47,40 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 
 	@Override
 	public boolean save(Locale locale, User user) {
-		
+
 		logger.debug("[业务逻辑层]添加【用户】");
-		
+
 		// TODO
 		return true;
 	}
 
 	@Override
 	public boolean delete(Locale locale, User user) {
-		
+
 		logger.debug("[业务逻辑层]删除【用户】");
-		
+
 		// TODO
 		return true;
 	}
 
 	@Override
 	public User get(Locale locale, User user) {
-		
+
 		logger.debug("[业务逻辑层]获取【用户】");
-		
+
 		// TODO
 		return null;
 	}
 
 	@Override
 	public boolean update(Locale locale, User user) {
-		
+
 		logger.debug("[业务逻辑层]更新【用户】");
-		
+
 		// TODO
 		return true;
 	}
-	
+
 	@Override
 	public List<User> list(Locale locale) {
 
@@ -88,7 +89,7 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 		// TODO
 		return null;
 	}
-	
+
 	@Override
 	public List<Map<String, Object>> query(Locale locale, User user) {
 
@@ -108,18 +109,18 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 		// TODO
 		return pageResult;
 	}
-	
+
 	@Override
 	public boolean exists(Locale locale, User user) {
-		
+
 		logger.debug("[业务逻辑层]判断【用户】是否存在");
-		
+
 		// TODO
 		return true;
 	}
 
 	@Override
-	public boolean bill(Locale locale, String openId, String consumeCode) {
+	public Double bill(Locale locale, String openId, String consumeCode) {
 
 		User user = new User();
 		user.setUserName(openId);
@@ -131,7 +132,24 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 			User user2 = (User) list.get(0);
 
 			if (StringUtil.isEmpty(user2.getConsumeCode())) {
-				return false;
+				return null;
+			}
+
+			List<Map<String, Object>> list3 = userDao.queryMenuBill(locale, consumeCode);
+
+			Double val = 0D;
+
+			for (Map<String, Object> map : list3) {
+
+				Double price = NumberUtil.getDouble(map, "price");
+				Double privilege = NumberUtil.getDouble(map, "privilege");
+
+				if (privilege != null && privilege < 1 && privilege > 0) {
+					val += (price * privilege);
+				} else {
+					privilege = privilege == null ? 0 : privilege;
+					val += (price - privilege);
+				}
 			}
 
 			user2.setConsumeCode(null);
@@ -147,14 +165,43 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 			if (list2.size() > 0) {
 				BusinessConsumer businessConsumer2 = (BusinessConsumer) list2.get(0);
 				businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_STOP);
+				businessConsumer2.setConsumeCode(null);
 
 				hibernateTemplate.update(businessConsumer2);
 
-				return true;
+				return val;
 			}
 		}
 
-		return false;
+		return null;
 	}
-	
+
+	@Override
+	public String getBusiness(Locale locale, String openId) {
+
+		User user = new User();
+		user.setUserName(openId);
+
+		List list = hibernateTemplate.findByExample(user);
+
+		if (list.size() > 0) {
+			String consumeCode = ((User) list.get(0)).getConsumeCode();
+			BusinessConsumer businessConsumer = new BusinessConsumer();
+			businessConsumer.setConsumeCode(consumeCode);
+
+			List list2 = hibernateTemplate.findByExample(businessConsumer);
+
+			if (list2.size() > 0) {
+				return ((BusinessConsumer) list2.get(0)).getBusinessId();
+			} else {
+				logger.error("用户消费信息不存在! consumeCode:" + consumeCode);
+				return null;
+			}
+		} else {
+			logger.error("用户不存在! openId:" + openId);
+			return null;
+		}
+
+	}
+
 }

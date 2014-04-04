@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sizheng.afl.base.IBaseService;
 import com.sizheng.afl.pojo.entity.Menu;
+import com.sizheng.afl.pojo.entity.MenuBill;
 import com.sizheng.afl.pojo.vo.PageResult;
 
 /**
@@ -136,4 +137,16 @@ public interface IMenuService extends IBaseService {
 	 * @return
 	 */
 	List<Map<String, Object>> queryMapList(Locale locale, Menu menu);
+
+	/**
+	 * 顾客下单
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月4日 上午10:07:48
+	 * @modification 2014年4月4日 上午10:07:48
+	 * @param locale
+	 * @param menuBill
+	 * @return
+	 */
+	boolean billDeal(Locale locale, MenuBill menuBill);
 }

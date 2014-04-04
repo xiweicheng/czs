@@ -7,7 +7,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>餐助手-header</title>
-<script src="../../../resources/js/business/main.js" charset="utf-8"></script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -21,5 +20,13 @@
 		</div>
 	</div>
 
+
+	<script type="text/javascript">
+		jQuery(function($) {
+			$('.launch.item').click(function() {
+				$('.ui.sidebar').sidebar("toggle");
+			});
+		});
+	</script>
 </body>
 </html>

@@ -294,8 +294,11 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 					StringUtil.replace("顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}", nickName,
 							businessConsumer.getConsumeTimes(), qrsceneId));
 
-			return StringUtil.replace("这是您第[{?1}]次光顾{?3}店!谢谢您的亲睐!\n\n您的结账消费码: {?2}",
-					businessConsumer.getConsumeTimes(), qrsceneId, businessName);
+			String selMenuUrl = StringUtil.replace("{?1}?openId={?2}", propUtil.getRedirectUrl()
+					+ "/menu/free/list4bill.do", bean.getFromUserName());
+
+			return StringUtil.replace("这是您第[{?1}]次光顾{?3}店!谢谢您的亲睐!\n\n您的结账消费码: {?2}\n\n<a href='{?4}'>[点击此]点菜</a>",
+					businessConsumer.getConsumeTimes(), qrsceneId, businessName, selMenuUrl);
 		} else {
 			// 第一次来此商家消费 新顾客 告知消费者&商家
 			BusinessConsumer businessConsumer = new BusinessConsumer();
@@ -320,7 +323,11 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(),
 					StringUtil.replace("顾客[{?1}]首次光顾!\n\n结账消费码:{?2}", nickName, qrsceneId));
 
-			return StringUtil.replace("这是您[首次]光顾{?2}店!谢谢您的亲睐!\n\n您的结账消费码: {?1}", qrsceneId, businessName);
+			String selMenuUrl = StringUtil.replace("{?1}?openId={?2}", propUtil.getRedirectUrl()
+					+ "/menu/free/list4bill.do", bean.getFromUserName());
+
+			return StringUtil.replace("这是您[首次]光顾{?2}店!谢谢您的亲睐!\n\n您的结账消费码: {?1}\n\n<a href='{?3}'>[点击此]点菜</a>",
+					qrsceneId, businessName, selMenuUrl);
 		}
 	}
 

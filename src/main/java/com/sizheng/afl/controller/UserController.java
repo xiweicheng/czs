@@ -56,7 +56,7 @@ public class UserController extends BaseController {
 	// @RequestMapping("add")
 	@ResponseBody
 	public ResultMsg add(@RequestBody ReqBody reqBody, Locale locale) {
-	
+
 		logger.debug("添加【用户】");
 
 		// TODO
@@ -83,7 +83,7 @@ public class UserController extends BaseController {
 	// @RequestMapping("delete")
 	@ResponseBody
 	public ResultMsg delete(@RequestBody ReqBody reqBody, Locale locale) {
-	
+
 		logger.debug("删除【用户】");
 
 		// TODO
@@ -109,13 +109,13 @@ public class UserController extends BaseController {
 	// @RequestMapping("get")
 	@ResponseBody
 	public ResultMsg get(@RequestBody ReqBody reqBody, Locale locale) {
-	
+
 		logger.debug("获取【用户】");
 
 		// TODO
 
 		User user = getParam(reqBody, User.class);
-		
+
 		// 参数验证
 		// Assert.notNull(user.get);
 
@@ -123,7 +123,7 @@ public class UserController extends BaseController {
 
 		return new ResultMsg(true, reqBody.getId(), getUser);
 	}
-	
+
 	/**
 	 * 更新【用户】.
 	 * 
@@ -135,13 +135,13 @@ public class UserController extends BaseController {
 	// @RequestMapping("update")
 	@ResponseBody
 	public ResultMsg update(@RequestBody ReqBody reqBody, Locale locale) {
-	
+
 		logger.debug("更新【用户】");
 
 		// TODO
 
 		User user = getParam(reqBody, User.class);
-		
+
 		// 参数验证
 		// Assert.notNull(user.get);
 
@@ -149,7 +149,7 @@ public class UserController extends BaseController {
 
 		return new ResultMsg(updated, reqBody.getId());
 	}
-	
+
 	/**
 	 * 列举【用户】.
 	 * 
@@ -161,13 +161,13 @@ public class UserController extends BaseController {
 	// @RequestMapping("list")
 	@ResponseBody
 	public ResultMsg list(@RequestBody ReqBody reqBody, Locale locale) {
-	
+
 		logger.debug("列举【用户】");
 
 		// TODO
 
 		// User user = getParam(reqBody, User.class);
-		
+
 		// 参数验证
 		// Assert.notNull(user.get);
 
@@ -175,7 +175,7 @@ public class UserController extends BaseController {
 
 		return new ResultMsg(reqBody.getId(), userList);
 	}
-	
+
 	/**
 	 * 查询【用户】(不分页).
 	 * 
@@ -223,14 +223,14 @@ public class UserController extends BaseController {
 		// 参数验证
 		Assert.notNull(reqBody.getStart());
 		Assert.notNull(reqBody.getLimit());
-		
+
 		// Assert.notNull(user.get);
 
 		PageResult pageResult = userService.paging(locale, user, reqBody.getStart(), reqBody.getLimit());
 
 		return new ResultMsg(reqBody.getId(), pageResult.getList(), pageResult.getTotal());
 	}
-	
+
 	@RequestMapping("bill")
 	public String bill(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId,
 			@RequestParam("consumeCode") String consumeCode) {
@@ -238,15 +238,15 @@ public class UserController extends BaseController {
 		logger.debug("食客结账【消费者】");
 
 		// TODO
-		boolean result = userService.bill(locale, openId, consumeCode);
+		Double result = userService.bill(locale, openId, consumeCode);
 
-		if (result) {
-			model.addAttribute("message", "您的消费金额: 188");
+		if (result != null) {
+			model.addAttribute("message", "您的消费金额: " + result);
 		} else {
 			model.addAttribute("message", "您没有消费记录!");
 		}
 
-		return "result";
+		return "message";
 
 	}
 

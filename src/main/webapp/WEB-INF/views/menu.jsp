@@ -48,8 +48,6 @@
 			}catch(e){
 				$('.ui.sidebar').sidebar('show');
 			}
-			
-			$('#menu-item-business-main').addClass('active');
 		});
 	</script>
 </body>
