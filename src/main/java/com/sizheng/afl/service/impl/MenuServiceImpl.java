@@ -4,6 +4,8 @@
 package com.sizheng.afl.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,6 +22,7 @@ import com.sizheng.afl.component.ApiInvoker;
 import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.dao.IMenuDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Menu;
 import com.sizheng.afl.pojo.entity.MenuBill;
 import com.sizheng.afl.pojo.entity.Resources;
@@ -173,9 +176,57 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public List<Map<String, Object>> queryMapList(Locale locale, Menu menu) {
+	public List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode) {
 
-		return menuDao.query(locale, menu, null, null);
+		List<Map<String, Object>> list = menuDao.query(locale, menu, consumeCode, null, null);
+
+		Map<String, Map<String, Object>> mapMap = new HashMap<String, Map<String, Object>>();
+
+		for (Map<String, Object> map : list) {
+			String id = StringUtil.getNotNullString(map, "id");
+
+			if (!mapMap.containsKey(id)) {
+				mapMap.put(id, map);
+				List<Map<String, Object>> mapList = new ArrayList<>();
+				map.put("menuBill", mapList);
+				Map<String, Object> map2 = new HashMap<>();
+				mapList.add(map2);
+				map2.put("status", map.get("status"));
+				map2.put("consumer_id", map.get("consumer_id"));
+				map2.put("copies", map.get("copies"));
+				map2.put("consume_code", map.get("consume_code"));
+				map2.put("nickname", map.get("nickname"));
+
+				if (!consumeCode.equals(map.get("consume_code"))) {
+					map.remove("status");
+					map.remove("consumer_id");
+					map.remove("copies");
+					map.remove("consume_code");
+					map.remove("nickname");
+				}
+			} else {
+				Map<String, Object> map2 = mapMap.get(id);
+				List<Map<String, Object>> mapList = (List<Map<String, Object>>) map2.get("menuBill");
+
+				Map<String, Object> map3 = new HashMap<>();
+				map3.put("status", map.get("status"));
+				map3.put("consumer_id", map.get("consumer_id"));
+				map3.put("copies", map.get("copies"));
+				map3.put("consume_code", map.get("consume_code"));
+				map3.put("nickname", map.get("nickname"));
+				mapList.add(map3);
+
+				if (consumeCode.equals(map.get("consume_code"))) {
+					map2.put("status", map.get("status"));
+					map2.put("consumer_id", map.get("consumer_id"));
+					map2.put("copies", map.get("copies"));
+					map2.put("consume_code", map.get("consume_code"));
+					map2.put("nickname", map.get("nickname"));
+				}
+			}
+		}
+
+		return new ArrayList<>(mapMap.values());
 	}
 
 	@Override
@@ -187,17 +238,87 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 		List list = hibernateTemplate.findByExample(user);
 
 		if (list.size() > 0) {
-			menuBill.setConsumeCode(((User) list.get(0)).getConsumeCode());
-			menuBill.setDateTime(DateUtil.now());
 
-			hibernateTemplate.save(menuBill);
+			MenuBill menuBill2 = new MenuBill();
+			menuBill2.setConsumeCode(((User) list.get(0)).getConsumeCode());
+			menuBill2.setConsumerId(menuBill.getConsumerId());
+			menuBill2.setMenuId(menuBill.getMenuId());
 
-			return true;
+			List list2 = hibernateTemplate.findByExample(menuBill2);
+
+			if (list2.size() > 0) {
+				MenuBill menuBill3 = (MenuBill) list2.get(0);
+
+				// 原来 待定 =>请求 定了
+				if (menuBill3.getStatus() == 0) {
+					if (menuBill.getStatus() == 1) {
+						menuBill3.setDateTime(DateUtil.now());
+						menuBill3.setStatus(menuBill.getStatus());
+
+						hibernateTemplate.update(menuBill3);
+						return true;
+					}
+				} else if (menuBill3.getStatus() == 1) {
+					if (menuBill.getStatus() == 2) {// TODO 商家同意可以退订
+
+						menuBill3.setDateTime(DateUtil.now());
+
+						if (menuBill3.getCopies() == 1) {
+							menuBill3.setStatus(menuBill.getStatus());
+						} else if (menuBill3.getCopies() > 1) {
+							menuBill3.setCopies(menuBill3.getCopies() - 1);
+						}
+
+						hibernateTemplate.update(menuBill3);
+						return true;
+					} else if (menuBill.getStatus() == 1) {// 追加一份
+						menuBill3.setDateTime(DateUtil.now());
+						menuBill3.setCopies(StringUtil.isEmpty(menuBill3.getCopies()) ? 1L : menuBill3.getCopies() + 1);
+
+						hibernateTemplate.update(menuBill3);
+						return true;
+					}
+				} else if (menuBill3.getStatus() == 2) {
+					if (menuBill.getStatus() == 0 || menuBill.getStatus() == 1) {
+						menuBill3.setDateTime(DateUtil.now());
+						menuBill3.setStatus(menuBill.getStatus());
+
+						hibernateTemplate.update(menuBill3);
+						return true;
+					}
+				}
+				return false;
+			} else {
+				menuBill.setConsumeCode(((User) list.get(0)).getConsumeCode());
+				menuBill.setDateTime(DateUtil.now());
+				menuBill.setCopies(1L);
+
+				BusinessConsumer businessConsumer = new BusinessConsumer();
+				businessConsumer.setConsumeCode(((User) list.get(0)).getConsumeCode());
+				businessConsumer.setConsumerId(menuBill.getConsumerId());
+
+				List list3 = hibernateTemplate.findByExample(businessConsumer);
+
+				if (list3.size() > 0) {
+					menuBill.setSceneId(((BusinessConsumer) list3.get(0)).getSceneId());
+				} else {
+					logger.debug("BusinessConsumer信息不存在!");
+					return false;
+				}
+
+				hibernateTemplate.save(menuBill);
+				return true;
+			}
 		} else {
 			logger.error("顾客用户不存在! openId:" + menuBill.getConsumerId());
 		}
 
 		return false;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryBillMapList(Locale locale, Menu menu) {
+		return menuDao.queryBillList(locale, menu, null, null);
 	}
 
 }

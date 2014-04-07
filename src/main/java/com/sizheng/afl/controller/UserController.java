@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IUserService;
+import com.sizheng.afl.util.StringUtil;
 
 /**
  * 【用户】请求控制层.
@@ -44,6 +46,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	IUserService userService;
+
+	@Autowired
+	WeiXinApiInvoker weiXinApiInvoker;
 
 	/**
 	 * 添加【用户】.
@@ -250,6 +255,40 @@ public class UserController extends BaseController {
 
 	}
 
+	/**
+	 * 顾客申请结账.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 上午11:49:50
+	 * @modification 2014年4月7日 上午11:49:50
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @param consumeCode
+	 * @return
+	 */
+	@RequestMapping("free/billReq")
+	public String billReq(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId, @RequestParam("consumeCode") String consumeCode,
+			@RequestParam("type") String type) {
+
+		logger.debug("食客结账【消费者】");
+
+		Boolean result = userService.billReq(locale, openId, consumeCode, type);
+
+		String ss = StringUtil.replace("[{?1}]", "own".equals(type) ? "个人" : "集体");
+
+		if (result) {
+			// weiXinApiInvoker.sendServiceMsg(openId, "结账请求发送成功!");
+			model.addAttribute("message", ss + "结账请求发送成功!");
+		} else {
+			model.addAttribute("message", ss + "结账请求发送失败!");
+		}
+
+		return "message";
+	}
+
 	@RequestMapping("record")
 	public String record(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
 
@@ -257,7 +296,7 @@ public class UserController extends BaseController {
 
 		model.addAttribute("message", "[消费记录]页面建设中...");
 
-		return "result";
+		return "message";
 
 	}
 
@@ -268,7 +307,7 @@ public class UserController extends BaseController {
 
 		model.addAttribute("message", "[呼叫服务]页面建设中...");
 
-		return "result";
+		return "message";
 
 	}
 
@@ -279,7 +318,7 @@ public class UserController extends BaseController {
 
 		model.addAttribute("message", "[菜单一览]页面建设中...");
 
-		return "result";
+		return "message";
 
 	}
 

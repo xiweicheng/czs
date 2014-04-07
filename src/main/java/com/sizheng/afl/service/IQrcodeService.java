@@ -74,10 +74,11 @@ public interface IQrcodeService extends IBaseService {
 	 * @author xiweicheng
 	 * @creation 2014年03月25日 05:57:01
 	 * @modification 2014年03月25日 05:57:01
+	 * @param openId TODO
 	 * @param qrcode
 	 * @return
 	 */
-	List<Qrcode> list(Locale locale);
+	List<Qrcode> list(Locale locale, String openId);
 
 	/**
 	 * 查询【二维码】(不分页).

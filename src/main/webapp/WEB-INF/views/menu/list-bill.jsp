@@ -23,68 +23,154 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 
+	<!-- 侧边栏 -->
+	<%@ include file="../menu2.jsp"%>
+
 	<!-- header -->
-	<div class="ui fixed transparent inverted main menu" style="top: 0px;">
-		<div class="container">
-			<!-- <a class="launch item"><i class="icon list layout"></i></a> -->
-			<div class="title item">
-				<b>餐助手</b> 商家自助管理后台
-			</div>
-		</div>
-	</div>
+	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">菜单点菜</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">我要点菜</h4>
 	<div class="ui segment attached">
-		<div class="ui fluid accordion">
-
-			<c:forEach items="${menuList}" var="item">
-				<div class="title" id="menu-item-title-${item.id}">
-					<i class="dropdown icon"></i> ${item.name}<a
-						href="javascript:void(0);"
-						onclick="billDealHandler('${item.id}', '${param.openId}', '0')"
-						style="float: right; margin-right: 10px;">待定</a> <a
-						href="javascript:void(0);"
-						onclick="billDealHandler('${item.id}', '${param.openId}', '1')"
-						style="float: right; margin-right: 10px;">定了</a>
+		<div class="ui segment">
+			<form action="menu/free/list4bill.do" id="filter-form">
+				<input type="hidden" name="openId" value="${openId}">
+				<div class="ui selection dropdown" style="margin-bottom:10px;">
+					<input type="hidden" name="categoryId"
+						value="${selectedCategoryId }">
+					<div class="default text">分类</div>
+					<i class="dropdown icon"></i>
+					<div class="menu">
+						<div class="item" data-value="-1">全部</div>
+						<c:forEach items="${categoryList }" var="item">
+							<div class="item" data-value="${item.id }">${item.name }</div>
+						</c:forEach>
+					</div>
 				</div>
-				<div class="content" id="menu-item-content-${item.id}">
-					<img class="ui large image left floated"
-						src="../../../${item.path}">
+				<div class="ui selection dropdown" style="margin-bottom:10px;">
+					<input type="hidden" name="tasteId" value="${selectedTasteId }">
+					<div class="default text">口味</div>
+					<i class="dropdown icon"></i>
+					<div class="menu">
+						<div class="item" data-value="-1">全部</div>
+						<c:forEach items="${tasteList }" var="item">
+							<div class="item" data-value="${item.id }">${item.name }</div>
+						</c:forEach>
+					</div>
+				</div>
+				<div class="ui button" id="filter-ui-btn">筛选</div>
+				<div class="ui divider"></div>
+				<div style="margin-top: 10px;">
+					<div class="ui toggle checkbox">
+						<input type="checkbox" name="mode" id="mode-ui-checkbox">
+						<label for="check3">图文模式</label>
+					</div>
+				</div>
+			</form>
+		</div>
 
-					<div style="padding-bottom: 10px;">
-						<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}
+
+		<div class="ui stackable items" id="bill-list-ui-stackable-items">
+			<c:forEach items="${menuList}" var="item">
+				<div class="item" style="min-height: 0px;">
+					<div class="image" style="display: none">
+						<img src="../../../${item.path}">
+						<c:if test="${item.status == 1}">
+							<a class="like ui corner label"> <i class="checkmark icon"></i>
+						</c:if>
+						<c:if test="${item.status == 0}">
+							<a class="like ui corner label"> <i class="heart empty icon"></i>
+						</c:if>
+						</a>
 					</div>
-					<div style="padding-bottom: 10px;">
-						<b>价格:</b>${item.price}&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>${item.privilege}
+					<div class="content">
+						<div class="name">${item.name}</div>
+						<p class="description" style="display: none;">${item.introduce}</p>
+						<div style="padding-bottom: 10px;">
+							价格:${item.price} | 优惠:
+							<c:if test="${item.privilege < 1}">${item.privilege * 10}折</c:if>
+							<c:if test="${item.privilege >= 1}">${item.privilege}</c:if>
+							<br /> 分类:${item.category} | 口味:${item.taste}
+						</div>
+						<div class="2 fluid ui buttons">
+							<div
+								class="positive ui button <c:if test="${item.status == 1}">disabled</c:if>"
+								id="confirm-ui-btn-${item.id}"
+								<c:if test="${item.status != 1}">onclick="billDealHandler(this, '${item.id}', '${openId}', '1')"</c:if>>
+								<i class="checkmark icon"></i>定了
+							</div>
+							<div class="or"></div>
+							<div
+								class="negative ui button <c:if test="${item.status == 0 || item.status == 1}">disabled</c:if>"
+								id="hold-ui-btn-${item.id}"
+								<c:if test="${item.status != 0 && item.status != 1}">onclick="billDealHandler(this, '${item.id}', '${openId}', '0')"</c:if>>
+								<i class="heart empty icon"></i>待选
+							</div>
+						</div>
+						<div style="margin-top: 10px;">
+							<c:forEach items="${item.menuBill}" var="item2">
+								<c:if test="${item2.status == 1}">[${item2.nickname}]已定了${item2.copies}份!<br/>
+							</c:if>
+								<c:if test="${item2.status == 0}">[${item2.nickname}]待选中!<br/></c:if>
+								<c:if test="${item2.status == 2}">[${item2.nickname}]已退订!<br/></c:if>
+							</c:forEach>
+						</div>
 					</div>
-					<p>
-						<b>介绍:</b>${item.introduce}
-					</p>
-					<div style="clear: both;"></div>
 				</div>
 			</c:forEach>
 		</div>
 	</div>
-
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
 
 	<script type="text/javascript">
-		function billDealHandler(menuId, consumerId, status) {
+		function billDealHandler(_this, menuId, consumerId, status) {
+			if ($(_this).attr('class').indexOf('disabled') > -1) {
+				return;
+			}
 			$.post('menu/free/billDeal.do', {
 				menuId : menuId,
 				consumerId : consumerId,
 				status : status
 			}, function(msg) {
 				if (msg.succeed) {
-					alert('操作成功!')
+					if (status == 1) {
+						$('#confirm-ui-btn-' + menuId).addClass('disabled');
+						$('#hold-ui-btn-' + menuId).addClass('disabled');
+					} else if (status == 0) {
+						$('#hold-ui-btn-' + menuId).addClass('disabled');
+					}
+
 				} else {
 					alert('操作失败!')
 				}
 			});
 		}
 		jQuery(function($) {
-			$('.ui.accordion').accordion();
+			$('#menu-item-filter').addClass('active');
+			$('.ui.dropdown').dropdown();
+
+			$('#filter-ui-btn').click(function() {
+				$('#filter-form').submit();
+			});
+
+			$('.ui.checkbox').checkbox({
+				onEnable : function() {
+					$('#bill-list-ui-stackable-items').find('div[class="image"]').show();
+				},
+				onDisable : function() {
+					$('#bill-list-ui-stackable-items').find('div[class="image"]').hide();
+				}
+			});
+
+			(function() {
+				if ('${mode}' == 'on') {
+					$('#mode-ui-checkbox').attr('checked', "checked");
+					$('#bill-list-ui-stackable-items').find('div[class="image"]').show();
+				} else {
+					$('#bill-list-ui-stackable-items').find('div[class="image"]').hide();
+				}
+			})();
+
 		});
 	</script>
 </body>

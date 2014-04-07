@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-4 9:54:03 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-7 15:25:40 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -121,7 +121,7 @@ public class Qrcode implements java.io.Serializable {
 		this.url = url;
 	}
 
-	@Column(name = "filePath", length = 1000)
+	@Column(name = "file_path", length = 1000)
 	public String getFilePath() {
 		return this.filePath;
 	}

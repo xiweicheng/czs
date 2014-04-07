@@ -390,6 +390,7 @@ public final class WebUtil {
 	 */
 	public static String getRealPath(HttpServletRequest request) {
 		String realPath = request.getSession().getServletContext().getRealPath("/");
+		realPath = realPath.replace("\\", "/");
 
 		if (!realPath.endsWith("/")) {
 			return realPath + "/";

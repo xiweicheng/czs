@@ -106,17 +106,27 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 
 		logger.debug("[业务逻辑层]更新【二维码】");
 
-		// TODO
-		return true;
+		Qrcode qrcode2 = get(Qrcode.class, qrcode.getId());
+
+		if (qrcode2 != null) {
+			qrcode2.setDescription(qrcode.getDescription());
+
+			hibernateTemplate.update(qrcode2);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public List<Qrcode> list(Locale locale) {
+	public List<Qrcode> list(Locale locale, String openId) {
 
 		logger.debug("[业务逻辑层]列举【二维码】");
 
-		// TODO
-		return null;
+		Qrcode qrcode = new Qrcode();
+		qrcode.setOpenId(openId);
+
+		return hibernateTemplate.findByExample(qrcode);
 	}
 
 	@Override

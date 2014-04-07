@@ -148,22 +148,19 @@ public class QrcodeController extends BaseController {
 	 * @modification 2014年03月25日 05:57:01
 	 * @return
 	 */
-	// @RequestMapping("update")
+	@RequestMapping("update")
 	@ResponseBody
-	public ResultMsg update(@RequestBody ReqBody reqBody, Locale locale) {
+	public ResultMsg update(HttpServletRequest request, Locale locale, @ModelAttribute Qrcode qrcode) {
 
 		logger.debug("更新【二维码】");
 
-		// TODO
-
-		Qrcode qrcode = getParam(reqBody, Qrcode.class);
-
 		// 参数验证
-		// Assert.notNull(qrcode.get);
+		Assert.notNull(qrcode.getId());
+		Assert.notNull(qrcode.getDescription());
 
 		boolean updated = qrcodeService.update(locale, qrcode);
 
-		return new ResultMsg(updated, reqBody.getId());
+		return new ResultMsg(updated);
 	}
 
 	/**
@@ -174,22 +171,16 @@ public class QrcodeController extends BaseController {
 	 * @modification 2014年03月25日 05:57:01
 	 * @return
 	 */
-	// @RequestMapping("list")
-	@ResponseBody
-	public ResultMsg list(@RequestBody ReqBody reqBody, Locale locale) {
+	@RequestMapping("list")
+	public String list(HttpServletRequest request, Locale locale, Model model) {
 
 		logger.debug("列举【二维码】");
 
-		// TODO
+		List<Qrcode> qrcodeList = qrcodeService.list(locale, WebUtil.getSessionBusiness(request).getOpenId());
 
-		// Qrcode qrcode = getParam(reqBody, Qrcode.class);
+		model.addAttribute("qrcodeList", qrcodeList);
 
-		// 参数验证
-		// Assert.notNull(qrcode.get);
-
-		List<Qrcode> qrcodeList = qrcodeService.list(locale);
-
-		return new ResultMsg(reqBody.getId(), qrcodeList);
+		return "qrcode/list";
 	}
 
 	/**

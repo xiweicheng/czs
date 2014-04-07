@@ -3,6 +3,8 @@
  */
 package com.sizheng.afl.controller;
 
+import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,6 +27,7 @@ import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
+import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
@@ -49,6 +52,8 @@ import com.sizheng.afl.util.WebUtil;
 public class BusinessController extends BaseController {
 
 	private static Logger logger = Logger.getLogger(BusinessController.class);
+
+	private static DecimalFormat format = new DecimalFormat("0.00");
 
 	@Autowired
 	IBusinessService businessService;
@@ -176,31 +181,41 @@ public class BusinessController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("list")
-	public String list(HttpServletRequest request, Locale locale, Model model) {
+	public String list(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "status", required = false) String status) {
 
 		logger.debug("顾客列举【商家】");
 
 		Business business = new Business();
 		business.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
 
-		List<Map<String, Object>> customerList = businessService.listCustomer(locale, business);
+		List<Map<String, Object>> customerList = businessService.listCustomer(locale, business, status);
+		List<Map<String, Object>> list = businessService.listCustomer(locale, business, null);
 
 		int ongoing = 0;
 		int disabled = 0;
+		int requestOwn = 0;
+		int requestGroup = 0;
 
-		for (Map<String, Object> map : customerList) {
+		for (Map<String, Object> map : list) {
 			if (SysConstant.NUM_1 == NumberUtil.getInteger(map, "status")) {
 				ongoing++;
 			} else if (SysConstant.NUM_2 == NumberUtil.getInteger(map, "status")) {
 				disabled++;
+			} else if (SysConstant.NUM_3 == NumberUtil.getInteger(map, "status")) {
+				requestOwn++;
+			} else if (SysConstant.NUM_4 == NumberUtil.getInteger(map, "status")) {
+				requestGroup++;
 			}
 		}
 
 		model.addAttribute("customerList", customerList);
-		model.addAttribute("total", customerList.size());
+		model.addAttribute("total", list.size());
 		model.addAttribute("ongoing", ongoing);
 		model.addAttribute("disabled", disabled);
-		model.addAttribute("over", customerList.size() - ongoing - disabled);
+		model.addAttribute("requestOwn", requestOwn);
+		model.addAttribute("requestGroup", requestGroup);
+		model.addAttribute("over", list.size() - ongoing - disabled - requestOwn - requestGroup);
 
 		return "business/customer-list";
 	}
@@ -413,6 +428,96 @@ public class BusinessController extends BaseController {
 
 		return "error";
 
+	}
+
+	@RequestMapping("groupInfo")
+	@ResponseBody
+	public ResultMsg groupInfo(HttpServletRequest request, Locale locale,
+			@ModelAttribute BusinessConsumer businessConsumer) {
+
+		logger.debug("顾客体信息【商家】");
+
+		Assert.notNull(businessConsumer.getSceneId());
+
+		List<Map<String, Object>> list = businessService.queryGroupInfo(locale, businessConsumer);
+
+		double totalConsume = 0;
+
+		for (Map<String, Object> map : list) {
+			String consumeCode = StringUtil.getNotNullString(map, "consume_code");
+
+			double consume = businessService.getConsume(locale, consumeCode);
+			map.put("consume", format.format(consume));
+			totalConsume += consume;
+		}
+
+		ResultMsg resultMsg = new ResultMsg(true, list);
+		resultMsg.setValues(Arrays.asList((Object) format.format(totalConsume)));
+
+		return resultMsg;
+
+	}
+
+	/**
+	 * 结账确认处理.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("checkout")
+	@ResponseBody
+	public ResultMsg checkout(HttpServletRequest request, Locale locale,
+			@ModelAttribute BusinessConsumer businessConsumer) {
+
+		logger.debug("顾客结账确认处理【商家】");
+
+		Assert.notNull(businessConsumer.getSceneId());
+		Assert.notNull(businessConsumer.getConsumeCode());
+		Assert.notNull(businessConsumer.getStatus());
+		Assert.notNull(businessConsumer.getConsumerId());
+
+		Boolean value = businessService.checkout(locale, businessConsumer);
+
+		return new ResultMsg(value);
+
+	}
+
+	/**
+	 * 查询消费金额处理.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("queryConsume")
+	@ResponseBody
+	public ResultMsg queryConsume(HttpServletRequest request, Locale locale,
+			@ModelAttribute BusinessConsumer businessConsumer) {
+
+		logger.debug("顾客结账确认处理【商家】");
+
+		Assert.notNull(businessConsumer.getSceneId());
+		Assert.notNull(businessConsumer.getConsumeCode());
+		Assert.notNull(businessConsumer.getStatus());
+
+		double value = 0;
+
+		if (businessConsumer.getStatus() == 3) {
+			value = businessService.getConsume(locale, businessConsumer.getConsumeCode(), "own");
+		} else if (businessConsumer.getStatus() == 4) {
+			value = businessService.getConsume(locale, businessConsumer.getConsumeCode(), "group");
+		}
+
+		return new ResultMsg(true, (Object) format.format(value));
 	}
 
 }

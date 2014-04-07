@@ -15,7 +15,7 @@
 		<div class="container">
 			<a class="launch item"><i class="icon list layout"></i> 侧边菜单</a>
 			<div class="title item">
-				<b>餐助手</b> 商家自助管理后台
+				<b>餐助手</b> 商家管理后台
 			</div>
 		</div>
 	</div>

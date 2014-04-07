@@ -21,7 +21,8 @@
 				<i class="qr code icon"></i> 二维码
 			</div>
 			<a class="item" href="qrcode/download.do" id="menu-item-qrcode-main">
-				二维码生成</a>
+				二维码生成</a> <a class="item" href="qrcode/list.do"
+				id="menu-item-qrcode-list"> 二维码一览</a>
 			<div class="header item">
 				<i class="setting icon"></i> 菜单管理
 			</div>
@@ -32,20 +33,21 @@
 			<div class="header item">
 				<i class="users icon"></i> 顾客管理
 			</div>
-			<a class="item" href="business/list.do" id="menu-item-business-list">顾客一览 </a>
+			<a class="item" href="business/list.do" id="menu-item-business-list">顾客一览
+			</a>
 		</div>
 	</div>
-	
+
 	<script type="text/javascript">
-		jQuery(function($){
-			
-			try{
-			    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-			    	$('.ui.sidebar').sidebar("hide");
-			    }else{
-			    	$('.ui.sidebar').sidebar('show');
-			    }
-			}catch(e){
+		jQuery(function($) {
+
+			try {
+				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+					$('.ui.sidebar').sidebar("hide");
+				} else {
+					$('.ui.sidebar').sidebar('show');
+				}
+			} catch (e) {
 				$('.ui.sidebar').sidebar('show');
 			}
 		});

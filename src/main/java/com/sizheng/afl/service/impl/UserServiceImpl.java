@@ -68,7 +68,14 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 
 		logger.debug("[业务逻辑层]获取【用户】");
 
-		// TODO
+		List list = hibernateTemplate.findByExample(user);
+
+		if (list.size() > 0) {
+			return (User) list.get(0);
+		} else {
+			logger.debug("获取用户不存在!");
+		}
+
 		return null;
 	}
 
@@ -186,15 +193,20 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 
 		if (list.size() > 0) {
 			String consumeCode = ((User) list.get(0)).getConsumeCode();
-			BusinessConsumer businessConsumer = new BusinessConsumer();
-			businessConsumer.setConsumeCode(consumeCode);
 
-			List list2 = hibernateTemplate.findByExample(businessConsumer);
+			if (consumeCode != null) {
+				BusinessConsumer businessConsumer = new BusinessConsumer();
+				businessConsumer.setConsumeCode(consumeCode);
 
-			if (list2.size() > 0) {
-				return ((BusinessConsumer) list2.get(0)).getBusinessId();
+				List list2 = hibernateTemplate.findByExample(businessConsumer);
+
+				if (list2.size() > 0) {
+					return ((BusinessConsumer) list2.get(0)).getBusinessId();
+				} else {
+					logger.error("用户消费信息不存在! consumeCode:" + consumeCode);
+					return null;
+				}
 			} else {
-				logger.error("用户消费信息不存在! consumeCode:" + consumeCode);
 				return null;
 			}
 		} else {
@@ -202,6 +214,42 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 			return null;
 		}
 
+	}
+
+	@Override
+	public Boolean billReq(Locale locale, String openId, String consumeCode, String type) {
+
+		BusinessConsumer businessConsumer = new BusinessConsumer();
+		businessConsumer.setConsumeCode(consumeCode);
+		businessConsumer.setStatus((short) 1);
+		businessConsumer.setConsumerId(openId);
+
+		List list = hibernateTemplate.findByExample(businessConsumer);
+
+		if (list.size() > 0) {
+			BusinessConsumer businessConsumer2 = (BusinessConsumer) list.get(0);
+
+			if (businessConsumer2.getStatus() != 1) {// 只有消费进行中才能申请结账.
+				return false;
+			}
+
+			if ("own".equals(type)) {
+				businessConsumer2.setStatus((short) 3);
+				hibernateTemplate.update(businessConsumer2);
+
+				return true;
+
+			} else if ("group".equals(type)) {
+				businessConsumer2.setStatus((short) 4);
+				hibernateTemplate.update(businessConsumer2);
+
+				return true;
+			}
+		} else {
+			logger.error("消费信息不存在!");
+		}
+
+		return false;
 	}
 
 }

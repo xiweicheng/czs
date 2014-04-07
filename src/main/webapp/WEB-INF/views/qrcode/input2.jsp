@@ -42,7 +42,7 @@
 			<div class="ui warning form segment" id='add-menu-ui-form'>
 				<div class="ui error message" id="add-menu-ui-message"></div>
 				<div class="field">
-					<label>说明</label> <input placeholder="输入说明" type="text"
+					<label>描述</label> <input placeholder="输入说明" type="text"
 						name="description">
 				</div>
 				<div class="field">

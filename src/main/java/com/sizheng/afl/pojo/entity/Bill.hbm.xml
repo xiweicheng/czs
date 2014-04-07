@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2014-4-7 15:25:41 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.sizheng.afl.pojo.entity.Bill" table="bill" catalog="afl">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="businessId" type="string">
+            <column name="business_id" />
+        </property>
+        <property name="consumerId" type="string">
+            <column name="consumer_id" />
+        </property>
+        <property name="dateTime" type="timestamp">
+            <column name="date_time" length="19" />
+        </property>
+        <property name="amount" type="big_decimal">
+            <column name="amount" precision="10" />
+        </property>
+        <property name="type" type="java.lang.Short">
+            <column name="type">
+                <comment>&#189;&#225;&#213;&#203;&#192;&#224;&#208;&#205;,0:&#184;&#246;&#200;&#203;;1:&#188;&#175;&#204;&#229;</comment>
+            </column>
+        </property>
+        <property name="consumeCode" type="string">
+            <column name="consume_code" length="500" />
+        </property>
+        <property name="sceneId" type="java.lang.Long">
+            <column name="scene_id" />
+        </property>
+    </class>
+</hibernate-mapping>

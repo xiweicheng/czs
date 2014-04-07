@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.sizheng.afl.component.SimpleMailSender;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IBusinessDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.entity.Bill;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Qrcode;
@@ -297,6 +299,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			String selMenuUrl = StringUtil.replace("{?1}?openId={?2}", propUtil.getRedirectUrl()
 					+ "/menu/free/list4bill.do", bean.getFromUserName());
 
+			qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
+			hibernateTemplate.update(qrcode2);
+
 			return StringUtil.replace("这是您第[{?1}]次光顾{?3}店!谢谢您的亲睐!\n\n您的结账消费码: {?2}\n\n<a href='{?4}'>[点击此]点菜</a>",
 					businessConsumer.getConsumeTimes(), qrsceneId, businessName, selMenuUrl);
 		} else {
@@ -325,6 +330,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 			String selMenuUrl = StringUtil.replace("{?1}?openId={?2}", propUtil.getRedirectUrl()
 					+ "/menu/free/list4bill.do", bean.getFromUserName());
+
+			qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
+			hibernateTemplate.update(qrcode2);
 
 			return StringUtil.replace("这是您[首次]光顾{?2}店!谢谢您的亲睐!\n\n您的结账消费码: {?1}\n\n<a href='{?3}'>[点击此]点菜</a>",
 					qrsceneId, businessName, selMenuUrl);
@@ -389,9 +397,161 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public List<Map<String, Object>> listCustomer(Locale locale, Business business) {
+	public List<Map<String, Object>> listCustomer(Locale locale, Business business, String status) {
 
-		return businessDao.listCustomer(locale, business);
+		return businessDao.listCustomer(locale, business, status);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryGroupInfo(Locale locale, BusinessConsumer businessConsumer) {
+
+		return businessDao.queryGroupInfo(locale, businessConsumer);
+	}
+
+	@Override
+	public double getConsume(Locale locale, String consumeCode) {
+		return businessDao.getConsume(locale, consumeCode);
+	}
+
+	@Override
+	public double getTotalConsume(Locale locale, String sceneId) {
+		return businessDao.getTotalConsume(locale, sceneId);
+	}
+
+	@Override
+	public double getConsume(Locale locale, String consumeCode, String ownOrGroup) {
+
+		if ("own".equals(ownOrGroup)) {
+			return getConsume(locale, consumeCode);
+		} else if ("group".equals(ownOrGroup)) {
+			BusinessConsumer businessConsumer = new BusinessConsumer();
+			businessConsumer.setConsumeCode(consumeCode);
+
+			List list = hibernateTemplate.findByExample(businessConsumer);
+
+			if (list.size() > 0) {
+				return getTotalConsume(locale, ((BusinessConsumer) list.get(0)).getSceneId().toString());
+			} else {
+				logger.error("不存在消费信息!");
+			}
+		} else {
+			logger.error("不识别结账类型;ownOrGroup:" + ownOrGroup);
+		}
+
+		return 0;
+	}
+
+	@Override
+	public Boolean checkout(Locale locale, BusinessConsumer businessConsumer) {
+
+		if (businessConsumer.getStatus() == 3) {
+			BusinessConsumer businessConsumer2 = new BusinessConsumer();
+			businessConsumer2.setConsumeCode(businessConsumer.getConsumeCode());
+			businessConsumer2.setConsumerId(businessConsumer.getConsumerId());
+			businessConsumer2.setSceneId(businessConsumer.getSceneId());
+
+			List list = hibernateTemplate.findByExample(businessConsumer2);
+
+			if (list.size() > 0) {
+				double amount = getConsume(locale, businessConsumer.getConsumeCode(), "own");
+
+				BusinessConsumer businessConsumer3 = (BusinessConsumer) list.get(0);
+
+				businessConsumer3.setStatus((short) 0);
+				businessConsumer3.setConsumeCode(null);
+				businessConsumer3.setSceneId(null);
+
+				hibernateTemplate.update(businessConsumer3);
+
+				Bill bill = new Bill();
+				bill.setAmount(BigDecimal.valueOf(amount));
+				bill.setBusinessId(businessConsumer3.getBusinessId());
+				bill.setConsumeCode(businessConsumer.getConsumeCode());
+				bill.setConsumerId(businessConsumer.getConsumerId());
+				bill.setDateTime(DateUtil.now());
+				bill.setSceneId(businessConsumer.getSceneId());
+				bill.setType((short) 0);
+
+				hibernateTemplate.save(bill);
+
+				User user = new User();
+				user.setUserName(businessConsumer.getConsumerId());
+
+				List list2 = hibernateTemplate.findByExample(user);
+
+				if (list2.size() > 0) {
+					User user2 = (User) list2.get(0);
+					user2.setConsumeCode(null);
+
+					hibernateTemplate.update(user2);
+				}
+
+				return true;
+			} else {
+				logger.error("消费信息不存在!");
+			}
+		} else if (businessConsumer.getStatus() == 4) {
+			BusinessConsumer businessConsumer2 = new BusinessConsumer();
+			businessConsumer2.setSceneId(businessConsumer.getSceneId());
+
+			List list = hibernateTemplate.findByExample(businessConsumer2);
+
+			if (list.size() > 0) {
+
+				String businessId = null;
+				double amount = getConsume(locale, businessConsumer.getConsumeCode(), "group");
+
+				for (Object object : list) {
+					BusinessConsumer businessConsumer3 = (BusinessConsumer) object;
+					businessId = businessConsumer3.getBusinessId();
+
+					if (businessConsumer3.getStatus() == 1 || businessConsumer3.getStatus() == 3
+							|| businessConsumer3.getStatus() == 4) {
+
+						businessConsumer3.setStatus((short) 0);
+						businessConsumer3.setConsumeCode(null);
+						businessConsumer3.setSceneId(null);
+
+						hibernateTemplate.update(businessConsumer3);
+
+						User user = new User();
+						user.setUserName(businessConsumer3.getConsumerId());
+
+						List list2 = hibernateTemplate.findByExample(user);
+
+						if (list2.size() > 0) {
+							User user2 = (User) list2.get(0);
+							user2.setConsumeCode(null);
+
+							hibernateTemplate.update(user2);
+						}
+					}
+				}
+
+				Bill bill = new Bill();
+				bill.setAmount(BigDecimal.valueOf(amount));
+				bill.setBusinessId(businessId);
+				bill.setConsumeCode(businessConsumer.getConsumeCode());
+				bill.setConsumerId(businessConsumer.getConsumerId());
+				bill.setDateTime(DateUtil.now());
+				bill.setSceneId(businessConsumer.getSceneId());
+				bill.setType((short) 1);
+
+				hibernateTemplate.save(bill);
+
+				return true;
+
+			} else {
+				logger.error("消费信息不存在!");
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public long getGroupSize(Locale locale, String consumeCode) {
+		return businessDao.getGroupSize(locale, consumeCode);
 	}
 
 }

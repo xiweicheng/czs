@@ -135,4 +135,18 @@ public interface IUserService extends IBaseService {
 	 * @return
 	 */
 	String getBusiness(Locale locale, String openId);
+
+	/**
+	 * 申请结账.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 上午11:54:34
+	 * @modification 2014年4月7日 上午11:54:34
+	 * @param locale
+	 * @param openId
+	 * @param consumeCode
+	 * @param type
+	 * @return
+	 */
+	Boolean billReq(Locale locale, String openId, String consumeCode, String type);
 }

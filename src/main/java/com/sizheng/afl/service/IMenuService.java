@@ -134,9 +134,10 @@ public interface IMenuService extends IBaseService {
 	 * 
 	 * @param locale
 	 * @param menu
+	 * @param consumeCode TODO
 	 * @return
 	 */
-	List<Map<String, Object>> queryMapList(Locale locale, Menu menu);
+	List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode);
 
 	/**
 	 * 顾客下单
@@ -149,4 +150,17 @@ public interface IMenuService extends IBaseService {
 	 * @return
 	 */
 	boolean billDeal(Locale locale, MenuBill menuBill);
+
+	/**
+	 * 商家查询菜单列表.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月6日 下午7:07:39
+	 * @modification 2014年4月6日 下午7:07:39
+	 * @param locale
+	 * @param menu
+	 * @param object
+	 * @return
+	 */
+	List<Map<String, Object>> queryBillMapList(Locale locale, Menu menu);
 }

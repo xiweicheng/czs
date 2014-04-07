@@ -221,11 +221,32 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 				if (StringUtil.isEmpty(user2.getConsumeCode())) {
 					return "您没有消费记录!";
 				} else {
-					// TODO 结账
-					return StringUtil
-							.replace("<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]确认结账</a>",
-									propUtil.getRedirectUrl() + "/user/bill.do", bean.getFromUserName(),
-									user2.getConsumeCode());
+
+					long size = businessService.getGroupSize(locale, user2.getConsumeCode());
+
+					if (size == 1) {
+						double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
+						return StringUtil
+								.replace(
+										"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
+										propUtil.getRedirectUrl() + "/user/free/billReq.do", bean.getFromUserName(),
+										user2.getConsumeCode(), consume, "own");
+					} else if (size > 1) {
+						double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
+						double totalConsume = businessService.getConsume(locale, user2.getConsumeCode(), "group");
+						return StringUtil
+								.replace(
+										"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
+										propUtil.getRedirectUrl() + "/user/free/billReq.do", bean.getFromUserName(),
+										user2.getConsumeCode(), consume, "own")
+								+ StringUtil
+										.replace(
+												"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
+												propUtil.getRedirectUrl() + "/user/free/billReq.do",
+												bean.getFromUserName(), user2.getConsumeCode(), totalConsume, "group");
+					} else {
+						return "您的信息不存在!";
+					}
 				}
 			} else {
 				logger.error("用户信息不存在!");

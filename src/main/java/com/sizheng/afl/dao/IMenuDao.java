@@ -29,11 +29,12 @@ public interface IMenuDao {
 	 * @modification 2014年03月29日 08:37:32
 	 * @param locale
 	 * @param menu
+	 * @param consumeCode TODO
 	 * @param start
 	 * @param limit
 	 * @return
 	 */
-	List<Map<String, Object>> query(Locale locale, Menu menu, Long start, Long limit);
+	List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit);
 
 	/**
 	 * 查询总数查询【菜单】.
@@ -46,5 +47,19 @@ public interface IMenuDao {
 	 * @return
 	 */
 	long queryCount(Locale locale, Menu menu);
+
+	/**
+	 * 商家菜单列表查看.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月6日 下午7:06:42
+	 * @modification 2014年4月6日 下午7:06:42
+	 * @param locale
+	 * @param menu
+	 * @param start
+	 * @param limit
+	 * @return
+	 */
+	List<Map<String, Object>> queryBillList(Locale locale, Menu menu, Long start, Long limit);
 	
 }

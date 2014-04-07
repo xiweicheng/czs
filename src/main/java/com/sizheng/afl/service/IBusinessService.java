@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
 import com.sizheng.afl.pojo.entity.Business;
+import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.vo.PageResult;
 
@@ -169,7 +170,81 @@ public interface IBusinessService extends IBaseService {
 	 * @modification 2014年4月3日 下午5:02:20
 	 * @param locale
 	 * @param business
+	 * @param status TODO
 	 * @return
 	 */
-	List<Map<String, Object>> listCustomer(Locale locale, Business business);
+	List<Map<String, Object>> listCustomer(Locale locale, Business business, String status);
+
+	/**
+	 * 查询消费体信息.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月6日 下午10:27:22
+	 * @modification 2014年4月6日 下午10:27:22
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	List<Map<String, Object>> queryGroupInfo(Locale locale, BusinessConsumer businessConsumer);
+
+	/**
+	 * 获取用户的消费额.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月6日 下午11:25:43
+	 * @modification 2014年4月6日 下午11:25:43
+	 * @param locale
+	 * @param consumeCode
+	 * @return
+	 */
+	double getConsume(Locale locale, String consumeCode);
+
+	/**
+	 * 获取用户体的消费额.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月6日 下午11:25:43
+	 * @modification 2014年4月6日 下午11:25:43
+	 * @param locale
+	 * @param consumeCode
+	 * @return
+	 */
+	double getTotalConsume(Locale locale, String sceneId);
+
+	/**
+	 * 获取消费金额.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 上午11:38:51
+	 * @modification 2014年4月7日 上午11:38:51
+	 * @param locale
+	 * @param consumeCode
+	 * @param ownOrGroup
+	 * @return
+	 */
+	double getConsume(Locale locale, String consumeCode, String ownOrGroup);
+
+	/**
+	 * 结账确认处理.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:46:36
+	 * @modification 2014年4月7日 下午1:46:36
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	Boolean checkout(Locale locale, BusinessConsumer businessConsumer);
+
+	/**
+	 * 获取集体人数.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午3:05:22
+	 * @modification 2014年4月7日 下午3:05:22
+	 * @param locale
+	 * @param consumeCode
+	 * @return
+	 */
+	long getGroupSize(Locale locale, String consumeCode);
 }
