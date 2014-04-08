@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
@@ -60,6 +61,9 @@ public class BusinessController extends BaseController {
 
 	@Autowired
 	WeiXinApiInvoker weiXinApiInvoker;
+
+	@Autowired
+	PropUtil propUtil;
 
 	/**
 	 * 添加【商家】.
@@ -182,7 +186,8 @@ public class BusinessController extends BaseController {
 	 */
 	@RequestMapping("list")
 	public String list(HttpServletRequest request, Locale locale, Model model,
-			@RequestParam(value = "status", required = false) String status) {
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "interval", required = false) String interval) {
 
 		logger.debug("顾客列举【商家】");
 
@@ -196,6 +201,7 @@ public class BusinessController extends BaseController {
 		int disabled = 0;
 		int requestOwn = 0;
 		int requestGroup = 0;
+		int requesting = 0;
 
 		for (Map<String, Object> map : list) {
 			if (SysConstant.NUM_1 == NumberUtil.getInteger(map, "status")) {
@@ -206,6 +212,8 @@ public class BusinessController extends BaseController {
 				requestOwn++;
 			} else if (SysConstant.NUM_4 == NumberUtil.getInteger(map, "status")) {
 				requestGroup++;
+			} else if (SysConstant.NUM_5 == NumberUtil.getInteger(map, "status")) {
+				requesting++;
 			}
 		}
 
@@ -215,7 +223,10 @@ public class BusinessController extends BaseController {
 		model.addAttribute("disabled", disabled);
 		model.addAttribute("requestOwn", requestOwn);
 		model.addAttribute("requestGroup", requestGroup);
-		model.addAttribute("over", list.size() - ongoing - disabled - requestOwn - requestGroup);
+		model.addAttribute("requesting", requesting);
+		model.addAttribute("over", list.size() - ongoing - disabled - requestOwn - requestGroup - requesting);
+
+		model.addAttribute("interval", interval);
 
 		return "business/customer-list";
 	}
@@ -520,4 +531,98 @@ public class BusinessController extends BaseController {
 		return new ResultMsg(true, (Object) format.format(value));
 	}
 
+	/**
+	 * 处理顾客进入店铺请求.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("free/joining")
+	public String joining(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		logger.debug("顾客进入店铺请求处理【商家】");
+
+		Map<String, Object> consumer = businessService.getConsumer(locale, openId);
+
+		if (!NumberUtil.getInteger(consumer, "status").equals(Integer.valueOf(SysConstant.CONSUME_STATUS_REQ))) {
+			model.addAttribute("message", "顾客不在[进入请求中]状态!");
+			return "message";
+		}
+
+		model.addAttribute("consumer", consumer);
+
+		return "business/joining";
+	}
+
+	/**
+	 * 对顾客进入请求进行同意或者否定.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("free/reqHandle")
+	public String reqHandle(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("consumeCode") String consumeCode, @RequestParam("agree") String agree,
+			@RequestParam("openId") String openId) {
+
+		logger.debug("对顾客进入请求进行同意或者否定【商家】");
+
+		Boolean val = businessService.agreeOrDisagree(locale, consumeCode, agree.equals("1"));
+
+		if (val && agree.equals("1")) {
+			weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
+					"<a href='{?1}/menu/free/list4bill.do?openId={?2}'>请求确认通过!\n\n[点击此]开始点菜</a>",
+					propUtil.getRedirectUrl(), openId));
+		}
+
+		model.addAttribute("message", val ? "处理成功!" : "处理失败!");
+
+		return "message";
+	}
+
+	/**
+	 * 对顾客进入请求进行同意或者否定.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("agreeAccess")
+	@ResponseBody
+	public ResultMsg agreeAccess(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("consumeCode") String consumeCode, @RequestParam("status") String status,
+			@RequestParam("openId") String openId) {
+
+		logger.debug("对顾客进入请求进行同意或者否定【商家】");
+
+		Boolean val = false;
+
+		if (status.equals("0")) {// 解禁处理
+			val = businessService.enableConsumer(locale, openId, WebUtil.getSessionBusiness(request).getOpenId());
+		} else {// 同意进入或者禁止
+			val = businessService.agreeOrDisagree(locale, consumeCode, status.equals("1"));
+		}
+
+		if (val && status.equals("1")) {
+			weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
+					"<a href='{?1}/menu/free/list4bill.do?openId={?2}'>请求确认通过!\n\n[点击此]开始点菜</a>",
+					propUtil.getRedirectUrl(), openId));
+		}
+
+		return new ResultMsg(val.booleanValue());
+	}
 }

@@ -247,4 +247,42 @@ public interface IBusinessService extends IBaseService {
 	 * @return
 	 */
 	long getGroupSize(Locale locale, String consumeCode);
+
+	/**
+	 * 获取顾客信息.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月8日 下午2:54:18
+	 * @modification 2014年4月8日 下午2:54:18
+	 * @param locale
+	 * @param openId
+	 * @return
+	 */
+	Map<String, Object> getConsumer(Locale locale, String openId);
+
+	/**
+	 * 同意或者禁止进入消费.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月8日 下午2:54:31
+	 * @modification 2014年4月8日 下午2:54:31
+	 * @param locale
+	 * @param consumeCode
+	 * @param equals
+	 * @return
+	 */
+	Boolean agreeOrDisagree(Locale locale, String consumeCode, boolean equals);
+
+	/**
+	 * 解禁顾客.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月8日 下午4:13:53
+	 * @modification 2014年4月8日 下午4:13:53
+	 * @param locale
+	 * @param consumerId
+	 * @param businessId TODO
+	 * @return
+	 */
+	Boolean enableConsumer(Locale locale, String consumerId, String businessId);
 }

@@ -46,18 +46,44 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">顾客一览</h4>
 	<div class="ui segment attached">
+
 		<div>
-			<a class="ui teal label" href="business/list.do?status=3"
+			<div class="ui piled segment">
+				<div class="ui toggle checkbox" id="refresh-ui-toggle-checkbox">
+					<input type="checkbox" name="pet"> <label>定时刷新</label>
+				</div>
+				<div class="ui radio checkbox">
+					<input type="radio" name="refresh" checked="checked"> <label>5s</label>
+					<input type="hidden" value="5">
+				</div>
+				<div class="ui radio checkbox">
+					<input type="radio" name="refresh"> <label>15s</label> <input
+						type="hidden" value="15">
+				</div>
+				<div class="ui radio checkbox">
+					<input type="radio" name="refresh"> <label>30s</label> <input
+						type="hidden" value="30">
+				</div>
+				<div class="ui radio checkbox">
+					<input type="radio" name="refresh"> <label>60s</label> <input
+						type="hidden" value="60">
+				</div>
+			</div>
+		</div>
+		<div>
+			<a class="ui purple label" href="business/list.do?status=5&interval=${interval}"
+				style="margin-top: 10px;"> 进入请求中 ${requesting} 人 </a> <a
+				class="ui teal label" href="business/list.do?status=3&interval=${interval}"
 				style="margin-top: 10px;"> 个人结账申请 ${requestOwn} 人 </a><a
-				class="ui orange label" href="business/list.do?status=4"
+				class="ui orange label" href="business/list.do?status=4&interval=${interval}"
 				style="margin-top: 10px;"> 集体结账申请 ${requestGroup} 人</a> <a
-				class="ui black label" href="business/list.do?status=1"
+				class="ui black label" href="business/list.do?status=1&interval=${interval}"
 				style="margin-top: 10px;"> 消费中 ${ongoing} 人 </a> <a
-				class="ui red label" href="business/list.do?status=0"
+				class="ui red label" href="business/list.do?status=0&interval=${interval}"
 				style="margin-top: 10px;"> 消费终止 ${over} 人 </a> <a
-				class="ui green label" href="business/list.do?status=2"
+				class="ui green label" href="business/list.do?status=2&interval=${interval}"
 				style="margin-top: 10px;"> 消费禁止 ${disabled} 人 </a><a
-				class="ui blue label" href="business/list.do"
+				class="ui blue label" href="business/list.do?interval=${interval}"
 				style="margin-top: 10px;"> 总计 ${total} 人 </a>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
@@ -79,15 +105,21 @@
 						<td class="">${item.nickname}</td>
 						<td class=""><c:if test="${item.sex=='2'}">女</c:if> <c:if
 								test="${item.sex=='1'}">男</c:if> <c:if test="${item.sex=='0'}">未知</c:if></td>
-						<td class=""><c:if test="${item.status=='0'}">
+						<td class=""><c:if test="${item.status=='5'}">
+								<i class="sign in icon"></i>进入请求中<a class="ui teal label"
+									onclick="agreeOrDisagreeHandler('1', '${item.consume_code}', '${item.consumer_id}')">同意</a>
+								<a class="ui orange label"
+									onclick="agreeOrDisagreeHandler('2', '${item.consume_code}', '${item.consumer_id}')">禁止</a>
+							</c:if> <c:if test="${item.status=='0'}">
 								<i class="stop icon"></i>消费终止</c:if> <c:if test="${item.status=='1'}">
 								<i class="play icon"></i>消费中<a class="ui teal label"
 									onclick="checkoutHandler('3', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">个人结账</a>
 								<a class="ui orange label"
 									onclick="checkoutHandler('4', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">集体结账</a>
 							</c:if> <c:if test="${item.status=='2'}">
-								<i class="ban circle icon"></i>消费禁止</c:if> <c:if
-								test="${item.status=='3'}">
+								<i class="ban circle icon"></i>消费禁止<a class="ui teal label"
+									onclick="agreeOrDisagreeHandler('0', '${item.consume_code}', '${item.consumer_id}')">解禁</a>
+							</c:if> <c:if test="${item.status=='3'}">
 								<i class="ban loading icon"></i>个人结账申请中<a class="ui red label"
 									onclick="checkoutHandler('3', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">确认</a>
 							</c:if> <c:if test="${item.status=='4'}">
@@ -180,6 +212,7 @@
 		var _consume_code;
 		var _scene_id;
 		var _consumer_id;
+		var _interval;
 
 		function groupInfoHander(sceneId, consume_code, consumer_id) {
 			_status = 4;
@@ -197,6 +230,20 @@
 					$('#group-info-show-modal').modal('show');
 				} else {
 					alert(msg.msg.detail);
+				}
+			});
+		}
+
+		function agreeOrDisagreeHandler(status, consume_code, consumer_id) {
+			$.post("business/agreeAccess.do", {
+				status : status,
+				consumeCode : consume_code,
+				openId : consumer_id
+			}, function(msg) {
+				if (msg.succeed) {
+					$('#item-tr-' + consumer_id).remove();
+				} else {
+					alert('处理失败!')
 				}
 			});
 		}
@@ -226,6 +273,8 @@
 		jQuery(function($) {
 
 			$('table').tablesort().data('tablesort');
+
+			$('.ui.checkbox').checkbox();
 
 			$('#menu-item-business-list').addClass('active');
 
@@ -257,6 +306,29 @@
 			$('#group-checkout-ui-btn').click(function() {
 				$('#bill-total-p').text($('#total-consume-ui-label').text());
 				$('#confirm-ui-modal').modal('show');
+			});
+
+			$('.ui.radio.checkbox').hide();
+
+			var _refreshInterval;
+
+			$('#refresh-ui-toggle-checkbox').checkbox({
+				onEnable : function() {
+
+					$('.ui.radio.checkbox').show().each(function(item) {
+
+						if ($(this).children('input[type="radio"]')[0].checked) {
+							_interval = Number($(this).children('input[type="hidden"]').val());
+						}
+					});
+					_refreshInterval = setInterval(function() {
+						window.location.reload(true);
+					}, _interval * 1000);
+				},
+				onDisable : function() {
+					$('.ui.radio.checkbox').hide();
+					clearInterval(_refreshInterval)
+				}
 			});
 		});
 	</script>

@@ -215,6 +215,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			return "该二维码已经失效!";
 		}
 
+		// 查询顾客名称信息
 		Subscriber subscriber = new Subscriber();
 		subscriber.setUserName(bean.getFromUserName());
 
@@ -228,7 +229,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			nickName = bean.getFromUserName();
 		}
 
-		// 获取商家信息.
+		// 获取商家名称信息.
 		com.sizheng.afl.pojo.entity.Business business = new com.sizheng.afl.pojo.entity.Business();
 		business.setOpenId(qrcode2.getOpenId());
 
@@ -271,15 +272,33 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				return StringUtil.replace("您已经扫描过该二维码,还未结束消费,处于消费中...\n\n结账消费码: {?1}", businessConsumer.getSceneId());
 			}
 
+			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 3) {
+				return StringUtil.replace("您已经扫描过该二维码,还未结束消费,处于个人结账申请中...\n\n结账消费码: {?1}",
+						businessConsumer.getSceneId());
+			}
+
+			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 4) {
+				return StringUtil.replace("您已经扫描过该二维码,还未结束消费,处于集体结账申请中...\n\n结账消费码: {?1}",
+						businessConsumer.getSceneId());
+			}
+
+			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 5) {
+				return StringUtil.replace("您已经扫描过该二维码,等待商家确认,处于进入请求中...\n\n结账消费码: {?1}", businessConsumer.getSceneId());
+			}
+
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 2) {
-				return "您处于禁止扫描状态!";
+				return "由于某种原因,您处于禁止扫描状态,请联系商家处理...!";
+			}
+
+			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() != 0) {
+				return "当前状态不能扫描,请联系商家处理...!";
 			}
 
 			businessConsumer.setConsumeCode(UUID.randomUUID().toString());
 			businessConsumer.setConsumeTimes(businessConsumer.getConsumeTimes() + 1);
 			businessConsumer.setLastConsumeTime(DateUtil.now());
 			businessConsumer.setSceneId(Long.valueOf(qrsceneId));
-			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_ONGOING);// 消费中
+			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_REQ);// 消费中
 
 			hibernateTemplate.update(businessConsumer);
 
@@ -290,20 +309,19 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				hibernateTemplate.update(user2);
 			}
 
-			// 通知商家
-			weiXinApiInvoker.sendServiceMsg(
-					qrcode2.getOpenId(),
-					StringUtil.replace("顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}", nickName,
-							businessConsumer.getConsumeTimes(), qrsceneId));
+			String agreeUrl = StringUtil.replace("<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
+					propUtil.getRedirectUrl(), bean.getFromUserName());
 
-			String selMenuUrl = StringUtil.replace("{?1}?openId={?2}", propUtil.getRedirectUrl()
-					+ "/menu/free/list4bill.do", bean.getFromUserName());
+			// 通知商家
+			weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
+					"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}\n\n{?5}", nickName,
+					businessConsumer.getConsumeTimes(), qrsceneId, qrcode2.getDescription(), agreeUrl));
 
 			qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
 			hibernateTemplate.update(qrcode2);
 
-			return StringUtil.replace("这是您第[{?1}]次光顾{?3}店!谢谢您的亲睐!\n\n您的结账消费码: {?2}\n\n<a href='{?4}'>[点击此]点菜</a>",
-					businessConsumer.getConsumeTimes(), qrsceneId, businessName, selMenuUrl);
+			return StringUtil.replace("这是您第[{?1}]次光顾{?2}店!谢谢您的亲睐!\n\n请求处理中,请稍等...", businessConsumer.getConsumeTimes(),
+					businessName);
 		} else {
 			// 第一次来此商家消费 新顾客 告知消费者&商家
 			BusinessConsumer businessConsumer = new BusinessConsumer();
@@ -313,7 +331,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			businessConsumer.setLastConsumeTime(DateUtil.now());
 			businessConsumer.setConsumeCode(UUID.randomUUID().toString());// 区别消费个人
 			businessConsumer.setSceneId(Long.valueOf(qrsceneId));// 区别消费群体
-			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_ONGOING);// 消费中
+			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_REQ);// 接入请求中
 
 			hibernateTemplate.save(businessConsumer);
 
@@ -324,18 +342,19 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				hibernateTemplate.update(user2);
 			}
 
-			// 通知商家
-			weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(),
-					StringUtil.replace("顾客[{?1}]首次光顾!\n\n结账消费码:{?2}", nickName, qrsceneId));
+			String agreeUrl = StringUtil.replace("<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
+					propUtil.getRedirectUrl(), bean.getFromUserName());
 
-			String selMenuUrl = StringUtil.replace("{?1}?openId={?2}", propUtil.getRedirectUrl()
-					+ "/menu/free/list4bill.do", bean.getFromUserName());
+			// 通知商家
+			weiXinApiInvoker.sendServiceMsg(
+					qrcode2.getOpenId(),
+					StringUtil.replace("顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}\n\n{?4}", nickName, qrsceneId,
+							qrcode2.getDescription(), agreeUrl));
 
 			qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
 			hibernateTemplate.update(qrcode2);
 
-			return StringUtil.replace("这是您[首次]光顾{?2}店!谢谢您的亲睐!\n\n您的结账消费码: {?1}\n\n<a href='{?3}'>[点击此]点菜</a>",
-					qrsceneId, businessName, selMenuUrl);
+			return StringUtil.replace("这是您[首次]光顾{?1}店!谢谢您的亲睐!\n\n请求处理中,请稍等...", businessName);
 		}
 	}
 
@@ -552,6 +571,77 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	@Override
 	public long getGroupSize(Locale locale, String consumeCode) {
 		return businessDao.getGroupSize(locale, consumeCode);
+	}
+
+	@Override
+	public Map<String, Object> getConsumer(Locale locale, String openId) {
+		return businessDao.getConsumer(locale, openId);
+	}
+
+	@Override
+	public Boolean agreeOrDisagree(Locale locale, String consumeCode, boolean agree) {
+
+		BusinessConsumer businessConsumer = new BusinessConsumer();
+		businessConsumer.setConsumeCode(consumeCode);
+
+		List list = hibernateTemplate.findByExample(businessConsumer);
+
+		if (list.size() > 0) {
+			BusinessConsumer businessConsumer2 = (BusinessConsumer) list.get(0);
+			businessConsumer2
+					.setStatus(agree ? SysConstant.CONSUME_STATUS_ONGOING : SysConstant.CONSUME_STATUS_DISABLE);
+
+			if (!agree) {
+				businessConsumer2.setConsumeCode(null);
+				businessConsumer2.setSceneId(null);
+			}
+
+			hibernateTemplate.update(businessConsumer2);
+
+			if (!agree) {
+
+				User user = new User();
+				user.setUserName(businessConsumer2.getConsumerId());
+
+				List list2 = hibernateTemplate.findByExample(user);
+
+				if (list2.size() > 0) {
+					User user2 = (User) list2.get(0);
+					user2.setConsumeCode(null);
+
+					hibernateTemplate.update(user2);
+				} else {
+					logger.error("用户信息不存在!");
+				}
+			}
+
+			return true;
+		} else {
+			logger.error("消费信息不存在!");
+			return false;
+		}
+	}
+
+	@Override
+	public Boolean enableConsumer(Locale locale, String consumerId, String businessId) {
+
+		BusinessConsumer businessConsumer = new BusinessConsumer();
+		businessConsumer.setConsumerId(consumerId);
+		businessConsumer.setBusinessId(businessId);
+
+		List list = hibernateTemplate.findByExample(businessConsumer);
+
+		if (list.size() > 0) {
+			BusinessConsumer businessConsumer2 = (BusinessConsumer) list.get(0);
+			businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_STOP);
+
+			hibernateTemplate.update(businessConsumer2);
+
+			return true;
+		} else {
+			logger.error("消费信息不存在!");
+			return false;
+		}
 	}
 
 }

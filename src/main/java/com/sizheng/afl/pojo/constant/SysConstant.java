@@ -98,9 +98,18 @@ public final class SysConstant {
 	/** QR_TYPE_TZ [String] 二维码类型 台桌 */
 	public static final String QR_TYPE_TZ = "TZ";
 
+	/** CONSUME_STATUS_STOP [Short] 消费结束 */
 	public static final Short CONSUME_STATUS_STOP = 0;
+	/** CONSUME_STATUS_ONGOING [Short] 消费进行中 */
 	public static final Short CONSUME_STATUS_ONGOING = 1;
+	/** CONSUME_STATUS_DISABLE [Short] 消费禁止 */
 	public static final Short CONSUME_STATUS_DISABLE = 2;
+	/** CONSUME_STATUS_OWN [Short] 个人结账请求中 */
+	public static final Short CONSUME_STATUS_OWN = 3;
+	/** CONSUME_STATUS_GROUP [Short] 集体结账请求中 */
+	public static final Short CONSUME_STATUS_GROUP = 4;
+	/** CONSUME_STATUS_REQ [Short] 进入请求中 */
+	public static final Short CONSUME_STATUS_REQ = 5;
 	public static final String RESOURCES_IMAGE = "image";
 	public static final String SESSION_BUSINESS = "session_business";
 	public static final Short SHORT_FALSE = 0;
