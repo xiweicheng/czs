@@ -17,9 +17,11 @@ import com.sizheng.afl.component.ApiInvoker;
 import com.sizheng.afl.dao.IUserDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IUserService;
+import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 
@@ -250,6 +252,30 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean store(Locale locale, Favorites favorites) {
+
+		favorites.setLimitCode(DateUtil.getTodayLimitCode());
+		favorites.setIsDelete(SysConstant.SHORT_FALSE);
+
+		List list = hibernateTemplate.findByExample(favorites);
+
+		if (list.size() > 0) {
+			return false;
+		}
+
+		favorites.setDateTime(DateUtil.now());
+
+		hibernateTemplate.save(favorites);
+
+		return true;
+	}
+
+	@Override
+	public List<Favorites> getFavorites(Locale locale, Favorites favorites) {
+		return hibernateTemplate.findByExample(favorites);
 	}
 
 }

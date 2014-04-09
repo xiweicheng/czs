@@ -17,6 +17,7 @@ public final class DateUtil {
 	public static final String FORMAT3 = "yyyy-MM-dd";
 	public static final String FORMAT4 = "yyyy/MM/dd";
 	public static final String FORMAT5 = "yyyyMMddHHmmss";
+	public static final String FORMAT6 = "yyyyMMdd";
 
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT2);
 
@@ -93,5 +94,17 @@ public final class DateUtil {
 		}
 
 		return null;
+	}
+
+	/**
+	 * 获取当天限制码.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:46:44
+	 * @modification 2014年4月9日 上午11:46:44
+	 * @return
+	 */
+	public static String getTodayLimitCode() {
+		return format(now(), FORMAT6);
 	}
 }

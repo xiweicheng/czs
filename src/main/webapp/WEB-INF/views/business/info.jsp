@@ -37,16 +37,24 @@
 	<div class="ui segment attached">
 
 		<div class="ui piled segment">
-			<div class="ui label">
-				<a class="detail" href="business/list.do?status=5"><i
-					class="cart icon"></i> 收藏 </a>
-			</div>
-			<div class="ui label">
-				<a class="detail"><i class="thumbs up icon"></i> 23</a>
-			</div>
-			<div class="ui label">
-				<a class="detail"><i class="thumbs down icon"></i> 23</a>
-			</div>
+			<c:if test="${storeStatus == '0' }">
+				<div class="ui label" id="store-ui-label-0"
+					onclick="storeHandler('0', '${business.openId}', '${consumerId}')">
+					<a class="detail"><i class="cart icon"></i> 收藏 </a>
+				</div>
+			</c:if>
+			<c:if test="${likeStatus == '0' }">
+				<div class="ui label" id="store-ui-label-2"
+					onclick="storeHandler('2', '${business.openId}', '${consumerId}')">
+					<a class="detail"><i class="thumbs up icon"></i> 23</a>
+				</div>
+			</c:if>
+			<c:if test="${dislikeStatus == '0' }">
+				<div class="ui label" id="store-ui-label-3"
+					onclick="storeHandler('3', '${business.openId}', '${consumerId}')">
+					<a class="detail"><i class="thumbs down icon"></i> 23</a>
+				</div>
+			</c:if>
 		</div>
 
 		<div class="ui relaxed celled list">
@@ -92,6 +100,20 @@
 	<%@ include file="../footer.jsp"%>
 
 	<script type="text/javascript">
+		function storeHandler(type, businessId, consumerId) {
+			$.post('user/free/store.do', {
+				type : type,
+				openId : consumerId,
+				refId : businessId
+			}, function(msg) {
+				if (msg.succeed) {
+					$('#store-ui-label-' + type).hide();
+				} else {
+					alert('操作失败!');
+				}
+			});
+		}
+
 		jQuery(function($) {
 		});
 	</script>

@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-9 11:02:38 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-9 11:55:30 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -21,20 +21,22 @@ public class Favorites implements java.io.Serializable {
 
 	private Long id;
 	private String openId;
-	private Long refId;
+	private String refId;
 	private Short type;
 	private Date dateTime;
 	private Short isDelete;
+	private String limitCode;
 
 	public Favorites() {
 	}
 
-	public Favorites(String openId, Long refId, Short type, Date dateTime, Short isDelete) {
+	public Favorites(String openId, String refId, Short type, Date dateTime, Short isDelete, String limitCode) {
 		this.openId = openId;
 		this.refId = refId;
 		this.type = type;
 		this.dateTime = dateTime;
 		this.isDelete = isDelete;
+		this.limitCode = limitCode;
 	}
 
 	@Id
@@ -58,11 +60,11 @@ public class Favorites implements java.io.Serializable {
 	}
 
 	@Column(name = "ref_id")
-	public Long getRefId() {
+	public String getRefId() {
 		return this.refId;
 	}
 
-	public void setRefId(Long refId) {
+	public void setRefId(String refId) {
 		this.refId = refId;
 	}
 
@@ -92,6 +94,15 @@ public class Favorites implements java.io.Serializable {
 
 	public void setIsDelete(Short isDelete) {
 		this.isDelete = isDelete;
+	}
+
+	@Column(name = "limit_code")
+	public String getLimitCode() {
+		return this.limitCode;
+	}
+
+	public void setLimitCode(String limitCode) {
+		this.limitCode = limitCode;
 	}
 
 }

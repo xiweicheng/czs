@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
+import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 
@@ -149,4 +150,28 @@ public interface IUserService extends IBaseService {
 	 * @return
 	 */
 	Boolean billReq(Locale locale, String openId, String consumeCode, String type);
+
+	/**
+	 * 收藏 赞不赞.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:38:33
+	 * @modification 2014年4月9日 上午11:38:33
+	 * @param locale
+	 * @param favorites
+	 * @return
+	 */
+	boolean store(Locale locale, Favorites favorites);
+
+	/**
+	 * 获取收藏.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:56:08
+	 * @modification 2014年4月9日 上午11:56:08
+	 * @param locale
+	 * @param favorites
+	 * @return
+	 */
+	List<Favorites> getFavorites(Locale locale, Favorites favorites);
 }

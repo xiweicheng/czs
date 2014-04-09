@@ -29,11 +29,13 @@ import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
@@ -64,6 +66,9 @@ public class BusinessController extends BaseController {
 
 	@Autowired
 	PropUtil propUtil;
+
+	@Autowired
+	IUserService userService;
 
 	/**
 	 * 添加【商家】.
@@ -286,8 +291,9 @@ public class BusinessController extends BaseController {
 		return new ResultMsg(reqBody.getId(), pageResult.getList(), pageResult.getTotal());
 	}
 
-	@RequestMapping("info")
-	public String info(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+	@RequestMapping("free/info")
+	public String info(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId,
+			@RequestParam("consumerId") String consumerId) {
 
 		logger.debug("信息【商家】");
 
@@ -297,6 +303,33 @@ public class BusinessController extends BaseController {
 		Business business2 = businessService.get(locale, business);
 
 		model.addAttribute("business", business2);
+		model.addAttribute("consumerId", consumerId);
+
+		Favorites favorites = new Favorites();
+		favorites.setOpenId(consumerId);
+		favorites.setRefId(openId);
+
+		List<Favorites> list = userService.getFavorites(locale, favorites);
+
+		String storeStatus = "0";
+		String likeStatus = "0";
+		String dislikeStatus = "0";
+
+		if (list.size() > 0) {
+			for (Favorites favorites2 : list) {
+				if (SysConstant.FAVORITES_TYPE_BUSINESS.equals(favorites2.getType())) {
+					storeStatus = "1";
+				} else if (SysConstant.FAVORITES_TYPE_BUSINESS_LIKE.equals(favorites2.getType())) {
+					likeStatus = "1";
+				} else if (SysConstant.FAVORITES_TYPE_BUSINESS_DISLIKE.equals(favorites2.getType())) {
+					dislikeStatus = "1";
+				}
+			}
+		}
+
+		model.addAttribute("storeStatus", storeStatus);
+		model.addAttribute("likeStatus", likeStatus);
+		model.addAttribute("dislikeStatus", dislikeStatus);
 
 		return "business/info";
 

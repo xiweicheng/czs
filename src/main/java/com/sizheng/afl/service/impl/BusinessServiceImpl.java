@@ -247,8 +247,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			businessName = businessName;
 		}
 
-		businessName = StringUtil.replace("<a href='{?1}?openId={?3}'>{?2}</a>", propUtil.getRedirectUrl()
-				+ "/business/info.do", businessName, qrcode2.getOpenId());
+		businessName = StringUtil.replace("<a href='{?1}?openId={?3}&consumerId={?4}'>{?2}</a>",
+				propUtil.getRedirectUrl() + "/business/free/info.do", businessName, qrcode2.getOpenId(),
+				bean.getFromUserName());
 
 		// 在user表中记录对应的商家id
 		User user = new User();

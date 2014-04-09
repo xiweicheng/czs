@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.WeiXinApiInvoker;
+import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
@@ -319,6 +321,34 @@ public class UserController extends BaseController {
 		model.addAttribute("message", "[菜单一览]页面建设中...");
 
 		return "message";
+
+	}
+
+	/**
+	 * 添加收藏 赞不攒.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("free/store")
+	@ResponseBody
+	public ResultMsg store(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Favorites favorites) {
+
+		logger.debug("添加收藏 赞不攒【消费者】");
+
+		Assert.notNull(favorites.getOpenId());
+		Assert.notNull(favorites.getRefId());
+		Assert.notNull(favorites.getType());
+
+		boolean val = userService.store(locale, favorites);
+
+		return new ResultMsg(val);
 
 	}
 

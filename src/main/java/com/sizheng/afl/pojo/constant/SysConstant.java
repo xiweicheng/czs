@@ -117,4 +117,11 @@ public final class SysConstant {
 	public static final String CHECK_ON = "on";
 	public static final String CHECK_OFF = "off";
 
+	public static final Short FAVORITES_TYPE_BUSINESS = 0;
+	public static final Short FAVORITES_TYPE_MENU = 1;
+	public static final Short FAVORITES_TYPE_BUSINESS_LIKE = 2;
+	public static final Short FAVORITES_TYPE_BUSINESS_DISLIKE = 3;
+	public static final Short FAVORITES_TYPE_MENU_LIKE = 4;
+	public static final Short FAVORITES_TYPE_MENU_DISLIKE = 5;
+
 }
