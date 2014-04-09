@@ -89,6 +89,8 @@
 							价格:${item.price} | 优惠:
 							<c:if test="${item.privilege < 1}">${item.privilege * 10}折</c:if>
 							<c:if test="${item.privilege >= 1}">${item.privilege}</c:if>
+						</div>
+						<div style="padding-bottom: 10px;">
 							<br /> 分类:${item.category} | 口味:${item.taste}
 						</div>
 						<div class="2 fluid ui buttons">

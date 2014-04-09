@@ -401,14 +401,13 @@ public class BusinessController extends BaseController {
 		Business business2 = businessService.get(locale, business);
 
 		if (business2 != null && StringUtil.isNotEmpty(business2.getOpenId())) {
-			// model.addAttribute("message", "登录成功!");
 
 			HttpSession session = request.getSession();
 			session.setAttribute(SysConstant.SESSION_BUSINESS, business2);
 
-			model.addAttribute("business", business2);
+			// model.addAttribute("business", business2);
 
-			return "business/main";
+			return "forward:list.do";
 		} else {
 			model.addAttribute("message", "登录失败!");
 

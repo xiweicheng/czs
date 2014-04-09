@@ -321,8 +321,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
 			hibernateTemplate.update(qrcode2);
 
-			return StringUtil.replace("这是您第[{?1}]次光顾{?2}店!谢谢您的亲睐!\n\n请求处理中,请稍等...", businessConsumer.getConsumeTimes(),
-					businessName);
+			return StringUtil.replace("这是您第[{?1}]次光顾{?2}店!谢谢您的亲睐!\n\n结账消费码:{?3}\n\n请求处理中,请稍等...",
+					businessConsumer.getConsumeTimes(), businessName, qrsceneId);
 		} else {
 			// 第一次来此商家消费 新顾客 告知消费者&商家
 			BusinessConsumer businessConsumer = new BusinessConsumer();
@@ -355,7 +355,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
 			hibernateTemplate.update(qrcode2);
 
-			return StringUtil.replace("这是您[首次]光顾{?1}店!谢谢您的亲睐!\n\n请求处理中,请稍等...", businessName);
+			return StringUtil.replace("这是您[首次]光顾{?1}店!谢谢您的亲睐!\n\n结账消费码:{?2}\n\n请求处理中,请稍等...", businessName, qrsceneId);
 		}
 	}
 

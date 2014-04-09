@@ -42,12 +42,14 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
-	<!-- 侧边栏 -->
+
+	<!-- sidebar -->
 	<%@ include file="../menu.jsp"%>
 
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
+	<!-- page main content -->
 	<h4 class="ui top attached header" style="margin-top: 45px;">菜单添加</h4>
 	<a id="error-msg-anchor"></a>
 
@@ -73,7 +75,7 @@
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
 							<i class="dropdown icon"></i> <input type="hidden"
-								name="categoryId">
+								name="categoryId" id="category-hidden-input">
 							<div class="menu" id="category-menu-items">
 								<c:forEach items="${menuCategoryList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -82,11 +84,15 @@
 						</div>
 					</div>
 					<div class="field">
-						<div class="ui vertical animated button" id="add-category-btn"
-							style="margin-top: 20px;">
-							<div class="hidden content">增加分类</div>
-							<div class="visible content">
-								<i class="add icon"></i>
+						<div class="ui action input" style="margin-top: 20px;">
+							<input type="text" placeholder="增加分类"
+								id="add-category-text-input">
+							<div class="ui vertical animated button" id="add-category-btn"
+								style="margin-top: 20px;">
+								<div class="hidden content">增加分类</div>
+								<div class="visible content">
+									<i class="add icon"></i>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -107,7 +113,8 @@
 						<label>口味</label>
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
-							<i class="dropdown icon"></i> <input type="hidden" name="tasteId">
+							<i class="dropdown icon"></i> <input type="hidden" name="tasteId"
+								id="taste-hidden-input">
 							<div class="menu" id="taste-menu-items">
 								<c:forEach items="${menuTasteList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -116,11 +123,13 @@
 						</div>
 					</div>
 					<div class="field">
-						<div class="ui vertical animated button" style="margin-top: 20px;"
-							id="add-taste-btn">
-							<div class="hidden content">增加口味</div>
-							<div class="visible content">
-								<i class="add icon"></i>
+						<div class="ui action input" style="margin-top: 20px;">
+							<input type="text" placeholder="增加口味" id="add-taste-text-input">
+							<div class="ui vertical animated button" id="add-taste-btn">
+								<div class="hidden content">增加口味</div>
+								<div class="visible content">
+									<i class="add icon"></i>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -137,7 +146,8 @@
 						<img class="rounded ui image" alt="图片"
 							src="../../../resources/img/menu-default.jpg" id="resourceImage">
 					</div>
-					<div class="ui vertical animated button" style="margin-top: 20px;"
+					<div class="ui vertical animated button"
+						style="margin-top: 20px; margin-bottom: 20px;"
 						id="select-image-btn">
 						<div class="hidden content">选择图片</div>
 						<div class="visible content">
@@ -153,9 +163,8 @@
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
 
-
 	<!-- 菜单分类modal -->
-	<div class="ui modal" id="add-category-modal">
+	<div class="ui small modal czzCategory" id="add-category-modal">
 		<i class="close icon"></i>
 		<div class="header">添加分类</div>
 		<div class="content">
@@ -178,7 +187,7 @@
 	</div>
 
 	<!-- 菜单口味modal -->
-	<div class="ui modal" id="add-taste-modal">
+	<div class="ui small modal czzTaste" id="add-taste-modal">
 		<i class="close icon"></i>
 		<div class="header">添加口味</div>
 		<div class="content">
@@ -201,7 +210,7 @@
 	</div>
 
 	<!-- 图片选择modal -->
-	<div class="ui modal" id="select-image-modal">
+	<div class="ui modal czzImage" id="select-image-modal">
 		<i class="close icon"></i>
 		<div class="header">选择图片</div>
 		<div class="content">
@@ -228,7 +237,9 @@
 
 			$('.ui.checkbox').checkbox();
 
-			$('#add-category-modal').modal(
+			$('.ui.modal').modal();
+
+			/* $('#add-category-modal').modal(
 					{
 						closable : false,
 						onDeny : function() {
@@ -252,9 +263,32 @@
 								}
 							});
 						}
-					}).modal('attach events', '#add-category-btn', 'show');
+					}).modal('attach events', '#add-category-btn', 'show'); */
 
-			$('#add-taste-modal').modal(
+			$('#add-category-btn').click(
+					function() {
+						var category = $('#add-category-text-input').val();
+						if (!category) {// 不能为空
+							alert('不能为空!');
+							return false;
+						}
+						$.post('menuCategory/add.do', {
+							name : category
+						}, function(data) {
+							if (data.succeed) {
+								$('#category-menu-items').append(
+										$('<div class="item"></div>').attr('data-value', data.value.id).text(
+												data.value.name));
+								$('#category-hidden-input').val(data.value.id);
+								$('#add-category-text-input').val('');
+								$('.ui.dropdown').dropdown();
+							} else {
+								alert(data.msg.detail);
+							}
+						});
+					});
+
+			/* $('#add-taste-modal').modal(
 					{
 						closable : false,
 						onDeny : function() {
@@ -278,7 +312,30 @@
 								}
 							});
 						}
-					}).modal('attach events', '#add-taste-btn', 'show');
+					}).modal('attach events', '#add-taste-btn', 'show'); */
+
+			$('#add-taste-btn').click(
+					function() {
+						var taste = $('#add-taste-text-input').val();
+						if (!taste) {// 不能为空
+							alert('不能为空!');
+							return false;
+						}
+						$.post('menuTaste/add.do', {
+							name : taste
+						}, function(data) {
+							if (data.succeed) {
+								$('#taste-menu-items').append(
+										$('<div class="item"></div>').attr('data-value', data.value.id).text(
+												data.value.name));
+								$('#taste-hidden-input').val(data.value.id);
+								$('#add-taste-text-input').val('');
+								$('.ui.dropdown').dropdown();
+							} else {
+								alert(data.msg.detail);
+							}
+						});
+					});
 
 			$('#select-image-modal').modal({
 				closable : false,
@@ -289,7 +346,7 @@
 				}
 			});
 
-			$('#select-image-btn').click(function() {
+			$('#select-image-btn,#resourceImage').click(function() {
 				$.ajax({
 					type : "POST",
 					url : 'resources/list.do',
