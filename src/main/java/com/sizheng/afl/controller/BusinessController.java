@@ -581,7 +581,7 @@ public class BusinessController extends BaseController {
 
 		if (val && agree.equals("1")) {
 			weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
-					"<a href='{?1}/menu/free/list4bill.do?openId={?2}'>请求确认通过!\n\n[点击此]开始点菜</a>",
+					"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
 					propUtil.getRedirectUrl(), openId));
 		}
 
@@ -619,7 +619,7 @@ public class BusinessController extends BaseController {
 
 		if (val && status.equals("1")) {
 			weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
-					"<a href='{?1}/menu/free/list4bill.do?openId={?2}'>请求确认通过!\n\n[点击此]开始点菜</a>",
+					"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
 					propUtil.getRedirectUrl(), openId));
 		}
 

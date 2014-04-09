@@ -71,19 +71,25 @@
 			</div>
 		</div>
 		<div>
-			<a class="ui purple label" href="business/list.do?status=5&interval=${interval}"
+			<a class="ui purple label"
+				href="business/list.do?status=5"
 				style="margin-top: 10px;"> 进入请求中 ${requesting} 人 </a> <a
-				class="ui teal label" href="business/list.do?status=3&interval=${interval}"
+				class="ui teal label"
+				href="business/list.do?status=3"
 				style="margin-top: 10px;"> 个人结账申请 ${requestOwn} 人 </a><a
-				class="ui orange label" href="business/list.do?status=4&interval=${interval}"
+				class="ui orange label"
+				href="business/list.do?status=4"
 				style="margin-top: 10px;"> 集体结账申请 ${requestGroup} 人</a> <a
-				class="ui black label" href="business/list.do?status=1&interval=${interval}"
+				class="ui black label"
+				href="business/list.do?status=1"
 				style="margin-top: 10px;"> 消费中 ${ongoing} 人 </a> <a
-				class="ui red label" href="business/list.do?status=0&interval=${interval}"
+				class="ui red label"
+				href="business/list.do?status=0"
 				style="margin-top: 10px;"> 消费终止 ${over} 人 </a> <a
-				class="ui green label" href="business/list.do?status=2&interval=${interval}"
+				class="ui green label"
+				href="business/list.do?status=2"
 				style="margin-top: 10px;"> 消费禁止 ${disabled} 人 </a><a
-				class="ui blue label" href="business/list.do?interval=${interval}"
+				class="ui blue label" href="business/list.do"
 				style="margin-top: 10px;"> 总计 ${total} 人 </a>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
@@ -322,14 +328,43 @@
 						}
 					});
 					_refreshInterval = setInterval(function() {
-						window.location.reload(true);
+
+						var search = window.location.search;
+						var index = window.location.href.indexOf("interval=");
+						if (index == -1) {
+							if (search == '') {
+								window.location = window.location + '?interval=' + _interval;
+							} else {
+								window.location = window.location + '&interval=' + _interval;
+							}
+						} else {
+							window.location = (window.location.href).substr(0, index + 9) + _interval;
+						}
+
 					}, _interval * 1000);
 				},
 				onDisable : function() {
-					$('.ui.radio.checkbox').hide();
 					clearInterval(_refreshInterval)
+					$('.ui.radio.checkbox').hide();
 				}
 			});
+
+			$('.ui.radio.checkbox').click(function() {
+				$('#refresh-ui-toggle-checkbox').checkbox('toggle');
+				$('#refresh-ui-toggle-checkbox').checkbox('toggle');
+			});
+
+			if ('${interval}' != '' && '${interval}' != '0') {
+
+				$('.ui.radio.checkbox').each(function(item) {
+
+					if ($(this).children('input[type="hidden"]').val() == '${interval}') {
+						$(this).children('input[type="radio"]').attr("checked", "checked");
+					}
+				});
+
+				$('#refresh-ui-toggle-checkbox').checkbox('enable');
+			}
 		});
 	</script>
 </body>
