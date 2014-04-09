@@ -392,7 +392,7 @@ public class MenuController extends BaseController {
 
 		BusinessConsumer businessConsumer2 = userService.getBusinessConsumer(locale, businessConsumer);
 
-		if (businessConsumer2 == null || SysConstant.CONSUME_STATUS_ONGOING.equals(businessConsumer2.getStatus())) {
+		if (businessConsumer2 == null || !SysConstant.CONSUME_STATUS_ONGOING.equals(businessConsumer2.getStatus())) {
 			model.addAttribute("message", "您不在消费中...");
 			return "message";
 		}
