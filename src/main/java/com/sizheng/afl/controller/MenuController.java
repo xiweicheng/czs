@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Menu;
 import com.sizheng.afl.pojo.entity.MenuBill;
 import com.sizheng.afl.pojo.entity.MenuCategory;
@@ -385,6 +386,17 @@ public class MenuController extends BaseController {
 			return "message";
 		}
 
+		BusinessConsumer businessConsumer = new BusinessConsumer();
+		businessConsumer.setBusinessId(businessOpenId);
+		businessConsumer.setConsumerId(openId);
+
+		BusinessConsumer businessConsumer2 = userService.getBusinessConsumer(locale, businessConsumer);
+
+		if (businessConsumer2 == null || SysConstant.CONSUME_STATUS_ONGOING.equals(businessConsumer2.getStatus())) {
+			model.addAttribute("message", "您不在消费中...");
+			return "message";
+		}
+
 		menu.setOwner(businessOpenId);
 
 		model.addAttribute("selectedCategoryId", menu.getCategoryId() == null ? -1 : menu.getCategoryId());
@@ -614,7 +626,7 @@ public class MenuController extends BaseController {
 				List<Map<String, Object>> maps = (List<Map<String, Object>>) map.get("menuBill");
 
 				int copies = 0;
-				
+
 				for (Map<String, Object> map2 : maps) {
 					copies += (NumberUtil.getInteger(map2, "copies"));
 				}

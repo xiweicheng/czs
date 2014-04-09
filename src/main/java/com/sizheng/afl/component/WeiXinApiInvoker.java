@@ -378,7 +378,7 @@ public class WeiXinApiInvoker {
 		} else {
 			return JsonUtil.json2Object(invoke.toJSONString(), WeiXinUserInfo.class);
 		}
-		logger.debug("发送客服消息失败!");
+		logger.error("获取微信用户基本信息失败!");
 		return null;
 	}
 

@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-9 11:55:30 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-9 22:30:44 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,15 +32,12 @@ public class Menu implements java.io.Serializable {
 	private String owner;
 	private Date dateTime;
 	private Long orderTimes;
-	private Long likeTimes;
-	private Long dislikeTimes;
 
 	public Menu() {
 	}
 
 	public Menu(String name, Long categoryId, BigDecimal price, BigDecimal privilege, Long tasteId, String introduce,
-			Long resourceId, Short isDelete, String owner, Date dateTime, Long orderTimes, Long likeTimes,
-			Long dislikeTimes) {
+			Long resourceId, Short isDelete, String owner, Date dateTime, Long orderTimes) {
 		this.name = name;
 		this.categoryId = categoryId;
 		this.price = price;
@@ -52,8 +49,6 @@ public class Menu implements java.io.Serializable {
 		this.owner = owner;
 		this.dateTime = dateTime;
 		this.orderTimes = orderTimes;
-		this.likeTimes = likeTimes;
-		this.dislikeTimes = dislikeTimes;
 	}
 
 	@Id
@@ -165,24 +160,6 @@ public class Menu implements java.io.Serializable {
 
 	public void setOrderTimes(Long orderTimes) {
 		this.orderTimes = orderTimes;
-	}
-
-	@Column(name = "like_times")
-	public Long getLikeTimes() {
-		return this.likeTimes;
-	}
-
-	public void setLikeTimes(Long likeTimes) {
-		this.likeTimes = likeTimes;
-	}
-
-	@Column(name = "dislike_times")
-	public Long getDislikeTimes() {
-		return this.dislikeTimes;
-	}
-
-	public void setDislikeTimes(Long dislikeTimes) {
-		this.dislikeTimes = dislikeTimes;
 	}
 
 }

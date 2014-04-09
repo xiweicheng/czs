@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
+import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
@@ -174,4 +175,28 @@ public interface IUserService extends IBaseService {
 	 * @return
 	 */
 	List<Favorites> getFavorites(Locale locale, Favorites favorites);
+
+	/**
+	 * 
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 下午9:46:53
+	 * @modification 2014年4月9日 下午9:46:53
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	BusinessConsumer getBusinessConsumer(Locale locale, BusinessConsumer businessConsumer);
+
+	/**
+	 * 统计次数.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 下午10:31:46
+	 * @modification 2014年4月9日 下午10:31:46
+	 * @param locale
+	 * @param favorites
+	 * @return
+	 */
+	long getCount(Locale locale, Favorites favorites);
 }

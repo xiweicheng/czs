@@ -331,6 +331,23 @@ public class BusinessController extends BaseController {
 		model.addAttribute("likeStatus", likeStatus);
 		model.addAttribute("dislikeStatus", dislikeStatus);
 
+		Favorites favorites2 = new Favorites();
+		favorites2.setOpenId(consumerId);
+		favorites2.setRefId(openId);
+		favorites2.setIsDelete(SysConstant.SHORT_FALSE);
+		favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS);
+		long storeCount = userService.getCount(locale, favorites2);
+
+		favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS_LIKE);
+		long likeCount = userService.getCount(locale, favorites2);
+
+		favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS_DISLIKE);
+		long dislikeCount = userService.getCount(locale, favorites2);
+
+		model.addAttribute("storeCount", storeCount);
+		model.addAttribute("likeCount", likeCount);
+		model.addAttribute("dislikeCount", dislikeCount);
+
 		return "business/info";
 
 	}

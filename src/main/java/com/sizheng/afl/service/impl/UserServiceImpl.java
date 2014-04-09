@@ -257,18 +257,116 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 	@Override
 	public boolean store(Locale locale, Favorites favorites) {
 
-		favorites.setLimitCode(DateUtil.getTodayLimitCode());
-		favorites.setIsDelete(SysConstant.SHORT_FALSE);
+		if (SysConstant.FAVORITES_TYPE_BUSINESS_LIKE.equals(favorites.getType())) {
+			Favorites favorites2 = new Favorites();
+			favorites2.setOpenId(favorites.getOpenId());
+			favorites2.setRefId(favorites.getRefId());
+			favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS_DISLIKE);
+			favorites2.setLimitCode(DateUtil.getTodayLimitCode());
+			favorites2.setIsDelete(SysConstant.SHORT_FALSE);
 
-		List list = hibernateTemplate.findByExample(favorites);
+			List list2 = hibernateTemplate.findByExample(favorites2);
 
-		if (list.size() > 0) {
+			if (list2.size() > 0) {
+				Favorites favorites3 = (Favorites) list2.get(0);
+				favorites3.setType(SysConstant.FAVORITES_TYPE_BUSINESS_LIKE);
+				favorites3.setDateTime(DateUtil.now());
+
+				hibernateTemplate.update(favorites3);
+			} else {
+				favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS_LIKE);
+
+				if (hibernateTemplate.findByExample(favorites2).size() > 0) {
+					return false;
+				}
+
+				favorites2.setDateTime(DateUtil.now());
+
+				hibernateTemplate.save(favorites2);
+			}
+		} else if (SysConstant.FAVORITES_TYPE_BUSINESS_DISLIKE.equals(favorites.getType())) {
+			Favorites favorites2 = new Favorites();
+			favorites2.setOpenId(favorites.getOpenId());
+			favorites2.setRefId(favorites.getRefId());
+			favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS_LIKE);
+			favorites2.setLimitCode(DateUtil.getTodayLimitCode());
+			favorites2.setIsDelete(SysConstant.SHORT_FALSE);
+
+			List list2 = hibernateTemplate.findByExample(favorites2);
+
+			if (list2.size() > 0) {
+				Favorites favorites3 = (Favorites) list2.get(0);
+				favorites3.setType(SysConstant.FAVORITES_TYPE_BUSINESS_DISLIKE);
+				favorites3.setDateTime(DateUtil.now());
+
+				hibernateTemplate.update(favorites3);
+			} else {
+				favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS_DISLIKE);
+
+				if (hibernateTemplate.findByExample(favorites2).size() > 0) {
+					return false;
+				}
+
+				favorites2.setDateTime(DateUtil.now());
+
+				hibernateTemplate.save(favorites2);
+			}
+		} else if (SysConstant.FAVORITES_TYPE_BUSINESS.equals(favorites.getType())) {
+			Favorites favorites2 = new Favorites();
+			favorites2.setOpenId(favorites.getOpenId());
+			favorites2.setRefId(favorites.getRefId());
+			favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS_NOT);
+			favorites2.setIsDelete(SysConstant.SHORT_FALSE);
+
+			List list2 = hibernateTemplate.findByExample(favorites2);
+
+			if (list2.size() > 0) {
+				Favorites favorites3 = (Favorites) list2.get(0);
+				favorites3.setType(SysConstant.FAVORITES_TYPE_BUSINESS);
+				favorites3.setDateTime(DateUtil.now());
+
+				hibernateTemplate.update(favorites3);
+			} else {
+				favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS);
+
+				if (hibernateTemplate.findByExample(favorites2).size() > 0) {
+					return false;
+				}
+
+				favorites2.setDateTime(DateUtil.now());
+
+				hibernateTemplate.save(favorites2);
+			}
+		} else if (SysConstant.FAVORITES_TYPE_BUSINESS_NOT.equals(favorites.getType())) {
+			Favorites favorites2 = new Favorites();
+			favorites2.setOpenId(favorites.getOpenId());
+			favorites2.setRefId(favorites.getRefId());
+			favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS);
+			favorites2.setIsDelete(SysConstant.SHORT_FALSE);
+
+			List list2 = hibernateTemplate.findByExample(favorites2);
+
+			if (list2.size() > 0) {
+				Favorites favorites3 = (Favorites) list2.get(0);
+				favorites3.setType(SysConstant.FAVORITES_TYPE_BUSINESS_NOT);
+				favorites3.setDateTime(DateUtil.now());
+
+				hibernateTemplate.update(favorites3);
+			} else {
+				favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS_NOT);
+
+				if (hibernateTemplate.findByExample(favorites2).size() > 0) {
+					return false;
+				}
+
+				favorites2.setDateTime(DateUtil.now());
+
+				hibernateTemplate.save(favorites2);
+			}
+		} else {
+			logger.error("不识别收藏类型!");
 			return false;
 		}
-
-		favorites.setDateTime(DateUtil.now());
-
-		hibernateTemplate.save(favorites);
 
 		return true;
 	}
@@ -278,4 +376,17 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 		return hibernateTemplate.findByExample(favorites);
 	}
 
+	@Override
+	public BusinessConsumer getBusinessConsumer(Locale locale, BusinessConsumer businessConsumer) {
+
+		List list = hibernateTemplate.findByExample(businessConsumer);
+
+		return (BusinessConsumer) (list.size() > 0 ? list.get(0) : null);
+	}
+
+	@Override
+	public long getCount(Locale locale, Favorites favorites) {
+
+		return hibernateTemplate.findByExample(favorites).size();
+	}
 }

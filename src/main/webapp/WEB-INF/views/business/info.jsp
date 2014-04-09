@@ -36,23 +36,43 @@
 	<h4 class="ui top attached header" style="margin-top: 45px;">信息提示</h4>
 	<div class="ui segment attached">
 
-		<div class="ui piled segment">
-			<c:if test="${storeStatus == '0' }">
-				<div class="ui label" id="store-ui-label-0"
-					onclick="storeHandler('0', '${business.openId}', '${consumerId}')">
-					<a class="detail"><i class="cart icon"></i> 收藏 </a>
+		<div class="ui segment">
+
+			<div class="ui red label" id="store-ui-label-0"
+				<c:if test="${storeStatus != '0' }"> style="display: none" </c:if>
+				onclick="storeHandler('0', '${business.openId}', '${consumerId}')">
+				<a class="detail"><i class="cart icon"></i> 加入收藏</a>
+			</div>
+
+			<div class="ui red label" id="store-ui-label-6"
+				<c:if test="${storeStatus != '1' }"> style="display: none" </c:if>
+				onclick="storeHandler('6', '${business.openId}', '${consumerId}')">
+				<a class="detail"><i class="cart icon"></i> 取消收藏 </a>
+			</div>
+
+			<c:if test="${dislikeStatus == '0' }">
+				<div class="ui red label" id="store-ui-label-3"
+					style="float: right; margin-left: 10px;"
+					onclick="storeHandler('3', '${business.openId}', '${consumerId}')">
+					<a class="detail"><i class="thumbs down icon"></i> <span>${dislikeCount}</span></a>
+				</div>
+			</c:if>
+			<c:if test="${dislikeStatus == '1' }">
+				<div class="ui label" id="store-ui-label-3"
+					style="float: right; margin-left: 10px;">
+					<a class="detail"><i class="thumbs down icon"></i> <span>${dislikeCount}</span></a>
 				</div>
 			</c:if>
 			<c:if test="${likeStatus == '0' }">
-				<div class="ui label" id="store-ui-label-2"
+				<div class="ui red label" id="store-ui-label-2"
+					style="float: right;"
 					onclick="storeHandler('2', '${business.openId}', '${consumerId}')">
-					<a class="detail"><i class="thumbs up icon"></i> 23</a>
+					<a class="detail"><i class="thumbs up icon"></i> <span>${likeCount}</span></a>
 				</div>
 			</c:if>
-			<c:if test="${dislikeStatus == '0' }">
-				<div class="ui label" id="store-ui-label-3"
-					onclick="storeHandler('3', '${business.openId}', '${consumerId}')">
-					<a class="detail"><i class="thumbs down icon"></i> 23</a>
+			<c:if test="${likeStatus == '1' }">
+				<div class="ui label" id="store-ui-label-2" style="float: right;">
+					<a class="detail"><i class="thumbs up icon"></i> <span>${likeCount}</span></a>
 				</div>
 			</c:if>
 		</div>
@@ -107,7 +127,18 @@
 				refId : businessId
 			}, function(msg) {
 				if (msg.succeed) {
-					$('#store-ui-label-' + type).hide();
+
+					if (type == 0) {
+						$('#store-ui-label-0').hide();
+						$('#store-ui-label-6').show();
+					} else if (type == 6) {
+						$('#store-ui-label-6').hide();
+						$('#store-ui-label-0').show();
+					} else {
+						$('#store-ui-label-' + type).removeClass('red');
+						$('#store-ui-label-' + type).find('span').text(
+								Number($('#store-ui-label-' + type).find('span').text()) + 1);
+					}
 				} else {
 					alert('操作失败!');
 				}
