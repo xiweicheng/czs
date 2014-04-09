@@ -27,6 +27,8 @@ public final class NumberUtil {
 
 	public static NumberFormat format = new DecimalFormat("0");
 
+	public static NumberFormat format2 = new DecimalFormat("0.00");
+
 	public static Random random = new Random();
 
 	private NumberUtil() {
@@ -41,6 +43,16 @@ public final class NumberUtil {
 	 */
 	public static String formatDouble(double value) {
 		return format.format(value);
+	}
+
+	/**
+	 * 保留两位小数.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static String format2Money(double value) {
+		return format2.format(value);
 	}
 
 	/**

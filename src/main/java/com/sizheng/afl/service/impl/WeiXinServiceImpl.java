@@ -33,6 +33,7 @@ import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IQrcodeService;
 import com.sizheng.afl.service.IWeiXinService;
+import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 
 /**
@@ -230,7 +231,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 								.replace(
 										"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
 										propUtil.getRedirectUrl() + "/user/free/billReq.do", bean.getFromUserName(),
-										user2.getConsumeCode(), consume, "own");
+										user2.getConsumeCode(), NumberUtil.format2Money(consume), "own");
 					} else if (size > 1) {
 						double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
 						double totalConsume = businessService.getConsume(locale, user2.getConsumeCode(), "group");
@@ -238,12 +239,13 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 								.replace(
 										"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
 										propUtil.getRedirectUrl() + "/user/free/billReq.do", bean.getFromUserName(),
-										user2.getConsumeCode(), consume, "own")
+										user2.getConsumeCode(), NumberUtil.format2Money(consume), "own")
 								+ StringUtil
 										.replace(
 												"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
 												propUtil.getRedirectUrl() + "/user/free/billReq.do",
-												bean.getFromUserName(), user2.getConsumeCode(), totalConsume, "group");
+												bean.getFromUserName(), user2.getConsumeCode(),
+												NumberUtil.format2Money(totalConsume), "group");
 					} else {
 						return "您的信息不存在!";
 					}
@@ -267,12 +269,17 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			Business business = new Business();
 			business.setOpenId(bean.getFromUserName());
 
+			String dynamicCode = null;
+
 			// 判断商家是否已经入驻
 			if (!businessService.exists(locale, business)) {
-				businessService.save(locale, business);
-			}
+				dynamicCode = NumberUtil.random(6);
+				business.setDynamicCode(dynamicCode);
 
-			String dynamicCode = businessService.createDynamicCode(locale, business);
+				businessService.save(locale, business);
+			} else {
+				dynamicCode = businessService.createDynamicCode(locale, business);
+			}
 
 			return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}'>[点击此]入驻登录</a>",
 					propUtil.getRedirectUrl(), "/business/verify.do", bean.getFromUserName(), dynamicCode);

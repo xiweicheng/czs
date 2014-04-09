@@ -10,45 +10,49 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 	<!-- 侧边菜单栏 -->
-	<div class="ui sidebar">
-		<div class="ui vertical menu">
-			<div class="header item">
-				<i class="user icon"></i> 我的信息
-			</div>
-			<a class="item" href="business/main.do" id="menu-item-business-main">
-				基本信息 </a>
-			<div class="header item">
-				<i class="qr code icon"></i> 二维码
-			</div>
-			<a class="item" href="qrcode/download.do" id="menu-item-qrcode-main">
-				二维码生成</a> <a class="item" href="qrcode/list.do"
-				id="menu-item-qrcode-list"> 二维码一览</a>
-			<div class="header item">
-				<i class="setting icon"></i> 菜单管理
-			</div>
-			<a class="item" href="menu/list.do" id="menu-item-menu-list">
-				菜单一览 </a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
-				菜单添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
-				菜单图片 </a>
-			<div class="header item">
-				<i class="users icon"></i> 顾客管理
-			</div>
-			<a class="item" href="business/list.do" id="menu-item-business-list">顾客一览
-			</a>
+	<div class="ui vertical menu thin sidebar">
+		<div class="header item">
+			<i class="icon list layout"></i>侧边测单
 		</div>
+		<div class="header item">
+			<i class="user icon"></i> 我的信息
+		</div>
+		<a class="item" href="business/main.do" id="menu-item-business-main">
+			基本信息 </a>
+		<div class="header item">
+			<i class="qr code icon"></i> 二维码
+		</div>
+		<a class="item" href="qrcode/download.do" id="menu-item-qrcode-main">
+			二维码生成</a> <a class="item" href="qrcode/list.do"
+			id="menu-item-qrcode-list"> 二维码一览</a>
+		<div class="header item">
+			<i class="setting icon"></i> 菜单管理
+		</div>
+		<a class="item" href="menu/list.do" id="menu-item-menu-list"> 菜单一览
+		</a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
+			菜单添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
+			菜单图片 </a>
+		<div class="header item">
+			<i class="users icon"></i> 顾客管理
+		</div>
+		<a class="item" href="business/list.do" id="menu-item-business-list">顾客一览
+		</a>
 	</div>
-
 	<script type="text/javascript">
 		jQuery(function($) {
+
+			$('.ui.sidebar').sidebar({
+				overlay : true
+			});
 
 			try {
 				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 					$('.ui.sidebar').sidebar("hide");
 				} else {
-					$('.ui.sidebar').sidebar('show');
+					$('.ui.sidebar').sidebar('hide');
 				}
 			} catch (e) {
-				$('.ui.sidebar').sidebar('show');
+				$('.ui.sidebar').sidebar('hide');
 			}
 		});
 	</script>

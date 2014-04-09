@@ -527,6 +527,10 @@ public class BusinessController extends BaseController {
 
 		Boolean value = businessService.checkout(locale, businessConsumer);
 
+		if (value) {
+			weiXinApiInvoker.sendServiceMsg(businessConsumer.getConsumerId(), "结账成功!\n欢迎再次光顾!\n\n记得分享本店给自己的人脉圈哦!");
+		}
+
 		return new ResultMsg(value);
 
 	}
