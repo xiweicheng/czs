@@ -549,7 +549,7 @@ public class BusinessController extends BaseController {
 
 		Map<String, Object> consumer = businessService.getConsumer(locale, openId);
 
-		if (!NumberUtil.getInteger(consumer, "status").equals(Integer.valueOf(SysConstant.CONSUME_STATUS_REQ))) {
+		if (!Integer.valueOf(SysConstant.CONSUME_STATUS_REQ).equals(NumberUtil.getInteger(consumer, "status"))) {
 			model.addAttribute("message", "顾客不在[进入请求中]状态!");
 			return "message";
 		}

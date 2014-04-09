@@ -23,6 +23,7 @@
 	<table-filter match-name="menu" match-catalog="afl"></table-filter>
 	<table-filter match-name="menu_bill" match-catalog="afl"></table-filter>
 	<table-filter match-name="bill" match-catalog="afl"></table-filter>
+	<table-filter match-name="favorites" match-catalog="afl"></table-filter>
 	<table catalog="afl" name="subscriber">
 		<column name="id"></column>
 		<column name="user_name"></column>

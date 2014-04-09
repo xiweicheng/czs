@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-7 15:25:40 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-9 11:02:38 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,12 +26,14 @@ public class Business implements java.io.Serializable {
 	private String phoneNumber;
 	private Long qrcodeLimit;
 	private String dynamicCode;
+	private Long likeTimes;
+	private Long dislikeTimes;
 
 	public Business() {
 	}
 
 	public Business(String openId, Short isDeleted, String name, String address, String mail, String introduce,
-			String phoneNumber, Long qrcodeLimit, String dynamicCode) {
+			String phoneNumber, Long qrcodeLimit, String dynamicCode, Long likeTimes, Long dislikeTimes) {
 		this.openId = openId;
 		this.isDeleted = isDeleted;
 		this.name = name;
@@ -41,6 +43,8 @@ public class Business implements java.io.Serializable {
 		this.phoneNumber = phoneNumber;
 		this.qrcodeLimit = qrcodeLimit;
 		this.dynamicCode = dynamicCode;
+		this.likeTimes = likeTimes;
+		this.dislikeTimes = dislikeTimes;
 	}
 
 	@Id
@@ -133,6 +137,24 @@ public class Business implements java.io.Serializable {
 
 	public void setDynamicCode(String dynamicCode) {
 		this.dynamicCode = dynamicCode;
+	}
+
+	@Column(name = "like_times")
+	public Long getLikeTimes() {
+		return this.likeTimes;
+	}
+
+	public void setLikeTimes(Long likeTimes) {
+		this.likeTimes = likeTimes;
+	}
+
+	@Column(name = "dislike_times")
+	public Long getDislikeTimes() {
+		return this.dislikeTimes;
+	}
+
+	public void setDislikeTimes(Long dislikeTimes) {
+		this.dislikeTimes = dislikeTimes;
 	}
 
 }

@@ -35,6 +35,20 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">信息提示</h4>
 	<div class="ui segment attached">
+
+		<div class="ui piled segment">
+			<div class="ui label">
+				<a class="detail" href="business/list.do?status=5"><i
+					class="cart icon"></i> 收藏 </a>
+			</div>
+			<div class="ui label">
+				<a class="detail"><i class="thumbs up icon"></i> 23</a>
+			</div>
+			<div class="ui label">
+				<a class="detail"><i class="thumbs down icon"></i> 23</a>
+			</div>
+		</div>
+
 		<div class="ui relaxed celled list">
 			<div class="item">
 				<i class="user outline icon"></i>

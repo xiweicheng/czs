@@ -123,9 +123,12 @@ public abstract class BaseDaoImpl implements IBaseDao {
 
 		if (mapList.size() > 0) {
 			map = mapList.get(0);
-		} else {
+		}
+
+		if (map == null) {
 			map = Collections.emptyMap();
 		}
+
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("单行[getMap]数据:" + SysConstant.NEW_LINE + JsonUtil.toPrettyJson(JsonUtil.toJson(map)));
