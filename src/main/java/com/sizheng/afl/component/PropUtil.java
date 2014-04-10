@@ -12,6 +12,9 @@ public class PropUtil {
 	@Value("#{systemProperties['switch.event.mail.send']}")
 	private boolean sendMail;
 
+	@Value("#{systemProperties['weixin.send.msg.is.save']}")
+	private boolean saveWeixinMsg;
+
 	@Value("#{systemProperties['weixin.token']}")
 	private String token;
 
@@ -165,6 +168,10 @@ public class PropUtil {
 
 	public String getQrcodeStorePath() {
 		return qrcodeStorePath;
+	}
+
+	public boolean isSaveWeixinMsg() {
+		return saveWeixinMsg;
 	}
 
 }

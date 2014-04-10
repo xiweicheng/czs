@@ -76,12 +76,10 @@ public class WeiXinController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("verify")
-	public void verify(@ModelAttribute WeiXinMsg weiXinMsg, @RequestBody String reqBody, HttpServletResponse response,
-			Locale locale) {
+	public void verify(@ModelAttribute WeiXinMsg weiXinMsg, @RequestBody(required = false) String reqBody,
+			HttpServletResponse response, Locale locale) {
 
 		logger.debug("响应微信服务器消息【微信】");
-
-		logger.info(XmlUtil.format(reqBody));
 
 		// 验证请求来自微信服务器
 		if (weixinVerify(weiXinMsg, locale)) {
@@ -92,12 +90,18 @@ public class WeiXinController extends BaseController {
 				return;
 			}
 
+			if (logger.isDebugEnabled()) {
+				logger.debug(XmlUtil.format(reqBody));
+			}
+
 			// 解析消息
 			WeiXinBaseMsg bean = XmlUtil.toBean(reqBody, WeiXinBaseMsg.class);
 
 			// 保存所有来自微信的消息
 			// text image voice video location link
-			weiXinService.saveMessage(bean);
+			if (propUtil.isSaveWeixinMsg()) {
+				weiXinService.saveMessage(bean);
+			}
 
 			// 消息类型
 			String msgType = bean.getMsgType();

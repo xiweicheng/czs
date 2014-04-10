@@ -48,6 +48,12 @@
 			价格:{{html price}} | 优惠:{{html privilege}}
 			<br /> 分类:{{html category}} | 口味:{{html taste}}
 		</div>
+		<div class="ui divider"></div>
+		<div>
+			{{each menuBill}}
+				{{html $value.nickname}}定了{{html $value.copies}}份!<br/>
+			{{/each}}
+		</div>
 	</div>
 </div>
 </script>
@@ -183,11 +189,6 @@
 				</thead>
 				<tbody id="group-info-tbody">
 				</tbody>
-				<!-- <tfoot>
-					<tr>
-						<th></th>
-					</tr>
-				</tfoot> -->
 			</table>
 			<div>
 				<div class="ui label red" id="total-consume-ui-label"
@@ -212,8 +213,18 @@
 		<i class="close icon"></i>
 		<div class="header" id="bill-detail-header">消费详情</div>
 		<div class="content">
-			<div class="ui stackable items" id="bill-detail-ui-stackable-items">
+			<div class="ui segment">
+				<div class="ui toggle checkbox czzImage">
+					<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
+						for="mode-ui-checkbox">图文模式</label>
+				</div>
+				<div class="ui toggle checkbox czzGroup">
+					<input type="checkbox" name="mode" id="group-ui-checkbox">
+					<label for="group-ui-checkbox">集体消费</label>
+				</div>
 			</div>
+			<div class="ui stackable items" id="bill-detail-ui-stackable-items"
+				style="height: 350px; overflow: auto;"></div>
 		</div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
@@ -258,6 +269,10 @@
 		var _interval;
 
 		function billDetailHandler(consume_code, scene_id, consumer_id) {
+			_consume_code = consume_code;
+			_scene_id = scene_id;
+			_consumer_id = consumer_id;
+
 			$.post('user/billDetail.do', {
 				type : 0,
 				consumeCode : consume_code,
@@ -419,6 +434,51 @@
 
 				$('#refresh-ui-toggle-checkbox').checkbox('enable');
 			}
+
+			$('.ui.toggle.checkbox.czzImage').checkbox({
+				onEnable : function() {
+					$('#bill-detail-ui-stackable-items').find('div[class="image"]').show();
+				},
+				onDisable : function() {
+					$('#bill-detail-ui-stackable-items').find('div[class="image"]').hide();
+				}
+			});
+
+			$('.ui.toggle.checkbox.czzGroup').checkbox(
+					{
+						onEnable : function() {
+							$.post('user/billDetail.do', {
+								type : 1,//集体消费查询
+								consumeCode : _consume_code,
+								sceneId : _scene_id,
+								consumerId : _consumer_id
+							}, function(msg) {
+								if (msg.succeed) {
+									$('#billDetailTpl').tmpl(msg.values).appendTo(
+											$('#bill-detail-ui-stackable-items').empty());
+									$('#bill-detail-header').text('消费详情-共' + msg.value + '元')
+								} else {
+									alert('操作失败!')
+								}
+							});
+						},
+						onDisable : function() {
+							$.post('user/billDetail.do', {
+								type : 0,//个人消费查询
+								consumeCode : _consume_code,
+								sceneId : _scene_id,
+								consumerId : _consumer_id
+							}, function(msg) {
+								if (msg.succeed) {
+									$('#billDetailTpl').tmpl(msg.values).appendTo(
+											$('#bill-detail-ui-stackable-items').empty());
+									$('#bill-detail-header').text('消费详情-共' + msg.value + '元')
+								} else {
+									alert('操作失败!')
+								}
+							});
+						}
+					});
 		});
 	</script>
 </body>

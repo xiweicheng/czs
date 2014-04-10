@@ -384,14 +384,32 @@ public class UserController extends BaseController {
 
 		menuBill.setStatus(SysConstant.MENU_BILL_STATUS_CONFIRM);
 
-		List<Map<String, Object>> list = menuBillService.query4MapList(locale, menuBill);
+		List<Map<String, Object>> list = null;
+
+		if (SysConstant.NUMBER_0.equals(type)) {
+			list = menuBillService.query4MapList(locale, menuBill);
+		} else if (SysConstant.NUMBER_1.equals(type)) {
+			list = menuBillService.query4GroupMapList(locale, menuBill);
+		} else {
+			return new ResultMsg(false);
+		}
 
 		double total = 0;
 
 		for (Map<String, Object> map : list) {
 			Double price = NumberUtil.getDouble(map, "price");
 			Double privilege = NumberUtil.getDouble(map, "privilege");
-			Integer copies = NumberUtil.getInteger(map, "copies");
+
+			int copies = 0;
+
+			if (SysConstant.NUMBER_0.equals(type)) {
+				copies = NumberUtil.getInteger(map, "copies");
+			} else if (SysConstant.NUMBER_1.equals(type)) {
+				List<Map<String, Object>> maps = (List<Map<String, Object>>) map.get("menuBill");
+				for (Map<String, Object> map2 : maps) {
+					copies += (NumberUtil.getInteger(map2, "copies"));
+				}
+			}
 
 			if (price != null) {
 				if (privilege != null) {

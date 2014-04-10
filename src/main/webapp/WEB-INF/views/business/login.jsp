@@ -32,7 +32,7 @@
 			<div class="field">
 				<label>动态验证码</label>
 				<div class="ui left labeled icon input">
-					<input type="password" name="dynamicCode" value="132400"> <i
+					<input type="password" name="dynamicCode" value="672354"> <i
 						class="lock icon"></i>
 					<div class="ui corner label">
 						<i class="icon asterisk"></i>
