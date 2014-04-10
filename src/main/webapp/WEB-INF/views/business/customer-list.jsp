@@ -45,14 +45,18 @@
 		<div class="name">{{html name}}</div>
 		<p class="description" style="display: none;">{{html introduce}}</p>
 		<div style="padding-bottom: 10px;">
-			价格:{{html price}} | 优惠:{{html privilege}}
-			<br /> 分类:{{html category}} | 口味:{{html taste}}
+			价格:{{html price}} | 优惠:{{if privilege>=1}}{{html privilege}}{{else}}{{html privilege*10}}折{{/if}}
+			<br /><br/> 分类:{{html category}} | 口味:{{html taste}}
 		</div>
 		<div class="ui divider"></div>
 		<div>
-			{{each menuBill}}
-				{{html $value.nickname}}定了{{html $value.copies}}份!<br/>
-			{{/each}}
+			{{if menuBill}}
+				{{each menuBill}}
+					{{html $value.nickname}}定了{{html $value.copies}}份!<br/>
+				{{/each}}
+			{{else}}
+				您定了{{html copies}}份!<br/>
+			{{/if}}
 		</div>
 	</div>
 </div>
