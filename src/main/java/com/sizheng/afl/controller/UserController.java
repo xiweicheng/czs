@@ -22,12 +22,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.WeiXinApiInvoker;
+import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Favorites;
+import com.sizheng.afl.pojo.entity.MenuBill;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
+import com.sizheng.afl.service.IMenuBillService;
 import com.sizheng.afl.service.IUserService;
+import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 
 /**
@@ -51,6 +55,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	WeiXinApiInvoker weiXinApiInvoker;
+
+	@Autowired
+	IMenuBillService menuBillService;
 
 	/**
 	 * 添加【用户】.
@@ -350,6 +357,60 @@ public class UserController extends BaseController {
 
 		return new ResultMsg(val);
 
+	}
+
+	/**
+	 * 消费详情.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("billDetail")
+	@ResponseBody
+	public ResultMsg billDetail(HttpServletRequest request, Locale locale, Model model,
+			@ModelAttribute MenuBill menuBill, @RequestParam("type") String type) {
+
+		logger.debug("消费详情【消费者】");
+
+		Assert.notNull(menuBill.getConsumeCode());
+		Assert.notNull(menuBill.getConsumerId());
+		Assert.notNull(menuBill.getSceneId());
+
+		menuBill.setStatus(SysConstant.MENU_BILL_STATUS_CONFIRM);
+
+		List<Map<String, Object>> list = menuBillService.query4MapList(locale, menuBill);
+
+		double total = 0;
+
+		for (Map<String, Object> map : list) {
+			Double price = NumberUtil.getDouble(map, "price");
+			Double privilege = NumberUtil.getDouble(map, "privilege");
+			Integer copies = NumberUtil.getInteger(map, "copies");
+
+			if (price != null) {
+				if (privilege != null) {
+					if (privilege >= 1) {
+						total += ((price - privilege) * copies);
+					} else {
+						total += ((price * privilege) * copies);
+					}
+				} else {
+					total += (price * copies);
+				}
+			}
+		}
+
+		ResultMsg resultMsg = new ResultMsg(true);
+		resultMsg.setValues(list);
+		resultMsg.setValue(NumberUtil.format2Money(total));
+
+		return resultMsg;
 	}
 
 }

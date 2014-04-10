@@ -76,7 +76,8 @@
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
 							<i class="dropdown icon"></i> <input type="hidden"
-								name="categoryId" value="${menu.categoryId}">
+								name="categoryId" value="${menu.categoryId}"
+								id="category-hidden-input">
 							<div class="menu" id="category-menu-items">
 								<c:forEach items="${menuCategoryList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -85,11 +86,15 @@
 						</div>
 					</div>
 					<div class="field">
-						<div class="ui vertical animated button" id="add-category-btn"
-							style="margin-top: 20px;">
-							<div class="hidden content">增加分类</div>
-							<div class="visible content">
-								<i class="add icon"></i>
+						<div class="ui action input" style="margin-top: 20px;">
+							<input type="text" placeholder="增加分类"
+								id="add-category-text-input">
+							<div class="ui vertical animated button" id="add-category-btn"
+								style="margin-top: 20px;">
+								<div class="hidden content">增加分类</div>
+								<div class="visible content">
+									<i class="add icon"></i>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -112,7 +117,7 @@
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
 							<i class="dropdown icon"></i> <input type="hidden" name="tasteId"
-								value="${menu.tasteId}">
+								value="${menu.tasteId}" id="taste-hidden-input">
 							<div class="menu" id="taste-menu-items">
 								<c:forEach items="${menuTasteList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -121,11 +126,13 @@
 						</div>
 					</div>
 					<div class="field">
-						<div class="ui vertical animated button" style="margin-top: 20px;"
-							id="add-taste-btn">
-							<div class="hidden content">增加口味</div>
-							<div class="visible content">
-								<i class="add icon"></i>
+						<div class="ui action input" style="margin-top: 20px;">
+							<input type="text" placeholder="增加口味" id="add-taste-text-input">
+							<div class="ui vertical animated button" id="add-taste-btn">
+								<div class="hidden content">增加口味</div>
+								<div class="visible content">
+									<i class="add icon"></i>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -143,7 +150,7 @@
 							class="rounded ui image" alt="图片" src="../../../${extra_imgPath}"
 							id="resourceImage">
 					</div>
-					<div class="ui vertical animated button" style="margin-top: 20px;"
+					<div class="ui vertical animated button" style="margin-top: 20px; margin-bottom: 20px;"
 						id="select-image-btn">
 						<div class="hidden content">选择图片</div>
 						<div class="visible content">
@@ -238,7 +245,7 @@
 
 			$('.ui.checkbox').checkbox();
 
-			$('#add-category-modal').modal(
+			/* $('#add-category-modal').modal(
 					{
 						closable : false,
 						onDeny : function() {
@@ -262,9 +269,9 @@
 								}
 							});
 						}
-					}).modal('attach events', '#add-category-btn', 'show');
+					}).modal('attach events', '#add-category-btn', 'show'); */
 
-			$('#add-taste-modal').modal(
+			/* $('#add-taste-modal').modal(
 					{
 						closable : false,
 						onDeny : function() {
@@ -288,7 +295,53 @@
 								}
 							});
 						}
-					}).modal('attach events', '#add-taste-btn', 'show');
+					}).modal('attach events', '#add-taste-btn', 'show'); */
+
+			$('#add-category-btn').click(
+					function() {
+						var category = $('#add-category-text-input').val();
+						if (!category) {// 不能为空
+							alert('不能为空!');
+							return false;
+						}
+						$.post('menuCategory/add.do', {
+							name : category
+						}, function(data) {
+							if (data.succeed) {
+								$('#category-menu-items').append(
+										$('<div class="item"></div>').attr('data-value', data.value.id).text(
+												data.value.name));
+								$('#category-hidden-input').val(data.value.id);
+								$('#add-category-text-input').val('');
+								$('.ui.dropdown').dropdown();
+							} else {
+								alert(data.msg.detail);
+							}
+						});
+					});
+
+			$('#add-taste-btn').click(
+					function() {
+						var taste = $('#add-taste-text-input').val();
+						if (!taste) {// 不能为空
+							alert('不能为空!');
+							return false;
+						}
+						$.post('menuTaste/add.do', {
+							name : taste
+						}, function(data) {
+							if (data.succeed) {
+								$('#taste-menu-items').append(
+										$('<div class="item"></div>').attr('data-value', data.value.id).text(
+												data.value.name));
+								$('#taste-hidden-input').val(data.value.id);
+								$('#add-taste-text-input').val('');
+								$('.ui.dropdown').dropdown();
+							} else {
+								alert(data.msg.detail);
+							}
+						});
+					});
 
 			$('#select-image-modal').modal({
 				closable : false,
@@ -300,7 +353,7 @@
 				}
 			});//.modal('attach events', '#select-image-btn', 'show');
 
-			$('#select-image-btn').click(function() {
+			$('#select-image-btn,#resourceImage').click(function() {
 				$.ajax({
 					type : "POST",
 					url : 'resources/list.do',

@@ -45,7 +45,7 @@ public class ResultMsg implements Serializable {
 	private Object value;
 
 	/** values [List<Object>]调用返回结果对象列表 */
-	private List<Object> values;
+	private List values;
 
 	/** totalProperty [long]分页使用的总的行数 */
 	private long total;
@@ -167,11 +167,11 @@ public class ResultMsg implements Serializable {
 		this.value = value;
 	}
 
-	public List<Object> getValues() {
+	public List getValues() {
 		return values;
 	}
 
-	public void setValues(List<Object> values) {
+	public void setValues(List values) {
 		this.values = values;
 	}
 

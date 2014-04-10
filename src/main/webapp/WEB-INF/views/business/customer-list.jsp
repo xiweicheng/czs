@@ -32,6 +32,25 @@
 	<td class="">{{html last_consume_time}}</td>
 </tr>
 </script>
+<script id="billDetailTpl" type="text/x-jquery-tmpl">
+<div class="item" id="bill-detail-{{html menu_id}}"
+	style="min-height: 0px;">
+	<div class="image" style="display: none;">
+		<img src="../../../{{html path}}">
+		<!-- <a
+		class="like ui corner label"> <i class="like icon"></i> -->
+		</a>
+	</div>
+	<div class="content">
+		<div class="name">{{html name}}</div>
+		<p class="description" style="display: none;">{{html introduce}}</p>
+		<div style="padding-bottom: 10px;">
+			价格:{{html price}} | 优惠:{{html privilege}}
+			<br /> 分类:{{html category}} | 口味:{{html taste}}
+		</div>
+	</div>
+</div>
+</script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -71,23 +90,17 @@
 			</div>
 		</div>
 		<div>
-			<a class="ui purple label"
-				href="business/list.do?status=5"
+			<a class="ui purple label" href="business/list.do?status=5"
 				style="margin-top: 10px;"> 进入请求中 ${requesting} 人 </a> <a
-				class="ui teal label"
-				href="business/list.do?status=3"
+				class="ui teal label" href="business/list.do?status=3"
 				style="margin-top: 10px;"> 个人结账申请 ${requestOwn} 人 </a><a
-				class="ui orange label"
-				href="business/list.do?status=4"
+				class="ui orange label" href="business/list.do?status=4"
 				style="margin-top: 10px;"> 集体结账申请 ${requestGroup} 人</a> <a
-				class="ui black label"
-				href="business/list.do?status=1"
+				class="ui black label" href="business/list.do?status=1"
 				style="margin-top: 10px;"> 消费中 ${ongoing} 人 </a> <a
-				class="ui red label"
-				href="business/list.do?status=0"
+				class="ui red label" href="business/list.do?status=0"
 				style="margin-top: 10px;"> 消费终止 ${over} 人 </a> <a
-				class="ui green label"
-				href="business/list.do?status=2"
+				class="ui green label" href="business/list.do?status=2"
 				style="margin-top: 10px;"> 消费禁止 ${disabled} 人 </a><a
 				class="ui blue label" href="business/list.do"
 				style="margin-top: 10px;"> 总计 ${total} 人 </a>
@@ -108,7 +121,11 @@
 				<c:forEach items="${customerList}" var="item">
 					<tr id="item-tr-${item.consumer_id}">
 						<td><img class="ui avatar image" src="${item.headimgurl}"></td>
-						<td class="">${item.nickname}</td>
+						<td class="">${item.nickname}<c:if
+								test="${item.status=='1' || item.status=='3' || item.status=='4'}">
+								<a class="ui teal label"
+									onclick="billDetailHandler('${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">消费详情</a>
+							</c:if></td>
 						<td class=""><c:if test="${item.sex=='2'}">女</c:if> <c:if
 								test="${item.sex=='1'}">男</c:if> <c:if test="${item.sex=='0'}">未知</c:if></td>
 						<td class=""><c:if test="${item.status=='5'}">
@@ -190,6 +207,26 @@
 		</div>
 	</div>
 
+	<!-- 消费信息展示modal -->
+	<div class="ui modal" id="bill-detail-modal">
+		<i class="close icon"></i>
+		<div class="header" id="bill-detail-header">消费详情</div>
+		<div class="content">
+			<div class="ui stackable items" id="bill-detail-ui-stackable-items">
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui deny labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui approve right labeled icon button">
+					确定 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="ui modal" id="confirm-ui-modal">
 		<div class="header">确认提示</div>
 		<div class="content">
@@ -219,6 +256,23 @@
 		var _scene_id;
 		var _consumer_id;
 		var _interval;
+
+		function billDetailHandler(consume_code, scene_id, consumer_id) {
+			$.post('user/billDetail.do', {
+				type : 0,
+				consumeCode : consume_code,
+				sceneId : scene_id,
+				consumerId : consumer_id
+			}, function(msg) {
+				if (msg.succeed) {
+					$('#billDetailTpl').tmpl(msg.values).appendTo($('#bill-detail-ui-stackable-items').empty());
+					$('#bill-detail-header').text('消费详情-共' + msg.value + '元')
+					$('#bill-detail-modal').modal('show');
+				} else {
+					alert('操作失败!')
+				}
+			});
+		}
 
 		function groupInfoHander(sceneId, consume_code, consumer_id) {
 			_status = 4;

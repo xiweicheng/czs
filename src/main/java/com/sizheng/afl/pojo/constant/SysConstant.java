@@ -117,6 +117,7 @@ public final class SysConstant {
 	public static final String CHECK_ON = "on";
 	public static final String CHECK_OFF = "off";
 
+	/** 店铺 - 菜单 收藏 赞不赞 **/
 	public static final Short FAVORITES_TYPE_BUSINESS = 0;
 	public static final Short FAVORITES_TYPE_BUSINESS_NOT = 6;
 	public static final Short FAVORITES_TYPE_MENU = 1;
@@ -125,5 +126,10 @@ public final class SysConstant {
 	public static final Short FAVORITES_TYPE_BUSINESS_DISLIKE = 3;
 	public static final Short FAVORITES_TYPE_MENU_LIKE = 4;
 	public static final Short FAVORITES_TYPE_MENU_DISLIKE = 5;
+
+	/** 菜单状态 **/
+	public static final Short MENU_BILL_STATUS_CONFIRM = 1;
+	public static final Short MENU_BILL_STATUS_DEBOOK = 2;
+	public static final Short MENU_BILL_STATUS_STOW = 0;
 
 }
