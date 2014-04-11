@@ -44,7 +44,7 @@
 				<div class="item" id="bill-item-${item.menu_id}"
 					style="min-height: 0px;">
 					<div class="image" style="display: none;">
-						<img src="../../../${item.path}">
+						<img src="" czz-src="../../../${item.path}">
 						<!-- <a
 							class="like ui corner label"> <i class="like icon"></i> -->
 						</a>
@@ -201,7 +201,10 @@
 
 			$('.ui.checkbox').checkbox({
 				onEnable : function() {
-					$('#bill-query-ui-stackable-items').find('div[class="image"]').show();
+					$('#bill-query-ui-stackable-items').find('div[class="image"]').show().end().find('img').each(
+							function() {
+								$(this).attr('src', $(this).attr('czz-src'));
+							});
 				},
 				onDisable : function() {
 					$('#bill-query-ui-stackable-items').find('div[class="image"]').hide();

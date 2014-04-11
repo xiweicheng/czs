@@ -12,7 +12,7 @@
 <base href="<%=basePath%>">
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.js"
 	charset="utf-8"></script>
@@ -34,7 +34,7 @@
 		<div class="ui segment">
 			<form action="menu/free/list4bill.do" id="filter-form">
 				<input type="hidden" name="openId" value="${openId}">
-				<div class="ui selection dropdown" style="margin-bottom:10px;">
+				<div class="ui selection dropdown" style="margin-bottom: 10px;">
 					<input type="hidden" name="categoryId"
 						value="${selectedCategoryId }">
 					<div class="default text">分类</div>
@@ -46,7 +46,7 @@
 						</c:forEach>
 					</div>
 				</div>
-				<div class="ui selection dropdown" style="margin-bottom:10px;">
+				<div class="ui selection dropdown" style="margin-bottom: 10px;">
 					<input type="hidden" name="tasteId" value="${selectedTasteId }">
 					<div class="default text">口味</div>
 					<i class="dropdown icon"></i>
@@ -62,7 +62,7 @@
 				<div style="margin-top: 10px;">
 					<div class="ui toggle checkbox">
 						<input type="checkbox" name="mode" id="mode-ui-checkbox">
-						<label for="check3">图文模式</label>
+						<label for="">图文模式</label>
 					</div>
 				</div>
 			</form>
@@ -73,7 +73,7 @@
 			<c:forEach items="${menuList}" var="item">
 				<div class="item" style="min-height: 0px;">
 					<div class="image" style="display: none">
-						<img src="../../../${item.path}">
+						<img src="" czz-src="../../../${item.path}">
 						<c:if test="${item.status == 1}">
 							<a class="like ui corner label"> <i class="checkmark icon"></i>
 						</c:if>
@@ -110,10 +110,12 @@
 						</div>
 						<div style="margin-top: 10px;">
 							<c:forEach items="${item.menuBill}" var="item2">
-								<c:if test="${item2.status == 1}">[${item2.nickname}]已定了${item2.copies}份!<br/>
-							</c:if>
-								<c:if test="${item2.status == 0}">[${item2.nickname}]待选中!<br/></c:if>
-								<c:if test="${item2.status == 2}">[${item2.nickname}]已退订!<br/></c:if>
+								<c:if test="${item2.status == 1}">[${item2.nickname}]已定了${item2.copies}份!<br />
+								</c:if>
+								<c:if test="${item2.status == 0}">[${item2.nickname}]待选中!<br />
+								</c:if>
+								<c:if test="${item2.status == 2}">[${item2.nickname}]已退订!<br />
+								</c:if>
 							</c:forEach>
 						</div>
 					</div>
@@ -155,19 +157,26 @@
 				$('#filter-form').submit();
 			});
 
-			$('.ui.checkbox').checkbox({
-				onEnable : function() {
-					$('#bill-list-ui-stackable-items').find('div[class="image"]').show();
-				},
-				onDisable : function() {
-					$('#bill-list-ui-stackable-items').find('div[class="image"]').hide();
-				}
-			});
+			$('.ui.checkbox').checkbox(
+					{
+						onEnable : function() {
+							$('#bill-list-ui-stackable-items').find('div[class="image"]').show().end().find('img')
+									.each(function() {
+										$(this).attr('src', $(this).attr('czz-src'));
+									});
+						},
+						onDisable : function() {
+							$('#bill-list-ui-stackable-items').find('div[class="image"]').hide();
+						}
+					});
 
 			(function() {
 				if ('${mode}' == 'on') {
 					$('#mode-ui-checkbox').attr('checked', "checked");
-					$('#bill-list-ui-stackable-items').find('div[class="image"]').show();
+					$('#bill-list-ui-stackable-items').find('div[class="image"]').show().end().find('img').each(
+							function() {
+								$(this).attr('src', $(this).attr('czz-src'));
+							});
 				} else {
 					$('#bill-list-ui-stackable-items').find('div[class="image"]').hide();
 				}

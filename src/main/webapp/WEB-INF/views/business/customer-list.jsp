@@ -36,7 +36,7 @@
 <div class="item" id="bill-detail-{{html menu_id}}"
 	style="min-height: 0px;">
 	<div class="image" style="display: none;">
-		<img src="../../../{{html path}}">
+		<img src="" czz-src="../../../{{html path}}">
 		<!-- <a
 		class="like ui corner label"> <i class="like icon"></i> -->
 		</a>
@@ -220,13 +220,13 @@
 		<div class="header" id="bill-detail-header">消费详情</div>
 		<div class="content">
 			<div class="ui segment">
-				<div class="ui toggle checkbox czzImage" style="margin-top:10px;">
+				<div class="ui toggle checkbox czzImage" style="margin-top: 10px;">
 					<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
-						for="mode-ui-checkbox">图文模式</label>
+						for="">图文模式</label>
 				</div>
-				<div class="ui toggle checkbox czzGroup" style="margin-top:10px;">
+				<div class="ui toggle checkbox czzGroup" style="margin-top: 10px;">
 					<input type="checkbox" name="mode" id="group-ui-checkbox">
-					<label for="group-ui-checkbox">集体消费</label>
+					<label for="">集体消费</label>
 				</div>
 			</div>
 			<div class="ui stackable items" id="bill-detail-ui-stackable-items"
@@ -441,14 +441,18 @@
 				$('#refresh-ui-toggle-checkbox').checkbox('enable');
 			}
 
-			$('.ui.toggle.checkbox.czzImage').checkbox({
-				onEnable : function() {
-					$('#bill-detail-ui-stackable-items').find('div[class="image"]').show();
-				},
-				onDisable : function() {
-					$('#bill-detail-ui-stackable-items').find('div[class="image"]').hide();
-				}
-			});
+			$('.ui.toggle.checkbox.czzImage').checkbox(
+					{
+						onEnable : function() {
+							$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find('img')
+									.each(function() {
+										$(this).attr("src", $(this).attr('czz-src'));
+									});
+						},
+						onDisable : function() {
+							$('#bill-detail-ui-stackable-items').find('div[class="image"]').hide();
+						}
+					});
 
 			$('.ui.toggle.checkbox.czzGroup').checkbox(
 					{
@@ -463,9 +467,12 @@
 									$('#billDetailTpl').tmpl(msg.values).appendTo(
 											$('#bill-detail-ui-stackable-items').empty());
 									$('#bill-detail-header').text('消费详情-共' + msg.value + '元')
-									
-									if($('#mode-ui-checkbox')[0].checked){
-										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show();
+
+									if ($('#mode-ui-checkbox')[0].checked) {
+										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end()
+												.find('img').each(function() {
+													$(this).attr("src", $(this).attr('czz-src'));
+												});
 									}
 								} else {
 									alert('操作失败!')
@@ -483,8 +490,11 @@
 									$('#billDetailTpl').tmpl(msg.values).appendTo(
 											$('#bill-detail-ui-stackable-items').empty());
 									$('#bill-detail-header').text('消费详情-共' + msg.value + '元');
-									if($('#mode-ui-checkbox')[0].checked){
-										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show();
+									if ($('#mode-ui-checkbox')[0].checked) {
+										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end()
+												.find('img').each(function() {
+													$(this).attr("src", $(this).attr('czz-src'));
+												});
 									}
 								} else {
 									alert('操作失败!')

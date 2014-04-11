@@ -29,7 +29,9 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">${title} - 共<span style="color:red;">${total}</span>元</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">${title}
+		- 共<span style="color: red;">${total}</span>元
+	</h4>
 	<div class="ui segment attached">
 		<div class="ui segment">
 			<div class="ui toggle checkbox">
@@ -37,12 +39,13 @@
 					for="check3">图文模式</label>
 			</div>
 		</div>
-		<div class="ui stackable items" id="bill-group-query-ui-stackable-items">
+		<div class="ui stackable items"
+			id="bill-group-query-ui-stackable-items">
 			<c:forEach items="${billList}" var="item">
 				<div class="item" id="bill-item-${item.menu_id}"
 					style="min-height: 0px;">
 					<div class="image" style="display: none;">
-						<img src="../../../${item.path}">
+						<img src="" czz-src="../../../${item.path}">
 						<!-- <a
 							class="like ui corner label"> <i class="like icon"></i> -->
 						</a>
@@ -59,9 +62,12 @@
 						<div class="ui divider"></div>
 						<div>
 							<c:forEach items="${item.menuBill}" var="item2">
-								<c:if test="${item2.status == 1}">[${item2.nickname}]定了${item2.copies}份!<br/></c:if>
-								<c:if test="${item2.status == 0}">[${item2.nickname}]待定中!<br/></c:if>
-								<c:if test="${item2.status == 2}">[${item2.nickname}]已退订!<br/></c:if>
+								<c:if test="${item2.status == 1}">[${item2.nickname}]定了${item2.copies}份!<br />
+								</c:if>
+								<c:if test="${item2.status == 0}">[${item2.nickname}]待定中!<br />
+								</c:if>
+								<c:if test="${item2.status == 2}">[${item2.nickname}]已退订!<br />
+								</c:if>
 							</c:forEach>
 						</div>
 					</div>
@@ -77,15 +83,19 @@
 		jQuery(function($) {
 			$('#menu-item-group-${type}-bill').addClass('active');
 		});
-		
-		$('.ui.checkbox').checkbox({
-			onEnable : function() {
-				$('#bill-group-query-ui-stackable-items').find('div[class="image"]').show();
-			},
-			onDisable : function() {
-				$('#bill-group-query-ui-stackable-items').find('div[class="image"]').hide();
-			}
-		});
+
+		$('.ui.checkbox').checkbox(
+				{
+					onEnable : function() {
+						$('#bill-group-query-ui-stackable-items').find('div[class="image"]').show().end().find('img')
+								.each(function() {
+									$(this).attr('src', $(this).attr('czz-src'));
+								});
+					},
+					onDisable : function() {
+						$('#bill-group-query-ui-stackable-items').find('div[class="image"]').hide();
+					}
+				});
 	</script>
 </body>
 </html>
