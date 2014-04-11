@@ -17,7 +17,7 @@
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tablesort.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.js"
+<script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tmpl.min.js"
 	charset="utf-8"></script>

@@ -14,7 +14,7 @@
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.js"
+<script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
