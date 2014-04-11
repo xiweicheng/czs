@@ -461,6 +461,10 @@
 									$('#billDetailTpl').tmpl(msg.values).appendTo(
 											$('#bill-detail-ui-stackable-items').empty());
 									$('#bill-detail-header').text('消费详情-共' + msg.value + '元')
+									
+									if($('#mode-ui-checkbox')[0].checked){
+										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show();
+									}
 								} else {
 									alert('操作失败!')
 								}
@@ -476,7 +480,10 @@
 								if (msg.succeed) {
 									$('#billDetailTpl').tmpl(msg.values).appendTo(
 											$('#bill-detail-ui-stackable-items').empty());
-									$('#bill-detail-header').text('消费详情-共' + msg.value + '元')
+									$('#bill-detail-header').text('消费详情-共' + msg.value + '元');
+									if($('#mode-ui-checkbox')[0].checked){
+										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show();
+									}
 								} else {
 									alert('操作失败!')
 								}
