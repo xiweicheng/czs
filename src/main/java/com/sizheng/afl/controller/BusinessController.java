@@ -30,11 +30,13 @@ import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Favorites;
+import com.sizheng.afl.pojo.entity.Request;
 import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.IRequestService;
 import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
@@ -69,6 +71,9 @@ public class BusinessController extends BaseController {
 
 	@Autowired
 	IUserService userService;
+
+	@Autowired
+	IRequestService requestService;
 
 	/**
 	 * 添加【商家】.
@@ -677,5 +682,52 @@ public class BusinessController extends BaseController {
 		}
 
 		return new ResultMsg(val.booleanValue());
+	}
+
+	/**
+	 * 顾客实时请求查询.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("request")
+	@ResponseBody
+	public ResultMsg request(HttpServletRequest request, Locale locale) {
+
+		logger.debug("顾客实时请求查询【商家】");
+
+		List<Map<String, Object>> list = businessService.queryRequest(locale, WebUtil.getSessionBusiness(request)
+				.getOpenId());
+
+		return new ResultMsg(true, list);
+	}
+
+	/**
+	 * 顾客实时请求知悉处理.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("requestHandle")
+	@ResponseBody
+	public ResultMsg requestHandle(HttpServletRequest request, Locale locale, @ModelAttribute Request request2) {
+
+		logger.debug("顾客实时请求知悉处理【商家】");
+
+		Assert.notNull(request2.getId());
+
+		boolean val = requestService.updateStatus(request2.getId(), SysConstant.REQUEST_STATUS_STOP);
+
+		return new ResultMsg(val);
 	}
 }

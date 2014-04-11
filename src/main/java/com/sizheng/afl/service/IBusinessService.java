@@ -57,7 +57,7 @@ public interface IBusinessService extends IBaseService {
 	 * @return
 	 */
 	Business get(Locale locale, Business business);
-	
+
 	/**
 	 * 更新【商家】.
 	 * 
@@ -68,7 +68,7 @@ public interface IBusinessService extends IBaseService {
 	 * @return
 	 */
 	boolean update(Locale locale, Business business);
-	
+
 	/**
 	 * 列举【商家】.
 	 * 
@@ -131,7 +131,8 @@ public interface IBusinessService extends IBaseService {
 	 * @author xiweicheng
 	 * @creation 2014年3月27日 上午11:17:52
 	 * @modification 2014年3月27日 上午11:17:52
-	 * @param locale TODO
+	 * @param locale
+	 *            TODO
 	 * @param bean
 	 * @return
 	 */
@@ -145,7 +146,8 @@ public interface IBusinessService extends IBaseService {
 	 * @modification 2014年3月28日 上午11:09:19
 	 * @param locale
 	 * @param business
-	 * @param serverBaseUrl TODO
+	 * @param serverBaseUrl
+	 *            TODO
 	 * @return
 	 */
 	String sendMail(Locale locale, Business business, String serverBaseUrl);
@@ -170,7 +172,8 @@ public interface IBusinessService extends IBaseService {
 	 * @modification 2014年4月3日 下午5:02:20
 	 * @param locale
 	 * @param business
-	 * @param status TODO
+	 * @param status
+	 *            TODO
 	 * @return
 	 */
 	List<Map<String, Object>> listCustomer(Locale locale, Business business, String status);
@@ -281,8 +284,21 @@ public interface IBusinessService extends IBaseService {
 	 * @modification 2014年4月8日 下午4:13:53
 	 * @param locale
 	 * @param consumerId
-	 * @param businessId TODO
+	 * @param businessId
+	 *            TODO
 	 * @return
 	 */
 	Boolean enableConsumer(Locale locale, String consumerId, String businessId);
+
+	/**
+	 * 顾客实时请求查询.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月11日 下午3:02:14
+	 * @modification 2014年4月11日 下午3:02:14
+	 * @param locale
+	 * @param openId
+	 * @return
+	 */
+	List<Map<String, Object>> queryRequest(Locale locale, String openId);
 }

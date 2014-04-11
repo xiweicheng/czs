@@ -132,4 +132,11 @@ public final class SysConstant {
 	public static final Short MENU_BILL_STATUS_DEBOOK = 2;
 	public static final Short MENU_BILL_STATUS_STOW = 0;
 
+	public static final Short REQUEST_STATUS_ONGOING = 1;
+	public static final Short REQUEST_STATUS_STOP = 0;
+
+	public static final Short REQUEST_TYPE_ENTER = 0;
+	public static final Short REQUEST_TYPE_BILL_OWN = 1;
+	public static final Short REQUEST_TYPE_BILL_GROUP = 2;
+
 }

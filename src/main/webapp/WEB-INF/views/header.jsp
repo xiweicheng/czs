@@ -7,7 +7,7 @@
 
 	<!-- header -->
 	<div class="ui fixed transparent inverted main menu" style="top: 0px;">
-		<div class="container">
+		<div class="container czzTopMenu">
 			<a class="launch item"><i class="icon list layout"></i> 侧边菜单</a>
 			<div class="title item">
 				<b>餐助手</b> 商家管理后台
@@ -19,7 +19,7 @@
 	<script type="text/javascript">
 		jQuery(function($) {
 			$('.launch.item').click(function() {
-				$('.ui.sidebar').sidebar("toggle");
+				$('.ui.left.sidebar').sidebar("toggle");
 			});
 		});
 	</script>

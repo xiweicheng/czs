@@ -18,8 +18,10 @@ import com.sizheng.afl.dao.IUserDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Favorites;
+import com.sizheng.afl.pojo.entity.Request;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
+import com.sizheng.afl.service.IRequestService;
 import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
@@ -46,6 +48,9 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 
 	@Autowired
 	ApiInvoker apiInvoker;
+
+	@Autowired
+	IRequestService requestService;
 
 	@Override
 	public boolean save(Locale locale, User user) {
@@ -239,11 +244,39 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 				businessConsumer2.setStatus((short) 3);
 				hibernateTemplate.update(businessConsumer2);
 
+				// 顾客实时请求记录
+				Request request = new Request();
+				request.setBusinessId(businessConsumer2.getBusinessId());
+				request.setConsumeCode(businessConsumer2.getConsumeCode());
+				request.setConsumerId(businessConsumer2.getConsumerId());
+				request.setDateTime(DateUtil.now());
+				request.setIsDelete(SysConstant.SHORT_FALSE);
+				request.setName("个人结账请求");
+				request.setSceneId(Long.valueOf(businessConsumer2.getSceneId()));
+				request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
+				request.setType(SysConstant.REQUEST_TYPE_BILL_OWN);
+
+				requestService.save(request);
+
 				return true;
 
 			} else if ("group".equals(type)) {
 				businessConsumer2.setStatus((short) 4);
 				hibernateTemplate.update(businessConsumer2);
+
+				// 顾客实时请求记录
+				Request request = new Request();
+				request.setBusinessId(businessConsumer2.getBusinessId());
+				request.setConsumeCode(businessConsumer2.getConsumeCode());
+				request.setConsumerId(businessConsumer2.getConsumerId());
+				request.setDateTime(DateUtil.now());
+				request.setIsDelete(SysConstant.SHORT_FALSE);
+				request.setName("集体结账请求");
+				request.setSceneId(Long.valueOf(businessConsumer2.getSceneId()));
+				request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
+				request.setType(SysConstant.REQUEST_TYPE_BILL_GROUP);
+
+				requestService.save(request);
 
 				return true;
 			}

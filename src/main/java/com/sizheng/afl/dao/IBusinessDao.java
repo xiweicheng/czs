@@ -110,5 +110,7 @@ public interface IBusinessDao {
 	long getGroupSize(Locale locale, String consumeCode);
 
 	Map<String, Object> getConsumer(Locale locale, String openId);
+
+	List<Map<String, Object>> queryRequest(Locale locale, String openId);
 	
 }

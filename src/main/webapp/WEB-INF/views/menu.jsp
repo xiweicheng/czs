@@ -5,7 +5,7 @@
 <html>
 <body style="margin: 0px; padding: 0px;">
 	<!-- sidebar -->
-	<div class="ui vertical menu thin sidebar">
+	<div class="ui left vertical menu thin sidebar">
 		<div class="header item">
 			<i class="icon list layout"></i>侧边测单
 		</div>
@@ -36,18 +36,18 @@
 	<script type="text/javascript">
 		jQuery(function($) {
 
-			$('.ui.sidebar').sidebar({
+			$('.ui.left.sidebar').sidebar({
 				overlay : true
 			});
 
 			try {
 				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-					$('.ui.sidebar').sidebar("hide");
+					$('.ui.left.sidebar').sidebar("hide");
 				} else {
-					$('.ui.sidebar').sidebar('hide');
+					$('.ui.left.sidebar').sidebar('hide');
 				}
 			} catch (e) {
-				$('.ui.sidebar').sidebar('hide');
+				$('.ui.left.sidebar').sidebar('hide');
 			}
 		});
 	</script>

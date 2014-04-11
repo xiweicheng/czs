@@ -32,6 +32,17 @@
 	<td class="">{{html last_consume_time}}</td>
 </tr>
 </script>
+<script id="requestItemTpl" type="text/x-jquery-tmpl">
+<div class="item" id="request-item-{{html id}}">
+	<div class="right floated tiny teal ui button" onclick="requestHandler('{{html id}}')">知悉</div>
+	<img class="ui avatar image"
+		src="{{html headimgurl}}">
+	<div class="content">
+		<div class="header">{{html nickname}}</div>
+		{{html name}}
+	</div>
+</div>
+</script>
 <script id="billDetailTpl" type="text/x-jquery-tmpl">
 <div class="item" id="bill-detail-{{html menu_id}}"
 	style="min-height: 0px;">
@@ -72,6 +83,13 @@
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
+	<div class="ui right vertical sidebar">
+		<h4 class="ui top attached header">顾客实时请求</h4>
+
+		<div class="ui attached selection divided animated list czzRequest">
+		</div>
+	</div>
+
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
@@ -96,9 +114,11 @@
 						type="hidden" value="30">
 				</div>
 				<div class="ui radio checkbox">
-					<input type="radio" name="refresh"> <label>60s</label> <input
-						type="hidden" value="60">
+					 <label>60s</label> <input
+						type="hidden" value="60"><input type="radio" name="refresh">
 				</div>
+				
+				<div class="ui button" style="float:right;">刷新页面</div>
 			</div>
 		</div>
 		<div>
@@ -218,7 +238,7 @@
 	<div class="ui modal" id="bill-detail-modal">
 		<i class="close icon"></i>
 		<div class="header" id="bill-detail-header">消费详情</div>
-		<div class="content" style="padding-top:20px;">
+		<div class="content" style="padding-top: 20px;">
 			<div class="ui segment">
 				<div class="ui toggle checkbox czzImage" style="margin-top: 10px;">
 					<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
@@ -250,7 +270,7 @@
 			<div class="left">
 				<i class="warning icon"></i>
 			</div>
-			<div class="right">
+			<div class="right" style="font-size: 30px;">
 				<p id="bill-total-p"></p>
 				<p>确认要结账吗?</p>
 			</div>
@@ -307,7 +327,7 @@
 				if (msg.succeed) {
 
 					$("#userTrTpl").tmpl(msg.value).appendTo($("#group-info-tbody").empty());
-					$('#total-consume-ui-label').text('总消费 ' + msg.values[0] + '元');
+					$('#total-consume-ui-label').html('总消费 <b>' + msg.values[0] + '</b>元');
 					$('#group-info-show-modal').modal('show');
 				} else {
 					alert(msg.msg.detail);
@@ -342,13 +362,25 @@
 				sceneId : _scene_id
 			}, function(msg) {
 				if (msg.succeed) {
-					$('#bill-total-p').text('消费金额:' + msg.value);
+					$('#bill-total-p').html('消费金额:<b>' + msg.value + '</b>元');
 					$('#confirm-ui-modal').modal('show');
 				} else {
 					alert('查询消费金额失败!');
 				}
 			});
 
+		}
+
+		function requestHandler(id) {
+			$.post('business/requestHandle.do', {
+				id : id
+			}, function(msg) {
+				if (msg.succeed) {
+					$('#request-item-' + id).remove();
+				} else {
+					alert(msg.msg.detail);
+				}
+			});
 		}
 
 		jQuery(function($) {
@@ -358,6 +390,8 @@
 			$('.ui.checkbox').checkbox();
 
 			$('#menu-item-business-list').addClass('active');
+
+			$('.ui.right.sidebar').sidebar('show');
 
 			$('#group-info-show-modal').modal({
 				closable : false
@@ -389,7 +423,7 @@
 			});
 
 			$('#group-checkout-ui-btn').click(function() {
-				$('#bill-total-p').text($('#total-consume-ui-label').text());
+				$('#bill-total-p').html($('#total-consume-ui-label').html());
 				$('#confirm-ui-modal').modal('show');
 			});
 
@@ -506,6 +540,36 @@
 							});
 						}
 					});
+
+			var requestFunction = function() {
+				$.post('business/request.do', {}, function(msg) {
+					if (msg.succeed) {
+						$('#requestItemTpl').tmpl(msg.value).appendTo($('.ui.list.czzRequest').empty());
+					} else {
+						alert(msg.msg.detail);
+					}
+				});
+			};
+
+			// 第一次加载完首先执行一次
+			requestFunction();
+
+			var intervalRef = setInterval(requestFunction, 5 * 1000);
+
+			$('<a class="launch item czzRequest" style="float:right;"><i class="icon list layout"></i> 顾客实时请求栏</a>')
+					.appendTo('.container.czzTopMenu');
+
+			$('.launch.item.czzRequest').click(function() {
+				$('.ui.right.sidebar').sidebar('toggle');
+				
+				if($('.ui.right.sidebar').sidebar('is open')){
+					requestFunction();
+					intervalRef = setInterval(requestFunction, 5 * 1000);
+				}else{
+					clearInterval(intervalRef);
+				}
+			});
+
 		});
 	</script>
 </body>

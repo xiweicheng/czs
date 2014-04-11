@@ -227,4 +227,32 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		return getMap(sqlSb, openId);
 	}
 
+	@Override
+	public List<Map<String, Object>> queryRequest(Locale locale, String openId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	request.id,\n");
+		sqlSb.append("	request.`name`,\n");
+		sqlSb.append("	request.consumer_id,\n");
+		sqlSb.append("	request.business_id,\n");
+		sqlSb.append("	request.consume_code,\n");
+		sqlSb.append("	request.scene_id,\n");
+		sqlSb.append("	request.type,\n");
+		sqlSb.append("	DATE_FORMAT(request.date_time,'%Y/%m/%d %H:%i:%s') AS date_time,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	IF (subscriber.sex = 1,'男',IF (subscriber.sex = 2,'女','未知')) AS sex,\n");
+		sqlSb.append(" subscriber.headimgurl,\n");
+		sqlSb.append(" request.`status`\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	request\n");
+		sqlSb.append("LEFT JOIN subscriber ON request.consumer_id = subscriber.user_name\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	request.`status` = 1\n");
+		sqlSb.append("AND request.is_delete = 0\n");
+		sqlSb.append("AND request.business_id = ?\n");
+
+		return getMapList(sqlSb, openId);
+	}
+
 }

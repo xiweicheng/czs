@@ -25,6 +25,7 @@ import com.sizheng.afl.pojo.entity.Bill;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Qrcode;
+import com.sizheng.afl.pojo.entity.Request;
 import com.sizheng.afl.pojo.entity.Subscriber;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
@@ -32,6 +33,7 @@ import com.sizheng.afl.pojo.model.WeiXinEventType;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IQrcodeService;
+import com.sizheng.afl.service.IRequestService;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
@@ -69,6 +71,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 	@Autowired
 	SimpleMailSender simpleMailSender;
+
+	@Autowired
+	IRequestService requestService;
 
 	@Override
 	public boolean save(Locale locale, Business business) {
@@ -310,6 +315,20 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				hibernateTemplate.update(user2);
 			}
 
+			// 顾客实时请求记录
+			Request request = new Request();
+			request.setBusinessId(qrcode2.getOpenId());
+			request.setConsumeCode(businessConsumer.getConsumeCode());
+			request.setConsumerId(bean.getFromUserName());
+			request.setDateTime(DateUtil.now());
+			request.setIsDelete(SysConstant.SHORT_FALSE);
+			request.setName("进入请求中");
+			request.setSceneId(Long.valueOf(qrsceneId));
+			request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
+			request.setType(SysConstant.REQUEST_TYPE_ENTER);
+
+			requestService.save(request);
+
 			String agreeUrl = StringUtil.replace("<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
 					propUtil.getRedirectUrl(), bean.getFromUserName());
 
@@ -342,6 +361,20 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 				hibernateTemplate.update(user2);
 			}
+
+			// 顾客实时请求记录
+			Request request = new Request();
+			request.setBusinessId(qrcode2.getOpenId());
+			request.setConsumeCode(businessConsumer.getConsumeCode());
+			request.setConsumerId(bean.getFromUserName());
+			request.setDateTime(DateUtil.now());
+			request.setIsDelete(SysConstant.SHORT_FALSE);
+			request.setName("进入请求中");
+			request.setSceneId(Long.valueOf(qrsceneId));
+			request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
+			request.setType(SysConstant.REQUEST_TYPE_ENTER);
+
+			requestService.save(request);
 
 			String agreeUrl = StringUtil.replace("<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
 					propUtil.getRedirectUrl(), bean.getFromUserName());
@@ -643,6 +676,11 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			logger.error("消费信息不存在!");
 			return false;
 		}
+	}
+
+	@Override
+	public List<Map<String, Object>> queryRequest(Locale locale, String openId) {
+		return businessDao.queryRequest(locale, openId);
 	}
 
 }

@@ -81,7 +81,8 @@
 		<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 			<form action="business/update.do" id="business-update-form">
 				<input type="hidden" name="openId" value="${business.openId}">
-				<div class="ui warning form segment" id='business-update-ui-form'>
+				<div class="ui warning form segment" id='business-update-ui-form'
+					style="height: 380px; overflow: auto;">
 					<div class="ui error message" id="add-menu-ui-message"></div>
 					<div class="field">
 						<label>菜名</label> <input placeholder="店名" type="text" name="name"
