@@ -218,7 +218,7 @@
 	<div class="ui modal" id="bill-detail-modal">
 		<i class="close icon"></i>
 		<div class="header" id="bill-detail-header">消费详情</div>
-		<div class="content">
+		<div class="content" style="padding-top:20px;">
 			<div class="ui segment">
 				<div class="ui toggle checkbox czzImage" style="margin-top: 10px;">
 					<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
@@ -230,7 +230,7 @@
 				</div>
 			</div>
 			<div class="ui stackable items" id="bill-detail-ui-stackable-items"
-				style="height: 350px; overflow: auto;"></div>
+				style="height: 300px; overflow: auto;"></div>
 		</div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
@@ -360,7 +360,11 @@
 			$('#menu-item-business-list').addClass('active');
 
 			$('#group-info-show-modal').modal({
-				closable : false,
+				closable : false
+			});
+
+			$('#bill-detail-modal').modal({
+				closable : false
 			});
 
 			$('#confirm-ui-modal').modal({

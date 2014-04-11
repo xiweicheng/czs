@@ -78,7 +78,7 @@
 	<div class="ui modal" id="business-update-modal">
 		<i class="close icon"></i>
 		<div class="header">信息修改</div>
-		<div class="content" style="padding-top:0px; padding-bottom:0px;">
+		<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 			<form action="business/update.do" id="business-update-form">
 				<input type="hidden" name="openId" value="${business.openId}">
 				<div class="ui warning form segment" id='business-update-ui-form'>
@@ -103,7 +103,6 @@
 						<label>介绍</label>
 						<textarea name="introduce">${business.introduce}</textarea>
 					</div>
-					<!-- <div class="ui blue submit button" id="business-update-submit-btn">修改</div> -->
 				</div>
 			</form>
 		</div>
@@ -163,13 +162,6 @@
 					} ]
 				}
 			});
-
-			/* $('#business-update-ui-form').form('setting', {
-				onSuccess : function() {
-				},
-				onFailure : function() {
-				}
-			}); */
 		});
 	</script>
 </body>

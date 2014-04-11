@@ -62,7 +62,7 @@
 						<div class="ui divider"></div>
 						<div>
 							<c:forEach items="${item.menuBill}" var="item2">
-								<c:if test="${item2.status == 1}">[${item2.nickname}]定了${item2.copies}份!<br />
+								<c:if test="${item2.status == 1}">[${item2.nickname}]定了<b>${item2.copies}</b>份!<br />
 								</c:if>
 								<c:if test="${item2.status == 0}">[${item2.nickname}]待定中!<br />
 								</c:if>

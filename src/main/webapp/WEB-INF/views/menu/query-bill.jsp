@@ -75,9 +75,10 @@
 										<i class="remove icon"></i>加一份
 									</div>
 								</div>
+								<div class="ui divider"></div>
 								<div style="margin-top: 10px;"
 									id="confirm-bill-msg-${item.menu_id}">
-									<c:if test="${item.status == 1}">您已定了${item.copies}份!
+									<c:if test="${item.status == 1}">您已定了<b>${item.copies}</b>份!
 							</c:if>
 								</div>
 							</c:if>
