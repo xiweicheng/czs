@@ -13,7 +13,7 @@
 <base href="<%=basePath%>">
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tablesort.min.js"
 	charset="utf-8"></script>
@@ -46,7 +46,9 @@
 		<p class="description" style="display: none;">{{html introduce}}</p>
 		<div style="padding-bottom: 10px;">
 			价格:{{html price}} | 优惠:{{if privilege>=1}}{{html privilege}}{{else}}{{html privilege*10}}折{{/if}}
-			<br /><br/> 分类:{{html category}} | 口味:{{html taste}}
+		</div>
+		<div>
+			分类:{{html category}} | 口味:{{html taste}}
 		</div>
 		<div class="ui divider"></div>
 		<div>
@@ -218,11 +220,11 @@
 		<div class="header" id="bill-detail-header">消费详情</div>
 		<div class="content">
 			<div class="ui segment">
-				<div class="ui toggle checkbox czzImage">
+				<div class="ui toggle checkbox czzImage" style="margin-top:10px;">
 					<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
 						for="mode-ui-checkbox">图文模式</label>
 				</div>
-				<div class="ui toggle checkbox czzGroup">
+				<div class="ui toggle checkbox czzGroup" style="margin-top:10px;">
 					<input type="checkbox" name="mode" id="group-ui-checkbox">
 					<label for="group-ui-checkbox">集体消费</label>
 				</div>
