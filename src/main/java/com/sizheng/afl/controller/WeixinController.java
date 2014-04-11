@@ -1,5 +1,5 @@
 /**
- * WeiXinController.java
+ * WeixinController.java
  */
 package com.sizheng.afl.controller;
 
@@ -45,10 +45,10 @@ import com.sizheng.afl.util.XmlUtil;
  * 
  */
 @Controller
-@RequestMapping(value = "weiXin")
-public class WeiXinController extends BaseController {
+@RequestMapping(value = "weixin")
+public class WeixinController extends BaseController {
 
-	private static Logger logger = Logger.getLogger(WeiXinController.class);
+	private static Logger logger = Logger.getLogger(WeixinController.class);
 
 	@Autowired
 	WeiXinApiInvoker weiXinApiInvoker;
@@ -75,14 +75,14 @@ public class WeiXinController extends BaseController {
 	 * @param locale
 	 * @return
 	 */
-	@RequestMapping("verify")
-	public void verify(@ModelAttribute WeiXinMsg weiXinMsg, @RequestBody(required = false) String reqBody,
+	@RequestMapping("invoke")
+	public void invoke(@ModelAttribute WeiXinMsg weiXinMsg, @RequestBody(required = false) String reqBody,
 			HttpServletResponse response, Locale locale) {
 
 		logger.debug("响应微信服务器消息【微信】");
 
 		// 验证请求来自微信服务器
-		if (weixinVerify(weiXinMsg, locale)) {
+		if (verify(weiXinMsg, locale)) {
 
 			// 微信服务器验证 第三方服务器资源
 			if (StringUtil.isNotEmpty(weiXinMsg.getEchostr())) {
@@ -214,7 +214,7 @@ public class WeiXinController extends BaseController {
 	 * @param weiXinMsg
 	 * @param locale
 	 */
-	private boolean weixinVerify(WeiXinMsg weiXinMsg, Locale locale) {
+	private boolean verify(WeiXinMsg weiXinMsg, Locale locale) {
 
 		logger.debug("验证【微信】");
 
@@ -255,22 +255,24 @@ public class WeiXinController extends BaseController {
 		WebUtil.writeString(response, resp);
 	}
 
-	/**
-	 * 添加商家
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年4月3日 下午2:01:36
-	 * @modification 2014年4月3日 下午2:01:36
-	 * @param request
-	 * @param locale
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("businessAdd")
-	public String businessAdd(HttpServletRequest request, Locale locale, Model model) {
-		model.addAttribute("url", weiXinService.getWebpageCodeUrl("business/add.do", "param-state"));
-		return "weixin/business-add";
-	}
+	// /**
+	// * 添加商家
+	// *
+	// * @author xiweicheng
+	// * @creation 2014年4月3日 下午2:01:36
+	// * @modification 2014年4月3日 下午2:01:36
+	// * @param request
+	// * @param locale
+	// * @param model
+	// * @return
+	// */
+	// @RequestMapping("businessAdd")
+	// public String businessAdd(HttpServletRequest request, Locale locale,
+	// Model model) {
+	// model.addAttribute("url",
+	// weiXinService.getWebpageCodeUrl("business/add.do", "param-state"));
+	// return "weixin/business-add";
+	// }
 
 	@RequestMapping("test")
 	public String test(HttpServletRequest request, Locale locale, Model model) {
