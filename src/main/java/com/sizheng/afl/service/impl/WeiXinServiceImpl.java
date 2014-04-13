@@ -168,7 +168,9 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 				Subscriber subscriber2 = (Subscriber) list.get(0);
 				subscriber2.setCity(userInfo.getCity());
 				subscriber2.setCountry(userInfo.getCountry());
-				subscriber2.setHeadimgurl(userInfo.getHeadimgurl());
+				// 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
+				subscriber2.setHeadimgurl(StringUtil.isEmpty(userInfo.getHeadimgurl()) ? null : userInfo
+						.getHeadimgurl().substring(0, userInfo.getHeadimgurl().length() - 2));
 				subscriber2.setLanguage(userInfo.getLanguage());
 				subscriber2.setNickname(userInfo.getNickname());
 				subscriber2.setProvince(userInfo.getProvince());
@@ -209,7 +211,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		// 菜单项对应的键值
 		String eventKey = bean.getEventKey();
 
-		if (WeiXinEventKey.EVT_KEY_01.getValue().equals(eventKey)) {
+		if (WeiXinEventKey.CUSTOMER_EVT_KEY_4.getValue().equals(eventKey)) {
 
 			User user = new User();
 			user.setUserName(bean.getFromUserName());
@@ -255,7 +257,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 				return "您的信息不存在!";
 			}
 
-		} else if (WeiXinEventKey.EVT_KEY_02.getValue().equals(eventKey)) {
+		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_5.getValue().equals(eventKey)) {
 			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]消费记录</a>", propUtil.getRedirectUrl()
 					+ "/user/record.do", bean.getFromUserName());
 			String url2 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]呼叫服务</a>", propUtil.getRedirectUrl()
@@ -264,7 +266,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 					+ "/user/list.do", bean.getFromUserName());
 
 			return StringUtil.replace("{?1}\n\n{?2}\n\n{?3}", url1, url2, url3);
-		} else if (WeiXinEventKey.EVT_KEY_03.getValue().equals(eventKey)) {// 商家入驻
+		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_1.getValue().equals(eventKey)) {// 商家入驻
 
 			Business business = new Business();
 			business.setOpenId(bean.getFromUserName());
@@ -281,10 +283,10 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 				dynamicCode = businessService.createDynamicCode(locale, business);
 			}
 
-			return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}'>[点击此]入驻登录</a>",
+			return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}&isPhone=1'>[点击此]入驻登录</a>",
 					propUtil.getRedirectUrl(), "/business/verify.do", bean.getFromUserName(), dynamicCode);
 
-		} else if (WeiXinEventKey.EVT_KEY_04.getValue().equals(eventKey)) {
+		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_2.getValue().equals(eventKey)) {
 
 			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]发送登录链接</a>", propUtil.getRedirectUrl()
 					+ "/business/sendLink.do", bean.getFromUserName());

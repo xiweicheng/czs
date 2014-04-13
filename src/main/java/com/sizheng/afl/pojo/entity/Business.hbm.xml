@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-11 17:37:49 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-13 12:41:26 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Business" table="business" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -36,6 +36,21 @@
             <column name="dynamic_code">
                 <comment>&#201;&#204;&#188;&#210;&#182;&#175;&#204;&#172;&#181;&#199;&#194;&#188;&#194;&#235;</comment>
             </column>
+        </property>
+        <property name="isMailVerify" type="java.lang.Short">
+            <column name="is_mail_verify">
+                <comment>
+                &#202;&#199;&#183;&#241;&#210;&#209;&#190;&#173;&#211;&#202;&#207;&#228;&#209;&#233;&#214;&#164;;0:&#195;&#187;&#211;&#208;&#209;&#233;&#214;&#164;,1:&#210;&#209;&#190;&#173;&#209;&#233;&#214;&#164;</comment>
+            </column>
+        </property>
+        <property name="isPhoneVerify" type="java.lang.Short">
+            <column name="is_phone_verify">
+                <comment>
+                &#202;&#199;&#183;&#241;&#210;&#209;&#190;&#173;&#202;&#214;&#187;&#250;&#209;&#233;&#214;&#164;;0:&#195;&#187;&#211;&#208;&#209;&#233;&#214;&#164;,1:&#210;&#209;&#190;&#173;&#209;&#233;&#214;&#164;</comment>
+            </column>
+        </property>
+        <property name="password" type="string">
+            <column name="password" />
         </property>
     </class>
 </hibernate-mapping>

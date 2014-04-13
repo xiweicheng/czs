@@ -13,7 +13,7 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>餐助手-商家自助后台</title>
+<title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-1.10.2.min.js"
@@ -54,7 +54,7 @@
 	<a id="error-msg-anchor"></a>
 
 	<div class="ui segment attached">
-		<form action="menu.add.do" id="add-menu-form">
+		<form action="menu.add.do" id="add-menu-form" method="post">
 			<div class="ui warning form segment" id='add-menu-ui-form'>
 				<div class="ui error message" id="add-menu-ui-message"></div>
 				<div class="two fields">

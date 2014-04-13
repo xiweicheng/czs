@@ -32,7 +32,7 @@
 			<h1 id="v001_heading">餐助手</h1>
 		</div>
 		<div data-role="content">
-			<form action="business/sendMail.do">
+			<form action="business/sendMail.do" method="post">
 				<input type="hidden" name="openId" value="${param.openId}">
 				<div data-role="fieldcontain">
 					<label for="textinput5"> E-mail </label> <input name="mail"

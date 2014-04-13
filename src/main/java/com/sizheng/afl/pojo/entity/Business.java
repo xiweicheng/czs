@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-11 17:37:49 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-13 12:41:26 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,12 +26,16 @@ public class Business implements java.io.Serializable {
 	private String phoneNumber;
 	private Long qrcodeLimit;
 	private String dynamicCode;
+	private Short isMailVerify;
+	private Short isPhoneVerify;
+	private String password;
 
 	public Business() {
 	}
 
 	public Business(String openId, Short isDeleted, String name, String address, String mail, String introduce,
-			String phoneNumber, Long qrcodeLimit, String dynamicCode) {
+			String phoneNumber, Long qrcodeLimit, String dynamicCode, Short isMailVerify, Short isPhoneVerify,
+			String password) {
 		this.openId = openId;
 		this.isDeleted = isDeleted;
 		this.name = name;
@@ -41,6 +45,9 @@ public class Business implements java.io.Serializable {
 		this.phoneNumber = phoneNumber;
 		this.qrcodeLimit = qrcodeLimit;
 		this.dynamicCode = dynamicCode;
+		this.isMailVerify = isMailVerify;
+		this.isPhoneVerify = isPhoneVerify;
+		this.password = password;
 	}
 
 	@Id
@@ -133,6 +140,33 @@ public class Business implements java.io.Serializable {
 
 	public void setDynamicCode(String dynamicCode) {
 		this.dynamicCode = dynamicCode;
+	}
+
+	@Column(name = "is_mail_verify")
+	public Short getIsMailVerify() {
+		return this.isMailVerify;
+	}
+
+	public void setIsMailVerify(Short isMailVerify) {
+		this.isMailVerify = isMailVerify;
+	}
+
+	@Column(name = "is_phone_verify")
+	public Short getIsPhoneVerify() {
+		return this.isPhoneVerify;
+	}
+
+	public void setIsPhoneVerify(Short isPhoneVerify) {
+		this.isPhoneVerify = isPhoneVerify;
+	}
+
+	@Column(name = "password")
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

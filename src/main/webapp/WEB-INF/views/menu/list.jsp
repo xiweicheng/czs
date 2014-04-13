@@ -13,7 +13,7 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>餐助手-商家自助后台</title>
+<title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
 <link href="../../../resources/upload/css/main.css" rel="stylesheet"
@@ -37,12 +37,12 @@
 
 		<c:forEach items="${menuList}" var="item">
 			<div class="title" id="menu-item-title-${item.id}">
-				<i class="dropdown icon"></i> ${item.name} <a
-					style="float: right; margin-right: 10px;"
-					href="menu/update.do?id=${item.id}">修改</a> <a
+				<i class="dropdown icon"></i> ${item.name}<a class="ui red label"
 					style="float: right; margin-right: 10px;"
 					href="javascript:void(0);"
-					onclick="menuDeleteHandler('${item.id}');">删除</a>
+					onclick="menuDeleteHandler('${item.id}');">删除</a> <a
+					class="ui purple label" style="float: right; margin-right: 10px;"
+					href="menu/update.do?id=${item.id}">修改</a>
 			</div>
 			<div class="content" id="menu-item-content-${item.id}">
 				<img class="ui large image left floated" src="../../../${item.path}">

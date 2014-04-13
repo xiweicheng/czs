@@ -19,7 +19,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>餐助手-商家自助后台</title>
+<title>餐助手-商家服务</title>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -35,7 +35,7 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">登录链接发送</h4>
 	<div class="ui segment attached">
-		<form action="business/sendMail.do" id="send-mail-form">
+		<form action="business/sendMail.do" id="send-mail-form" method="post">
 			<input type="hidden" name="openId" value="${business.openId}">
 			<div class="ui warning form segment" id='send-link-ui-form'>
 				<div class="ui error message" id="add-menu-ui-message"></div>

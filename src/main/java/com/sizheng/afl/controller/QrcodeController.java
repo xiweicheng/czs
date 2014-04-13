@@ -3,12 +3,17 @@
  */
 package com.sizheng.afl.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.Category;
 import com.sizheng.afl.pojo.entity.Qrcode;
@@ -33,6 +39,7 @@ import com.sizheng.afl.service.ICategoryService;
 import com.sizheng.afl.service.IQrcodeService;
 import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
+import com.sizheng.afl.util.ZipUtil;
 
 /**
  * 【二维码】请求控制层.
@@ -179,6 +186,7 @@ public class QrcodeController extends BaseController {
 		List<Qrcode> qrcodeList = qrcodeService.list(locale, WebUtil.getSessionBusiness(request).getOpenId());
 
 		model.addAttribute("qrcodeList", qrcodeList);
+		model.addAttribute("total", qrcodeList != null ? qrcodeList.size() : 0);
 
 		return "qrcode/list";
 	}
@@ -244,29 +252,55 @@ public class QrcodeController extends BaseController {
 		List<Category> list = categoryService.listByType("qrcode");
 		model.addAttribute("categoryList", list);
 
-		return "qrcode/input2";
+		return "qrcode/input";
 	}
 
 	@RequestMapping("create")
-	public String create(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Qrcode qrcode) {
+	public String create(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Qrcode qrcode,
+			@RequestParam("description") String[] descriptions) {
 
 		if (StringUtil.isEmpty(qrcode.getOpenId())) {
 			qrcode.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
 		}
 
-		// 二维码生成数量限制判断
-		if (businessService.isQrcodeLimited(locale, qrcode.getOpenId())) {
-			model.addAttribute("message", "二维码生成数量达到限制值!");
+		if (descriptions == null || descriptions.length == 0) {
+			model.addAttribute("message", "二维码描述不能为空!");
 			return "result";
+		}
+
+		if (SysConstant.CATEGORY_ID_JS.equals(qrcode.getCategoryId())) {
+			if (qrcodeService.isExistsJSQrcode(locale, qrcode)) {
+				model.addAttribute("message", "[角色]类型二维码已经生成过了,请通过[二维码一览]查看!");
+				return "result";
+			}
+		} else {
+
+			int size = descriptions.length;
+
+			long remain = businessService.qrcodeRemain(locale, qrcode.getOpenId());
+
+			if (size > remain) {
+				model.addAttribute("message", "您的二维码生成数量不足,还剩下" + remain + "个!");
+				return "result";
+			}
 		}
 
 		String realPath = request.getSession().getServletContext().getRealPath("/");
 
 		logger.debug(realPath);
 
-		WeiXinQrcode weiXinQrcode = qrcodeService.create(qrcode, realPath, WebUtil.calcServerBaseUrl(request));
+		List<WeiXinQrcode> list = new ArrayList<>();
 
-		model.addAttribute("qrcode", weiXinQrcode);
+		for (String description : descriptions) {
+			Qrcode qrcode2 = new Qrcode();
+			qrcode2.setOpenId(qrcode.getOpenId());
+			qrcode2.setCategoryId(qrcode.getCategoryId());
+			qrcode2.setDescription(description);
+
+			list.add(qrcodeService.create(qrcode2, realPath, WebUtil.calcServerBaseUrl(request)));
+		}
+
+		model.addAttribute("qrcodeList", list);
 		model.addAttribute("openId", qrcode.getOpenId());
 
 		Business business = new Business();
@@ -275,7 +309,7 @@ public class QrcodeController extends BaseController {
 		Business business2 = businessService.get(locale, business);
 		model.addAttribute("business", business2);
 
-		return "qrcode/create2";
+		return "qrcode/create";
 	}
 
 	@RequestMapping("sendMail")
@@ -291,6 +325,40 @@ public class QrcodeController extends BaseController {
 		} else {
 			model.addAttribute("message", "发送失败!");
 		}
+
+		return "result";
+	}
+
+	@RequestMapping("sendMailZip")
+	public String sendMailZip(HttpServletRequest request, Locale locale, Model model) {
+
+		String[] pathArr = request.getParameterValues("filePath");
+		String mail = request.getParameter("mail");
+
+		String realPath = WebUtil.getRealPath(request);
+
+		for (int i = 0; i < pathArr.length; i++) {
+			pathArr[i] = realPath + pathArr[i];
+		}
+
+		try {
+			FileUtils.forceMkdir(new File(realPath + "resources/temp/"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		}
+
+		String zipFilePath = realPath + "resources/temp/" + UUID.randomUUID().toString() + ".zip";
+
+		ZipUtil.zip(new File(zipFilePath), pathArr);
+
+		if (qrcodeService.sendMail(zipFilePath, mail)) {
+			model.addAttribute("message", "发送成功!");
+		} else {
+			model.addAttribute("message", "发送失败!");
+		}
+
+		FileUtils.deleteQuietly(new File(zipFilePath));
 
 		return "result";
 	}

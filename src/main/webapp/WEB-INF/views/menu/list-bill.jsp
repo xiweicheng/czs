@@ -19,7 +19,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>餐助手-商家自助后台</title>
+<title>餐助手-顾客服务</title>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -32,7 +32,7 @@
 	<h4 class="ui top attached header" style="margin-top: 45px;">我要点菜</h4>
 	<div class="ui segment attached">
 		<div class="ui segment">
-			<form action="menu/free/list4bill.do" id="filter-form">
+			<form action="menu/free/list4bill.do" id="filter-form" method="post">
 				<input type="hidden" name="openId" value="${openId}">
 				<div class="ui selection dropdown" style="margin-bottom: 10px;">
 					<input type="hidden" name="categoryId"

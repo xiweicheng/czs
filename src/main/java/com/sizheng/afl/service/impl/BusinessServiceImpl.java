@@ -4,13 +4,17 @@
 package com.sizheng.afl.service.impl;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,7 @@ import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Bill;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.entity.Request;
 import com.sizheng.afl.pojo.entity.Subscriber;
@@ -188,12 +193,12 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public boolean isQrcodeLimited(Locale locale, String openId) {
+	public long qrcodeRemain(Locale locale, String openId) {
 
 		Business business = new Business();
 		business.setOpenId(openId);
 
-		return qrcodeService.queryByOpenId(locale, openId).size() >= get(locale, business).getQrcodeLimit();
+		return get(locale, business).getQrcodeLimit() - qrcodeService.queryByOpenId(locale, openId).size();
 	}
 
 	@Override
@@ -218,6 +223,23 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			logger.error(StringUtil
 					.replace("该二维码没有被登记过,或者失效已被删除!二维码信息: scene id->{?1} ticket->{?2}", qrsceneId, ticket));
 			return "该二维码已经失效!";
+		}
+
+		if (qrcode2.getUseTimes() >= qrcode2.getUseLimit()) {
+			// 顾客实时请求记录
+			Request request = new Request();
+			request.setBusinessId(qrcode2.getOpenId());
+			request.setConsumerId(bean.getFromUserName());
+			request.setDateTime(DateUtil.now());
+			request.setIsDelete(SysConstant.SHORT_FALSE);
+			request.setName("二维码扫描次数受限");
+			request.setSceneId(Long.valueOf(qrsceneId));
+			request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
+			request.setType(SysConstant.REQUEST_QRCODE_USE_LIMIT);
+
+			requestService.save(request);
+
+			return "该二维码已经达到扫描次数限制,请联系商家处理...";
 		}
 
 		// 查询顾客名称信息
@@ -275,25 +297,27 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			BusinessConsumer businessConsumer = (BusinessConsumer) list.get(0);
 
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 1) {
-				return StringUtil.replace("您已经扫描过该二维码,还未结束消费,处于消费中...\n\n结账消费码: {?1}", businessConsumer.getSceneId());
+				return StringUtil.replace("您还未结束消费,处于消费中...\n\n结账消费码:{?1}\n\n位置:{?2}", businessConsumer.getSceneId(),
+						qrcode2.getDescription());
 			}
 
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 3) {
-				return StringUtil.replace("您已经扫描过该二维码,还未结束消费,处于个人结账申请中...\n\n结账消费码: {?1}",
-						businessConsumer.getSceneId());
+				return StringUtil.replace("您还未结束消费,处于个人结账申请中...\n\n结账消费码:{?1}\n\n位置:{?2}",
+						businessConsumer.getSceneId(), qrcode2.getDescription());
 			}
 
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 4) {
-				return StringUtil.replace("您已经扫描过该二维码,还未结束消费,处于集体结账申请中...\n\n结账消费码: {?1}",
-						businessConsumer.getSceneId());
+				return StringUtil.replace("您还未结束消费,处于集体结账申请中...\n\n结账消费码:{?1}\n\n位置:{?2}",
+						businessConsumer.getSceneId(), qrcode2.getDescription());
 			}
 
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 5) {
-				return StringUtil.replace("您已经扫描过该二维码,等待商家确认,处于进入请求中...\n\n结账消费码: {?1}", businessConsumer.getSceneId());
+				return StringUtil.replace("您还未被确认通过,等待商家确认,处于进入请求中...\n\n结账消费码:{?1}\n\n位置:{?2}",
+						businessConsumer.getSceneId(), qrcode2.getDescription());
 			}
 
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() == 2) {
-				return "由于某种原因,您处于禁止扫描状态,请联系商家处理...!";
+				return "由于误操作或者系统故障,您的状态处于锁定状态,请联系商家处理...!";
 			}
 
 			if (businessConsumer.getStatus() != null && businessConsumer.getStatus() != 0) {
@@ -681,6 +705,74 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	@Override
 	public List<Map<String, Object>> queryRequest(Locale locale, String openId) {
 		return businessDao.queryRequest(locale, openId);
+	}
+
+	@Override
+	public String addRole(Locale locale, WeiXinBaseMsg bean) {
+
+		String event = bean.getEvent();
+		String qrsceneId = null;
+		String ticket = bean.getTicket();
+
+		if (WeiXinEventType.SUBSCRIBE.getValue().equals(event)) {
+			qrsceneId = bean.getEventKey().split(SysConstant.UNDERLINE)[1];// qrscene_123123
+		} else if (WeiXinEventType.SCAN.getValue().equals(event)) {
+			qrsceneId = bean.getEventKey();
+		}
+
+		Qrcode qrcode = new Qrcode();
+		qrcode.setSceneId(Long.valueOf(qrsceneId));
+		qrcode.setTicket(ticket);
+		Qrcode qrcode2 = qrcodeService.get(locale, qrcode);
+
+		if (qrcode2 == null) {
+			logger.error(StringUtil
+					.replace("该二维码没有被登记过,或者失效已被删除!二维码信息: scene id->{?1} ticket->{?2}", qrsceneId, ticket));
+			return "该二维码已经失效!";
+		}
+
+		BusinessRole businessRole = new BusinessRole();
+		businessRole.setBusinessId(qrcode2.getOpenId());
+		businessRole.setDateTime(DateUtil.now());
+		businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+		businessRole.setOpenId(bean.getFromUserName());
+		businessRole.setType(SysConstant.ROLE_TYPE_UNDETERMINED);
+
+		hibernateTemplate.save(businessRole);
+
+		return "扫描添加成功,等待角色分配中...";
+	}
+
+	@Override
+	public List<Map<String, Object>> listMgrRoles(Locale locale, BusinessRole businessRole) {
+		return businessDao.listMgrRoles(locale, businessRole);
+	}
+
+	@Override
+	public boolean setRole(Locale locale, final BusinessRole businessRole) {
+
+		return hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+			@Override
+			public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+				return session.createQuery("update BusinessRole set type=? where id=?")
+						.setShort(0, businessRole.getType()).setLong(1, businessRole.getId()).executeUpdate() == 1;
+			}
+		});
+	}
+
+	@Override
+	public boolean deleteRole(Locale locale, final BusinessRole businessRole) {
+
+		return hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+			@Override
+			public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+				return session.createQuery("update BusinessRole set isDelete=? where id=?").setShort(0, (short) 1)
+						.setLong(1, businessRole.getId()).executeUpdate() == 1;
+			}
+
+		});
 	}
 
 }

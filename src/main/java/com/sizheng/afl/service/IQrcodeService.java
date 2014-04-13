@@ -129,4 +129,8 @@ public interface IQrcodeService extends IBaseService {
 	 * @return
 	 */
 	String getQrCodeType(Locale locale, String sceneId);
+
+	boolean sendMail(String filePath, String toAddr);
+
+	boolean isExistsJSQrcode(Locale locale, Qrcode qrcode);
 }

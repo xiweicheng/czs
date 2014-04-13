@@ -97,6 +97,7 @@ public final class SysConstant {
 
 	/** QR_TYPE_TZ [String] 二维码类型 台桌 */
 	public static final String QR_TYPE_TZ = "TZ";
+	public static final String QR_TYPE_JS = "JS";
 
 	/** CONSUME_STATUS_STOP [Short] 消费结束 */
 	public static final Short CONSUME_STATUS_STOP = 0;
@@ -138,5 +139,15 @@ public final class SysConstant {
 	public static final Short REQUEST_TYPE_ENTER = 0;
 	public static final Short REQUEST_TYPE_BILL_OWN = 1;
 	public static final Short REQUEST_TYPE_BILL_GROUP = 2;
+	public static final Short REQUEST_QRCODE_USE_LIMIT = 3;
+
+	public static final Long CATEGORY_ID_TZ = 1L;
+	public static final Long CATEGORY_ID_JS = 2L;
+
+	public static final Short ROLE_TYPE_UNDETERMINED = 0;
+	public static final Short ROLE_TYPE_BOSS = 1;
+	public static final Short ROLE_TYPE_COOK = 2;
+	public static final Short ROLE_TYPE_WAITER = 3;
+	public static final Short ROLE_TYPE_PROSCENIUM = 4;
 
 }

@@ -215,6 +215,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 		if (weiXinQrcode != null && StringUtil.isNotEmpty(weiXinQrcode.getUrl())) {
 
 			weiXinQrcode.setMyUrl(serverBaseUrl + "/" + weiXinQrcode.getPath());
+			weiXinQrcode.setDescription(qrcode.getDescription());
 
 			// 检查设置 sceneid 的二维码是否已经生产.
 			com.sizheng.afl.pojo.entity.Qrcode qrcode1 = new com.sizheng.afl.pojo.entity.Qrcode();
@@ -233,7 +234,11 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 				qrcode2.setCategoryId(qrcode.getCategoryId());
 				qrcode2.setOpenId(qrcode.getOpenId());
 				qrcode2.setSceneId(Long.valueOf(qrcode.getSceneId()));
-				qrcode2.setUseLimit(Long.valueOf(propUtil.getQrcodeUseLimitTime()));
+				if (SysConstant.CATEGORY_ID_JS.equals(qrcode.getCategoryId())) {
+					qrcode2.setUseLimit(Long.valueOf(100000));
+				} else {
+					qrcode2.setUseLimit(Long.valueOf(propUtil.getQrcodeUseLimitTime()));
+				}
 				qrcode2.setUseTimes(Long.valueOf(0));
 				qrcode2.setTicket(weiXinQrcode.getTicket());
 				qrcode2.setUrl(weiXinQrcode.getUrl());
@@ -260,6 +265,14 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 
 		return simpleMailSender.sendMailWithAttachment(toAddr, filePath, "二维码[" + ticket + "]",
 				StringUtil.replace("附件为二维码文件, 直接链接地址: {?1}", url));
+	}
+
+	@Override
+	public boolean sendMail(String filePath, String toAddr) {
+
+		logger.debug("[业务逻辑层]邮件发送打包【二维码】");
+
+		return simpleMailSender.sendMailWithAttachment(toAddr, filePath, "二维码打包发送", "附件为打包二维码!");
 	}
 
 	@Override
@@ -295,6 +308,16 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 		}
 
 		return null;
+	}
+
+	@Override
+	public boolean isExistsJSQrcode(Locale locale, Qrcode qrcode) {
+
+		Qrcode qrcode2 = new Qrcode();
+		qrcode2.setOpenId(qrcode.getOpenId());
+		qrcode2.setCategoryId(qrcode.getCategoryId());
+
+		return hibernateTemplate.findByExample(qrcode2).size() > 0;
 	}
 
 }

@@ -20,7 +20,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>餐助手-商家自助后台</title>
+<title>餐助手-商家服务</title>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -42,7 +42,7 @@
 				<i class="meh icon"></i>
 				<div class="content">
 					<div class="header">头像</div>
-					<img class="ui avatar image" src="${consumer.headimgurl}">
+					<img class="ui avatar image" src="${consumer.headimgurl}/64">
 				</div>
 			</div>
 			<div class="item">
@@ -104,12 +104,12 @@
 		</div>
 		<div>
 			<div>
-				<form id="agree-form" action="business/free/reqHandle.do">
+				<form id="agree-form" action="business/free/reqHandle.do" method="post">
 					<input type="hidden" name="agree" value="1"> <input
 						type="hidden" name="consumeCode" value="${consumer.consume_code}">
 					<input type="hidden" name="openId" value="${consumer.user_name}">
 				</form>
-				<form id="disagree-form" action="business/free/reqHandle.do">
+				<form id="disagree-form" action="business/free/reqHandle.do" method="post">
 					<input type="hidden" name="agree" value="0"> <input
 						type="hidden" name="consumeCode" value="${consumer.consume_code}">
 					<input type="hidden" name="openId" value="${consumer.user_name}">

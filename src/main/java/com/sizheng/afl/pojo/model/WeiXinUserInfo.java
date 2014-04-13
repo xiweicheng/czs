@@ -21,6 +21,7 @@ public class WeiXinUserInfo {
 	private String country;
 	private String province;
 	private String language;
+	// 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
 	private String headimgurl;
 	private String subscribe_time;
 	private List<String> privilege;

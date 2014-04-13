@@ -267,16 +267,28 @@ public class WeiXinApiInvoker {
 
 			WeiXinButton weiXinButton = new WeiXinButton("食客服务");
 			List<WeiXinButton> sub_button = new ArrayList<>();
-			sub_button.add(new WeiXinClickButton("我要结账", "evt_key_01"));
-			sub_button.add(new WeiXinClickButton("服务列表", "evt_key_02"));
+			sub_button.add(new WeiXinClickButton("我的菜单", "customer_evt_key_1"));
+			sub_button.add(new WeiXinClickButton("我的收藏", "customer_evt_key_2"));
+			sub_button.add(new WeiXinClickButton("呼叫服务", "customer_evt_key_3"));
+			sub_button.add(new WeiXinClickButton("我要结账", "customer_evt_key_4"));
+			sub_button.add(new WeiXinClickButton("其它服务", "customer_evt_key_5"));
+
+			weiXinButton.setSub_button(sub_button);
+			button.add(weiXinButton);
+
+			weiXinButton = new WeiXinButton("平台服务");
+			sub_button = new ArrayList<>();
+			sub_button.add(new WeiXinClickButton("关于平台", "platform_evt_key_1"));
+			sub_button.add(new WeiXinClickButton("加盟合作", "platform_evt_key_2"));
+			sub_button.add(new WeiXinClickButton("提出建议", "platform_evt_key_3"));
 
 			weiXinButton.setSub_button(sub_button);
 			button.add(weiXinButton);
 
 			weiXinButton = new WeiXinButton("商家服务");
 			sub_button = new ArrayList<>();
-			sub_button.add(new WeiXinClickButton("商家入驻", "evt_key_03"));
-			sub_button.add(new WeiXinClickButton("服务列表", "evt_key_04"));
+			sub_button.add(new WeiXinClickButton("商家入驻", "business_evt_key_1"));
+			sub_button.add(new WeiXinClickButton("其它服务", "business_evt_key_2"));
 
 			weiXinButton.setSub_button(sub_button);
 			button.add(weiXinButton);

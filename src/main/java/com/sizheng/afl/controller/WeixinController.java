@@ -4,7 +4,9 @@
 package com.sizheng.afl.controller;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +51,8 @@ import com.sizheng.afl.util.XmlUtil;
 public class WeixinController extends BaseController {
 
 	private static Logger logger = Logger.getLogger(WeixinController.class);
+
+	private static Set<String> set = new HashSet<>();
 
 	@Autowired
 	WeiXinApiInvoker weiXinApiInvoker;
@@ -97,6 +101,19 @@ public class WeixinController extends BaseController {
 			// 解析消息
 			WeiXinBaseMsg bean = XmlUtil.toBean(reqBody, WeiXinBaseMsg.class);
 
+			// 对消息进行排重检查
+			String key = StringUtil.isEmpty(bean.getMsgId()) ? (bean.getFromUserName() + "_" + bean.getCreateTime())
+					: bean.getMsgId();
+
+			if (set.contains(key)) {
+				logger.debug("消息重读,key:" + key);
+				WebUtil.writeString(response, StringUtil.EMPTY);
+				return;
+			} else {
+				set.clear();
+				set.add(key);
+			}
+
 			// 保存所有来自微信的消息
 			// text image voice video location link
 			if (propUtil.isSaveWeixinMsg()) {
@@ -119,10 +136,13 @@ public class WeixinController extends BaseController {
 					if (eventKey != null && eventKey.startsWith("qrscene_")) {
 						weiXinService.subscribe(bean, locale);
 
+						String type = qrcodeService.getQrCodeType(locale, eventKey.split(SysConstant.UNDERLINE)[1]);
 						// 台桌二维码扫描
-						if (SysConstant.QR_TYPE_TZ.equals(qrcodeService.getQrCodeType(locale,
-								eventKey.split(SysConstant.UNDERLINE)[1]))) {
+						if (SysConstant.QR_TYPE_TZ.equals(type)) {
 							String result = businessService.addConsumer(locale, bean);
+							writeText(response, bean, result);
+						} else if (SysConstant.QR_TYPE_JS.equals(type)) {
+							String result = businessService.addRole(locale, bean);
 							writeText(response, bean, result);
 						} else {
 							WebUtil.writeString(response, StringUtil.EMPTY);
@@ -155,8 +175,13 @@ public class WeixinController extends BaseController {
 					writeText(response, bean, "获取到您的地理位置!");
 				} else if (WeiXinEventType.SCAN.getValue().equals(event)) {// 扫描带参数二维码事件
 
-					if (SysConstant.QR_TYPE_TZ.equals(qrcodeService.getQrCodeType(locale, bean.getEventKey()))) {
+					String type = qrcodeService.getQrCodeType(locale, bean.getEventKey());
+
+					if (SysConstant.QR_TYPE_TZ.equals(type)) {
 						String result = businessService.addConsumer(locale, bean);
+						writeText(response, bean, result);
+					} else if (SysConstant.QR_TYPE_JS.equals(type)) {
+						String result = businessService.addRole(locale, bean);
 						writeText(response, bean, result);
 					} else {
 						// TODO

@@ -11,6 +11,9 @@
 <html>
 <head>
 <base href="<%=basePath%>">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
@@ -25,7 +28,7 @@
 <script id="userTrTpl" type="text/x-jquery-tmpl">
 <tr>
 	<td class="" style="color:red; font-weight: bold;">{{html consume}}</td>
-	<td><img class="ui avatar image" src="{{html headimgurl}}"></td>
+	<td><img class="ui avatar image" src="{{html headimgurl}}/64"></td>
 	<td class="">{{html nickname}}</td>
 	<td class="">{{html sex}}</td>
 	<td class="">{{html consume_times}}</td>
@@ -33,10 +36,10 @@
 </tr>
 </script>
 <script id="requestItemTpl" type="text/x-jquery-tmpl">
-<div class="item" id="request-item-{{html id}}">
+<div class="item" id="request-item-{{html id}}" onclick="refreshHandler('{{html id}}', '{{html type}}');">
 	<div class="right floated tiny teal ui button" onclick="requestHandler('{{html id}}')">知悉</div>
 	<img class="ui avatar image"
-		src="{{html headimgurl}}">
+		src="{{html headimgurl}}/64">
 	<div class="content">
 		<div class="header">{{html nickname}}</div>
 		{{html name}}
@@ -65,19 +68,77 @@
 		<div>
 			{{if menuBill}}
 				{{each menuBill}}
-					{{html $value.nickname}}定了{{html $value.copies}}份!<br/>
+					<b>{{html $value.nickname}}</b>定了{{html $value.copies}}份!<br/>
 				{{/each}}
 			{{else}}
-				您定了{{html copies}}份!<br/>
+				<b>您</b>定了{{html copies}}份!<br/>
 			{{/if}}
 		</div>
 	</div>
 </div>
 </script>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>餐助手-商家自助后台</title>
+<script id="consumerInfoTpl" type="text/x-jquery-tmpl">
+<div class="ui relaxed celled list">
+	<div class="item">
+		<i class="meh icon"></i>
+		<div class="content">
+			<div class="header">头像</div>
+			<img class="ui avatar image" src="{{html headimgurl}}/64">
+		</div>
+	</div>
+	<div class="item">
+		<i class="user icon"></i>
+		<div class="content">
+			<div class="header">名称</div>
+			{{html nickname}}
+		</div>
+	</div>
+	<div class="item">
+		<i class="{{if sex == '男'}}male{{else}}female{{/if}} icon"></i>
+		<div class="content">
+			<div class="header">性别</div>
+			{{html sex}}
+		</div>
+	</div>
+	<div class="item">
+		<i class="home icon"></i>
+		<div class="content">
+			<div class="header">地址</div>
+			{{html country}} {{html province}} {{html city}}
+		</div>
+	</div>
+	<div class="item">
+		<i class="unhide icon"></i>
+		<div class="content">
+			<div class="header">消费次数</div>
+			{{html consume_times}}
+		</div>
+	</div>
+	<div class="item">
+		<i class="calendar icon"></i>
+		<div class="content">
+			<div class="header">最后消费时间</div>
+			{{html last_consume_time}}
+		</div>
+	</div>
+	<div class="item">
+		<i class="help icon"></i>
+		<div class="content">
+			<div class="header">状态</div>
+			{{if status == 0}}消费终止{{else status == 1}}消费中{{else status == 2}}消费禁止{{else status == 3}}个人结账请求中{{else status == 4}}集体结账请求中{{else status == 5}}进入请求中{{/if}}
+		</div>
+	</div>
+	{{if description}}
+	<div class="item">
+		<i class="map marker icon"></i>
+		<div class="content">
+			<div class="header">位置</div>
+			{{html description}}
+		</div>
+	</div>
+	{{/if}}
+</div>
+</script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 	<!-- 侧边栏 -->
@@ -86,56 +147,56 @@
 	<div class="ui right vertical sidebar">
 		<h4 class="ui top attached header">顾客实时请求</h4>
 
-		<div class="ui attached selection divided animated list czzRequest">
-		</div>
+		<div class="ui attached selection divided animated list czzRequest"
+			style="margin-top: 5px;"></div>
 	</div>
 
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">顾客一览</h4>
-	<div class="ui segment attached">
-
-		<div>
-			<div class="ui piled segment">
-				<div class="ui toggle checkbox" id="refresh-ui-toggle-checkbox">
-					<input type="checkbox" name="pet"> <label>定时刷新</label>
-				</div>
-				<div class="ui radio checkbox">
-					<input type="radio" name="refresh" checked="checked"> <label>5s</label>
-					<input type="hidden" value="5">
-				</div>
-				<div class="ui radio checkbox">
-					<input type="radio" name="refresh"> <label>15s</label> <input
-						type="hidden" value="15">
-				</div>
-				<div class="ui radio checkbox">
-					<input type="radio" name="refresh"> <label>30s</label> <input
-						type="hidden" value="30">
-				</div>
-				<div class="ui radio checkbox">
-					 <label>60s</label> <input
-						type="hidden" value="60"><input type="radio" name="refresh">
-				</div>
-				
-				<div class="ui button" style="float:right;">刷新页面</div>
-			</div>
+	<h4 class="ui top attached header" style="margin-top: 45px;">
+		顾客一览
+		<div class="ui toggle checkbox" style="margin-left: 20px;"
+			id="refresh-ui-toggle-checkbox">
+			<input type="checkbox" name="pet"> <label>定时刷新</label>
 		</div>
+		<div class="ui radio checkbox">
+			<input type="radio" name="refresh" checked="checked"> <label>5s</label>
+			<input type="hidden" value="5">
+		</div>
+		<div class="ui radio checkbox">
+			<input type="radio" name="refresh"> <label>15s</label> <input
+				type="hidden" value="15">
+		</div>
+		<div class="ui radio checkbox">
+			<input type="radio" name="refresh"> <label>30s</label> <input
+				type="hidden" value="30">
+		</div>
+		<div class="ui radio checkbox">
+			<input type="radio" name="refresh"> <label>60s</label> <input
+				type="hidden" value="60">
+		</div>
+	</h4>
+	<div class="ui segment attached">
 		<div>
-			<a class="ui purple label" href="business/list.do?status=5"
-				style="margin-top: 10px;"> 进入请求中 ${requesting} 人 </a> <a
-				class="ui teal label" href="business/list.do?status=3"
-				style="margin-top: 10px;"> 个人结账申请 ${requestOwn} 人 </a><a
-				class="ui orange label" href="business/list.do?status=4"
-				style="margin-top: 10px;"> 集体结账申请 ${requestGroup} 人</a> <a
-				class="ui black label" href="business/list.do?status=1"
-				style="margin-top: 10px;"> 消费中 ${ongoing} 人 </a> <a
-				class="ui red label" href="business/list.do?status=0"
-				style="margin-top: 10px;"> 消费终止 ${over} 人 </a> <a
+			<a class="ui purple label czsRequest"
+				href="business/list.do?status=5"
+				style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中
+				${requesting} 人 </a> <a class="ui teal label czsRequestOwn"
+				href="business/list.do?status=3"
+				style="margin-top: 5px; margin-bottom: 5px;"> 个人结账申请
+				${requestOwn} 人 </a><a class="ui orange label czsRequestGroup"
+				href="business/list.do?status=4"
+				style="margin-top: 5px; margin-bottom: 5px;"> 集体结账申请
+				${requestGroup} 人</a> <a class="ui black label"
+				href="business/list.do?status=1"
+				style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人 </a>
+			<a class="ui red label" href="business/list.do?status=0"
+				style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a
 				class="ui green label" href="business/list.do?status=2"
-				style="margin-top: 10px;"> 消费禁止 ${disabled} 人 </a><a
-				class="ui blue label" href="business/list.do"
-				style="margin-top: 10px;"> 总计 ${total} 人 </a>
+				style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled} 人
+			</a><a class="ui blue label" href="business/list.do"
+				style="margin-top: 5px; margin-bottom: 5px;"> 总计 ${total} 人 </a>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
 			<thead>
@@ -152,8 +213,10 @@
 			<tbody>
 				<c:forEach items="${customerList}" var="item">
 					<tr id="item-tr-${item.consumer_id}">
-						<td><img class="ui avatar image" src="${item.headimgurl}"></td>
-						<td class="">${item.nickname}<c:if
+						<td><img class="ui avatar image" src="${item.headimgurl}/64"></td>
+						<td class=""><a href="javascript:void(0);"
+							onclick="getConsumerInfoHandler('${item.consumer_id}')">${item.nickname}</a>
+							<c:if
 								test="${item.status=='1' || item.status=='3' || item.status=='4'}">
 								<a class="ui teal label"
 									onclick="billDetailHandler('${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">消费详情</a>
@@ -287,6 +350,23 @@
 		</div>
 	</div>
 
+	<div class="ui small modal czsGetConsumerInfo">
+		<i class="close icon"></i>
+		<div class="header">顾客信息</div>
+		<div class="content" style="padding-top: 0px; padding-bottom: 0px;"
+			id="czsGetConsumerInfo-content"></div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui deny labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui approve right labeled icon button">
+					确定 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script type="text/javascript">
 		var _status;
 		var _consume_code;
@@ -383,6 +463,30 @@
 			});
 		}
 
+		function refreshHandler(id, type) {
+			if (type == '0') {
+				location.href = $('.ui.label.czsRequest').attr('href');
+			} else if (type == '1') {
+				location.href = $('.ui.label.czsRequestOwn').attr('href');
+			} else if (type == '2') {
+				location.href = $('.ui.label.czsRequestGroup').attr('href');
+			}
+		}
+
+		function getConsumerInfoHandler(consumer_id) {
+			$.post('business/getConsumerInfo.do', {
+				openId : consumer_id
+			}, function(msg) {
+				if (msg.succeed) {
+					$('#consumerInfoTpl').tmpl(msg.value)
+							.appendTo($('.ui.modal.czsGetConsumerInfo > .content').empty());
+					$('.ui.modal.czsGetConsumerInfo').modal('show');
+				} else {
+					alert(msg.msg.detail);
+				}
+			});
+		}
+
 		jQuery(function($) {
 
 			$('table').tablesort().data('tablesort');
@@ -390,8 +494,6 @@
 			$('.ui.checkbox').checkbox();
 
 			$('#menu-item-business-list').addClass('active');
-
-			$('.ui.right.sidebar').sidebar('show');
 
 			$('#group-info-show-modal').modal({
 				closable : false
@@ -546,27 +648,45 @@
 					if (msg.succeed) {
 						$('#requestItemTpl').tmpl(msg.value).appendTo($('.ui.list.czzRequest').empty());
 					} else {
-						alert(msg.msg.detail);
+						//alert(msg.msg.detail);
 					}
 				});
 			};
 
-			// 第一次加载完首先执行一次
-			requestFunction();
+			var intervalRef;
 
-			var intervalRef = setInterval(requestFunction, 5 * 1000);
+			try {
+				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+					$('.ui.right.sidebar').sidebar('hide');
+					$('.container.czzTopMenu > .title.item').hide();
+				} else {
+					$('.ui.right.sidebar').sidebar('show');
+					requestFunction();
+					intervalRef = setInterval(requestFunction, 5 * 1000);
+				}
+			} catch (e) {
+				$('.ui.right.sidebar').sidebar('show');
+			}
 
-			$('<a class="launch item czzRequest" style="float:right;"><i class="icon list layout"></i> 顾客实时请求栏</a>')
+			$('<a class="launch item czzRequest" style="float:right;"><i class="icon list layout"></i> 实时请求栏</a>')
 					.appendTo('.container.czzTopMenu');
 
 			$('.launch.item.czzRequest').click(function() {
 				$('.ui.right.sidebar').sidebar('toggle');
-				
-				if($('.ui.right.sidebar').sidebar('is open')){
+
+				if ($('.ui.right.sidebar').sidebar('is open')) {
 					requestFunction();
 					intervalRef = setInterval(requestFunction, 5 * 1000);
-				}else{
+
+					if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+						$('#refresh-ui-toggle-checkbox > label').hide();
+					}
+					
+				} else {
 					clearInterval(intervalRef);
+					if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+						$('#refresh-ui-toggle-checkbox > label').show();
+					}
 				}
 			});
 

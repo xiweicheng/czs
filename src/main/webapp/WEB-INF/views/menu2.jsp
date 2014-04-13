@@ -10,6 +10,12 @@
 			<i class="icon list layout"></i>侧边测单
 		</div>
 		<div class="header item">
+			<i class="heart icon"></i> 我的收藏
+		</div>
+		<a class="item" href="user/free/businessStow.do?openId=${openId}"
+			id="menu-item-business-stow">店铺收藏</a> <a class="item"
+			href="user/free/foodStow.do?openId=${openId}" id="menu-item-food-stow">美食收藏</a>
+		<div class="header item">
 			<i class="cart icon"></i> 点菜筛选
 		</div>
 		<a class="item" href="menu/free/list4bill.do?openId=${openId}"

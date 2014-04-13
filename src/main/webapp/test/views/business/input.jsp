@@ -32,7 +32,7 @@
 			<h1 id="v001_heading">餐助手</h1>
 		</div>
 		<div data-role="content">
-			<form action="business/update.do">
+			<form action="business/update.do" method="post">
 				<input name="openId" type="hidden" value="${business.openId}">
 				<div data-role="fieldcontain">
 					<label for="textinput1"> 商家名称 </label> <input name="name"

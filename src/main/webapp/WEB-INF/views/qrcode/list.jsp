@@ -13,7 +13,7 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>餐助手-商家自助后台</title>
+<title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-1.10.2.min.js"
@@ -34,7 +34,8 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">二维码一览</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">二维码一览
+		- 共${total}个</h4>
 	<a id="error-msg-anchor"></a>
 
 	<div class="ui segment attached">
@@ -45,11 +46,12 @@
 						<img src="../../../${item.filePath}">
 					</div>
 					<div class="content">
-						<div class="name" id="qrcode-desc-div-${item.id}">${item.description}</div>
-						<div class="extra">使用次数:${item.useTimes}</div>
-						<div>
-							<div class="ui button"
-								onclick="editHander('${item.id}')">编辑描述</div>
+						<div class="name" style="text-align: center;"
+							id="qrcode-desc-div-${item.id}">${item.description}</div>
+						<div class="extra">使用次数:${item.useTimes}
+							限制次数:${item.useLimit}</div>
+						<div class="czsEditBtn" style="display: none; position: absolute; right:0px;">
+							<div class="ui green button" onclick="editHander('${item.id}')">编辑描述</div>
 						</div>
 					</div>
 				</div>
@@ -61,7 +63,7 @@
 	<%@ include file="../footer.jsp"%>
 
 	<!-- 菜单口味modal -->
-	<div class="ui modal" id="edit-desc-modal">
+	<div class="ui small modal" id="edit-desc-modal">
 		<i class="close icon"></i>
 		<div class="header">编辑描述</div>
 		<div class="content">
@@ -115,6 +117,12 @@
 						}
 					});
 				}
+			});
+
+			$('.ui.stackable.items').children('.item').hover(function() {
+				$(this).find('.czsEditBtn').show();
+			}, function() {
+				$(this).find('.czsEditBtn').hide();
 			});
 		});
 	</script>

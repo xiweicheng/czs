@@ -14,6 +14,7 @@ import com.sizheng.afl.base.impl.BaseDaoImpl;
 import com.sizheng.afl.dao.IBusinessDao;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.SqlUtil;
 
@@ -220,7 +221,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("FROM\n");
 		sqlSb.append("	subscriber\n");
 		sqlSb.append("INNER JOIN business_consumer ON subscriber.user_name = business_consumer.consumer_id\n");
-		sqlSb.append("INNER JOIN qrcode ON business_consumer.scene_id = qrcode.scene_id\n");
+		sqlSb.append("LEFT JOIN qrcode ON business_consumer.scene_id = qrcode.scene_id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	subscriber.user_name = ?\n");
 
@@ -253,6 +254,35 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("AND request.business_id = ?\n");
 
 		return getMapList(sqlSb, openId);
+	}
+
+	@Override
+	public List<Map<String, Object>> listMgrRoles(Locale locale, BusinessRole businessRole) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	business_role.id,\n");
+		sqlSb.append("	business_role.business_id,\n");
+		sqlSb.append("	business_role.open_id,\n");
+		sqlSb.append("	business_role.type,\n");
+		sqlSb.append("	business_role.is_delete,\n");
+		sqlSb.append("  DATE_FORMAT(business_role.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
+		sqlSb.append("	subscriber.city,\n");
+		sqlSb.append("	subscriber.country,\n");
+		sqlSb.append("	subscriber.province,\n");
+		sqlSb.append("	subscriber.headimgurl\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	business_role\n");
+		sqlSb.append("LEFT JOIN subscriber ON business_role.open_id = subscriber.user_name\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	business_role.business_id = ?\n");
+		sqlSb.append("AND business_role.is_delete = 0\n");
+
+		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND business_role.type = {?1}\n", businessRole.getType()));
+
+		return getMapList(sqlSb, businessRole.getBusinessId());
 	}
 
 }

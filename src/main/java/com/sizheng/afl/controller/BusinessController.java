@@ -29,15 +29,18 @@ import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.entity.Request;
 import com.sizheng.afl.pojo.model.WeiXinAccessToken;
+import com.sizheng.afl.pojo.vo.Msg;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IRequestService;
 import com.sizheng.afl.service.IUserService;
+import com.sizheng.afl.util.EncoderUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
@@ -367,7 +370,8 @@ public class BusinessController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("login")
-	public String login(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+	public String login(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "openId", required = false) String openId) {
 
 		logger.debug("商家登录输入【商家】");
 
@@ -411,29 +415,147 @@ public class BusinessController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("verify")
-	public String verify(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId,
-			@RequestParam("dynamicCode") String dynamicCode) {
+	public String verify(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "openId", required = false) String openId,
+			@RequestParam(value = "dynamicCode", required = false) String dynamicCode,
+			@RequestParam(value = "userName", required = false) String userName,
+			@RequestParam(value = "password", required = false) String password,
+			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(value = "isPhone", required = false, defaultValue = "0") boolean isPhone) {
 
 		logger.debug("商家登录验证【商家】");
 
-		Business business = new Business();
-		business.setOpenId(openId);
-		business.setDynamicCode(dynamicCode);
+		Business business2 = null;
 
-		Business business2 = businessService.get(locale, business);
+		if (StringUtil.isNotEmpty(type) && SysConstant.NUMBER_1.equals(type)) {// 用户名密码登录
+
+			Assert.notNull(userName);
+			Assert.notNull(password);
+
+			Business business = new Business();
+			business.setMail(userName);
+			business.setPassword(EncoderUtil.encodeBySHA1(password));
+
+			business2 = businessService.get(locale, business);
+		} else {
+
+			Assert.notNull(openId);
+			Assert.notNull(dynamicCode);
+
+			Business business = new Business();
+			business.setOpenId(openId);
+			business.setDynamicCode(dynamicCode);
+
+			business2 = businessService.get(locale, business);
+		}
 
 		if (business2 != null && StringUtil.isNotEmpty(business2.getOpenId())) {
 
+			if (!isPhone && !SysConstant.SHORT_TRUE.equals(business2.getIsMailVerify())) {// 邮箱验证通过
+				business2.setIsMailVerify(SysConstant.SHORT_TRUE);
+				businessService.update(business2);
+			}
+
 			HttpSession session = request.getSession();
 			session.setAttribute(SysConstant.SESSION_BUSINESS, business2);
-
-			// model.addAttribute("business", business2);
 
 			return "forward:list.do";
 		} else {
 			model.addAttribute("message", "登录失败!");
 
 			return "error";
+		}
+	}
+
+	/**
+	 * 商家设置登陆密码。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @param dynamicCode
+	 * @return
+	 */
+	@RequestMapping("newPassword")
+	@ResponseBody
+	public ResultMsg newPassword(HttpServletRequest request, Locale locale, @RequestParam("password") String password,
+			@RequestParam("repeatPassword") String repeatPassword) {
+
+		logger.debug("商家设置登陆密码【商家】");
+
+		if (StringUtil.isEmpty(password)) {
+			return new ResultMsg(false, new Msg(false, "密码不能为空!"));
+		}
+
+		if (!password.equals(repeatPassword)) {
+			return new ResultMsg(false, new Msg(false, "两次密码输入不一致!"));
+		}
+
+		if (password.length() > 20) {
+			return new ResultMsg(false, new Msg(false, "密码长度不能超过20位!"));
+		}
+
+		Business business = new Business();
+		business.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
+
+		Business business2 = businessService.get(locale, business);
+
+		business2.setPassword(EncoderUtil.encodeBySHA1(password));
+
+		businessService.update(business2);
+
+		return new ResultMsg(true);
+
+	}
+
+	/**
+	 * 商家更新登陆密码。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @param dynamicCode
+	 * @return
+	 */
+	@RequestMapping("updatePassword")
+	@ResponseBody
+	public ResultMsg updatePassword(HttpServletRequest request, Locale locale,
+			@RequestParam("oldPassword") String oldPassword, @RequestParam("password") String password,
+			@RequestParam("repeatPassword") String repeatPassword) {
+
+		logger.debug("商家更新登陆密码【商家】");
+
+		if (StringUtil.isEmpty(oldPassword)) {
+			return new ResultMsg(false, new Msg(false, "原密码不能为空!"));
+		}
+
+		if (StringUtil.isEmpty(password)) {
+			return new ResultMsg(false, new Msg(false, "密码不能为空!"));
+		}
+
+		if (!password.equals(repeatPassword)) {
+			return new ResultMsg(false, new Msg(false, "两次密码输入不一致!"));
+		}
+
+		if (password.length() > 20) {
+			return new ResultMsg(false, new Msg(false, "密码长度不能超过20位!"));
+		}
+
+		Business business = new Business();
+		business.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
+		business.setPassword(EncoderUtil.encodeBySHA1(oldPassword));
+
+		Business business2 = businessService.get(locale, business);
+
+		if (business2 != null) {
+			business2.setPassword(EncoderUtil.encodeBySHA1(password));
+			businessService.update(business2);
+
+			return new ResultMsg(true);
+		} else {
+			return new ResultMsg(false, new Msg(false, "原密码输入错误!"));
 		}
 	}
 
@@ -459,6 +581,168 @@ public class BusinessController extends BaseController {
 		model.addAttribute("business", business2);
 
 		return "business/sendLink";
+
+	}
+
+	/**
+	 * 商家角色分配。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("roleMgr")
+	public String roleMgr(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "type", required = false) Short type) {
+
+		logger.debug("商家角色分配【商家】");
+
+		BusinessRole businessRole = new BusinessRole();
+		businessRole.setBusinessId(WebUtil.getSessionBusiness(request).getOpenId());
+		businessRole.setType(type);
+
+		List<Map<String, Object>> list = businessService.listMgrRoles(locale, businessRole);
+
+		businessRole.setType(null);
+		List<Map<String, Object>> listAll = businessService.listMgrRoles(locale, businessRole);
+
+		int undetermined = 0;
+		int boss = 0;
+		int cook = 0;
+		int waiter = 0;
+		int proscenium = 0;
+
+		for (Map<String, Object> map : listAll) {
+			Short typeShort = Short.valueOf(StringUtil.getNotNullString(map, "type"));
+
+			if (SysConstant.ROLE_TYPE_UNDETERMINED.equals(typeShort)) {
+				undetermined++;
+			} else if (SysConstant.ROLE_TYPE_BOSS.equals(typeShort)) {
+				boss++;
+			} else if (SysConstant.ROLE_TYPE_COOK.equals(typeShort)) {
+				cook++;
+			} else if (SysConstant.ROLE_TYPE_WAITER.equals(typeShort)) {
+				waiter++;
+			} else if (SysConstant.ROLE_TYPE_PROSCENIUM.equals(typeShort)) {
+				proscenium++;
+			}
+		}
+
+		model.addAttribute("roleList", list);
+
+		model.addAttribute("undetermined", undetermined);
+		model.addAttribute("boss", boss);
+		model.addAttribute("cook", cook);
+		model.addAttribute("waiter", waiter);
+		model.addAttribute("proscenium", proscenium);
+		model.addAttribute("total", listAll.size());
+
+		return "business/role-mgr";
+
+	}
+
+	/**
+	 * 商家角色分配。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("setRole")
+	@ResponseBody
+	public ResultMsg setRole(HttpServletRequest request, Locale locale, @ModelAttribute BusinessRole businessRole) {
+
+		logger.debug("商家角色分配【商家】");
+
+		Assert.notNull(businessRole.getId());
+		Assert.notNull(businessRole.getType());
+
+		return new ResultMsg(businessService.setRole(locale, businessRole));
+
+	}
+
+	/**
+	 * 商家角色删除。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("deleteRole")
+	@ResponseBody
+	public ResultMsg deleteRole(HttpServletRequest request, Locale locale, @ModelAttribute BusinessRole businessRole) {
+
+		logger.debug("商家角色删除【商家】");
+
+		Assert.notNull(businessRole.getId());
+
+		return new ResultMsg(businessService.deleteRole(locale, businessRole));
+
+	}
+
+	/**
+	 * 菜品统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("menuStat")
+	public String menuStat(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("菜品统计【商家】");
+
+		model.addAttribute("message", "[菜品统计]页面建设中...");
+
+		return "message";
+
+	}
+
+	/**
+	 * 服务统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("serviceStat")
+	public String serviceStat(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("服务统计【商家】");
+
+		model.addAttribute("message", "[服务统计]页面建设中...");
+
+		return "message";
+
+	}
+
+	/**
+	 * 营业额统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("volumeStat")
+	public String volumeStat(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("营业额统计【商家】");
+
+		model.addAttribute("message", "[营业额统计]页面建设中...");
+
+		return "message";
 
 	}
 
@@ -491,7 +775,7 @@ public class BusinessController extends BaseController {
 		model.addAttribute("message", StringUtil.replace(
 				"登录链接已经发到您的邮箱,请查收!<br/><br/>您的动态登录密码:{?1}<br/><br/><a href='{?2}'>也可点此登录</a>", dynamicCode, loginUrl));
 
-		return "error";
+		return "message";
 
 	}
 
@@ -615,6 +899,29 @@ public class BusinessController extends BaseController {
 		model.addAttribute("consumer", consumer);
 
 		return "business/joining";
+	}
+
+	/**
+	 * 获取顾客信息.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("getConsumerInfo")
+	@ResponseBody
+	public ResultMsg getConsumerInfo(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId) {
+
+		logger.debug("获取顾客信息【商家】");
+
+		Map<String, Object> consumer = businessService.getConsumer(locale, openId);
+
+		return new ResultMsg(true, consumer);
 	}
 
 	/**

@@ -7,6 +7,7 @@ public class WeiXinQrcode {
 	private String filePath;
 	private String path;// 文件相对上下文的路径.
 	private String myUrl;// 自己服务器的文件URL.
+	private String description;
 
 	public WeiXinQrcode() {
 		super();
@@ -58,6 +59,14 @@ public class WeiXinQrcode {
 
 	public void setMyUrl(String myUrl) {
 		this.myUrl = myUrl;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import com.sizheng.afl.base.IBaseService;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.pojo.model.WeiXinBaseMsg;
 import com.sizheng.afl.pojo.vo.PageResult;
 
@@ -123,7 +124,7 @@ public interface IBusinessService extends IBaseService {
 	 * @param openId
 	 * @return
 	 */
-	boolean isQrcodeLimited(Locale locale, String openId);
+	long qrcodeRemain(Locale locale, String openId);
 
 	/**
 	 * 添加食客.
@@ -301,4 +302,32 @@ public interface IBusinessService extends IBaseService {
 	 * @return
 	 */
 	List<Map<String, Object>> queryRequest(Locale locale, String openId);
+
+	/**
+	 * 商家添加员工角色.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月13日 下午12:31:41
+	 * @modification 2014年4月13日 下午12:31:41
+	 * @param locale
+	 * @param bean
+	 * @return
+	 */
+	String addRole(Locale locale, WeiXinBaseMsg bean);
+
+	/**
+	 * 获取商家的员工角色.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月13日 下午1:05:03
+	 * @modification 2014年4月13日 下午1:05:03
+	 * @param locale
+	 * @param businessRole
+	 * @return
+	 */
+	List<Map<String, Object>> listMgrRoles(Locale locale, BusinessRole businessRole);
+
+	boolean setRole(Locale locale, BusinessRole businessRole);
+
+	boolean deleteRole(Locale locale, BusinessRole businessRole);
 }

@@ -103,6 +103,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("LEFT JOIN subscriber ON subscriber.user_name = menu_bill.consumer_id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu.`owner` = ?\n");
+		sqlSb.append("AND menu.is_delete = 0\n");
 
 		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND menu.category_id = {?1}\n", menu.getCategoryId()));
 		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND menu.taste_id = {?1}\n", menu.getTasteId()));

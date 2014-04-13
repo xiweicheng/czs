@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.BusinessRole;
 
 /**
  * 【商家】持久化接口层.
@@ -112,5 +113,7 @@ public interface IBusinessDao {
 	Map<String, Object> getConsumer(Locale locale, String openId);
 
 	List<Map<String, Object>> queryRequest(Locale locale, String openId);
+
+	List<Map<String, Object>> listMgrRoles(Locale locale, BusinessRole businessRole);
 	
 }

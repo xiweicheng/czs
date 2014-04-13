@@ -360,6 +360,53 @@ public class UserController extends BaseController {
 	}
 
 	/**
+	 * 店铺收藏.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("free/businessStow")
+	public String businessStow(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId) {
+
+		logger.debug("店铺收藏【消费者】");
+
+		model.addAttribute("message", "[店铺收藏]页面建设中...");
+
+		return "message";
+
+	}
+
+	/**
+	 * 美食收藏.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("free/foodStow")
+	public String foodStow(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		logger.debug("美食收藏【消费者】");
+
+		model.addAttribute("message", "[美食收藏]页面建设中...");
+
+		return "message";
+
+	}
+
+	/**
 	 * 消费详情.
 	 * 
 	 * @author xiweicheng

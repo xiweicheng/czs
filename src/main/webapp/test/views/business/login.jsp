@@ -32,7 +32,7 @@
 			<h1 id="v001_heading">餐助手</h1>
 		</div>
 		<div data-role="content">
-			<form action="business/verify.do">
+			<form action="business/verify.do" method="post">
 				<input type="hidden" name="openId" value="${openId}">
 				<div data-role="fieldcontain">
 					<label for="password">Password:</label> <input type="password"
