@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>  
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -68,10 +69,21 @@
 		<div>
 			{{if menuBill}}
 				{{each menuBill}}
-					<b>{{html $value.nickname}}</b>定了{{html $value.copies}}份!<br/>
+					<b>{{html $value.nickname}}</b>定了<b>{{html $value.copies}}</b>份!&nbsp;
+					{{if $value.status == '3'}}
+						<div class="ui green label">已上</div>
+					{{else}}
+						<div class="ui red label">未上</div>
+					{{/if}}
+					<br/>
 				{{/each}}
 			{{else}}
-				<b>您</b>定了{{html copies}}份!<br/>
+				<b>您</b>定了<b>{{html copies}}</b>份!&nbsp;
+				{{if status == '3'}}
+					<div class="ui green label">已上</div>
+				{{else}}
+					<div class="ui red label">未上</div>
+				{{/if}}
 			{{/if}}
 		</div>
 	</div>
@@ -155,7 +167,7 @@
 	<%@ include file="../header.jsp"%>
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">
-		顾客一览
+		顾客一览 - 共${fn:length(customerList)}人
 		<div class="ui toggle checkbox" style="margin-left: 20px;"
 			id="refresh-ui-toggle-checkbox">
 			<input type="checkbox" name="pet"> <label>定时刷新</label>
@@ -191,9 +203,11 @@
 				${requestGroup} 人</a> <a class="ui black label"
 				href="business/list.do?status=1&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人 </a>
-			<a class="ui red label" href="business/list.do?status=0&interval=${interval}"
+			<a class="ui red label"
+				href="business/list.do?status=0&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a
-				class="ui green label" href="business/list.do?status=2&interval=${interval}"
+				class="ui green label"
+				href="business/list.do?status=2&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled} 人
 			</a><a class="ui blue label" href="business/list.do?interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 总计 ${total} 人 </a>
@@ -657,7 +671,7 @@
 					if (msg.succeed) {
 						$('#requestItemTpl').tmpl(msg.value).appendTo($('.ui.list.czzRequest').empty());
 					} else {
-						if(msg.msg.id == '1000'){
+						if (msg.msg.id == '1000') {
 							clearInterval(intervalRef);
 							alert(msg.msg.detail);
 						}
