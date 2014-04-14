@@ -657,9 +657,12 @@
 					if (msg.succeed) {
 						$('#requestItemTpl').tmpl(msg.value).appendTo($('.ui.list.czzRequest').empty());
 					} else {
-						//alert(msg.msg.detail);
+						if(msg.msg.id == '1000'){
+							clearInterval(intervalRef);
+							alert(msg.msg.detail);
+						}
 					}
-				});
+				}, 'json');
 			};
 
 			var intervalRef;

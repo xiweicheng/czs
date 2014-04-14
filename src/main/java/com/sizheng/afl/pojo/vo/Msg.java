@@ -11,7 +11,7 @@ public class Msg implements Serializable {
 	private boolean succeed;
 
 	/** 消息ID **/
-	private Serializable id;
+	private Serializable id = "0";
 
 	/** 消息详细 **/
 	private String detail;

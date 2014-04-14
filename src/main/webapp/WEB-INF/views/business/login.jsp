@@ -22,7 +22,7 @@
 </head>
 <body>
 	<div>
-		<div style="height: 150px;"></div>
+		<div style="height: 100px;"></div>
 		<!-- 顶部填充 -->
 
 		<c:if test="${! empty param.openId}">

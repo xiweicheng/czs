@@ -82,6 +82,9 @@
 
 	<beans:bean id="localeChangeInterceptor"
 		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+		
+	<beans:bean id="sessionInterceptor"
+		class="com.sizheng.afl.interceptor.SessionInterceptor" />
 
 	<!-- <beans:bean name="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor"> 
 		<beans:property name="sessionFactory" ref="sessionFactory" /> </beans:bean> -->
@@ -90,6 +93,10 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/*/*" />
 			<beans:ref bean="localeChangeInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/*/*.do" />
+			<beans:ref bean="sessionInterceptor" />
 		</mvc:interceptor>
 		<!-- <mvc:interceptor>
 			<mvc:mapping path="/*/*.do" />

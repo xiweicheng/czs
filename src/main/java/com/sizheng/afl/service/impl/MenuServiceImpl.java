@@ -145,6 +145,10 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 
 		String originalFilename = imageFile.getOriginalFilename();
 
+		if (!ImageUtil.isImage(originalFilename)) {
+			return false;
+		}
+
 		String type = originalFilename.substring(originalFilename.lastIndexOf("."));
 
 		String fileName = StringUtil.replace("{?1}{?2}", UUID.randomUUID(), type);
