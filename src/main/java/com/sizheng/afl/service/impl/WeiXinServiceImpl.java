@@ -229,25 +229,49 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 					if (size == 1) {
 						double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
-						return StringUtil
-								.replace(
-										"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
-										propUtil.getRedirectUrl() + "/user/free/billReq.do", bean.getFromUserName(),
-										user2.getConsumeCode(), NumberUtil.format2Money(consume), "own");
+
+						if (consume > 0) {
+							return StringUtil
+									.replace(
+											"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
+											propUtil.getRedirectUrl() + "/user/free/billReq.do",
+											bean.getFromUserName(), user2.getConsumeCode(),
+											NumberUtil.format2Money(consume), "own");
+						} else {
+							return StringUtil.replace(
+									"您没有消费记录,\n\n<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]结束消费状态</a>",
+									propUtil.getRedirectUrl() + "/user/free/checkout.do", bean.getFromUserName(),
+									user2.getConsumeCode());
+						}
 					} else if (size > 1) {
 						double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
 						double totalConsume = businessService.getConsume(locale, user2.getConsumeCode(), "group");
-						return StringUtil
-								.replace(
-										"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
-										propUtil.getRedirectUrl() + "/user/free/billReq.do", bean.getFromUserName(),
-										user2.getConsumeCode(), NumberUtil.format2Money(consume), "own")
-								+ StringUtil
-										.replace(
-												"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
-												propUtil.getRedirectUrl() + "/user/free/billReq.do",
-												bean.getFromUserName(), user2.getConsumeCode(),
-												NumberUtil.format2Money(totalConsume), "group");
+
+						if (consume > 0) {
+							return StringUtil
+									.replace(
+											"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
+											propUtil.getRedirectUrl() + "/user/free/billReq.do",
+											bean.getFromUserName(), user2.getConsumeCode(),
+											NumberUtil.format2Money(consume), "own")
+									+ StringUtil
+											.replace(
+													"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
+													propUtil.getRedirectUrl() + "/user/free/billReq.do",
+													bean.getFromUserName(), user2.getConsumeCode(),
+													NumberUtil.format2Money(totalConsume), "group");
+						} else {
+							return StringUtil.replace(
+									"您没有消费记录,\n\n<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]结束消费状态</a>",
+									propUtil.getRedirectUrl() + "/user/free/checkout.do", bean.getFromUserName(),
+									user2.getConsumeCode())
+									+ StringUtil
+											.replace(
+													"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
+													propUtil.getRedirectUrl() + "/user/free/billReq.do",
+													bean.getFromUserName(), user2.getConsumeCode(),
+													NumberUtil.format2Money(totalConsume), "group");
+						}
 					} else {
 						return "您的信息不存在!";
 					}

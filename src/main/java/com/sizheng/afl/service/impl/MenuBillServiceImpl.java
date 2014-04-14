@@ -125,7 +125,6 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 
 	@Override
 	public List<Map<String, Object>> query4GroupMapList(Locale locale, MenuBill menuBill) {
-		// return menuBillDao.queryGroup(locale, menuBill, null, null);
 
 		List<Map<String, Object>> list = menuBillDao.queryGroup(locale, menuBill, null, null);
 

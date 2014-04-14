@@ -36,6 +36,10 @@ public class SessionInterceptor implements HandlerInterceptor {
 				if (requestURI.contains("/business/verify.do")) {
 					return true;
 				}
+
+				if (requestURI.contains("/weixin/invoke.do")) {
+					return true;
+				}
 			}
 
 			String requestType = request.getHeader("X-Requested-With");
@@ -43,7 +47,7 @@ public class SessionInterceptor implements HandlerInterceptor {
 			if (StringUtil.isNotEmpty(requestType)) {// XMLHttpRequest
 				WebUtil.writeResult(response, new ResultMsg(false, new Msg("1000", false, "会话过期,请重新登录!")));
 			} else {
-				response.sendRedirect("login.do");
+				response.sendRedirect("/business/login.do");
 			}
 
 			return false;

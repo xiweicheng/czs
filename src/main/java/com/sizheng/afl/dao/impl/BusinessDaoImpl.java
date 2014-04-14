@@ -117,7 +117,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu_bill.consume_code = ?\n");
-		sqlSb.append("AND menu_bill.`status` = 3\n");
+		sqlSb.append("AND menu_bill.`status` IN (1,3)\n");
 
 		List<Map<String, Object>> mapList = getMapList(sqlSb, consumeCode);
 		double val = 0;
@@ -154,7 +154,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu_bill.consume_code IN (SELECT business_consumer.consume_code FROM `business_consumer` WHERE business_consumer.scene_id = ?)\n");
-		sqlSb.append("AND menu_bill.`status` = 3\n");
+		sqlSb.append("AND menu_bill.`status` IN (1,3)\n");
 
 		List<Map<String, Object>> mapList = getMapList(sqlSb, sceneId);
 		double val = 0;

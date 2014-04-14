@@ -36,11 +36,11 @@
 </tr>
 </script>
 <script id="requestItemTpl" type="text/x-jquery-tmpl">
-<div class="item" id="request-item-{{html id}}" onclick="refreshHandler('{{html id}}', '{{html type}}');">
+<div class="item" id="request-item-{{html id}}">
 	<div class="right floated tiny teal ui button" onclick="requestHandler('{{html id}}')">知悉</div>
 	<img class="ui avatar image"
 		src="{{html headimgurl}}/64">
-	<div class="content">
+	<div class="content" onclick="refreshHandler('{{html id}}', '{{html type}}');">
 		<div class="header">{{html nickname}}</div>
 		{{html name}}
 	</div>

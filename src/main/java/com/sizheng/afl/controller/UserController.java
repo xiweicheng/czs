@@ -23,12 +23,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
+import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.entity.MenuBill;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
+import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IMenuBillService;
 import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.util.NumberUtil;
@@ -58,6 +60,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	IMenuBillService menuBillService;
+
+	@Autowired
+	IBusinessService businessService;
 
 	/**
 	 * 添加【用户】.
@@ -293,6 +298,46 @@ public class UserController extends BaseController {
 			model.addAttribute("message", ss + "结账请求发送成功!");
 		} else {
 			model.addAttribute("message", ss + "结账请求发送失败!");
+		}
+
+		return "message";
+	}
+
+	/**
+	 * 顾客自助结账,当消费金额为零时.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 上午11:49:50
+	 * @modification 2014年4月7日 上午11:49:50
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @param consumeCode
+	 * @return
+	 */
+	@RequestMapping("free/checkout")
+	public String checkout(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId, @RequestParam("consumeCode") String consumeCode) {
+
+		logger.debug("顾客自助结账,当消费金额为零时【消费者】");
+
+		double consume = businessService.getConsume(locale, consumeCode, "own");
+
+		if (consume > 0) {
+			model.addAttribute("message", "您存在消费记录,金额:<b>" + NumberUtil.format2Money(consume)
+					+ "</b>元<br>无法通过此操作结束消费状态!");
+		} else {
+			BusinessConsumer businessConsumer = new BusinessConsumer();
+			businessConsumer.setConsumerId(openId);
+			businessConsumer.setConsumeCode(consumeCode);
+			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_OWN);
+
+			if (businessService.checkout(locale, businessConsumer)) {
+				model.addAttribute("message", "操作成功,消费状态结束!");
+			} else {
+				model.addAttribute("message", "操作失败,消费状态无法结束!");
+			}
 		}
 
 		return "message";
