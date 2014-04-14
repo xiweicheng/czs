@@ -892,7 +892,7 @@ public class BusinessController extends BaseController {
 		Map<String, Object> consumer = businessService.getConsumer(locale, openId);
 
 		if (!Integer.valueOf(SysConstant.CONSUME_STATUS_REQ).equals(NumberUtil.getInteger(consumer, "status"))) {
-			model.addAttribute("message", "顾客不在[进入请求中]状态!");
+			model.addAttribute("message", "该操作已经失效,顾客不在[进入请求中]状态!");
 			return "message";
 		}
 

@@ -294,10 +294,9 @@ public class UserController extends BaseController {
 		String ss = StringUtil.replace("[{?1}]", "own".equals(type) ? "个人" : "集体");
 
 		if (result) {
-			// weiXinApiInvoker.sendServiceMsg(openId, "结账请求发送成功!");
-			model.addAttribute("message", ss + "结账请求发送成功!");
+			model.addAttribute("message", ss + "结账请求发送成功,等待商家确认处理!");
 		} else {
-			model.addAttribute("message", ss + "结账请求发送失败!");
+			model.addAttribute("message", "您已经不在[消费中]状态," + ss + "结账请求无法申请发送!");
 		}
 
 		return "message";
@@ -336,7 +335,7 @@ public class UserController extends BaseController {
 			if (businessService.checkout(locale, businessConsumer)) {
 				model.addAttribute("message", "操作成功,消费状态结束!");
 			} else {
-				model.addAttribute("message", "操作失败,消费状态无法结束!");
+				model.addAttribute("message", "该操作已经失效,您已经不在[消费中]状态!");
 			}
 		}
 

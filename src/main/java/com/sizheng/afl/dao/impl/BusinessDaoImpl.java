@@ -115,6 +115,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("FROM\n");
 		sqlSb.append("	menu_bill\n");
 		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("INNER JOIN user ON menu_bill.consume_code = user.consume_code\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu_bill.consume_code = ?\n");
 		sqlSb.append("AND menu_bill.`status` IN (1,3)\n");
@@ -152,6 +153,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("FROM\n");
 		sqlSb.append("	menu_bill\n");
 		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("INNER JOIN user ON menu_bill.consume_code = user.consume_code\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu_bill.consume_code IN (SELECT business_consumer.consume_code FROM `business_consumer` WHERE business_consumer.scene_id = ?)\n");
 		sqlSb.append("AND menu_bill.`status` IN (1,3)\n");
