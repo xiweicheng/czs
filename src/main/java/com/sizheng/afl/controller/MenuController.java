@@ -365,6 +365,31 @@ public class MenuController extends BaseController {
 	}
 
 	/**
+	 * 列举订单【菜单】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月29日 08:37:31
+	 * @modification 2014年03月29日 08:37:31
+	 * @return
+	 */
+	@RequestMapping("orderList")
+	public String orderList(HttpServletRequest request, Model model, Locale locale,
+			@RequestParam(value = "interval", required = false) String interval) {
+
+		logger.debug("列举订单【菜单】");
+
+		Menu menu = new Menu();
+		menu.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
+
+		List<Map<String, Object>> mapList = menuService.queryOrderMapList(locale, menu);
+
+		model.addAttribute("orderList", mapList);
+		model.addAttribute("interval", interval);
+
+		return "menu/order-list";
+	}
+
+	/**
 	 * 顾客点菜列举【菜单】.
 	 * 
 	 * @author xiweicheng
@@ -458,6 +483,68 @@ public class MenuController extends BaseController {
 		boolean value = menuService.billDeal(locale, menuBill);
 
 		return new ResultMsg(value);
+	}
+
+	/**
+	 * 顾客订单处理【菜单】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月29日 08:37:31
+	 * @modification 2014年03月29日 08:37:31
+	 * @return
+	 */
+	@RequestMapping("accept")
+	@ResponseBody
+	public ResultMsg accept(HttpServletRequest request, Locale locale, @ModelAttribute MenuBill menuBill) {
+
+		logger.debug("顾客订单处理【菜单】");
+
+		Assert.notNull(menuBill.getId());
+
+		boolean value = menuService.acceptBill(locale, menuBill);
+
+		return new ResultMsg(value);
+	}
+
+	/**
+	 * 顾客订单合并处理【菜单】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月29日 08:37:31
+	 * @modification 2014年03月29日 08:37:31
+	 * @return
+	 */
+	@RequestMapping("acceptJoin")
+	@ResponseBody
+	public ResultMsg acceptJoin(HttpServletRequest request, Locale locale, @RequestParam("id") String[] ids) {
+
+		logger.debug("顾客订单处理【菜单】");
+
+		boolean value = menuService.acceptBillJoin(locale, ids);
+
+		return new ResultMsg(value);
+	}
+
+	/**
+	 * 合并菜单查询【菜单】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月29日 08:37:31
+	 * @modification 2014年03月29日 08:37:31
+	 * @return
+	 */
+	@RequestMapping("queryJoinBill")
+	@ResponseBody
+	public ResultMsg queryJoinBill(HttpServletRequest request, Locale locale, @ModelAttribute Menu menu) {
+
+		logger.debug("合并菜单查询【菜单】");
+
+		Assert.notNull(menu.getId());
+		menu.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
+
+		List<Map<String, Object>> list = menuService.queryJoinBill(locale, menu);
+
+		return new ResultMsg(true, list);
 	}
 
 	/**

@@ -16,7 +16,7 @@
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
@@ -50,7 +50,7 @@
 	<%@ include file="../header.jsp"%>
 
 	<!-- page main content -->
-	<h4 class="ui top attached header" style="margin-top: 45px;">菜单添加</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">菜品添加</h4>
 	<a id="error-msg-anchor"></a>
 
 	<div class="ui segment attached">

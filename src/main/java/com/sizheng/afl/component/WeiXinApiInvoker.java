@@ -574,7 +574,6 @@ public class WeiXinApiInvoker {
 			}
 
 			if (StringUtil.isNotEmpty(ticket)) {
-				path = StringUtil.replaceByKV(path, "ticket", ticket);
 
 				logger.debug(path);
 

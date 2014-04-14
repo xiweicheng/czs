@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,8 +207,8 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 		// scene id生产策略, scene id[1-100000],资源有限.scene需要自己的管理配置界面.
 		// 当收回scene id时,需要通知使用商家.
 
-		String filePath = StringUtil.replaceByKV("resources/images/qrcode/{ticket}_{sceneId}_{description}.jpg",
-				"sceneId", qrcode.getSceneId(), "description", qrcode.getDescription());
+		String filePath = StringUtil.replaceByKV("resources/images/qrcode/{uuid}_{sceneId}.jpg", "uuid",
+				UUID.randomUUID(), "sceneId", qrcode.getSceneId());
 
 		WeiXinQrcode weiXinQrcode = weiXinApiInvoker.downQrcodeImage(new WeiXinQrcodeCreateParam("QR_LIMIT_SCENE",
 				new WeiXinActionInfo(new WeiXinScene(String.valueOf(qrcode.getSceneId())))), filePath, realPath);

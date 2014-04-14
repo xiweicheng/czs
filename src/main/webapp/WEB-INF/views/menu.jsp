@@ -25,10 +25,11 @@
 		<div class="header item">
 			<i class="setting icon"></i> 菜单管理
 		</div>
-		<a class="item" href="menu/list.do" id="menu-item-menu-list"> 菜单一览
-		</a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
-			菜单添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
-			菜单图片 </a>
+		<a class="item" href="menu/orderList.do" id="menu-item-order-list">
+			订单一览 </a> <a class="item" href="menu/list.do" id="menu-item-menu-list">
+			菜品一览 </a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
+			菜品添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
+			菜品图片 </a>
 		<div class="header item">
 			<i class="dashboard icon"></i> 统计分析
 		</div>

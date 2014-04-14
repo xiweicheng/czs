@@ -163,4 +163,52 @@ public interface IMenuService extends IBaseService {
 	 * @return
 	 */
 	List<Map<String, Object>> queryBillMapList(Locale locale, Menu menu);
+
+	/**
+	 * 获取订单.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月13日 下午7:44:16
+	 * @modification 2014年4月13日 下午7:44:16
+	 * @param locale
+	 * @param menu
+	 * @return
+	 */
+	List<Map<String, Object>> queryOrderMapList(Locale locale, Menu menu);
+
+	/**
+	 * 处理顾客订单.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月13日 下午8:40:42
+	 * @modification 2014年4月13日 下午8:40:42
+	 * @param locale
+	 * @param menuBill
+	 * @return
+	 */
+	boolean acceptBill(Locale locale, MenuBill menuBill);
+
+	/**
+	 * 合并菜单查询
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月13日 下午10:21:18
+	 * @modification 2014年4月13日 下午10:21:18
+	 * @param locale
+	 * @param menu
+	 * @return
+	 */
+	List<Map<String, Object>> queryJoinBill(Locale locale, Menu menu);
+
+	/**
+	 * 顾客订单合并处理
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月13日 下午11:35:09
+	 * @modification 2014年4月13日 下午11:35:09
+	 * @param locale
+	 * @param ids
+	 * @return
+	 */
+	boolean acceptBillJoin(Locale locale, String[] ids);
 }

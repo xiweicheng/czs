@@ -120,6 +120,6 @@ public class BaseController {
 
 		logger.error(throwable.getMessage(), throwable);
 
-		return new ResultMsg(false, new Msg(false, messageUtil.getMsg("E0002", locale)));
+		return new ResultMsg(false, new Msg(false, throwable.getMessage()));
 	}
 }

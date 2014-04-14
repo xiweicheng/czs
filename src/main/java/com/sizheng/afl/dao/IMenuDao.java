@@ -61,5 +61,29 @@ public interface IMenuDao {
 	 * @return
 	 */
 	List<Map<String, Object>> queryBillList(Locale locale, Menu menu, Long start, Long limit);
+
+	/**
+	 * 订单查询.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月13日 下午8:03:35
+	 * @modification 2014年4月13日 下午8:03:35
+	 * @param locale
+	 * @param menu
+	 * @return
+	 */
+	List<Map<String, Object>> queryOrderMapList(Locale locale, Menu menu);
+
+	/**
+	 * 
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月13日 下午10:22:16
+	 * @modification 2014年4月13日 下午10:22:16
+	 * @param locale
+	 * @param menu
+	 * @return
+	 */
+	List<Map<String, Object>> queryJoinBill(Locale locale, Menu menu);
 	
 }

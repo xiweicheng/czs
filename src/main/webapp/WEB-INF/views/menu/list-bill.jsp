@@ -95,26 +95,26 @@
 						</div>
 						<div class="2 fluid ui buttons">
 							<div
-								class="positive ui button <c:if test="${item.status == 1}">disabled</c:if>"
+								class="positive ui button <c:if test="${item.status == 1 || item.status == 3}">disabled</c:if>"
 								id="confirm-ui-btn-${item.id}"
-								<c:if test="${item.status != 1}">onclick="billDealHandler(this, '${item.id}', '${openId}', '1')"</c:if>>
+								<c:if test="${item.status != 1 && item.status != 3}">onclick="billDealHandler(this, '${item.id}', '${openId}', '1')"</c:if>>
 								<i class="checkmark icon"></i>定了
 							</div>
 							<div class="or"></div>
 							<div
-								class="negative ui button <c:if test="${item.status == 0 || item.status == 1}">disabled</c:if>"
+								class="negative ui button <c:if test="${item.status == 0 || item.status == 1 || item.status == 3}">disabled</c:if>"
 								id="hold-ui-btn-${item.id}"
-								<c:if test="${item.status != 0 && item.status != 1}">onclick="billDealHandler(this, '${item.id}', '${openId}', '0')"</c:if>>
+								<c:if test="${item.status != 0 && item.status != 1 && item.status != 3}">onclick="billDealHandler(this, '${item.id}', '${openId}', '0')"</c:if>>
 								<i class="heart empty icon"></i>待选
 							</div>
 						</div>
 						<div style="margin-top: 10px;">
 							<c:forEach items="${item.menuBill}" var="item2">
-								<c:if test="${item2.status == 1}">[${item2.nickname}]已定了${item2.copies}份!<br />
+								<c:if test="${item2.status == 1 || item2.status == 3}"><b>${item2.nickname}</b>已定了${item2.copies}份!<br />
 								</c:if>
-								<c:if test="${item2.status == 0}">[${item2.nickname}]待选中!<br />
+								<c:if test="${item2.status == 0}"><b>${item2.nickname}</b>待选中!<br />
 								</c:if>
-								<c:if test="${item2.status == 2}">[${item2.nickname}]已退订!<br />
+								<c:if test="${item2.status == 2}"><b>${item2.nickname}</b>已退订!<br />
 								</c:if>
 							</c:forEach>
 						</div>

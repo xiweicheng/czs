@@ -18,7 +18,7 @@
 	rel="stylesheet" type="text/css">
 <link href="../../../resources/upload/css/main.css" rel="stylesheet"
 	type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
@@ -31,7 +31,7 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">菜单图片</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">菜品图片</h4>
 
 	<div class="ui fluid accordion">
 		<div class="title">
@@ -109,13 +109,13 @@
 		</div>
 	</div>
 
-	<div class="ui basic modal" id="confirm-ui-modal">
+	<div class="ui modal" id="confirm-ui-modal">
 		<div class="header">确认提示</div>
 		<div class="content">
 			<div class="left">
 				<i class="warning icon"></i>
 			</div>
-			<div class="right">
+			<div class="right" style="font-size: 30px;">
 				<p>确认要删除吗?</p>
 			</div>
 		</div>

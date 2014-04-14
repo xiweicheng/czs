@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseDaoImpl;
 import com.sizheng.afl.dao.IMenuBillDao;
+import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.MenuBill;
+import com.sizheng.afl.util.SqlUtil;
 
 /**
  * 【订单】持久化实现层.
@@ -52,10 +54,16 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("LEFT JOIN menu_taste ON menu.taste_id = menu_taste.id\n");
 		sqlSb.append("LEFT JOIN resources ON menu.resource_id = resources.id\n");
 		sqlSb.append("WHERE\n");
-		sqlSb.append("	menu_bill.`status` = ?\n");
+
+		if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(menuBill.getStatus())) {
+			sqlSb.append("	menu_bill.`status` IN (1,3)\n");
+		} else {
+			sqlSb.append(SqlUtil.replaceIfNotEmpty("	menu_bill.`status` = {?1}\n", menuBill.getStatus()));
+		}
+
 		sqlSb.append("AND menu_bill.consume_code = ?\n");
 
-		return getMapList(sqlSb, menuBill.getStatus(), menuBill.getConsumeCode());
+		return getMapList(sqlSb, menuBill.getConsumeCode());
 	}
 
 	@Override
@@ -94,7 +102,13 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("LEFT JOIN resources ON menu.resource_id = resources.id\n");
 		sqlSb.append("LEFT JOIN subscriber ON subscriber.user_name = menu_bill.consumer_id\n");
 		sqlSb.append("WHERE\n");
-		sqlSb.append("	menu_bill.`status` = ?\n");
+
+		if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(menuBill.getStatus())) {
+			sqlSb.append("	menu_bill.`status` IN (1,3)\n");
+		} else {
+			sqlSb.append(SqlUtil.replaceIfNotEmpty("	menu_bill.`status` = {?1}\n", menuBill.getStatus()));
+		}
+
 		sqlSb.append("AND menu_bill.consume_code IN (\n");
 		sqlSb.append("	SELECT\n");
 		sqlSb.append("		business_consumer.consume_code\n");
@@ -113,7 +127,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	AND business_consumer.`status` = 1\n");
 		sqlSb.append(")\n");
 
-		return getMapList(sqlSb, menuBill.getStatus(), menuBill.getConsumeCode());
+		return getMapList(sqlSb, menuBill.getConsumeCode());
 	}
 
 }

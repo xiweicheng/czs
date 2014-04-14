@@ -132,6 +132,7 @@ public final class SysConstant {
 	public static final Short MENU_BILL_STATUS_CONFIRM = 1;
 	public static final Short MENU_BILL_STATUS_DEBOOK = 2;
 	public static final Short MENU_BILL_STATUS_STOW = 0;
+	public static final Short MENU_BILL_STATUS_ACCEPT = 3;
 
 	public static final Short REQUEST_STATUS_ONGOING = 1;
 	public static final Short REQUEST_STATUS_STOP = 0;

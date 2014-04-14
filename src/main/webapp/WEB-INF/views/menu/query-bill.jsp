@@ -60,25 +60,38 @@
 						</div>
 						<div
 							class="<c:if test="${item.status == 2}">2</c:if><c:if test="${item.status != 2}">1</c:if> fluid ui buttons">
-							<c:if test="${item.status == 1}">
+							<c:if test="${item.status == 1 || item.status == 3}">
 								<div class="2 fluid ui buttons">
 									<input type="hidden" id="copies-${item.menu_id}"
 										value="${item.copies}">
-									<div class="positive ui button"
-										id="debook-ui-btn-${item.menu_id}"
-										onclick="billDealHandler('${item.menu_id}', '${openId}', '2', 'debook', ${item.price}, ${item.privilege})">
-										<i class="remove icon"></i>退一份
-									</div>
-									<div class="or"></div>
-									<div class="negative ui button"
-										onclick="billDealHandler('${item.menu_id}', '${openId}', '1', 'add', ${item.price}, ${item.privilege})">
-										<i class="remove icon"></i>加一份
-									</div>
+									<c:if test="${item.status == 1}">
+										<div class="positive ui button"
+											id="debook-ui-btn-${item.menu_id}"
+											onclick="billDealHandler('${item.menu_id}', '${openId}', '2', 'debook', ${item.price}, ${item.privilege})">
+											<i class="remove icon"></i>退一份
+										</div>
+										<div class="or"></div>
+										<div class="negative ui button"
+											onclick="billDealHandler('${item.menu_id}', '${openId}', '1', 'add', ${item.price}, ${item.privilege})">
+											<i class="remove icon"></i>加一份
+										</div>
+									</c:if>
+									<c:if test="${item.status == 3}">
+										<div class="positive disabled ui button"
+											id="debook-ui-btn-${item.menu_id}">
+											<i class="remove icon"></i>退一份
+										</div>
+										<div class="or"></div>
+										<div class="negative disabled ui button">
+											<i class="remove icon"></i>加一份
+										</div>
+									</c:if>
+
 								</div>
 								<div class="ui divider"></div>
 								<div style="margin-top: 10px;"
 									id="confirm-bill-msg-${item.menu_id}">
-									<c:if test="${item.status == 1}">您已定了<b>${item.copies}</b>份!
+									<c:if test="${item.status == 1 || item.status == 3}"><b>您</b>已定了<b>${item.copies}</b>份!
 							</c:if>
 								</div>
 							</c:if>

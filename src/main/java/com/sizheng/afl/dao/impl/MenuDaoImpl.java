@@ -32,28 +32,6 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 	@Override
 	public List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit) {
 
-		// StringBuffer sqlSb = new StringBuffer();
-		// sqlSb.append("SELECT\n");
-		// sqlSb.append("	menu.id,\n");
-		// sqlSb.append("	menu.date_time,\n");
-		// sqlSb.append("	menu.introduce,\n");
-		// sqlSb.append("	menu.is_delete,\n");
-		// sqlSb.append("	menu.`name`,\n");
-		// sqlSb.append("	menu.price,\n");
-		// sqlSb.append("	menu.privilege,\n");
-		// sqlSb.append("	menu_category.`name` AS category,\n");
-		// sqlSb.append("	menu_taste.`name` AS taste,\n");
-		// sqlSb.append("	resources.path,\n");
-		// sqlSb.append("	menu_bill.`status`\n");
-		// sqlSb.append("FROM\n");
-		// sqlSb.append("	menu\n");
-		// sqlSb.append("LEFT JOIN resources ON menu.resource_id = resources.id\n");
-		// sqlSb.append("LEFT JOIN menu_taste ON menu.taste_id = menu_taste.id\n");
-		// sqlSb.append("LEFT JOIN menu_category ON menu.category_id = menu_category.id\n");
-		// sqlSb.append("LEFT JOIN (select * from menu_bill where consume_code = ?) menu_bill ON menu.id = menu_bill.menu_id\n");
-		// sqlSb.append("WHERE\n");
-		// sqlSb.append("	menu.`owner` = ?\n");
-
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	menu.id,\n");
@@ -143,6 +121,68 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu.`owner` = ?\n");
 
 		return getMapList(sqlSb, menu.getOwner());
+	}
+
+	@Override
+	public List<Map<String, Object>> queryOrderMapList(Locale locale, Menu menu) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu_bill.id,\n");
+		sqlSb.append("	menu_bill.menu_id,\n");
+		sqlSb.append("	menu_bill.consumer_id,\n");
+		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	menu_bill.scene_id,\n");
+		sqlSb.append("	menu_bill.copies,\n");
+		sqlSb.append("	menu.`name`,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	qrcode.description\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu_bill\n");
+		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("LEFT JOIN subscriber ON menu_bill.consumer_id = subscriber.user_name\n");
+		sqlSb.append("INNER JOIN qrcode ON menu_bill.scene_id = qrcode.scene_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu_bill.`status` = 1\n");
+		sqlSb.append("AND menu.`owner` = ?\n");
+		sqlSb.append("ORDER BY\n");
+		sqlSb.append("	menu_bill.date_time ASC\n");
+
+		return getMapList(sqlSb, menu.getOwner());
+	}
+
+	@Override
+	public List<Map<String, Object>> queryJoinBill(Locale locale, Menu menu) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu_bill.id,\n");
+		sqlSb.append("	menu_bill.menu_id,\n");
+		sqlSb.append("	menu_bill.consumer_id,\n");
+		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	DATE_FORMAT(\n");
+		sqlSb.append("		menu_bill.date_time,\n");
+		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+		sqlSb.append("	) AS date_time,\n");
+		sqlSb.append("	menu_bill.scene_id,\n");
+		sqlSb.append("	menu_bill.copies,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	qrcode.description,\n");
+		sqlSb.append("	menu.`name`\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu_bill\n");
+		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("LEFT JOIN subscriber ON menu_bill.consumer_id = subscriber.user_name\n");
+		sqlSb.append("INNER JOIN qrcode ON menu_bill.scene_id = qrcode.scene_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu.`owner` = ?\n");
+		sqlSb.append("AND menu_bill.`status` = 1\n");
+		sqlSb.append("AND menu_bill.menu_id = ?\n");
+		sqlSb.append("ORDER BY\n");
+		sqlSb.append("	menu_bill.date_time ASC\n");
+
+		return getMapList(sqlSb, menu.getOwner(), menu.getId());
 	}
 
 }

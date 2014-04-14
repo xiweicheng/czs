@@ -22,19 +22,6 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
-
-<script id="userTrTpl" type="text/x-jquery-tmpl">
-<tr>
-	<td class="" style="color:red; font-weight: bold;">{{html consume}}</td>
-	<td><img class="ui avatar image" src="{{html headimgurl}}/64"></td>
-	<td class="">{{html nickname}}</td>
-	<td class="">{{html sex}}</td>
-	<td class="">{{html consume_times}}</td>
-	<td class="">{{html last_consume_time}}</td>
-</tr>
-</script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 	<!-- 侧边栏 -->
@@ -167,7 +154,7 @@
 						type : value.split('-')[0],
 					}, function(msg) {
 						if (msg.succeed) {
-							alert('设置成功!');
+							//alert('设置成功!');
 						} else {
 							alert(msg.msg.detail);
 						}

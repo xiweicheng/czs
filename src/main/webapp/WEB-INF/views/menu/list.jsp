@@ -16,13 +16,10 @@
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<link href="../../../resources/upload/css/main.css" rel="stylesheet"
-	type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/upload/js/script.js" charset="utf-8"></script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 	<!-- 侧边栏 -->
@@ -31,7 +28,7 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">菜单一览</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">菜品一览</h4>
 
 	<div class="ui fluid accordion">
 
@@ -112,13 +109,7 @@
 
 		jQuery(function($) {
 			$('#menu-item-menu-list').addClass('active');
-			$('.ui.accordion').accordion("setting", {
-				onOpen : function() {
-					//alert("open...");
-					$.post('menu/detail.do', {}, function() {
-					});
-				}
-			});
+			$('.ui.accordion').accordion();
 
 			$('#confirm-ui-modal').modal({
 				closable : false,

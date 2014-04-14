@@ -321,4 +321,49 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 		return menuDao.queryBillList(locale, menu, null, null);
 	}
 
+	@Override
+	public List<Map<String, Object>> queryOrderMapList(Locale locale, Menu menu) {
+
+		return menuDao.queryOrderMapList(locale, menu);
+	}
+
+	@Override
+	public boolean acceptBill(Locale locale, MenuBill menuBill) {
+
+		MenuBill menuBill2 = hibernateTemplate.get(MenuBill.class, menuBill.getId());
+
+		if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(menuBill2.getStatus())) {
+			menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
+
+			hibernateTemplate.update(menuBill2);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryJoinBill(Locale locale, Menu menu) {
+		return menuDao.queryJoinBill(locale, menu);
+	}
+
+	@Override
+	public boolean acceptBillJoin(Locale locale, String[] ids) {
+
+		for (String id : ids) {
+			MenuBill menuBill2 = hibernateTemplate.get(MenuBill.class, Long.valueOf(id));
+
+			if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(menuBill2.getStatus())) {
+				menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
+
+				hibernateTemplate.update(menuBill2);
+			} else {
+				throwRuntimeException("批量接受订单失败!");
+			}
+		}
+
+		return true;
+	}
+
 }

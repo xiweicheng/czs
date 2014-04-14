@@ -180,22 +180,22 @@
 	<div class="ui segment attached">
 		<div>
 			<a class="ui purple label czsRequest"
-				href="business/list.do?status=5"
+				href="business/list.do?status=5&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中
 				${requesting} 人 </a> <a class="ui teal label czsRequestOwn"
-				href="business/list.do?status=3"
+				href="business/list.do?status=3&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 个人结账申请
 				${requestOwn} 人 </a><a class="ui orange label czsRequestGroup"
-				href="business/list.do?status=4"
+				href="business/list.do?status=4&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 集体结账申请
 				${requestGroup} 人</a> <a class="ui black label"
-				href="business/list.do?status=1"
+				href="business/list.do?status=1&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人 </a>
-			<a class="ui red label" href="business/list.do?status=0"
+			<a class="ui red label" href="business/list.do?status=0&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a
-				class="ui green label" href="business/list.do?status=2"
+				class="ui green label" href="business/list.do?status=2&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled} 人
-			</a><a class="ui blue label" href="business/list.do"
+			</a><a class="ui blue label" href="business/list.do?interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 总计 ${total} 人 </a>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
@@ -561,6 +561,15 @@
 				onDisable : function() {
 					clearInterval(_refreshInterval)
 					$('.ui.radio.checkbox').hide();
+					var index = window.location.href.indexOf("?interval=");
+					if (index >= 0) {
+						window.location = window.location.href.substr(0, index);
+					} else {
+						index = window.location.href.indexOf("&interval=");
+						if (index >= 0) {
+							window.location = window.location.href.substr(0, index);
+						}
+					}
 				}
 			});
 
@@ -681,7 +690,7 @@
 					if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 						$('#refresh-ui-toggle-checkbox > label').hide();
 					}
-					
+
 				} else {
 					clearInterval(intervalRef);
 					if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
