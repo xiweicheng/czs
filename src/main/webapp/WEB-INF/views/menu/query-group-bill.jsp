@@ -45,7 +45,7 @@
 				<div class="item" id="bill-item-${item.menu_id}"
 					style="min-height: 0px;">
 					<div class="image" style="display: none;">
-						<img src="" czz-src="../../../${item.path}">
+						<img src="" czz-src="../../../${item.path}640/${item.file_name}">
 						<!-- <a
 							class="like ui corner label"> <i class="like icon"></i> -->
 						</a>

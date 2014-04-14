@@ -30,6 +30,7 @@ import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IMenuService;
 import com.sizheng.afl.util.DateUtil;
+import com.sizheng.afl.util.ImageUtil;
 import com.sizheng.afl.util.StringUtil;
 
 /**
@@ -148,12 +149,19 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 
 		String fileName = StringUtil.replace("{?1}{?2}", UUID.randomUUID(), type);
 
-		String path = propUtil.getMenuStorePath() + fileName;
-
-		String filePath = realPath + path;
+		String filePath = realPath + propUtil.getMenuStorePath() + "0/" + fileName;// 原始图片存放
+		String scale120FilePath = realPath + propUtil.getMenuStorePath() + "120/" + fileName;// 缩放图片存放
+		String scale640FilePath = realPath + propUtil.getMenuStorePath() + "640/" + fileName;// 缩放图片存放
 
 		try {
 			imageFile.transferTo(new File(filePath));
+
+			// 图片缩放处理.120*120
+			ImageUtil.scale2(filePath, scale120FilePath, propUtil.getImgScaleSizeLarge(),
+					propUtil.getImgScaleSizeLarge(), true);
+			// 图片缩放处理.640*640
+			ImageUtil.scale2(filePath, scale640FilePath, propUtil.getImgScaleSizeHuge(),
+					propUtil.getImgScaleSizeHuge(), true);
 
 			// 保存记录到数据库
 			Resources resources = new Resources();
@@ -161,7 +169,8 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 			resources.setIsDelete((short) 0);
 			resources.setName(originalFilename);
 			resources.setOwner(openId);
-			resources.setPath(path);
+			resources.setPath(propUtil.getMenuStorePath());
+			resources.setFileName(fileName);
 			resources.setType(SysConstant.RESOURCES_IMAGE);
 
 			hibernateTemplate.save(resources);

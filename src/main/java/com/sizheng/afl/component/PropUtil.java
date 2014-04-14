@@ -78,6 +78,30 @@ public class PropUtil {
 	@Value("#{systemProperties['qrcode.business.max.default']}")
 	private long qrcodeBusinessMaxDefault;
 
+	@Value("#{systemProperties['image.scale.size.mini']}")
+	private int imgScaleSizeMini;
+
+	@Value("#{systemProperties['image.scale.size.tiny']}")
+	private int imgScaleSizeTiny;
+
+	@Value("#{systemProperties['image.scale.size.small']}")
+	private int imgScaleSizeSmall;
+
+	@Value("#{systemProperties['image.scale.size.medium']}")
+	private int imgScaleSizeMedium;
+
+	@Value("#{systemProperties['image.scale.size.large']}")
+	private int imgScaleSizeLarge;
+
+	@Value("#{systemProperties['image.scale.size.big']}")
+	private int imgScaleSizeBig;
+
+	@Value("#{systemProperties['image.scale.size.huge']}")
+	private int imgScaleSizeHuge;
+
+	@Value("#{systemProperties['image.scale.size.massive']}")
+	private int imgScaleSizeMassive;
+
 	public boolean isLogReqbody() {
 		return logReqbody;
 	}
@@ -172,6 +196,38 @@ public class PropUtil {
 
 	public boolean isSaveWeixinMsg() {
 		return saveWeixinMsg;
+	}
+
+	public int getImgScaleSizeMini() {
+		return imgScaleSizeMini;
+	}
+
+	public int getImgScaleSizeTiny() {
+		return imgScaleSizeTiny;
+	}
+
+	public int getImgScaleSizeSmall() {
+		return imgScaleSizeSmall;
+	}
+
+	public int getImgScaleSizeMedium() {
+		return imgScaleSizeMedium;
+	}
+
+	public int getImgScaleSizeLarge() {
+		return imgScaleSizeLarge;
+	}
+
+	public int getImgScaleSizeBig() {
+		return imgScaleSizeBig;
+	}
+
+	public int getImgScaleSizeHuge() {
+		return imgScaleSizeHuge;
+	}
+
+	public int getImgScaleSizeMassive() {
+		return imgScaleSizeMassive;
 	}
 
 }

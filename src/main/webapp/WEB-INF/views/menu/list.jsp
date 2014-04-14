@@ -42,7 +42,7 @@
 					href="menu/update.do?id=${item.id}">修改</a>
 			</div>
 			<div class="content" id="menu-item-content-${item.id}">
-				<img class="ui large image left floated" src="../../../${item.path}">
+				<img class="ui large image left floated" src="../../../${item.path}640/${item.file_name}">
 
 				<div style="padding-bottom: 10px;">
 					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}

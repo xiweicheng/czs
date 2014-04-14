@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-13 12:41:26 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-14 10:44:08 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.MenuBill" table="menu_bill" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -24,7 +24,7 @@
         </property>
         <property name="status" type="java.lang.Short">
             <column name="status">
-                <comment>0:&#180;&#253;&#182;&#168;;1:&#200;&#183;&#182;&#168;;2:&#205;&#203;&#182;&#169;</comment>
+                <comment>0:&#180;&#253;&#182;&#168;;1:&#200;&#183;&#182;&#168;;2:&#205;&#203;&#182;&#169;;3:&#210;&#209;&#180;&#166;&#192;&#237;</comment>
             </column>
         </property>
         <property name="sceneId" type="java.lang.Long">

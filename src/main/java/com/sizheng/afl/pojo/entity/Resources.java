@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-13 12:41:26 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-14 10:44:07 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -22,6 +22,7 @@ public class Resources implements java.io.Serializable {
 	private Long id;
 	private String name;
 	private String path;
+	private String fileName;
 	private String type;
 	private String owner;
 	private Date dateTime;
@@ -30,9 +31,10 @@ public class Resources implements java.io.Serializable {
 	public Resources() {
 	}
 
-	public Resources(String name, String path, String type, String owner, Date dateTime, Short isDelete) {
+	public Resources(String name, String path, String fileName, String type, String owner, Date dateTime, Short isDelete) {
 		this.name = name;
 		this.path = path;
+		this.fileName = fileName;
 		this.type = type;
 		this.owner = owner;
 		this.dateTime = dateTime;
@@ -66,6 +68,15 @@ public class Resources implements java.io.Serializable {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	@Column(name = "file_name")
+	public String getFileName() {
+		return this.fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	@Column(name = "type", length = 50)

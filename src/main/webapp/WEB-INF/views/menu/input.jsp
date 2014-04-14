@@ -25,9 +25,9 @@
 
 <script id="imageItemTpl" type="text/x-jquery-tmpl">
 <div class="item" style="min-height: 0px;"
-	onclick="selectImage(this, '{{html id}}', '{{html path}}')">
+	onclick="selectImage(this, '{{html id}}', '{{html path}}640/{{html fileName}}')">
 	<div class="image">
-		<img src="../../../{{html path}}"> <a
+		<img src="../../../{{html path}}640/{{html fileName}}"> <a
 			class="like ui corner label"> <i class="like icon"></i>
 		</a>
 	</div>
@@ -239,32 +239,6 @@
 
 			$('.ui.modal').modal();
 
-			/* $('#add-category-modal').modal(
-					{
-						closable : false,
-						onDeny : function() {
-							return true;
-						},
-						onApprove : function() {
-							var category = $('#category-text').val();
-							if (!category) {// 不能为空
-								return false;
-							}
-							$.post('menuCategory/add.do', {
-								name : category
-							}, function(data) {
-								if (data.succeed) {
-									$('#category-menu-items').append(
-											$('<div class="item"></div>').attr('data-value', data.value.id).text(
-													data.value.name));
-									$('.ui.dropdown').dropdown();
-								} else {
-									alert(data.msg.detail);
-								}
-							});
-						}
-					}).modal('attach events', '#add-category-btn', 'show'); */
-
 			$('#add-category-btn').click(
 					function() {
 						var category = $('#add-category-text-input').val();
@@ -287,32 +261,6 @@
 							}
 						});
 					});
-
-			/* $('#add-taste-modal').modal(
-					{
-						closable : false,
-						onDeny : function() {
-							return true;
-						},
-						onApprove : function() {
-							var taste = $('#taste-text').val();
-							if (!taste) {// 不能为空
-								return false;
-							}
-							$.post('menuTaste/add.do', {
-								name : taste
-							}, function(data) {
-								if (data.succeed) {
-									$('#taste-menu-items').append(
-											$('<div class="item"></div>').attr('data-value', data.value.id).text(
-													data.value.name));
-									$('.ui.dropdown').dropdown();
-								} else {
-									alert(data.msg.detail);
-								}
-							});
-						}
-					}).modal('attach events', '#add-taste-btn', 'show'); */
 
 			$('#add-taste-btn').click(
 					function() {

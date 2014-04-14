@@ -43,27 +43,27 @@
 					<form id="upload_form" enctype="multipart/form-data" method="post"
 						action="menu/upload.do">
 						<div>
-							<div>
-								<input type="file" name="image_file" id="image_file"
-									onchange="fileSelected();" />
-							</div>
+							<input type="file" name="image_file" id="image_file"
+								onchange="fileSelected();" />
 						</div>
 						<div>
-							<input id="upload_button" type="button" value="上传"
-								onclick="startUploading()" />
+							<div style="float: left;">
+								<div class="ui green button" onclick="startUploading()">上传</div>
+								<div id="fileinfo">
+									<div id="filename"></div>
+									<div id="filesize"></div>
+									<div id="filetype"></div>
+									<div id="filedim"></div>
+								</div>
+							</div>
+							<img id="preview" />
+							<div style="clear: both;"></div>
 						</div>
-						<div id="fileinfo">
-							<div id="filename"></div>
-							<div id="filesize"></div>
-							<div id="filetype"></div>
-							<div id="filedim"></div>
-						</div>
-						<div id="error">You should select valid image files only!</div>
-						<div id="error2">An error occurred while uploading the file</div>
-						<div id="abort">The upload has been canceled by the user or
-							the browser dropped the connection</div>
-						<div id="warnsize">Your file is very big. We can't accept
-							it. Please select more small file</div>
+
+						<div id="error">你应该只选择有效的图像文件!</div>
+						<div id="error2">在上传文件时发生了一个错误!</div>
+						<div id="abort">上传已由用户或浏览器取消!</div>
+						<div id="warnsize">你的文件是非常大的,我们不能接受,请选择更小的文件!</div>
 
 						<div id="progress_info">
 							<div id="progress"></div>
@@ -78,8 +78,6 @@
 							<div id="upload_response"></div>
 						</div>
 					</form>
-
-					<img id="preview" />
 				</div>
 			</div>
 		</div>
@@ -89,9 +87,10 @@
 		<div class="active content">
 			<div class="ui stackable items">
 				<c:forEach items="${imageList}" var="item">
-					<div class="item" style="min-height: 0px;" id="image-item-${item.id}">
+					<div class="item" style="min-height: 0px;"
+						id="image-item-${item.id}">
 						<div class="image">
-							<img src="../../../${item.path}"> <a
+							<img src="../../../${item.path}640/${item.fileName}"> <a
 								class="like ui corner label"
 								onclick="deleteHandler('${item.id}');"> <i
 								class="remove icon"></i>

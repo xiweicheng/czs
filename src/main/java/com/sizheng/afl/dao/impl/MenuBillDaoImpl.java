@@ -45,6 +45,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	menu_category.`name` AS category,\n");
 		sqlSb.append("	menu_taste.`name` AS taste,\n");
 		sqlSb.append("	resources.path,\n");
+		sqlSb.append("	resources.file_name,\n");
 		sqlSb.append("	menu.price,\n");
 		sqlSb.append("	menu.privilege\n");
 		sqlSb.append("FROM\n");
@@ -91,6 +92,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	menu_category.`name` AS category,\n");
 		sqlSb.append("	menu_taste.`name` AS taste,\n");
 		sqlSb.append("	resources.path,\n");
+		sqlSb.append("	resources.file_name,\n");
 		sqlSb.append("	menu.price,\n");
 		sqlSb.append("	menu.privilege,\n");
 		sqlSb.append("	subscriber.nickname\n");

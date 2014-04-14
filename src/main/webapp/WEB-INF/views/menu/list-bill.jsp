@@ -73,7 +73,7 @@
 			<c:forEach items="${menuList}" var="item">
 				<div class="item" style="min-height: 0px;">
 					<div class="image" style="display: none">
-						<img src="" czz-src="../../../${item.path}">
+						<img src="" czz-src="../../../${item.path}640/${item.file_name}">
 						<c:if test="${item.status == 1}">
 							<a class="like ui corner label"> <i class="checkmark icon"></i>
 						</c:if>

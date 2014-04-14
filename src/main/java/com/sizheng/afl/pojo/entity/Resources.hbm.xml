@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-13 12:41:26 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-14 10:44:08 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Resources" table="resources" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -13,6 +13,9 @@
         </property>
         <property name="path" type="string">
             <column name="path" length="1000" />
+        </property>
+        <property name="fileName" type="string">
+            <column name="file_name" />
         </property>
         <property name="type" type="string">
             <column name="type" length="50">

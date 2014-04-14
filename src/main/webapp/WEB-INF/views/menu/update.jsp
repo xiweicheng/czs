@@ -25,9 +25,9 @@
 
 <script id="imageItemTpl" type="text/x-jquery-tmpl">
 <div class="item" style="min-height: 0px;"
-	onclick="selectImage(this, '{{html id}}', '{{html path}}')">
+	onclick="selectImage(this, '{{html id}}', '{{html path}}640/{{html fileName}}')">
 	<div class="image">
-		<img src="../../../{{html path}}"> <a
+		<img src="../../../{{html path}}640/{{html fileName}}"> <a
 			class="like ui corner label"> <i class="like icon"></i>
 		</a>
 	</div>
