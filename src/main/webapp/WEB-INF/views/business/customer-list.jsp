@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>  
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -34,6 +34,7 @@
 	<td class="">{{html sex}}</td>
 	<td class="">{{html consume_times}}</td>
 	<td class="">{{html last_consume_time}}</td>
+	<td class="">{{html sec_diff}}</td>
 </tr>
 </script>
 <script id="requestItemTpl" type="text/x-jquery-tmpl">
@@ -59,31 +60,31 @@
 	<div class="content">
 		<div class="name">{{html name}}</div>
 		<p class="description" style="display: none;">{{html introduce}}</p>
-		<div style="padding-bottom: 10px;">
-			价格:{{html price}} | 优惠:{{if privilege>=1}}{{html privilege}}{{else}}{{html privilege*10}}折{{/if}}
-		</div>
-		<div>
-			分类:{{html category}} | 口味:{{html taste}}
+		<div style="margin-top:10px;">
+			<div class="ui red label"><i class="dollar icon"></i> {{html price}}</div>
+			<div class="ui green label">{{html category}}</div>
+			<div class="ui blue label">{{html taste}}</div>
 		</div>
 		<div class="ui divider"></div>
 		<div>
 			{{if menuBill}}
 				{{each menuBill}}
-					<b>{{html $value.nickname}}</b>定了<b>{{html $value.copies}}</b>份!&nbsp;
+					<div class="ui label">{{html $value.nickname}}<div class="detail">{{html $value.copies}}</div>
 					{{if $value.status == '3'}}
-						<div class="ui green label">已上</div>
+						<i class="checkmark icon"></i>
 					{{else}}
-						<div class="ui red label">未上</div>
+						<i class="loading icon"></i>
 					{{/if}}
-					<br/>
+					</div>
 				{{/each}}
 			{{else}}
-				<b>您</b>定了<b>{{html copies}}</b>份!&nbsp;
-				{{if status == '3'}}
-					<div class="ui green label">已上</div>
-				{{else}}
-					<div class="ui red label">未上</div>
-				{{/if}}
+				<div class="ui label">自己<div class="detail">{{html copies}}</div>
+					{{if status == '3'}}
+						<i class="checkmark icon"></i>
+					{{else}}
+						<i class="loading icon"></i>
+					{{/if}}
+				</div>
 			{{/if}}
 		</div>
 	</div>
@@ -129,7 +130,7 @@
 	<div class="item">
 		<i class="calendar icon"></i>
 		<div class="content">
-			<div class="header">最后消费时间</div>
+			<div class="header">开始时间</div>
 			{{html last_consume_time}}
 		</div>
 	</div>
@@ -188,6 +189,11 @@
 			<input type="radio" name="refresh"> <label>60s</label> <input
 				type="hidden" value="60">
 		</div>
+
+		<div class="ui toggle checkbox czsFilterOver"
+			style="margin-left: 20px;">
+			<input type="checkbox" name="filterOver"> <label>过滤终止状态</label>
+		</div>
 	</h4>
 	<div class="ui segment attached">
 		<div>
@@ -209,18 +215,20 @@
 				class="ui green label"
 				href="business/list.do?status=2&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled} 人
-			</a><a class="ui blue label" href="business/list.do?interval=${interval}"
-				style="margin-top: 5px; margin-bottom: 5px;"> 总计 ${total} 人 </a>
+			</a><a class="ui blue label total"
+				href="business/list.do?filterOver=${filterOver}&interval=${interval}"
+				style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
 			<thead>
 				<tr>
 					<th class="">头像</th>
 					<th class="">名称</th>
-					<th class="">性别</th>
+					<!-- <th class="">性别</th> -->
 					<th class="">状态</th>
-					<th class="">消费次数</th>
-					<th class="sorted descending">最后消费时间</th>
+					<!-- <th class="">消费次数</th> -->
+					<th class="sorted descending">开始时间</th>
+					<th class="">距今</th>
 					<th class="">位置描述</th>
 				</tr>
 			</thead>
@@ -235,8 +243,8 @@
 								<a class="ui teal label"
 									onclick="billDetailHandler('${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">消费详情</a>
 							</c:if></td>
-						<td class=""><c:if test="${item.sex=='2'}">女</c:if> <c:if
-								test="${item.sex=='1'}">男</c:if> <c:if test="${item.sex=='0'}">未知</c:if></td>
+						<%-- <td class=""><c:if test="${item.sex=='2'}">女</c:if> <c:if
+								test="${item.sex=='1'}">男</c:if> <c:if test="${item.sex=='0'}">未知</c:if></td> --%>
 						<td class=""><c:if test="${item.status=='5'}">
 								<i class="sign in icon"></i>进入请求中<a class="ui teal label"
 									onclick="agreeOrDisagreeHandler('1', '${item.consume_code}', '${item.consumer_id}')">同意</a>
@@ -258,9 +266,9 @@
 								<i class="ban loading icon"></i>集体结账申请中<a class="ui red label"
 									onclick="checkoutHandler('4', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">确认</a>
 							</c:if></td>
-						<td class="">${item.consume_times}</td>
-						<td class=""><fmt:formatDate
-								value="${item.last_consume_time}" pattern="yyyy/MM/dd hh:mm:ss" /></td>
+						<%-- <td class="">${item.consume_times}</td> --%>
+						<td class="">${item.last_consume_time}</td>
+						<td class="">${item.sec_diff}</td>
 						<td class=""><a
 							<c:if test="${item.status == 1 || item.status == 3 || item.status == 4}">href="javascript:void(0);" onclick="groupInfoHander('${item.scene_id}', '${item.consume_code}', '${item.consumer_id}')"</c:if>>${item.description}</a></td>
 					</tr>
@@ -587,10 +595,51 @@
 				}
 			});
 
-			$('.ui.radio.checkbox').click(function() {
-				$('#refresh-ui-toggle-checkbox').checkbox('toggle');
-				$('#refresh-ui-toggle-checkbox').checkbox('toggle');
+			$('.ui.toggle.checkbox.czsFilterOver').checkbox({
+				onEnable : function() {
+					if (!!_interval) {
+						$('.ui.label.total').attr('href', "business/list.do?filterOver=1&interval=" + _interval);
+					} else {
+						$('.ui.label.total').attr('href', "business/list.do?filterOver=1");
+					}
+				},
+				onDisable : function() {
+					if (!!_interval) {
+						$('.ui.label.total').attr('href', "business/list.do?filterOver=0&interval=" + _interval);
+					} else {
+						$('.ui.label.total').attr('href', "business/list.do?filterOver=0");
+					}
+				}
 			});
+
+			$('.ui.radio.checkbox').click(function() {
+				clearInterval(_refreshInterval);
+				$('.ui.radio.checkbox').each(function(item) {
+
+					if ($(this).children('input[type="radio"]')[0].checked) {
+						_interval = Number($(this).children('input[type="hidden"]').val());
+					}
+				});
+				_refreshInterval = setInterval(function() {
+
+					var search = window.location.search;
+					var index = window.location.href.indexOf("interval=");
+					if (index == -1) {
+						if (search == '') {
+							window.location = window.location + '?interval=' + _interval;
+						} else {
+							window.location = window.location + '&interval=' + _interval;
+						}
+					} else {
+						window.location = (window.location.href).substr(0, index + 9) + _interval;
+					}
+
+				}, _interval * 1000);
+			});
+
+			if ('${filterOver}' != '' && '${filterOver}' != '0') {
+				$('.ui.toggle.checkbox.czsFilterOver').checkbox('enable');
+			}
 
 			if ('${interval}' != '' && '${interval}' != '0') {
 

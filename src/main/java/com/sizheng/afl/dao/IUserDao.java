@@ -59,4 +59,6 @@ public interface IUserDao {
 	 */
 	List<Map<String, Object>> queryMenuBill(Locale locale, String consumeCode);
 
+	List<Map<String, Object>> getInfo(Locale locale, String openId);
+
 }

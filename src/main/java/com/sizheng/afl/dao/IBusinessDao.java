@@ -60,7 +60,7 @@ public interface IBusinessDao {
 	 * @param status TODO
 	 * @return
 	 */
-	List<Map<String, Object>> listCustomer(Locale locale, Business business, String status);
+	List<Map<String, Object>> listCustomer(Locale locale, Business business, String status, Boolean filterOver);
 
 	/**
 	 * 查询用户体信息.
@@ -115,5 +115,17 @@ public interface IBusinessDao {
 	List<Map<String, Object>> queryRequest(Locale locale, String openId);
 
 	List<Map<String, Object>> listMgrRoles(Locale locale, BusinessRole businessRole);
+
+	List<Map<String, Object>> menuGraph(Locale locale, String openId);
+
+	List<Map<String, Object>> billDayGraph(Locale locale, String openId);
+
+	List<Map<String, Object>> menuDayGraph(Locale locale, String openId, String menuId);
+
+	List<Map<String, Object>> volumeDayGraph(String openId, String date);
+
+	List<Map<String, Object>> serviceGraph(String openId);
+
+	List<Map<String, Object>> serviceDayGraph(String openId, String date);
 	
 }

@@ -20,8 +20,12 @@ import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.component.SimpleMailSender;
 import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.dao.IWeiXinDao;
+import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
+import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.pojo.entity.Message;
+import com.sizheng.afl.pojo.entity.Request;
 import com.sizheng.afl.pojo.entity.Subscriber;
 import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.model.WeiXin;
@@ -32,7 +36,9 @@ import com.sizheng.afl.pojo.model.WeiXinUserInfo;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IQrcodeService;
+import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.service.IWeiXinService;
+import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 
@@ -69,6 +75,9 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 	@Autowired
 	IQrcodeService qrcodeService;
+
+	@Autowired
+	IUserService userService;
 
 	@Autowired
 	PropUtil propUtil;
@@ -282,14 +291,143 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			}
 
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_5.getValue().equals(eventKey)) {
-			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]消费记录</a>", propUtil.getRedirectUrl()
-					+ "/user/record.do", bean.getFromUserName());
-			String url2 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]呼叫服务</a>", propUtil.getRedirectUrl()
-					+ "/user/call.do", bean.getFromUserName());
-			String url3 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]菜单一览</a>", propUtil.getRedirectUrl()
-					+ "/user/list.do", bean.getFromUserName());
+			return StringUtil.replace("暂无其它服务项,敬请期待...");
+		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_2.getValue().equals(eventKey)) {
+			return StringUtil.replace("功能开发设计中,敬请期待...");
+		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_1.getValue().equals(eventKey)) { // 顾客我的菜单
 
-			return StringUtil.replace("{?1}\n\n{?2}\n\n{?3}", url1, url2, url3);
+			User user = new User();
+			user.setUserName(bean.getFromUserName());
+
+			List list = hibernateTemplate.findByExample(user);
+
+			if (list.size() > 0) {
+				String consumeCode = ((User) list.get(0)).getConsumeCode();
+				if (!StringUtil.isEmpty(consumeCode)) {
+
+					BusinessConsumer businessConsumer = new BusinessConsumer();
+					businessConsumer.setConsumeCode(consumeCode);
+					businessConsumer.setConsumerId(bean.getFromUserName());
+
+					List list2 = hibernateTemplate.findByExample(businessConsumer);
+
+					if (list2.size() > 0) {
+						if (SysConstant.CONSUME_STATUS_ONGOING.equals(((BusinessConsumer) list2.get(0)).getStatus())) {
+							return StringUtil.replace(
+									"<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
+									propUtil.getRedirectUrl(), bean.getFromUserName());
+						} else {
+							return "您不在消费进行状态中,无法使用该功能.";
+						}
+					}
+				} else {
+					return "您不在消费中,请先扫描二维码接入商家.";
+				}
+			} else {
+				return "您的用户信息不存在!";
+			}
+
+		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_3.getValue().equals(eventKey)) {// 顾客呼叫服务
+
+			User user = new User();
+			user.setUserName(bean.getFromUserName());
+
+			List list = hibernateTemplate.findByExample(user);
+
+			if (list.size() > 0) {
+
+				String consumeCode = ((User) list.get(0)).getConsumeCode();
+
+				if (!StringUtil.isEmpty(consumeCode)) {
+
+					BusinessConsumer businessConsumer = new BusinessConsumer();
+					businessConsumer.setConsumeCode(consumeCode);
+					businessConsumer.setConsumerId(bean.getFromUserName());
+
+					List list2 = hibernateTemplate.findByExample(businessConsumer);
+
+					if (list2.size() > 0) {
+
+						com.sizheng.afl.pojo.entity.Service service = new com.sizheng.afl.pojo.entity.Service();
+
+						BusinessConsumer businessConsumer2 = (BusinessConsumer) list2.get(0);
+
+						Request request = new Request();
+						request.setBusinessId(businessConsumer2.getBusinessId());
+						request.setConsumeCode(consumeCode);
+						request.setConsumerId(bean.getFromUserName());
+						request.setDateTime(DateUtil.now());
+						request.setIsDelete(SysConstant.SHORT_FALSE);
+						request.setName("呼叫服务请求");
+						request.setSceneId(businessConsumer2.getSceneId());
+						request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
+						request.setType(SysConstant.REQUEST_TYPE_SERVICE_CALL);
+
+						hibernateTemplate.save(request);
+
+						service.setBusinessId(businessConsumer2.getBusinessId());
+						service.setConsumerId(bean.getFromUserName());
+						service.setType(SysConstant.SERVICE_TYPE_CALL);
+						service.setIsDelete(SysConstant.SHORT_FALSE);
+
+						List list3 = hibernateTemplate.findByExample(service);
+
+						if (list3.size() > 0) {
+							com.sizheng.afl.pojo.entity.Service service2 = (com.sizheng.afl.pojo.entity.Service) list3
+									.get(0);
+							if (!SysConstant.SERVICE_STATUS_ACCEPT.equals(service2.getStatus())) {
+								return "亲爱的顾客上帝,有点繁忙啊,我们马上哈,请稍后...";
+							}
+						}
+
+						service.setDateTime(DateUtil.now());
+						service.setStatus(SysConstant.SERVICE_STATUS_ONGOING);
+						Serializable id = hibernateTemplate.save(service);
+
+						String userName = null;
+						String location = null;
+
+						// 获取呼叫服务顾客信息.
+						List<Map<String, Object>> userInfo = userService.getInfo(locale, bean.getFromUserName());
+
+						if (userInfo.size() > 0) {
+							Map<String, Object> map = userInfo.get(0);
+							userName = StringUtil.isEmpty(map.get("nickname")) ? bean.getFromUserName() : StringUtil
+									.getNotNullString(map, "nickname");
+							location = StringUtil.getNotNullString(map, "description");
+						}
+
+						// 通知服务人员.
+						BusinessRole businessRole = new BusinessRole();
+						businessRole.setBusinessId(businessConsumer2.getBusinessId());
+						businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+						businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+
+						List list4 = hibernateTemplate.findByExample(businessRole);
+
+						for (Object object : list4) {
+							String openId = ((BusinessRole) object).getOpenId();
+							String sendMsg = StringUtil
+									.replace(
+											"顾客[{?1}]呼叫服务\n位置:{?2}\n\n<a href='{?3}/business/free/acceptServiceReq.do?id={?4}&openId={?5}'>[点击此]接受该服务请求</a>",
+											userName, location, propUtil.getRedirectUrl(), id, openId);
+							if (!weiXinApiInvoker.sendServiceMsg(openId, sendMsg)) {
+								logger.error("客服消息通知服务人员失败!");
+							}
+						}
+
+						return "服务请求已经发出,等待处理,请稍后...";
+					} else {
+						return "您的消费信息不存在!";
+					}
+				} else {
+					return "您不在消费中,无法使用呼叫服务功能.";
+				}
+
+			} else {
+				return "您的用户信息不存在!";
+			}
+
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_1.getValue().equals(eventKey)) {// 商家入驻
 
 			Business business = new Business();
@@ -316,6 +454,12 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 					+ "/business/sendLink.do", bean.getFromUserName());
 
 			return StringUtil.replace("{?1}", url1);
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_1.getValue().equals(eventKey)) {
+			return StringUtil.replace("功能开发设计中,敬请期待...");
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_2.getValue().equals(eventKey)) {
+			return StringUtil.replace("功能开发设计中,敬请期待...");
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_3.getValue().equals(eventKey)) {
+			return StringUtil.replace("功能开发设计中,敬请期待...");
 		}
 
 		return null;

@@ -503,7 +503,7 @@ public class UserController extends BaseController {
 			}
 
 			if (price != null) {
-				if (privilege != null) {
+				if (privilege != null && privilege > 0) {
 					if (privilege >= 1) {
 						total += ((price - privilege) * copies);
 					} else {

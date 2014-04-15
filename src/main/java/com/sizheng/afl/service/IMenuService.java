@@ -135,9 +135,10 @@ public interface IMenuService extends IBaseService {
 	 * @param locale
 	 * @param menu
 	 * @param consumeCode TODO
+	 * @param order TODO
 	 * @return
 	 */
-	List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode);
+	List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode, String order);
 
 	/**
 	 * 顾客下单

@@ -15,7 +15,7 @@
 		<a class="item" href="business/main.do" id="menu-item-business-main">
 			基本信息 </a><a class="item" href="business/roleMgr.do"
 			id="menu-item-business-role-mgr"> 角色分配 </a><a class="item"
-			href="business/list.do" id="menu-item-business-list">顾客一览 </a>
+			href="business/list.do?filterOver=1" id="menu-item-business-list">顾客一览 </a>
 		<div class="header item">
 			<i class="qr code icon"></i> 二维码
 		</div>

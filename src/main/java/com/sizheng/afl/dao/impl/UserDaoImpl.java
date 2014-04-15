@@ -66,4 +66,32 @@ public class UserDaoImpl extends BaseDaoImpl implements IUserDao {
 		return getMapList(sqlSb, consumeCode);
 	}
 
+	@Override
+	public List<Map<String, Object>> getInfo(Locale locale, String openId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	qrcode.description,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
+		sqlSb.append("	subscriber.city,\n");
+		sqlSb.append("	subscriber.country,\n");
+		sqlSb.append("	subscriber.province,\n");
+		sqlSb.append("	subscriber.headimgurl,\n");
+		sqlSb.append("	business_consumer.consume_times,\n");
+		sqlSb.append("	DATE_FORMAT(business_consumer.last_consume_time,  '%Y/%m/%d %H:%i:%s') as last_consume_time,\n");
+		sqlSb.append("	business_consumer.scene_id,\n");
+		sqlSb.append("	business_consumer.consume_code,\n");
+		sqlSb.append("	business_consumer.`status`\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	`user`\n");
+		sqlSb.append("INNER JOIN business_consumer ON `user`.consume_code = business_consumer.consume_code\n");
+		sqlSb.append("INNER JOIN qrcode ON business_consumer.scene_id = qrcode.scene_id\n");
+		sqlSb.append("LEFT JOIN subscriber ON `user`.user_name = subscriber.user_name\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	`user`.user_name = ?\n");
+
+		return getMapList(sqlSb, openId);
+	}
+
 }

@@ -49,13 +49,14 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 	}
 
 	@Override
-	public List<Map<String, Object>> listCustomer(Locale locale, Business business, String status) {
+	public List<Map<String, Object>> listCustomer(Locale locale, Business business, String status, Boolean filterOver) {
 
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	business_consumer.consumer_id,\n");
 		sqlSb.append("	business_consumer.consume_times,\n");
-		sqlSb.append("	business_consumer.last_consume_time,\n");
+		sqlSb.append("	DATE_FORMAT(business_consumer.last_consume_time,  '%Y/%m/%d %H:%i:%s') as last_consume_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,business_consumer.last_consume_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	business_consumer.scene_id,\n");
 		sqlSb.append("	business_consumer.consume_code,\n");
 		sqlSb.append("	business_consumer.`status`,\n");
@@ -76,6 +77,10 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 
 		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND business_consumer.`status` = {?1}\n", status));
 
+		if (filterOver != null && filterOver) {
+			sqlSb.append("AND business_consumer.`status` <> 0\n");
+		}
+
 		return getMapList(sqlSb, business.getOpenId());
 	}
 
@@ -87,6 +92,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	business_consumer.consumer_id,\n");
 		sqlSb.append("	business_consumer.consume_times,\n");
 		sqlSb.append("	DATE_FORMAT(business_consumer.last_consume_time,  '%Y/%m/%d %H:%i:%s') as last_consume_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,business_consumer.last_consume_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	business_consumer.consume_code,\n");
 		sqlSb.append("	subscriber.nickname,\n");
 		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
@@ -128,7 +134,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 			Double privilege = NumberUtil.getDouble(map, "privilege");
 			Double copies = NumberUtil.getDouble(map, "copies");
 
-			if (privilege != null) {
+			if (privilege != null && privilege > 0) {
 				if (privilege >= 1) {
 					val += (price - privilege) * copies;
 				} else {
@@ -166,7 +172,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 			Double privilege = NumberUtil.getDouble(map, "privilege");
 			Double copies = NumberUtil.getDouble(map, "copies");
 
-			if (privilege != null) {
+			if (privilege != null && privilege > 0) {
 				if (privilege >= 1) {
 					val += (price - privilege) * copies;
 				} else {
@@ -285,6 +291,121 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND business_role.type = {?1}\n", businessRole.getType()));
 
 		return getMapList(sqlSb, businessRole.getBusinessId());
+	}
+
+	@Override
+	public List<Map<String, Object>> menuGraph(Locale locale, String openId) {
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu.id,\n");
+		sqlSb.append("	menu.`name`,\n");
+		sqlSb.append("	menu.order_times\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu.`owner` = ?\n");
+		sqlSb.append("AND menu.is_delete = 0\n");
+
+		return getMapList(sqlSb, openId);
+	}
+
+	@Override
+	public List<Map<String, Object>> menuDayGraph(Locale locale, String openId, String menuId) {
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu.`name`,\n");
+		sqlSb.append("	date(menu_bill.date_time) AS date,\n");
+		sqlSb.append("	SUM(copies) AS copies\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu\n");
+		sqlSb.append("INNER JOIN menu_bill ON menu.id = menu_bill.menu_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu.`owner` = ?\n");
+		sqlSb.append("AND menu_bill.`status` = 3\n");
+		sqlSb.append("AND menu.id = ?\n");
+		sqlSb.append("GROUP BY\n");
+		sqlSb.append("	date\n");
+
+		return getMapList(sqlSb, openId, menuId);
+	}
+
+	@Override
+	public List<Map<String, Object>> billDayGraph(Locale locale, String openId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	date(date_time) AS date,\n");
+		sqlSb.append("	sum(amount) AS num\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	bill\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	bill.business_id = ?\n");
+		sqlSb.append("GROUP BY\n");
+		sqlSb.append("	date(date_time)\n");
+
+		return getMapList(sqlSb, openId);
+	}
+
+	@Override
+	public List<Map<String, Object>> volumeDayGraph(String openId, String date) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	price,\n");
+		sqlSb.append("	`name`,\n");
+		sqlSb.append("	menu_bill.menu_id,\n");
+		sqlSb.append("	SUM(copies) copies,\n");
+		sqlSb.append("	price * SUM(copies) AS total\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu_bill\n");
+		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu.`owner` = ?\n");
+		sqlSb.append("AND DATE(menu_bill.date_time) = ?\n");
+		sqlSb.append("GROUP BY\n");
+		sqlSb.append("	menu_id\n");
+
+		return getMapList(sqlSb, openId, date);
+	}
+
+	@Override
+	public List<Map<String, Object>> serviceGraph(String openId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	DATE(service.date_time) AS date,\n");
+		sqlSb.append("	COUNT(*) AS cnt\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	service\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	service.business_id = ?\n");
+		sqlSb.append("AND service.`status` = 0\n");
+		sqlSb.append("AND service.is_delete = 0\n");
+		sqlSb.append("GROUP BY\n");
+		sqlSb.append("	date\n");
+
+		return getMapList(sqlSb, openId);
+	}
+
+	@Override
+	public List<Map<String, Object>> serviceDayGraph(String openId, String date) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	Count(*) AS total,\n");
+		sqlSb.append("	subscriber.nickname as name\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	service\n");
+		sqlSb.append("LEFT JOIN subscriber ON service.`handler` = subscriber.user_name\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	service.business_id = ?\n");
+		sqlSb.append("AND service.`status` = 0\n");
+		sqlSb.append("AND service.is_delete = 0\n");
+		sqlSb.append("AND DATE(service.date_time) = ?\n");
+		sqlSb.append("GROUP BY\n");
+		sqlSb.append("	`handler`\n");
+
+		return getMapList(sqlSb, openId, date);
 	}
 
 }

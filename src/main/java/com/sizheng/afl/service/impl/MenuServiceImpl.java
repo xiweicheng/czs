@@ -189,17 +189,20 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode) {
+	public List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode, String order) {
 
-		List<Map<String, Object>> list = menuDao.query(locale, menu, consumeCode, null, null);
+		List<Map<String, Object>> list = menuDao.query(locale, menu, consumeCode, null, null, order);
 
 		Map<String, Map<String, Object>> mapMap = new HashMap<String, Map<String, Object>>();
+
+		List<Map<String, Object>> retList = new ArrayList<>();
 
 		for (Map<String, Object> map : list) {
 			String id = StringUtil.getNotNullString(map, "id");
 
 			if (!mapMap.containsKey(id)) {
 				mapMap.put(id, map);
+				retList.add(map);
 				List<Map<String, Object>> mapList = new ArrayList<>();
 				map.put("menuBill", mapList);
 				Map<String, Object> map2 = new HashMap<>();
@@ -239,7 +242,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 			}
 		}
 
-		return new ArrayList<>(mapMap.values());
+		return retList;
 	}
 
 	@Override
@@ -350,6 +353,13 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 
 			hibernateTemplate.update(menuBill2);
 
+			Menu menu = hibernateTemplate.get(Menu.class, menuBill2.getMenuId());
+
+			if (menu != null) {
+				menu.setOrderTimes(menu.getOrderTimes() + 1);
+				hibernateTemplate.update(menu);
+			}
+
 			return true;
 		}
 
@@ -371,6 +381,13 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 				menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
 
 				hibernateTemplate.update(menuBill2);
+
+				Menu menu = hibernateTemplate.get(Menu.class, menuBill2.getMenuId());
+
+				if (menu != null) {
+					menu.setOrderTimes(menu.getOrderTimes() + 1);
+					hibernateTemplate.update(menu);
+				}
 			} else {
 				throwRuntimeException("批量接受订单失败!");
 			}

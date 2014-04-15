@@ -422,4 +422,9 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 
 		return hibernateTemplate.findByExample(favorites).size();
 	}
+
+	@Override
+	public List<Map<String, Object>> getInfo(Locale locale, String openId) {
+		return userDao.getInfo(locale, openId);
+	}
 }

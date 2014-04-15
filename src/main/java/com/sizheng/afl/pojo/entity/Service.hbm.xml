@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2014-4-15 13:03:16 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.sizheng.afl.pojo.entity.Service" table="service" catalog="afl">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="consumerId" type="string">
+            <column name="consumer_id" />
+        </property>
+        <property name="businessId" type="string">
+            <column name="business_id" />
+        </property>
+        <property name="dateTime" type="timestamp">
+            <column name="date_time" length="19" />
+        </property>
+        <property name="type" type="java.lang.Short">
+            <column name="type">
+                <comment>&#183;&#254;&#206;&#241;&#192;&#224;&#208;&#205;</comment>
+            </column>
+        </property>
+        <property name="status" type="java.lang.Short">
+            <column name="status">
+                <comment>&#215;&#180;&#204;&#172;,0:&#186;&#244;&#189;&#208;&#214;&#208;,1:&#210;&#209;&#189;&#211;&#202;&#220;</comment>
+            </column>
+        </property>
+        <property name="isDelete" type="java.lang.Short">
+            <column name="is_delete" />
+        </property>
+        <property name="handler" type="string">
+            <column name="handler">
+                <comment>&#180;&#166;&#192;&#237;&#213;&#223;</comment>
+            </column>
+        </property>
+        <property name="appraise" type="java.lang.Short">
+            <column name="appraise">
+                <comment>&#183;&#254;&#206;&#241;&#198;&#192;&#188;&#219;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

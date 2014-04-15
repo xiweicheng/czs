@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseDaoImpl;
 import com.sizheng.afl.dao.IMenuDao;
+import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Menu;
 import com.sizheng.afl.util.SqlUtil;
 
@@ -30,7 +31,8 @@ import com.sizheng.afl.util.SqlUtil;
 public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 
 	@Override
-	public List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit) {
+	public List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit,
+			String order) {
 
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
@@ -41,6 +43,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu.`name`,\n");
 		sqlSb.append("	menu.price,\n");
 		sqlSb.append("	menu.privilege,\n");
+		sqlSb.append("	menu.order_times,\n");
 		sqlSb.append("	menu_category.`name` AS category,\n");
 		sqlSb.append("	menu_taste.`name` AS taste,\n");
 		sqlSb.append("	resources.path,\n");
@@ -86,6 +89,14 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 
 		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND menu.category_id = {?1}\n", menu.getCategoryId()));
 		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND menu.taste_id = {?1}\n", menu.getTasteId()));
+
+		if (SysConstant.ORDER_PRICE_ASC.equals(order)) {
+			sqlSb.append("ORDER BY menu.price ASC, menu.id ASC\n");
+		} else if (SysConstant.ORDER_PRICE_DESC.equals(order)) {
+			sqlSb.append("ORDER BY menu.price DESC, menu.id ASC\n");
+		} else if (SysConstant.ORDER_LIKE.equals(order)) {
+			sqlSb.append("ORDER BY menu.order_times DESC, menu.id ASC\n");
+		}
 
 		return getMapList(sqlSb, consumeCode, menu.getOwner());
 	}
@@ -135,6 +146,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
 		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,menu_bill.date_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	menu_bill.scene_id,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu.`name`,\n");
@@ -164,10 +176,8 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.menu_id,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
-		sqlSb.append("	DATE_FORMAT(\n");
-		sqlSb.append("		menu_bill.date_time,\n");
-		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
-		sqlSb.append("	) AS date_time,\n");
+		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,menu_bill.date_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	menu_bill.scene_id,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	subscriber.nickname,\n");

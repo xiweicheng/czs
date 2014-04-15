@@ -140,7 +140,8 @@ public final class SysConstant {
 	public static final Short REQUEST_TYPE_ENTER = 0;
 	public static final Short REQUEST_TYPE_BILL_OWN = 1;
 	public static final Short REQUEST_TYPE_BILL_GROUP = 2;
-	public static final Short REQUEST_QRCODE_USE_LIMIT = 3;
+	public static final Short REQUEST_TYPE_QRCODE_USE_LIMIT = 3;
+	public static final Short REQUEST_TYPE_SERVICE_CALL = 4;
 
 	public static final Long CATEGORY_ID_TZ = 1L;
 	public static final Long CATEGORY_ID_JS = 2L;
@@ -150,5 +151,14 @@ public final class SysConstant {
 	public static final Short ROLE_TYPE_COOK = 2;
 	public static final Short ROLE_TYPE_WAITER = 3;
 	public static final Short ROLE_TYPE_PROSCENIUM = 4;
+
+	public static final String ORDER_PRICE_ASC = "1";
+	public static final String ORDER_PRICE_DESC = "2";
+	public static final String ORDER_LIKE = "3";
+
+	public static final Short SERVICE_STATUS_ONGOING = 1;
+	public static final Short SERVICE_STATUS_ACCEPT = 0;
+
+	public static final Short SERVICE_TYPE_CALL = 0;
 
 }

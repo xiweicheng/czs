@@ -20,6 +20,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>餐助手-消息提示</title>
+<script type="text/javascript">
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.call('hideToolbar');
+		WeixinJSBridge.call('hideOptionMenu');
+	});
+</script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -28,7 +34,7 @@
 		<div class="container">
 			<!-- <a class="launch item"><i class="icon list layout"></i></a> -->
 			<div class="title item">
-				<b>餐助手</b> 商家管理后台
+				<b>餐助手</b> 消息提示
 			</div>
 		</div>
 	</div>

@@ -5,6 +5,8 @@ package com.sizheng.afl.service.impl;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -235,7 +237,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			request.setName("二维码扫描次数受限");
 			request.setSceneId(Long.valueOf(qrsceneId));
 			request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
-			request.setType(SysConstant.REQUEST_QRCODE_USE_LIMIT);
+			request.setType(SysConstant.REQUEST_TYPE_QRCODE_USE_LIMIT);
 
 			requestService.save(request);
 
@@ -474,9 +476,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public List<Map<String, Object>> listCustomer(Locale locale, Business business, String status) {
+	public List<Map<String, Object>> listCustomer(Locale locale, Business business, String status, Boolean filterOver) {
 
-		return businessDao.listCustomer(locale, business, status);
+		return businessDao.listCustomer(locale, business, status, filterOver);
 	}
 
 	@Override
@@ -773,6 +775,152 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			}
 
 		});
+	}
+
+	@Override
+	public boolean acceptServiceReq(Locale locale, String id, String openId) {
+
+		com.sizheng.afl.pojo.entity.Service service = hibernateTemplate.get(com.sizheng.afl.pojo.entity.Service.class,
+				Long.valueOf(id));
+
+		if (service != null) {
+			if (SysConstant.SERVICE_STATUS_ONGOING.equals(service.getStatus())) {
+				service.setStatus(SysConstant.SERVICE_STATUS_ACCEPT);
+				service.setHandler(openId);
+
+				hibernateTemplate.update(service);
+
+				Request request = new Request();
+				request.setBusinessId(service.getBusinessId());
+				request.setConsumerId(openId);
+				request.setDateTime(DateUtil.now());
+				request.setIsDelete(SysConstant.SHORT_FALSE);
+				request.setName("处理呼叫服务");
+				request.setType(SysConstant.REQUEST_TYPE_SERVICE_CALL);
+				request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
+
+				hibernateTemplate.save(request);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public Map<String, List<Object>> menuGraph(Locale locale, String openId) {
+
+		List<Map<String, Object>> menuGraph = businessDao.menuGraph(locale, openId);
+
+		List<Object> names = new ArrayList<>();
+		List<Object> values = new ArrayList<>();
+		List<Object> ids = new ArrayList<>();
+
+		for (Map<String, Object> map : menuGraph) {
+			names.add(map.get("name"));
+			values.add(map.get("order_times"));
+			ids.add(map.get("id") + "_" + map.get("name"));
+		}
+
+		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		map.put("names", names);
+		map.put("values", values);
+		map.put("ids", ids);
+
+		return map;
+	}
+
+	@Override
+	public Map<String, List<Object>> volumeGraph(Locale locale, String openId) {
+
+		List<Map<String, Object>> menuGraph = businessDao.billDayGraph(locale, openId);
+
+		List<Object> names = new ArrayList<>();
+		List<Object> values = new ArrayList<>();
+
+		for (Map<String, Object> map : menuGraph) {
+			names.add(map.get("date"));
+			values.add(map.get("num"));
+		}
+
+		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		map.put("date", names);
+		map.put("num", values);
+
+		return map;
+	}
+
+	@Override
+	public Map<String, List<Object>> menuDayGraph(Locale locale, String openId, String id) {
+
+		List<Map<String, Object>> menuGraph = businessDao.menuDayGraph(locale, openId, id);
+
+		List<Object> names = new ArrayList<>();
+		List<Object> copies = new ArrayList<>();
+
+		for (Map<String, Object> map : menuGraph) {
+			names.add(map.get("date"));
+			copies.add(map.get("copies"));
+		}
+
+		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		map.put("date", names);
+		map.put("copies", copies);
+
+		return map;
+	}
+
+	@Override
+	public List<List<Object>> volumeDayGraph(Locale locale, String openId, String date) {
+
+		List<List<Object>> list = new ArrayList<>();
+		List<Map<String, Object>> mapList = businessDao.volumeDayGraph(openId, date);
+
+		for (Map<String, Object> map : mapList) {
+			List<Object> list2 = new ArrayList<>();
+			list2.add(map.get("name"));
+			list2.add(map.get("total"));
+
+			list.add(list2);
+		}
+
+		return list;
+	}
+
+	@Override
+	public Map<String, List<Object>> serviceGraph(Locale locale, String openId) {
+		List<Map<String, Object>> menuGraph = businessDao.serviceGraph(openId);
+
+		List<Object> names = new ArrayList<>();
+		List<Object> values = new ArrayList<>();
+
+		for (Map<String, Object> map : menuGraph) {
+			names.add(map.get("date"));
+			values.add(map.get("cnt"));
+		}
+
+		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		map.put("date", names);
+		map.put("cnt", values);
+
+		return map;
+	}
+
+	@Override
+	public List<List<Object>> serviceDayGraph(Locale locale, String openId, String date) {
+		List<List<Object>> list = new ArrayList<>();
+		List<Map<String, Object>> mapList = businessDao.serviceDayGraph(openId, date);
+
+		for (Map<String, Object> map : mapList) {
+			List<Object> list2 = new ArrayList<>();
+			list2.add(map.get("name"));
+			list2.add(map.get("total"));
+
+			list.add(list2);
+		}
+
+		return list;
 	}
 
 }

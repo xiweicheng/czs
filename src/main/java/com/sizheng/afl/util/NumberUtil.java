@@ -210,6 +210,30 @@ public final class NumberUtil {
 		return toLong(map.get(key));
 	}
 
+	public static Short getShort(Map<String, Object> map, String key) {
+		return toShort(map.get(key));
+	}
+
+	/**
+	 * 转换为Short.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static Short toShort(Object value) {
+
+		try {
+			if (value == null || EMPTY.equals(value)) {
+				return null;
+			}
+			return Short.valueOf(value.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
 	public static String format(Object object) {
 
 		if (object instanceof Double) {

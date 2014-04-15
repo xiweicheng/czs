@@ -177,7 +177,7 @@ public interface IBusinessService extends IBaseService {
 	 *            TODO
 	 * @return
 	 */
-	List<Map<String, Object>> listCustomer(Locale locale, Business business, String status);
+	List<Map<String, Object>> listCustomer(Locale locale, Business business, String status, Boolean filterOver);
 
 	/**
 	 * 查询消费体信息.
@@ -330,4 +330,18 @@ public interface IBusinessService extends IBaseService {
 	boolean setRole(Locale locale, BusinessRole businessRole);
 
 	boolean deleteRole(Locale locale, BusinessRole businessRole);
+
+	boolean acceptServiceReq(Locale locale, String id, String openId);
+
+	Map<String, List<Object>> menuGraph(Locale locale, String openId);
+
+	Map<String, List<Object>> volumeGraph(Locale locale, String openId);
+
+	Map<String, List<Object>> menuDayGraph(Locale locale, String openId, String id);
+
+	List<List<Object>> volumeDayGraph(Locale locale, String openId, String date);
+
+	Map<String, List<Object>> serviceGraph(Locale locale, String openId);
+
+	List<List<Object>> serviceDayGraph(Locale locale, String openId, String date);
 }

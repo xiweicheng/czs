@@ -31,6 +31,7 @@
 	<td class="">{{html name}}</td>
 	<td class="">{{html copies}}</td>
 	<td class="">{{html date_time}}</td>
+	<td class="">{{html sec_diff}}</td>
 	<td class="">{{html nickname}}</td>
 	<td class="">{{html description}}</td>
 	<td class=""><a class="ui purple label"
@@ -77,6 +78,7 @@
 					<th class="">菜名</th>
 					<th class="">份数</th>
 					<th class="">时间</th>
+					<th class="">距今</th>
 					<th class="">顾客</th>
 					<th class="">位置</th>
 					<th class="">操作</th>
@@ -88,6 +90,7 @@
 						<td class="">${item.name}</td>
 						<td class="">${item.copies}</td>
 						<td class="">${item.date_time}</td>
+						<td class="">${item.sec_diff}</td>
 						<td class="">${item.nickname}</td>
 						<td class="">${item.description}</td>
 						<td class=""><a class="ui purple label czsRequest"
@@ -117,6 +120,7 @@
 							<th class="">菜名</th>
 							<th class="">份数</th>
 							<th class="">时间</th>
+							<th class="">距今</th>
 							<th class="">顾客</th>
 							<th class="">位置</th>
 							<th class="">操作</th>
@@ -244,6 +248,22 @@
 
 			var _refreshInterval;
 
+			var refreshFucntion = function() {
+
+				var search = window.location.search;
+				var index = window.location.href.indexOf("interval=");
+				if (index == -1) {
+					if (search == '') {
+						window.location = window.location + '?interval=' + _interval;
+					} else {
+						window.location = window.location + '&interval=' + _interval;
+					}
+				} else {
+					window.location = (window.location.href).substr(0, index + 9) + _interval;
+				}
+
+			};
+
 			$('#refresh-ui-toggle-checkbox').checkbox({
 				onEnable : function() {
 
@@ -253,21 +273,7 @@
 							_interval = Number($(this).children('input[type="hidden"]').val());
 						}
 					});
-					_refreshInterval = setInterval(function() {
-
-						var search = window.location.search;
-						var index = window.location.href.indexOf("interval=");
-						if (index == -1) {
-							if (search == '') {
-								window.location = window.location + '?interval=' + _interval;
-							} else {
-								window.location = window.location + '&interval=' + _interval;
-							}
-						} else {
-							window.location = (window.location.href).substr(0, index + 9) + _interval;
-						}
-
-					}, _interval * 1000);
+					_refreshInterval = setInterval(refreshFucntion, _interval * 1000);
 				},
 				onDisable : function() {
 					clearInterval(_refreshInterval)

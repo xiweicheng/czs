@@ -199,4 +199,16 @@ public interface IUserService extends IBaseService {
 	 * @return
 	 */
 	long getCount(Locale locale, Favorites favorites);
+
+	/**
+	 * 获取用户信息.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月15日 下午2:15:07
+	 * @modification 2014年4月15日 下午2:15:07
+	 * @param locale
+	 * @param openId
+	 * @return
+	 */
+	List<Map<String, Object>> getInfo(Locale locale, String openId);
 }

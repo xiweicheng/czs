@@ -48,7 +48,7 @@
 					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}
 				</div>
 				<div style="padding-bottom: 10px;">
-					<b>价格:</b>${item.price}&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>
+					<b>价格:</b>${item.price}<c:if test="${item.privilege>0}">&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>
 					<c:choose>
 						<c:when test="${item.privilege < 1}">
 							<c:out value="${item.privilege * 10}"></c:out>折
@@ -56,7 +56,7 @@
 						<c:otherwise>
 							${item.privilege}
 						</c:otherwise>
-					</c:choose>
+					</c:choose></c:if>
 				</div>
 				<div style="padding-bottom: 10px;">
 					<b>添加时间:</b>

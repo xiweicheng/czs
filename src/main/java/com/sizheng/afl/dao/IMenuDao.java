@@ -32,9 +32,10 @@ public interface IMenuDao {
 	 * @param consumeCode TODO
 	 * @param start
 	 * @param limit
+	 * @param order TODO
 	 * @return
 	 */
-	List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit);
+	List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit, String order);
 
 	/**
 	 * 查询总数查询【菜单】.

@@ -140,6 +140,7 @@ public class MenuController extends BaseController {
 		menu.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
 		menu.setDateTime(DateUtil.now());
 		menu.setIsDelete(SysConstant.CHECK_ON.equals(isDelete) ? SysConstant.SHORT_TRUE : SysConstant.SHORT_FALSE);
+		menu.setOrderTimes(Long.valueOf(0));
 
 		if (menuService.save(locale, menu)) {
 			return new ResultMsg(true);
@@ -383,6 +384,12 @@ public class MenuController extends BaseController {
 
 		List<Map<String, Object>> mapList = menuService.queryOrderMapList(locale, menu);
 
+		for (Map<String, Object> map : mapList) {
+			long sec = NumberUtil.getLong(map, "sec_diff");
+			String c = DateUtil.convert(sec);
+			map.put("sec_diff", c);
+		}
+
 		model.addAttribute("orderList", mapList);
 		model.addAttribute("interval", interval);
 
@@ -400,7 +407,8 @@ public class MenuController extends BaseController {
 	@RequestMapping("free/list4bill")
 	public String list4bill(HttpServletRequest request, Model model, Locale locale,
 			@RequestParam("openId") String openId, @ModelAttribute Menu menu,
-			@RequestParam(value = "mode", required = false) String mode) {
+			@RequestParam(value = "mode", required = false) String mode,
+			@RequestParam(value = "order", required = false) String order) {
 
 		logger.debug("顾客点菜列举【菜单】");
 
@@ -440,9 +448,31 @@ public class MenuController extends BaseController {
 
 		User user2 = userService.get(locale, user);
 
-		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu, user2.getConsumeCode());
+		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu, user2.getConsumeCode(), order);
+
+		double total = 0;
+
+		for (Map<String, Object> map : mapList) {
+			double price = NumberUtil.getDouble(map, "price");
+
+			List<Map<String, Object>> maps = (List<Map<String, Object>>) map.get("menuBill");
+
+			int copies = 0;
+
+			for (Map<String, Object> map2 : maps) {
+
+				if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(NumberUtil.getShort(map2, "status"))) {
+					copies += (NumberUtil.getInteger(map2, "copies"));
+				} else if (SysConstant.MENU_BILL_STATUS_ACCEPT.equals(NumberUtil.getShort(map2, "status"))) {
+					copies += (NumberUtil.getInteger(map2, "copies"));
+				}
+			}
+
+			total += (price * copies);
+		}
 
 		model.addAttribute("menuList", mapList);
+		model.addAttribute("total", NumberUtil.format2Money(total));
 
 		MenuCategory menuCategory = new MenuCategory();
 		menuCategory.setOwner(businessOpenId);
@@ -460,6 +490,7 @@ public class MenuController extends BaseController {
 
 		model.addAttribute("openId", openId);
 		model.addAttribute("mode", mode == null ? "off" : mode);
+		model.addAttribute("order", order == null ? "-1" : order);
 
 		return "menu/list-bill";
 	}
@@ -544,6 +575,12 @@ public class MenuController extends BaseController {
 
 		List<Map<String, Object>> list = menuService.queryJoinBill(locale, menu);
 
+		for (Map<String, Object> map : list) {
+			long sec = NumberUtil.getLong(map, "sec_diff");
+			String c = DateUtil.convert(sec);
+			map.put("sec_diff", c);
+		}
+
 		return new ResultMsg(true, list);
 	}
 
@@ -615,7 +652,8 @@ public class MenuController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("free/billQuery")
-	public String billQuery(HttpServletRequest request, Locale locale, @ModelAttribute MenuBill menuBill, Model model) {
+	public String billQuery(HttpServletRequest request, Locale locale, @ModelAttribute MenuBill menuBill, Model model,
+			@RequestParam("isOwn") Boolean isOwn, @RequestParam(value = "isShowImg", required = false) Boolean isShowImg) {
 
 		logger.debug("顾客订单查询【菜单】");
 
@@ -632,17 +670,27 @@ public class MenuController extends BaseController {
 		if (user2 != null) {
 			menuBill.setConsumeCode(user2.getConsumeCode());
 
-			List<Map<String, Object>> list = menuBillService.query4MapList(locale, menuBill);
+			List<Map<String, Object>> list = isOwn ? menuBillService.query4MapList(locale, menuBill) : menuBillService
+					.query4GroupMapList(locale, menuBill);
 
 			double total = 0;
 
 			for (Map<String, Object> map : list) {
 				Double price = NumberUtil.getDouble(map, "price");
 				Double privilege = NumberUtil.getDouble(map, "privilege");
-				Integer copies = NumberUtil.getInteger(map, "copies");
+				int copies = 0;
+
+				if (isOwn) {
+					copies = NumberUtil.getInteger(map, "copies");
+				} else {
+					List<Map<String, Object>> maps = (List<Map<String, Object>>) map.get("menuBill");
+					for (Map<String, Object> map2 : maps) {
+						copies += (NumberUtil.getInteger(map2, "copies"));
+					}
+				}
 
 				if (price != null) {
-					if (privilege != null) {
+					if (privilege != null && privilege > 0) {
 						if (privilege >= 1) {
 							total += ((price - privilege) * copies);
 						} else {
@@ -656,97 +704,21 @@ public class MenuController extends BaseController {
 
 			model.addAttribute("billList", list);
 			model.addAttribute("total", format.format(total));
+			model.addAttribute("status", menuBill.getStatus());
+			model.addAttribute("isOwn", isOwn ? "1" : "0");
+			model.addAttribute("isShowImg", (isShowImg == null || !isShowImg) ? "0" : "1");
+
+			String pre = isOwn ? "个人" : "集体";
 
 			if (menuBill.getStatus() == 0) {
-				model.addAttribute("title", "待定订单");
+				model.addAttribute("title", pre + "收藏");
 				model.addAttribute("type", "hold");
 			} else if (menuBill.getStatus() == 1) {
-				model.addAttribute("title", "已下订单");
+				model.addAttribute("title", pre + "订单");
 				model.addAttribute("type", "confirm");
-			} else if (menuBill.getStatus() == 2) {
-				model.addAttribute("title", "退订订单");
-				model.addAttribute("type", "debook");
 			}
 
 			return "menu/query-bill";
-		} else {
-			model.addAttribute("message", "消费信息不存在!");
-			return "message";
-		}
-	}
-
-	/**
-	 * 集体顾客订单查询【菜单】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年03月29日 08:37:31
-	 * @modification 2014年03月29日 08:37:31
-	 * @return
-	 */
-	@RequestMapping("free/billGroupQuery")
-	public String billGroupQuery(HttpServletRequest request, Locale locale, @ModelAttribute MenuBill menuBill,
-			Model model) {
-
-		logger.debug("集体顾客订单查询【菜单】");
-
-		Assert.notNull(menuBill.getStatus());
-		Assert.notNull(menuBill.getConsumerId());
-
-		model.addAttribute("openId", menuBill.getConsumerId());
-
-		User user = new User();
-		user.setUserName(menuBill.getConsumerId());
-
-		User user2 = userService.get(locale, user);
-
-		if (user2 != null) {
-			menuBill.setConsumeCode(user2.getConsumeCode());
-
-			List<Map<String, Object>> list = menuBillService.query4GroupMapList(locale, menuBill);
-
-			double total = 0;
-
-			for (Map<String, Object> map : list) {
-				Double price = NumberUtil.getDouble(map, "price");
-				Double privilege = NumberUtil.getDouble(map, "privilege");
-
-				List<Map<String, Object>> maps = (List<Map<String, Object>>) map.get("menuBill");
-
-				int copies = 0;
-
-				for (Map<String, Object> map2 : maps) {
-					copies += (NumberUtil.getInteger(map2, "copies"));
-				}
-
-				if (price != null) {
-					if (privilege != null) {
-						if (privilege >= 1) {
-							total += ((price - privilege) * copies);
-						} else {
-							total += ((price * privilege) * copies);
-						}
-					} else {
-						total += (price * copies);
-					}
-				}
-
-			}
-
-			model.addAttribute("billList", list);
-			model.addAttribute("total", format.format(total));
-
-			if (menuBill.getStatus() == 0) {
-				model.addAttribute("title", "待定订单");
-				model.addAttribute("type", "hold");
-			} else if (menuBill.getStatus() == 1) {
-				model.addAttribute("title", "已下订单");
-				model.addAttribute("type", "confirm");
-			} else if (menuBill.getStatus() == 2) {
-				model.addAttribute("title", "退订订单");
-				model.addAttribute("type", "debook");
-			}
-
-			return "menu/query-group-bill";
 		} else {
 			model.addAttribute("message", "消费信息不存在!");
 			return "message";

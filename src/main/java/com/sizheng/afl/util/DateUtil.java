@@ -107,4 +107,55 @@ public final class DateUtil {
 	public static String getTodayLimitCode() {
 		return format(now(), FORMAT6);
 	}
+
+	// /**
+	// * 将距今的秒数转为为 秒 分 时 天 月
+	// *
+	// * @author xiweicheng
+	// * @creation 2014年4月15日 上午10:31:39
+	// * @modification 2014年4月15日 上午10:31:39
+	// * @param sec
+	// * @return
+	// */
+	// public static String convert(long sec) {
+	//
+	// if (sec < 60) {
+	// return sec + "秒";
+	// } else if (sec / 60 < 60) {
+	// return (sec / 60) + "分" + (sec % 60) + "秒";
+	// } else if (sec / 3600 < 60) {
+	// long limit = sec % 3600;
+	// if (limit < 60) {
+	// return (sec / 3600) + "时" + (limit) + "分";
+	// } else {
+	// return (sec / 3600) + "时" + (limit / 60) + "分" + (limit % 60) + "秒";
+	// }
+	// } else {
+	// return sec + "秒";
+	// }
+	// }
+
+	/**
+	 * 将距今的秒数转为为 秒 分 时 天 月
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月15日 上午10:31:39
+	 * @modification 2014年4月15日 上午10:31:39
+	 * @param sec
+	 * @return
+	 */
+	public static String convert(long sec) {
+
+		if (sec < 60) {
+			return sec + "秒";
+		} else if (sec / 60 < 60) {
+			return (sec / 60) + "分" + convert(sec % 60);
+		} else if (sec / 3600 < 60) {
+			return (sec / 3600) + "时" + convert(sec % 3600);
+		} else if (sec / (3600 * 24) < 30) {
+			return sec / (3600 * 24) + "天" + convert(sec % (3600 * 24));
+		} else {
+			return ">" + sec / (3600 * 24) + "天";
+		}
+	}
 }

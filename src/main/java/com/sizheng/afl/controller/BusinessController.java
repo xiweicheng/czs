@@ -40,6 +40,7 @@ import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IRequestService;
 import com.sizheng.afl.service.IUserService;
+import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.EncoderUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
@@ -200,15 +201,23 @@ public class BusinessController extends BaseController {
 	@RequestMapping("list")
 	public String list(HttpServletRequest request, Locale locale, Model model,
 			@RequestParam(value = "status", required = false) String status,
-			@RequestParam(value = "interval", required = false) String interval) {
+			@RequestParam(value = "interval", required = false) String interval,
+			@RequestParam(value = "filterOver", required = false) Boolean filterOver) {
 
 		logger.debug("顾客列举【商家】");
 
 		Business business = new Business();
 		business.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
 
-		List<Map<String, Object>> customerList = businessService.listCustomer(locale, business, status);
-		List<Map<String, Object>> list = businessService.listCustomer(locale, business, null);
+		List<Map<String, Object>> customerList = businessService.listCustomer(locale, business, status, filterOver);
+
+		for (Map<String, Object> map : customerList) {
+			long sec = NumberUtil.getLong(map, "sec_diff");
+			String c = DateUtil.convert(sec);
+			map.put("sec_diff", c);
+		}
+
+		List<Map<String, Object>> list = businessService.listCustomer(locale, business, null, null);
 
 		int ongoing = 0;
 		int disabled = 0;
@@ -240,6 +249,7 @@ public class BusinessController extends BaseController {
 		model.addAttribute("over", list.size() - ongoing - disabled - requestOwn - requestGroup - requesting);
 
 		model.addAttribute("interval", interval);
+		model.addAttribute("filterOver", (filterOver == null || !filterOver) ? "0" : "1");
 
 		return "business/customer-list";
 	}
@@ -459,7 +469,7 @@ public class BusinessController extends BaseController {
 			HttpSession session = request.getSession();
 			session.setAttribute(SysConstant.SESSION_BUSINESS, business2);
 
-			return "forward:list.do";
+			return "forward:list.do?filterOver=1";
 		} else {
 			model.addAttribute("message", "登录失败!");
 
@@ -585,6 +595,33 @@ public class BusinessController extends BaseController {
 	}
 
 	/**
+	 * 处理服务员接受呼叫服务。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("free/acceptServiceReq")
+	public String acceptServiceReq(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("id") String id, @RequestParam("openId") String openId) {
+
+		logger.debug("处理服务员接受呼叫服务【商家】");
+
+		boolean val = businessService.acceptServiceReq(locale, id, openId);
+
+		if (val) {
+			model.addAttribute("message", "接受呼叫请求成功!");
+		} else {
+			model.addAttribute("message", "该请求已被他人接受,接受失败!");
+		}
+
+		return "message";
+
+	}
+
+	/**
 	 * 商家角色分配。
 	 * 
 	 * @param request
@@ -700,9 +737,143 @@ public class BusinessController extends BaseController {
 
 		logger.debug("菜品统计【商家】");
 
-		model.addAttribute("message", "[菜品统计]页面建设中...");
+		// model.addAttribute("message", "[菜品统计]页面建设中...");
 
-		return "message";
+		return "business/menu-graph";
+
+	}
+
+	/**
+	 * 菜品统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("menuGraph")
+	@ResponseBody
+	public ResultMsg menuGraph(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("菜品统计【商家】");
+
+		Map<String, List<Object>> map = businessService.menuGraph(locale, WebUtil.getSessionBusiness(request)
+				.getOpenId());
+
+		return new ResultMsg(true, map);
+
+	}
+
+	/**
+	 * 菜品统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("menuDayGraph")
+	@ResponseBody
+	public ResultMsg menuDayGraph(HttpServletRequest request, Locale locale, Model model, @RequestParam("id") String id) {
+
+		logger.debug("菜品统计【商家】");
+
+		Map<String, List<Object>> map = businessService.menuDayGraph(locale, WebUtil.getSessionBusiness(request)
+				.getOpenId(), id);
+
+		return new ResultMsg(true, map);
+
+	}
+
+	/**
+	 * 营业额统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("volumeGraph")
+	@ResponseBody
+	public ResultMsg volumeGraph(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("营业额统计【商家】");
+
+		Map<String, List<Object>> map = businessService.volumeGraph(locale, WebUtil.getSessionBusiness(request)
+				.getOpenId());
+
+		return new ResultMsg(true, map);
+
+	}
+
+	/**
+	 * 营业额统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("volumeDayGraph")
+	@ResponseBody
+	public ResultMsg volumeDayGraph(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("date") String date) {
+
+		logger.debug("营业额统计【商家】");
+
+		List<List<Object>> list = businessService.volumeDayGraph(locale, WebUtil.getSessionBusiness(request)
+				.getOpenId(), date);
+
+		return new ResultMsg(true, list);
+
+	}
+
+	/**
+	 * 服务统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("serviceGraph")
+	@ResponseBody
+	public ResultMsg serviceGraph(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("服务统计【商家】");
+
+		Map<String, List<Object>> map = businessService.serviceGraph(locale, WebUtil.getSessionBusiness(request)
+				.getOpenId());
+
+		return new ResultMsg(true, map);
+
+	}
+
+	/**
+	 * 服务统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("serviceDayGraph")
+	@ResponseBody
+	public ResultMsg serviceDayGraph(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("date") String date) {
+
+		logger.debug("服务统计。【商家】");
+
+		List<List<Object>> list = businessService.serviceDayGraph(locale, WebUtil.getSessionBusiness(request)
+				.getOpenId(), date);
+
+		return new ResultMsg(true, list);
 
 	}
 
@@ -720,9 +891,9 @@ public class BusinessController extends BaseController {
 
 		logger.debug("服务统计【商家】");
 
-		model.addAttribute("message", "[服务统计]页面建设中...");
+		// model.addAttribute("message", "[服务统计]页面建设中...");
 
-		return "message";
+		return "business/service-graph";
 
 	}
 
@@ -740,9 +911,7 @@ public class BusinessController extends BaseController {
 
 		logger.debug("营业额统计【商家】");
 
-		model.addAttribute("message", "[营业额统计]页面建设中...");
-
-		return "message";
+		return "business/volume-graph";
 
 	}
 
@@ -789,6 +958,12 @@ public class BusinessController extends BaseController {
 		Assert.notNull(businessConsumer.getSceneId());
 
 		List<Map<String, Object>> list = businessService.queryGroupInfo(locale, businessConsumer);
+
+		for (Map<String, Object> map : list) {
+			long sec = NumberUtil.getLong(map, "sec_diff");
+			String c = DateUtil.convert(sec);
+			map.put("sec_diff", c);
+		}
 
 		double totalConsume = 0;
 

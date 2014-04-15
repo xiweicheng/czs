@@ -101,12 +101,13 @@
 					<div class="field">
 						<label>价格</label> <input placeholder="价格" type="text" name="price">
 					</div>
-					<div class="field">
+					<div class="field"></div>
+					<!-- <div class="field">
 						<label>优惠</label> <input placeholder="优惠" type="text"
 							name="privilege">
 						<div class="ui red pointing above ui label">样例:7折输入 0.7
 							直减10元输入 10</div>
-					</div>
+					</div> -->
 				</div>
 				<div class="two fields">
 					<div class="field">
@@ -139,6 +140,7 @@
 						<label>介绍</label>
 						<textarea name="introduce"></textarea>
 					</div>
+					<div class="field"></div>
 				</div>
 				<div class="two fields">
 					<div class="field">
@@ -146,12 +148,14 @@
 						<img class="rounded ui image" alt="图片"
 							src="../../../resources/img/menu-default.jpg" id="resourceImage">
 					</div>
-					<div class="ui vertical animated button"
-						style="margin-top: 20px; margin-bottom: 20px;"
-						id="select-image-btn">
-						<div class="hidden content">选择图片</div>
-						<div class="visible content">
-							<i class="browser icon"></i>
+					<div class="field">
+						<div class="ui vertical animated button"
+							style="margin-top: 20px; margin-bottom: 20px;"
+							id="select-image-btn">
+							<div class="hidden content">选择图片</div>
+							<div class="visible content">
+								<i class="browser icon"></i>
+							</div>
 						</div>
 					</div>
 				</div>
