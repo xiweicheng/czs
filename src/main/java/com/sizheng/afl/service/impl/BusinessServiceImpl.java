@@ -234,7 +234,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			request.setConsumerId(bean.getFromUserName());
 			request.setDateTime(DateUtil.now());
 			request.setIsDelete(SysConstant.SHORT_FALSE);
-			request.setName("二维码扫描次数受限");
+			request.setName("二维码扫描受限");
 			request.setSceneId(Long.valueOf(qrsceneId));
 			request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
 			request.setType(SysConstant.REQUEST_TYPE_QRCODE_USE_LIMIT);
