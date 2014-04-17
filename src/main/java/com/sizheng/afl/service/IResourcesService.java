@@ -109,4 +109,6 @@ public interface IResourcesService extends IBaseService {
 	 * @return
 	 */
 	boolean exists(Locale locale, Resources resources);
+
+	boolean isLimited(Locale locale, String openId);
 }

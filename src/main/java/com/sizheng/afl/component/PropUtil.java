@@ -78,6 +78,9 @@ public class PropUtil {
 	@Value("#{systemProperties['qrcode.business.max.default']}")
 	private long qrcodeBusinessMaxDefault;
 
+	@Value("#{systemProperties['upload.image.max']}")
+	private long uploadImageMax;
+
 	@Value("#{systemProperties['image.scale.size.mini']}")
 	private int imgScaleSizeMini;
 
@@ -228,6 +231,10 @@ public class PropUtil {
 
 	public int getImgScaleSizeMassive() {
 		return imgScaleSizeMassive;
+	}
+
+	public long getUploadImageMax() {
+		return uploadImageMax;
 	}
 
 }

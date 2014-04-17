@@ -12,6 +12,7 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>二维码购买</title>
 <link rel="stylesheet"
 	href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
 import com.sizheng.afl.pojo.entity.Business;
+import com.sizheng.afl.pojo.entity.Menu;
 
 public class BeanUtilTest {
 
@@ -33,6 +34,22 @@ public class BeanUtilTest {
 		org.apache.commons.beanutils.BeanUtils.copyProperties(business, business2);
 
 		Assert.assertEquals("xxxx", business.getAddress());
+	}
+
+	@Test
+	public void test3() {
+		Menu menu = new Menu();
+		menu.setId(1111111L);
+		menu.setName("name1");
+
+		Menu menu2 = new Menu();
+		menu.setId(2222L);
+		menu.setName("name2");
+		menu.setIntroduce("xxxxxxxx");
+
+		BeanUtil.copyNotEmptyFields(menu, menu2);
+
+		System.out.println();
 	}
 
 }

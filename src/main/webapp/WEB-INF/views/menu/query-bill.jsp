@@ -19,6 +19,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-顾客服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -33,10 +35,12 @@
 	</h4>
 	<div class="ui segment attached">
 		<div class="ui segment">
-			<div class="ui toggle checkbox czsImage">
+			<div class="ui toggle checkbox czsImage"
+				style="margin-top: 5px; margin-bottom: 5px;">
 				<input type="checkbox" name="mode"> <label for="">图文模式</label>
 			</div>
-			<div class="ui toggle checkbox czsGroup">
+			<div class="ui toggle checkbox czsGroup"
+				style="margin-top: 5px; margin-bottom: 5px;">
 				<input type="checkbox" name="mode"
 					<c:if test="${isOwn == '0'}"> checked="checked"</c:if>> <label
 					for="">集体消费</label>
@@ -58,18 +62,26 @@
 			<c:forEach items="${billList}" var="item">
 				<div class="item" id="bill-item-${item.menu_id}"
 					style="min-height: 0px;">
-					<div class="image" style="display: none;">
+					<div class="image" style="display: none;" id="image-div-${item.id}">
 						<img src="" czz-src="../../../${item.path}640/${item.file_name}">
 						<!-- <a
 							class="like ui corner label"> <i class="like icon"></i> -->
 						</a>
 					</div>
 					<div class="content">
-						<div class="name">${item.name}</div>
-						<p class="description" style="display: none;">${item.introduce}</p>
+						<div class="name">${item.name}
+							<div class="ui label" onclick="imageHandler('${item.id}')">
+								<i class="photo icon"></i>
+							</div>
+							<div class="ui label" onclick="introduceHandler('${item.id}')">
+								<i class="comment icon"></i>
+							</div>
+
+						</div>
+						<p class="description" style="display: none;" id="introduce-p-${item.id}">${item.introduce}</p>
 						<div style="margin-top: 10px; margin-bottom: 10px;">
 							<div class="ui red label">
-								<i class="dollar icon"></i> ${item.price}
+								<i class="yen icon"></i> ${item.price}
 							</div>
 							<div class="ui green label">${item.category}</div>
 							<div class="ui blue label">${item.taste}</div>
@@ -165,15 +177,27 @@
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu">
 		<a class="item"
-			href="menu/free/billQuery.do?status=1&isOwn=0&consumerId=${openId}"><i
-			class="icon dollar"></i><span id="bill-total-span">${total}</span></a> <a
+			href="menu/free/billQuery.do?status=1&isOwn=1&consumerId=${openId}"><i
+			class="icon yen"></i><span id="bill-total-span">${total}</span></a> <a
 			class="item" href="menu/free/list4bill.do?openId=${openId}"><i
-			class="icon align justify"></i>我的菜单</a> <a class="item"
+			class="icon align justify"></i>商家菜单</a> <a class="item"
 			href="menu/free/billQuery.do?status=0&isOwn=1&consumerId=${openId}"><i
-			class="icon heart"></i>我的收藏</a>
+			class="icon heart"></i>收藏菜品</a>
 	</div>
 
 	<script type="text/javascript">
+	
+	function imageHandler(id){
+		$('#image-div-' + id + " > img").each(function(){
+			$(this).attr('src', $(this).attr('czz-src'));
+		});
+		$('#image-div-' + id).toggle();
+	}
+	
+	function introduceHandler(id){
+		$('#introduce-p-' + id).toggle();
+	}
+	
 		function billDealHandler(menuId, consumerId, status, cmd, price, privilege) {
 			$.post('menu/free/billDeal.do', {
 				menuId : menuId,

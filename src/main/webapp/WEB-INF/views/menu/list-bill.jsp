@@ -19,6 +19,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-顾客服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -81,7 +83,7 @@
 	<div class="ui stackable items" id="bill-list-ui-stackable-items">
 		<c:forEach items="${menuList}" var="item">
 			<div class="item" style="min-height: 1px;">
-				<div class="image" style="display: none">
+				<div class="image" style="display: none" id="image-div-${item.id}">
 					<img src="" czz-src="../../../${item.path}640/${item.file_name}">
 					<c:if test="${item.status == 1}">
 						<a class="like ui corner label"> <i class="checkmark icon"></i>
@@ -92,11 +94,16 @@
 					</a>
 				</div>
 				<div class="content">
-					<div class="name">${item.name}<div class="floating ui red circular label">${item.order_times}</div></div>
-					<p class="description" style="display: none;">${item.introduce}</p>
+					<div class="name">${item.name}
+					<div class="ui label" onclick="imageHandler('${item.id}')"><i class="photo icon"></i></div>
+						<div class="ui label" onclick="introduceHandler('${item.id}')"><i class="comment icon"></i></div>
+					<div
+							class="floating ui red circular label">${item.order_times}</div>
+					</div>
+					<p class="description" style="display: none;" id="introduce-p-${item.id}">${item.introduce}</p>
 					<div style="margin-top: 10px; margin-bottom: 10px;">
 						<div class="ui red label">
-							<i class="dollar icon"></i> ${item.price}
+							<i class="yen icon"></i> ${item.price}
 						</div>
 						<div class="ui green label">${item.category}</div>
 						<div class="ui blue label">${item.taste}</div>
@@ -105,14 +112,14 @@
 						<div
 							class="positive ui button <c:if test="${item.status == 1 || item.status == 3}">disabled</c:if>"
 							id="confirm-ui-btn-${item.id}"
-							<c:if test="${item.status != 1 && item.status != 3}">onclick="billDealHandler(this, '${item.id}', '${openId}', '1', ${item.price})"</c:if>>
+							<c:if test="${item.status != 1 && item.status != 3}">onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')"</c:if>>
 							<i class="checkmark icon"></i>定了
 						</div>
 						<div class="or"></div>
 						<div
 							class="negative ui button <c:if test="${item.status == 0 || item.status == 1 || item.status == 3}">disabled</c:if>"
 							id="hold-ui-btn-${item.id}"
-							<c:if test="${item.status != 0 && item.status != 1 && item.status != 3}">onclick="billDealHandler(this, '${item.id}', '${openId}', '0')"</c:if>>
+							<c:if test="${item.status != 0 && item.status != 1 && item.status != 3}">onclick="billDealHandler(this, '${item.id}', '${openId}')"</c:if>>
 							<i class="heart empty icon"></i>收藏
 						</div>
 					</div>
@@ -137,19 +144,58 @@
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu">
 		<a class="item"
-			href="menu/free/billQuery.do?status=1&isOwn=0&consumerId=${openId}"><i
-			class="icon dollar"></i><span id="bill-total-span">${total}</span></a> <a
+			href="menu/free/billQuery.do?status=1&isOwn=1&consumerId=${openId}"><i
+			class="icon yen"></i><span id="bill-total-span">${total}</span></a> <a
 			class="item" href="menu/free/list4bill.do?openId=${openId}"><i
-			class="icon align justify"></i>我的菜单</a> <a class="item"
+			class="icon align justify"></i>商家菜单</a> <a class="item"
 			href="menu/free/billQuery.do?status=0&isOwn=1&consumerId=${openId}"><i
-			class="icon heart"></i>我的收藏</a>
+			class="icon heart"></i>收藏菜品</a>
+	</div>
+
+	<div class="ui small modal czsAdd">
+		<i class="close icon"></i>
+		<div class="header">确认提示</div>
+		<div class="content">
+			<div class="ui message" style="text-align: center;">
+				<a class="ui huge purple circular label"><i class="cart icon"></i>
+					<span id="czsCountSpan">1</span></a><a
+					class="ui huge red circular label"><i class="yen icon"></i>
+					<span id="czsTotalSpan"></span></a>
+			</div>
+			<div class="2 fluid ui huge buttons">
+				<div class="negative fluid ui button czsReduce">减一份</div>
+				<div class="or"></div>
+				<div class="positive fluid ui button czsAdd">加一份</div>
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui negative labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui positive right labeled icon button">
+					确认 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<script type="text/javascript">
-		/**
-		 *   Usage:  CurrencyFormatted(12345.678);
-		 *   result: 12345.68
-		 **/
+		var _menuId;
+		var _consumerId;
+		var _price;
+		var _this;
+		
+		function imageHandler(id){
+			$('#image-div-' + id + " > img").each(function(){
+				$(this).attr('src', $(this).attr('czz-src'));
+			});
+			$('#image-div-' + id).toggle();
+		}
+		
+		function introduceHandler(id){
+			$('#introduce-p-' + id).toggle();
+		}
 
 		function format_number(pnumber, decimals) {
 			if (isNaN(pnumber)) {
@@ -190,40 +236,39 @@
 			return result;
 		}
 
-		function billDealHandler(_this, menuId, consumerId, status, price) {
+		function billAddDealHandler(_this, menuId, consumerId, price, name) {
 			if ($(_this).attr('class').indexOf('disabled') > -1) {
 				return;
 			}
-			$
-					.post(
-							'menu/free/billDeal.do',
-							{
-								menuId : menuId,
-								consumerId : consumerId,
-								status : status
-							},
-							function(msg) {
-								if (msg.succeed) {
-									if (status == 1) {
-										$('#confirm-ui-btn-' + menuId).addClass('disabled');
-										$('#hold-ui-btn-' + menuId).addClass('disabled');
-										$(_this)
-												.parent()
-												.next()
-												.append(
-														'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己<div class="detail">1</div></div>');
-										$('.launch.item.czsTotal > span').text(
-												format_number(Number($('.launch.item.czsTotal > span').text())
-														+ Number(price), 2));
 
-									} else if (status == 0) {
-										$('#hold-ui-btn-' + menuId).addClass('disabled');
-									}
+			_menuId = menuId;
+			_consumerId = consumerId;
+			_price = price;
+			_this = _this;
 
-								} else {
-									alert('操作失败!')
-								}
-							});
+			$('.ui.modal.czsAdd > .header').text(name);
+			$('#czsCountSpan').text(1);
+			$('#czsTotalSpan').text(_price, 2);
+			$('.ui.modal.czsAdd').modal('show');
+
+		}
+
+		function billDealHandler(_this, menuId, consumerId) {
+			if ($(_this).attr('class').indexOf('disabled') > -1) {
+				return;
+			}
+
+			$.post('menu/free/billDeal.do', {
+				menuId : menuId,
+				consumerId : consumerId,
+				status : 0
+			}, function(msg) {
+				if (msg.succeed) {
+					$('#hold-ui-btn-' + menuId).addClass('disabled');
+				} else {
+					alert('操作失败!')
+				}
+			});
 		}
 		jQuery(function($) {
 
@@ -232,6 +277,48 @@
 					$('#filter-form').submit();
 				}
 			});
+
+			$('.ui.button.czsReduce').click(function() {
+				var num = Number($('#czsCountSpan').text());
+				if (num > 1) {
+					$('#czsCountSpan').text(num - 1);
+					$('#czsTotalSpan').text(format_number((num - 1) * _price, 2));
+				}
+			});
+			$('.ui.button.czsAdd').click(function() {
+				var num = Number($('#czsCountSpan').text()) + 1;
+				$('#czsCountSpan').text(num);
+				$('#czsTotalSpan').text(format_number(num * _price, 2));
+			});
+
+			$('.ui.modal.czsAdd').modal(
+					{
+						onApprove : function() {
+
+							var copies = Number($('#czsCountSpan').text());
+							$.post('menu/free/billDeal.do', {
+								menuId : _menuId,
+								consumerId : _consumerId,
+								copies : copies,
+								status : 1
+							}, function(msg) {
+								if (msg.succeed) {
+									$('#confirm-ui-btn-' + _menuId).addClass('disabled');
+									$('#hold-ui-btn-' + _menuId).addClass('disabled');
+									$('#confirm-ui-btn-' + _menuId).parent().next().append(
+											'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己<div class="detail">'
+													+ copies + '</div></div>');
+
+									$('#bill-total-span').text(
+											format_number(Number($('#bill-total-span').text()) + Number(_price)
+													* copies, 2))
+
+								} else {
+									alert('操作失败!')
+								}
+							});
+						}
+					});
 
 			$('.ui.checkbox').checkbox(
 					{

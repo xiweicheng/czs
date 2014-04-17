@@ -13,6 +13,8 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
@@ -104,12 +106,7 @@
 						<label>价格</label> <input placeholder="价格" type="text" name="price"
 							value="${menu.price}">
 					</div>
-					<div class="field">
-						<label>优惠</label> <input placeholder="优惠" type="text"
-							name="privilege" value="${menu.privilege}">
-						<div class="ui red pointing above ui label">样例:7折输入 0.7
-							直减10元输入 10</div>
-					</div>
+					<div class="field"></div>
 				</div>
 				<div class="two fields">
 					<div class="field">
@@ -142,15 +139,18 @@
 						<label>介绍</label>
 						<textarea name="introduce">${menu.introduce}</textarea>
 					</div>
+					<div class="field"></div>
 				</div>
 				<div class="two fields">
 					<div class="field">
 						<input type="hidden" name="resourceId" id="resourceId"
 							value="${menu.resourceId}"> <label>图片</label> <img
-							class="rounded ui image" alt="图片" src="../../../${extra_imgPath}"
+							class="rounded ui image" alt="图片"
+							src="../../../${extra_imgPath}640/${extra_imgFileName}"
 							id="resourceImage">
 					</div>
-					<div class="ui vertical animated button" style="margin-top: 20px; margin-bottom: 20px;"
+					<div class="ui vertical animated button"
+						style="margin-top: 20px; margin-bottom: 20px;"
 						id="select-image-btn">
 						<div class="hidden content">选择图片</div>
 						<div class="visible content">

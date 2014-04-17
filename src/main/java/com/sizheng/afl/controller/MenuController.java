@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.controller;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +43,7 @@ import com.sizheng.afl.service.IMenuService;
 import com.sizheng.afl.service.IMenuTasteService;
 import com.sizheng.afl.service.IResourcesService;
 import com.sizheng.afl.service.IUserService;
+import com.sizheng.afl.util.BeanUtil;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
@@ -142,6 +144,10 @@ public class MenuController extends BaseController {
 		menu.setIsDelete(SysConstant.CHECK_ON.equals(isDelete) ? SysConstant.SHORT_TRUE : SysConstant.SHORT_FALSE);
 		menu.setOrderTimes(Long.valueOf(0));
 
+		if (StringUtil.isEmpty(menu.getPrivilege())) {
+			menu.setPrivilege(BigDecimal.ZERO);
+		}
+
 		if (menuService.save(locale, menu)) {
 			return new ResultMsg(true);
 		} else {
@@ -184,7 +190,15 @@ public class MenuController extends BaseController {
 		menu.setDateTime(DateUtil.now());
 		menu.setIsDelete(SysConstant.CHECK_ON.equals(isDelete) ? SysConstant.SHORT_TRUE : SysConstant.SHORT_FALSE);
 
-		if (menuService.update(locale, menu)) {
+		Menu menu3 = menuService.get(Menu.class, menu.getId());
+
+		if (menu3 != null) {
+			BeanUtil.copyNotEmptyFields(menu, menu3);
+		} else {
+			return new ResultMsg(false, new Msg(false, "彩品或被删除,更新失败!"));
+		}
+
+		if (menuService.update(locale, menu3)) {
 			return new ResultMsg(true);
 		} else {
 			return new ResultMsg(false, new Msg(false, "更新失败!"));
@@ -227,6 +241,11 @@ public class MenuController extends BaseController {
 			@RequestParam("image_file") MultipartFile imageFile) {
 
 		logger.debug("菜单图片上传【菜单】");
+
+		if (resourcesService.isLimited(locale, WebUtil.getSessionBusiness(request).getOpenId())) {
+			WebUtil.writeString(response, "上传图片数量达到最大限制,文件上传失败!");
+			return;
+		}
 
 		if (menuService.upload(WebUtil.calcServerBaseUrl(request), WebUtil.getRealPath(request), imageFile, locale,
 				WebUtil.getSessionBusiness(request).getOpenId())) {
@@ -336,6 +355,7 @@ public class MenuController extends BaseController {
 
 			if (resources != null) {
 				model.addAttribute("extra_imgPath", resources.getPath());
+				model.addAttribute("extra_imgFileName", resources.getFileName());
 			}
 		}
 

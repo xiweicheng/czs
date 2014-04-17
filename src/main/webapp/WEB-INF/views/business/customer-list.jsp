@@ -14,6 +14,8 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
@@ -197,25 +199,25 @@
 	</h4>
 	<div class="ui segment attached">
 		<div>
-			<a class="ui purple label czsRequest"
-				href="business/list.do?status=5&interval=${interval}"
+			<a class="ui purple label czsRequest czsStatus"
+				href="business/list.do?status=5&filterOver=${filterOver}&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中
-				${requesting} 人 </a> <a class="ui teal label czsRequestOwn"
-				href="business/list.do?status=3&interval=${interval}"
+				${requesting} 人 </a> <a class="ui teal label czsRequestOwn czsStatus"
+				href="business/list.do?status=3&filterOver=${filterOver}&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 个人结账申请
-				${requestOwn} 人 </a><a class="ui orange label czsRequestGroup"
-				href="business/list.do?status=4&interval=${interval}"
+				${requestOwn} 人 </a><a class="ui orange label czsRequestGroup czsStatus"
+				href="business/list.do?status=4&filterOver=${filterOver}&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 集体结账申请
-				${requestGroup} 人</a> <a class="ui black label"
-				href="business/list.do?status=1&interval=${interval}"
+				${requestGroup} 人</a> <a class="ui black label czsStatus"
+				href="business/list.do?status=1&filterOver=${filterOver}&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人 </a>
-			<a class="ui red label"
-				href="business/list.do?status=0&interval=${interval}"
+			<a class="ui red label czsStatus"
+				href="business/list.do?status=0&filterOver=${filterOver}&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a
-				class="ui green label"
-				href="business/list.do?status=2&interval=${interval}"
+				class="ui green label czsStatus"
+				href="business/list.do?status=2&filterOver=${filterOver}&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled} 人
-			</a><a class="ui blue label total"
+			</a><a class="ui blue label total czsStatus"
 				href="business/list.do?filterOver=${filterOver}&interval=${interval}"
 				style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a>
 		</div>
@@ -322,7 +324,9 @@
 	<!-- 消费信息展示modal -->
 	<div class="ui modal" id="bill-detail-modal">
 		<i class="close icon"></i>
-		<div class="header" id="bill-detail-header">消费详情</div>
+		<div class="header" id="bill-detail-header">
+			消费详情 <a class="ui huge red label"><i class="icon yen"></i> <span></span> </a>
+		</div>
 		<div class="content" style="padding-top: 20px;">
 			<div class="ui segment">
 				<div class="ui toggle checkbox czzImage" style="margin-top: 10px;">
@@ -409,7 +413,7 @@
 			}, function(msg) {
 				if (msg.succeed) {
 					$('#billDetailTpl').tmpl(msg.values).appendTo($('#bill-detail-ui-stackable-items').empty());
-					$('#bill-detail-header').text('消费详情-共' + msg.value + '元')
+					$('#bill-detail-header span').text(msg.value)
 					$('#bill-detail-modal').modal('show');
 				} else {
 					alert('操作失败!')
@@ -429,7 +433,7 @@
 				if (msg.succeed) {
 
 					$("#userTrTpl").tmpl(msg.value).appendTo($("#group-info-tbody").empty());
-					$('#total-consume-ui-label').html('总消费 <b>' + msg.values[0] + '</b>元');
+					$('#total-consume-ui-label').html('消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.values[0] + '</a>');
 					$('#group-info-show-modal').modal('show');
 				} else {
 					alert(msg.msg.detail);
@@ -464,7 +468,7 @@
 				sceneId : _scene_id
 			}, function(msg) {
 				if (msg.succeed) {
-					$('#bill-total-p').html('消费金额:<b>' + msg.value + '</b>元');
+					$('#bill-total-p').html('消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.value + '</a>');
 					$('#confirm-ui-modal').modal('show');
 				} else {
 					alert('查询消费金额失败!');
@@ -597,18 +601,27 @@
 
 			$('.ui.toggle.checkbox.czsFilterOver').checkbox({
 				onEnable : function() {
-					if (!!_interval) {
+					$('.ui.label.czsStatus').each(function() {
+						$(this).attr('href', $(this).attr('href').replace('filterOver=0', 'filterOver=1'));
+					});
+
+					//window.location = window.location.href.replace('filterOver=0', 'filterOver=1');
+					/* if (!!_interval) {
 						$('.ui.label.total').attr('href', "business/list.do?filterOver=1&interval=" + _interval);
 					} else {
 						$('.ui.label.total').attr('href', "business/list.do?filterOver=1");
-					}
+					} */
 				},
 				onDisable : function() {
-					if (!!_interval) {
+					$('.ui.label.czsStatus').each(function() {
+						$(this).attr('href', $(this).attr('href').replace('filterOver=1', 'filterOver=0'));
+					});
+					//window.location = window.location.href.replace('filterOver=1', 'filterOver=0');
+					/* if (!!_interval) {
 						$('.ui.label.total').attr('href', "business/list.do?filterOver=0&interval=" + _interval);
 					} else {
 						$('.ui.label.total').attr('href', "business/list.do?filterOver=0");
-					}
+					} */
 				}
 			});
 
@@ -678,7 +691,7 @@
 								if (msg.succeed) {
 									$('#billDetailTpl').tmpl(msg.values).appendTo(
 											$('#bill-detail-ui-stackable-items').empty());
-									$('#bill-detail-header').text('消费详情-共' + msg.value + '元')
+									$('#bill-detail-header span').text(msg.value)
 
 									if ($('#mode-ui-checkbox')[0].checked) {
 										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end()
@@ -701,7 +714,7 @@
 								if (msg.succeed) {
 									$('#billDetailTpl').tmpl(msg.values).appendTo(
 											$('#bill-detail-ui-stackable-items').empty());
-									$('#bill-detail-header').text('消费详情-共' + msg.value + '元');
+									$('#bill-detail-header span').text(msg.value);
 									if ($('#mode-ui-checkbox')[0].checked) {
 										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end()
 												.find('img').each(function() {

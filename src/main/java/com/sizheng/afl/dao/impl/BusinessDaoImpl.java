@@ -260,6 +260,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	request.`status` = 1\n");
 		sqlSb.append("AND request.is_delete = 0\n");
 		sqlSb.append("AND request.business_id = ?\n");
+		sqlSb.append("ORDER BY request.date_time DESC\n");
 
 		return getMapList(sqlSb, openId);
 	}

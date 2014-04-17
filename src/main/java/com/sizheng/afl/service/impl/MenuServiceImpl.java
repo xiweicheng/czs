@@ -271,6 +271,12 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 						menuBill3.setDateTime(DateUtil.now());
 						menuBill3.setStatus(menuBill.getStatus());
 
+						if (StringUtil.isEmpty(menuBill.getCopies())) {
+							menuBill3.setCopies(1L);
+						} else {
+							menuBill3.setCopies(menuBill.getCopies());
+						}
+
 						hibernateTemplate.update(menuBill3);
 						return true;
 					}
@@ -295,9 +301,21 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 						return true;
 					}
 				} else if (menuBill3.getStatus() == 2) {
-					if (menuBill.getStatus() == 0 || menuBill.getStatus() == 1) {
+					if (menuBill.getStatus() == 0) {
 						menuBill3.setDateTime(DateUtil.now());
 						menuBill3.setStatus(menuBill.getStatus());
+
+						hibernateTemplate.update(menuBill3);
+						return true;
+					} else if (menuBill.getStatus() == 1) {
+						menuBill3.setDateTime(DateUtil.now());
+						menuBill3.setStatus(menuBill.getStatus());
+
+						if (StringUtil.isEmpty(menuBill.getCopies())) {
+							menuBill3.setCopies(1L);
+						} else {
+							menuBill3.setCopies(menuBill.getCopies());
+						}
 
 						hibernateTemplate.update(menuBill3);
 						return true;
@@ -307,7 +325,10 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 			} else {
 				menuBill.setConsumeCode(((User) list.get(0)).getConsumeCode());
 				menuBill.setDateTime(DateUtil.now());
-				menuBill.setCopies(1L);
+
+				if (StringUtil.isEmpty(menuBill.getCopies())) {
+					menuBill.setCopies(1L);
+				}
 
 				BusinessConsumer businessConsumer = new BusinessConsumer();
 				businessConsumer.setConsumeCode(((User) list.get(0)).getConsumeCode());
@@ -356,6 +377,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 			Menu menu = hibernateTemplate.get(Menu.class, menuBill2.getMenuId());
 
 			if (menu != null) {
+				long orderTimes = StringUtil.isEmpty(menu.getOrderTimes()) ? 0L : menu.getOrderTimes();
 				menu.setOrderTimes(menu.getOrderTimes() + 1);
 				hibernateTemplate.update(menu);
 			}
