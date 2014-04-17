@@ -319,6 +319,7 @@
 						<th class="">性别</th>
 						<th class="">消费次数</th>
 						<th class="sorted descending">最后消费时间</th>
+						<th class="">距今</th>
 					</tr>
 				</thead>
 				<tbody id="group-info-tbody">
