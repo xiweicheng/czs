@@ -84,7 +84,7 @@
 		<c:forEach items="${menuList}" var="item">
 			<div class="item" style="min-height: 1px;">
 				<div class="image" style="display: none" id="image-div-${item.id}">
-					<img src="" czz-src="../../../${item.path}640/${item.file_name}">
+					<img src="" czz-src="../../../${item.path}640/${item.file_name}" onclick="imageHandler('${item.id}')">
 					<c:if test="${item.status == 1}">
 						<a class="like ui corner label"> <i class="checkmark icon"></i>
 					</c:if>
@@ -100,7 +100,7 @@
 					<div
 							class="floating ui red circular label">${item.order_times}</div>
 					</div>
-					<p class="description" style="display: none;" id="introduce-p-${item.id}">${item.introduce}</p>
+					<p class="description" style="display: none;" id="introduce-p-${item.id}" onclick="introduceHandler('${item.id}')">${item.introduce}</p>
 					<div style="margin-top: 10px; margin-bottom: 10px;">
 						<div class="ui red label">
 							<i class="yen icon"></i> ${item.price}
