@@ -24,7 +24,12 @@
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tmpl.min.js"
 	charset="utf-8"></script>
-
+<script type="text/javascript">
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.call('hideToolbar');
+		WeixinJSBridge.call('hideOptionMenu');
+	});
+</script>
 <script id="imageItemTpl" type="text/x-jquery-tmpl">
 <div class="item" style="min-height: 0px;"
 	onclick="selectImage(this, '{{html id}}', '{{html path}}640/{{html fileName}}')">

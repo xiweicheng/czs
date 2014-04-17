@@ -13,7 +13,8 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
@@ -23,6 +24,12 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+<script type="text/javascript">
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.call('hideToolbar');
+		WeixinJSBridge.call('hideOptionMenu');
+	});
+</script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 	<!-- 侧边栏 -->
@@ -135,13 +142,12 @@
 	</div>
 
 	<script type="text/javascript">
-	
 		var _id;
 		function deleteRoleHandler(id) {
 			_id = id;
 			$('.ui.modal.czsDelete').modal('show');
 		}
-		
+
 		jQuery(function($) {
 
 			$('table').tablesort().data('tablesort');

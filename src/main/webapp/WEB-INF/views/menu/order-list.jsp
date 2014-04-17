@@ -25,7 +25,12 @@
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tmpl.min.js"
 	charset="utf-8"></script>
-
+<script type="text/javascript">
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.call('hideToolbar');
+		WeixinJSBridge.call('hideOptionMenu');
+	});
+</script>
 <script id="joinTrTpl" type="text/x-jquery-tmpl">
 <tr id="item-tr-join-{{html id}}" class="item-tr-{{html menu_id}}">
 <input type="hidden" name="id" value="{{html id}}">

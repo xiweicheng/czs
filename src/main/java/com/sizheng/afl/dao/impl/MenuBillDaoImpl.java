@@ -46,6 +46,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	menu_taste.`name` AS taste,\n");
 		sqlSb.append("	resources.path,\n");
 		sqlSb.append("	resources.file_name,\n");
+		sqlSb.append("	subscriber.nickname,\n");
 		sqlSb.append("	menu.price,\n");
 		sqlSb.append("	menu.privilege\n");
 		sqlSb.append("FROM\n");
@@ -54,6 +55,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("LEFT JOIN menu_category ON menu.category_id = menu_category.id\n");
 		sqlSb.append("LEFT JOIN menu_taste ON menu.taste_id = menu_taste.id\n");
 		sqlSb.append("LEFT JOIN resources ON menu.resource_id = resources.id\n");
+		sqlSb.append("LEFT JOIN subscriber ON menu_bill.consumer_id = subscriber.user_name\n");
 		sqlSb.append("WHERE\n");
 
 		if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(menuBill.getStatus())) {

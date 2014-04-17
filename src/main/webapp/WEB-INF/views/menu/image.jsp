@@ -24,6 +24,12 @@
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/upload/js/script.js" charset="utf-8"></script>
+<script type="text/javascript">
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.call('hideToolbar');
+		WeixinJSBridge.call('hideOptionMenu');
+	});
+</script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 	<!-- 侧边栏 -->

@@ -19,7 +19,7 @@
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
+<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tablesort.min.js"
 	charset="utf-8"></script>
@@ -27,7 +27,14 @@
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tmpl.min.js"
 	charset="utf-8"></script>
-
+<script src="../../../resources/js/lib/jquery.jqprint-0.3.js"
+	charset="utf-8"></script>
+<script type="text/javascript">
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.call('hideToolbar');
+		WeixinJSBridge.call('hideOptionMenu');
+	});
+</script>
 <script id="userTrTpl" type="text/x-jquery-tmpl">
 <tr>
 	<td class="" style="color:red; font-weight: bold;">{{html consume}}</td>
@@ -38,6 +45,20 @@
 	<td class="">{{html last_consume_time}}</td>
 	<td class="">{{html sec_diff}}</td>
 </tr>
+</script>
+<script id="menuItemPrintTpl" type="text/x-jquery-tmpl">
+<div class="item">
+	<div class="content">
+		<div class="header">{{html name}} (￥{{html price}})</div>
+			{{if menuBill}}
+				{{each menuBill}}
+					<span>{{html $value.nickname}}({{html $value.copies}}份)</span>
+				{{/each}}
+			{{else}}
+				<span>{{html nickname}}({{html copies}}份)</span>
+			{{/if}}
+	</div>
+</div>
 </script>
 <script id="requestItemTpl" type="text/x-jquery-tmpl">
 <div class="item" id="request-item-{{html id}}">
@@ -63,7 +84,7 @@
 		<div class="name">{{html name}}</div>
 		<p class="description" style="display: none;">{{html introduce}}</p>
 		<div style="margin-top:10px;">
-			<div class="ui red label"><i class="dollar icon"></i> {{html price}}</div>
+			<div class="ui red label"><i class="yen icon"></i> {{html price}}</div>
 			<div class="ui green label">{{html category}}</div>
 			<div class="ui blue label">{{html taste}}</div>
 		</div>
@@ -325,7 +346,8 @@
 	<div class="ui modal" id="bill-detail-modal">
 		<i class="close icon"></i>
 		<div class="header" id="bill-detail-header">
-			消费详情 <a class="ui huge red label"><i class="icon yen"></i> <span></span> </a>
+			消费详情 <a class="ui huge red label"><i class="icon yen"></i> <span></span>
+			</a>
 		</div>
 		<div class="content" style="padding-top: 20px;">
 			<div class="ui segment">
@@ -336,6 +358,18 @@
 				<div class="ui toggle checkbox czzGroup" style="margin-top: 10px;">
 					<input type="checkbox" name="mode" id="group-ui-checkbox">
 					<label for="">集体消费</label>
+				</div>
+
+				<div class="ui green vertical animated button czsPrint">
+					<div class="hidden content">打印个人账单</div>
+					<div class="visible content">
+						<i class="print icon"></i>账单打印
+					</div>
+				</div>
+
+				<div class="ui red animated fade button czsTakeBill" czs-status="3">
+					<div class="visible content">￥12.99</div>
+					<div class="hidden content">个人结账</div>
 				</div>
 			</div>
 			<div class="ui stackable items" id="bill-detail-ui-stackable-items"
@@ -393,6 +427,11 @@
 		</div>
 	</div>
 
+	<!-- 消费账单打印 -->
+	<div style="display: none;">
+		<div class="ui bulleted list menuList"></div>
+	</div>
+
 	<script type="text/javascript">
 		var _status;
 		var _consume_code;
@@ -413,7 +452,9 @@
 			}, function(msg) {
 				if (msg.succeed) {
 					$('#billDetailTpl').tmpl(msg.values).appendTo($('#bill-detail-ui-stackable-items').empty());
+					$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
 					$('#bill-detail-header span').text(msg.value)
+					$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
 					$('#bill-detail-modal').modal('show');
 				} else {
 					alert('操作失败!')
@@ -433,7 +474,8 @@
 				if (msg.succeed) {
 
 					$("#userTrTpl").tmpl(msg.value).appendTo($("#group-info-tbody").empty());
-					$('#total-consume-ui-label').html('消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.values[0] + '</a>');
+					$('#total-consume-ui-label').html(
+							'消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.values[0] + '</a>');
 					$('#group-info-show-modal').modal('show');
 				} else {
 					alert(msg.msg.detail);
@@ -468,7 +510,8 @@
 				sceneId : _scene_id
 			}, function(msg) {
 				if (msg.succeed) {
-					$('#bill-total-p').html('消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.value + '</a>');
+					$('#bill-total-p').html(
+							'消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.value + '</a>');
 					$('#confirm-ui-modal').modal('show');
 				} else {
 					alert('查询消费金额失败!');
@@ -541,6 +584,7 @@
 						if (msg.succeed) {
 							$('#item-tr-' + _consumer_id).remove();
 							$('#group-info-show-modal').modal('hide');
+							$('#bill-detail-modal').modal('hide');
 							return true;
 						} else {
 							alert('结账失败!')
@@ -682,6 +726,9 @@
 			$('.ui.toggle.checkbox.czzGroup').checkbox(
 					{
 						onEnable : function() {
+							$('.ui.button.czsPrint > .hidden.content').text('打印集体账单');
+							$('.ui.button.czsTakeBill > .hidden.content').text('集体结账');
+							$('.ui.button.czsTakeBill').attr('czs-status', '4');
 							$.post('user/billDetail.do', {
 								type : 1,//集体消费查询
 								consumeCode : _consume_code,
@@ -692,6 +739,7 @@
 									$('#billDetailTpl').tmpl(msg.values).appendTo(
 											$('#bill-detail-ui-stackable-items').empty());
 									$('#bill-detail-header span').text(msg.value)
+									$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
 
 									if ($('#mode-ui-checkbox')[0].checked) {
 										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end()
@@ -705,6 +753,9 @@
 							});
 						},
 						onDisable : function() {
+							$('.ui.button.czsPrint > .hidden.content').text('打印个人账单');
+							$('.ui.button.czsTakeBill > .hidden.content').text('个人结账');
+							$('.ui.button.czsTakeBill').attr('czs-status', '3');
 							$.post('user/billDetail.do', {
 								type : 0,//个人消费查询
 								consumeCode : _consume_code,
@@ -715,6 +766,7 @@
 									$('#billDetailTpl').tmpl(msg.values).appendTo(
 											$('#bill-detail-ui-stackable-items').empty());
 									$('#bill-detail-header span').text(msg.value);
+									$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
 									if ($('#mode-ui-checkbox')[0].checked) {
 										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end()
 												.find('img').each(function() {
@@ -776,6 +828,13 @@
 						$('#refresh-ui-toggle-checkbox > label').show();
 					}
 				}
+			});
+
+			$('.ui.button.czsPrint').click(function() {
+				$('.ui.list.menuList').jqprint();
+			});
+			$('.ui.button.czsTakeBill').click(function() {
+				checkoutHandler($(this).attr('czs-status'), _consume_code, _scene_id, _consumer_id);
 			});
 
 		});
