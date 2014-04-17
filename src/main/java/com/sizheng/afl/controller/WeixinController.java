@@ -106,7 +106,7 @@ public class WeixinController extends BaseController {
 					: bean.getMsgId();
 
 			if (set.contains(key)) {
-				logger.debug("消息重读,key:" + key);
+				logger.debug("消息重复,key:" + key);
 				WebUtil.writeString(response, StringUtil.EMPTY);
 				return;
 			} else {

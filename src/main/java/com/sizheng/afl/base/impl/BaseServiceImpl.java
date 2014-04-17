@@ -64,6 +64,13 @@ public abstract class BaseServiceImpl implements IBaseService {
 		return hibernateTemplate.findByExample(exampleEntity);
 	}
 
+	@Override
+	public Object findOneByExample(Object example) {
+		List<?> list = hibernateTemplate.findByExample(example);
+
+		return list.size() > 0 ? list.get(0) : null;
+	}
+
 	/**
 	 * 当为false时抛出运行时异常.
 	 * 
@@ -78,7 +85,6 @@ public abstract class BaseServiceImpl implements IBaseService {
 			throw new ServiceRuntimeException(exMsg);
 		}
 	}
-	
 
 	/**
 	 * 当为真时抛出运行时异常.

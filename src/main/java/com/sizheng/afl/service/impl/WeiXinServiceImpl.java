@@ -41,6 +41,7 @@ import com.sizheng.afl.service.IWeiXinService;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
+import com.sizheng.afl.util.ThreadUtil;
 
 /**
  * 【微信】业务逻辑实现.
@@ -214,7 +215,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 	}
 
 	@Override
-	public String click(WeiXinBaseMsg bean, Locale locale) {
+	public String click(final WeiXinBaseMsg bean, final Locale locale) {
 		logger.debug("[业务逻辑层]菜单单击事件");
 
 		// 菜单项对应的键值
@@ -336,7 +337,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 			if (list.size() > 0) {
 
-				String consumeCode = ((User) list.get(0)).getConsumeCode();
+				final String consumeCode = ((User) list.get(0)).getConsumeCode();
 
 				if (!StringUtil.isEmpty(consumeCode)) {
 
@@ -350,71 +351,78 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 						com.sizheng.afl.pojo.entity.Service service = new com.sizheng.afl.pojo.entity.Service();
 
-						BusinessConsumer businessConsumer2 = (BusinessConsumer) list2.get(0);
+						final BusinessConsumer businessConsumer2 = (BusinessConsumer) list2.get(0);
 
-						Request request = new Request();
-						request.setBusinessId(businessConsumer2.getBusinessId());
-						request.setConsumeCode(consumeCode);
-						request.setConsumerId(bean.getFromUserName());
-						request.setDateTime(DateUtil.now());
-						request.setIsDelete(SysConstant.SHORT_FALSE);
-						request.setName("呼叫服务请求");
-						request.setSceneId(businessConsumer2.getSceneId());
-						request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
-						request.setType(SysConstant.REQUEST_TYPE_SERVICE_CALL);
+						ThreadUtil.exec(new Runnable() {
 
-						hibernateTemplate.save(request);
+							@Override
+							public void run() {
+								Request request = new Request();
+								request.setBusinessId(businessConsumer2.getBusinessId());
+								request.setConsumeCode(consumeCode);
+								request.setConsumerId(bean.getFromUserName());
+								request.setDateTime(DateUtil.now());
+								request.setIsDelete(SysConstant.SHORT_FALSE);
+								request.setName("呼叫服务请求");
+								request.setSceneId(businessConsumer2.getSceneId());
+								request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
+								request.setType(SysConstant.REQUEST_TYPE_SERVICE_CALL);
+
+								hibernateTemplate.save(request);
+							}
+						});
 
 						service.setBusinessId(businessConsumer2.getBusinessId());
 						service.setConsumerId(bean.getFromUserName());
 						service.setType(SysConstant.SERVICE_TYPE_CALL);
 						service.setIsDelete(SysConstant.SHORT_FALSE);
+						service.setStatus(SysConstant.SERVICE_STATUS_ONGOING);
 
-						List list3 = hibernateTemplate.findByExample(service);
-
-						if (list3.size() > 0) {
-							com.sizheng.afl.pojo.entity.Service service2 = (com.sizheng.afl.pojo.entity.Service) list3
-									.get(0);
-							if (!SysConstant.SERVICE_STATUS_ACCEPT.equals(service2.getStatus())) {
-								return "亲爱的顾客上帝,有点繁忙啊,我们马上哈,请稍后...";
-							}
+						if (findOneByExample(service) != null) {
+							return "亲爱的顾客上帝,有点繁忙啊,我们马上哈,请稍后...";
 						}
 
 						service.setDateTime(DateUtil.now());
 						service.setStatus(SysConstant.SERVICE_STATUS_ONGOING);
-						Serializable id = hibernateTemplate.save(service);
+						final Serializable id = hibernateTemplate.save(service);
 
-						String userName = null;
-						String location = null;
+						ThreadUtil.exec(new Runnable() {
 
-						// 获取呼叫服务顾客信息.
-						List<Map<String, Object>> userInfo = userService.getInfo(locale, bean.getFromUserName());
+							@Override
+							public void run() {
+								String userName = null;
+								String location = null;
 
-						if (userInfo.size() > 0) {
-							Map<String, Object> map = userInfo.get(0);
-							userName = StringUtil.isEmpty(map.get("nickname")) ? bean.getFromUserName() : StringUtil
-									.getNotNullString(map, "nickname");
-							location = StringUtil.getNotNullString(map, "description");
-						}
+								// 获取呼叫服务顾客信息.
+								List<Map<String, Object>> userInfo = userService.getInfo(locale, bean.getFromUserName());
 
-						// 通知服务人员.
-						BusinessRole businessRole = new BusinessRole();
-						businessRole.setBusinessId(businessConsumer2.getBusinessId());
-						businessRole.setIsDelete(SysConstant.SHORT_FALSE);
-						businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+								if (userInfo.size() > 0) {
+									Map<String, Object> map = userInfo.get(0);
+									userName = StringUtil.isEmpty(map.get("nickname")) ? bean.getFromUserName()
+											: StringUtil.getNotNullString(map, "nickname");
+									location = StringUtil.getNotNullString(map, "description");
+								}
 
-						List list4 = hibernateTemplate.findByExample(businessRole);
+								// 通知服务人员.
+								BusinessRole businessRole = new BusinessRole();
+								businessRole.setBusinessId(businessConsumer2.getBusinessId());
+								businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+								businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
 
-						for (Object object : list4) {
-							String openId = ((BusinessRole) object).getOpenId();
-							String sendMsg = StringUtil
-									.replace(
-											"顾客[{?1}]呼叫服务\n位置:{?2}\n\n<a href='{?3}/business/free/acceptServiceReq.do?id={?4}&openId={?5}'>[点击此]接受该服务请求</a>",
-											userName, location, propUtil.getRedirectUrl(), id, openId);
-							if (!weiXinApiInvoker.sendServiceMsg(openId, sendMsg)) {
-								logger.error("客服消息通知服务人员失败!");
+								List list4 = hibernateTemplate.findByExample(businessRole);
+
+								for (Object object : list4) {
+									String openId = ((BusinessRole) object).getOpenId();
+									String sendMsg = StringUtil
+											.replace(
+													"顾客[{?1}]呼叫服务\n位置:{?2}\n\n<a href='{?3}/business/free/acceptServiceReq.do?id={?4}&openId={?5}'>[点击此]接受该服务请求</a>",
+													userName, location, propUtil.getRedirectUrl(), id, openId);
+									if (!weiXinApiInvoker.sendServiceMsg(openId, sendMsg)) {
+										logger.error("客服消息通知服务人员失败! openId:" + openId);
+									}
+								}
 							}
-						}
+						});
 
 						return "服务请求已经发出,等待处理,请稍后...";
 					} else {

@@ -30,4 +30,6 @@ public interface IBaseService {
 
 	List<?> load(Object exampleEntity);
 
+	Object findOneByExample(Object example);
+
 }
