@@ -33,7 +33,7 @@
 
 	<h4 class="ui top attached header" style="margin-top: 44px;">
 		我的菜单
-		<div class="ui toggle checkbox" style="margin-left: 10px;">
+		<div class="ui checkbox" style="margin-left: 10px; float: right;">
 			<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
 				for="">图文模式</label>
 		</div>
@@ -49,7 +49,7 @@
 				<div class="default text">分类</div>
 				<i class="dropdown icon"></i>
 				<div class="menu">
-					<div class="item" data-value="-1">全部</div>
+					<div class="item" data-value="-1">全部分类</div>
 					<c:forEach items="${categoryList }" var="item">
 						<div class="item" data-value="${item.id }">${item.name }</div>
 					</c:forEach>
@@ -60,7 +60,7 @@
 				<div class="default text">口味</div>
 				<i class="dropdown icon"></i>
 				<div class="menu">
-					<div class="item" data-value="-1">全部</div>
+					<div class="item" data-value="-1">全部口味</div>
 					<c:forEach items="${tasteList }" var="item">
 						<div class="item" data-value="${item.id }">${item.name }</div>
 					</c:forEach>
@@ -71,7 +71,7 @@
 				<div class="default text">排序</div>
 				<i class="dropdown icon"></i>
 				<div class="menu">
-					<div class="item" data-value="-1">随机</div>
+					<div class="item" data-value="-1">默认排序</div>
 					<div class="item" data-value="1">价格升序</div>
 					<div class="item" data-value="2">价格降序</div>
 					<div class="item" data-value="3">点击人气</div>
@@ -80,11 +80,92 @@
 		</form>
 	</div>
 
-	<div class="ui stackable items" id="bill-list-ui-stackable-items">
+	<div class="ui left aligned one column grid" style="padding-top:20px;">
+		<div class="row">
+			<div class="column">
+				<div class="ui vertical fluid menu">
+					<c:forEach items="${menuList}" var="item">
+						<div class="ui segment item">
+							<div class="image" style="display: none; margin-bottom: 10px;"
+								id="image-div-${item.id}">
+								<img style="width: 100%;" src=""
+									czz-src="../../../${item.path}640/${item.file_name}"
+									onclick="imageHandler('${item.id}')">
+								<c:if test="${item.status == 1}">
+									<a class="like ui corner label"> <i class="checkmark icon"></i>
+								</c:if>
+								<c:if test="${item.status == 0}">
+									<a class="like ui corner label"> <i
+										class="heart empty icon"></i>
+								</c:if>
+								</a>
+							</div>
+							<div class="content">
+								<div>
+									<span class="name">${item.name}</span>
+									<div class="ui label" style="float: right;">${item.order_times}</div>
+
+									<div class="ui huge label" onclick="imageHandler('${item.id}')">
+										<i class="photo icon"></i>
+									</div>
+									<div class="ui huge label"
+										onclick="introduceHandler('${item.id}')">
+										<i class="comment icon"></i>
+									</div>
+									<div style="clear: both;"></div>
+								</div>
+
+								<p class="description" style="display: none;"
+									id="introduce-p-${item.id}"
+									onclick="introduceHandler('${item.id}')">${item.introduce}</p>
+								<div class="ui divider"></div>
+								<div style="margin-top: 10px; margin-bottom: 10px;">
+									<div class="ui green label">${item.category}</div>
+									<div class="ui blue label">${item.taste}</div>
+								</div>
+								<div class="ui divider"></div>
+								<div class="2 fluid ui buttons">
+									<div
+										class="positive ui button <c:if test="${item.status == 1 || item.status == 3}">disabled</c:if>"
+										id="confirm-ui-btn-${item.id}"
+										<c:if test="${item.status != 1 && item.status != 3}">onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')"</c:if>>
+										<i class="yen icon"></i>${item.price}
+									</div>
+									<div class="or"></div>
+									<div
+										class="negative ui button <c:if test="${item.status == 0 || item.status == 1 || item.status == 3}">disabled</c:if>"
+										id="hold-ui-btn-${item.id}"
+										<c:if test="${item.status != 0 && item.status != 1 && item.status != 3}">onclick="billDealHandler(this, '${item.id}', '${openId}')"</c:if>>
+										<i class="heart empty icon"></i>收藏
+									</div>
+								</div>
+
+								<div style="margin-top: 10px;" class="czsCopies">
+									<c:forEach items="${item.menuBill}" var="item2">
+										<c:if test="${item2.status == 1 || item2.status == 3}">
+											<div class="ui label"
+												style="margin-top: 5px; margin-bottom: 5px;">
+												<c:if test="${item.consumer_id == item2.consumer_id}">自己</c:if>
+												<c:if test="${item.consumer_id != item2.consumer_id}">${item2.nickname}</c:if>
+												<div class="detail">${item2.copies}</div>
+											</div>
+										</c:if>
+									</c:forEach>
+								</div>
+							</div>
+						</div>
+					</c:forEach>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<%-- <div class="ui one items" id="bill-list-ui-stackable-items">
 		<c:forEach items="${menuList}" var="item">
 			<div class="item" style="min-height: 1px;">
 				<div class="image" style="display: none" id="image-div-${item.id}">
-					<img src="" czz-src="../../../${item.path}640/${item.file_name}" onclick="imageHandler('${item.id}')">
+					<img src="" czz-src="../../../${item.path}640/${item.file_name}"
+						onclick="imageHandler('${item.id}')">
 					<c:if test="${item.status == 1}">
 						<a class="like ui corner label"> <i class="checkmark icon"></i>
 					</c:if>
@@ -95,52 +176,56 @@
 				</div>
 				<div class="content">
 					<div class="name">${item.name}
-					<div class="ui label" onclick="imageHandler('${item.id}')"><i class="photo icon"></i></div>
-						<div class="ui label" onclick="introduceHandler('${item.id}')"><i class="comment icon"></i></div>
-					<div
-							class="floating ui red circular label">${item.order_times}</div>
-					</div>
-					<p class="description" style="display: none;" id="introduce-p-${item.id}" onclick="introduceHandler('${item.id}')">${item.introduce}</p>
-					<div style="margin-top: 10px; margin-bottom: 10px;">
-						<div class="ui red label">
-							<i class="yen icon"></i> ${item.price}
+						<div class="meta">${item.order_times}</div>
+						<div class="ui label" onclick="imageHandler('${item.id}')">
+							<i class="photo icon"></i>
 						</div>
-						<div class="ui green label">${item.category}</div>
-						<div class="ui blue label">${item.taste}</div>
-					</div>
-					<div class="2 fluid ui buttons">
-						<div
-							class="positive ui button <c:if test="${item.status == 1 || item.status == 3}">disabled</c:if>"
-							id="confirm-ui-btn-${item.id}"
-							<c:if test="${item.status != 1 && item.status != 3}">onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')"</c:if>>
-							<i class="checkmark icon"></i>定了
+						<div class="ui label" onclick="introduceHandler('${item.id}')">
+							<i class="comment icon"></i>
 						</div>
-						<div class="or"></div>
-						<div
-							class="negative ui button <c:if test="${item.status == 0 || item.status == 1 || item.status == 3}">disabled</c:if>"
-							id="hold-ui-btn-${item.id}"
-							<c:if test="${item.status != 0 && item.status != 1 && item.status != 3}">onclick="billDealHandler(this, '${item.id}', '${openId}')"</c:if>>
-							<i class="heart empty icon"></i>收藏
+						<p class="description" style="display: none;"
+							id="introduce-p-${item.id}"
+							onclick="introduceHandler('${item.id}')">${item.introduce}</p>
+						<div style="margin-top: 10px; margin-bottom: 10px;">
+							<div class="ui red label">
+								<i class="yen icon"></i> ${item.price}
+							</div>
+							<div class="ui green label">${item.category}</div>
+							<div class="ui blue label">${item.taste}</div>
 						</div>
-					</div>
-					<div style="margin-top: 10px;" class="czsCopies">
-						<c:forEach items="${item.menuBill}" var="item2">
-							<c:if test="${item2.status == 1 || item2.status == 3}">
-								<div class="ui label"
-									style="margin-top: 5px; margin-bottom: 5px;">
-									<c:if test="${item.consumer_id == item2.consumer_id}">自己</c:if>
-									<c:if test="${item.consumer_id != item2.consumer_id}">${item2.nickname}</c:if>
-									<div class="detail">${item2.copies}</div>
-								</div>
-							</c:if>
-						</c:forEach>
+						<div class="2 fluid ui buttons">
+							<div
+								class="positive ui button <c:if test="${item.status == 1 || item.status == 3}">disabled</c:if>"
+								id="confirm-ui-btn-${item.id}"
+								<c:if test="${item.status != 1 && item.status != 3}">onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')"</c:if>>
+								<i class="checkmark icon"></i>定了
+							</div>
+							<div class="or"></div>
+							<div
+								class="negative ui button <c:if test="${item.status == 0 || item.status == 1 || item.status == 3}">disabled</c:if>"
+								id="hold-ui-btn-${item.id}"
+								<c:if test="${item.status != 0 && item.status != 1 && item.status != 3}">onclick="billDealHandler(this, '${item.id}', '${openId}')"</c:if>>
+								<i class="heart empty icon"></i>收藏
+							</div>
+						</div>
+						<div style="margin-top: 10px;" class="czsCopies">
+							<c:forEach items="${item.menuBill}" var="item2">
+								<c:if test="${item2.status == 1 || item2.status == 3}">
+									<div class="ui label"
+										style="margin-top: 5px; margin-bottom: 5px;">
+										<c:if test="${item.consumer_id == item2.consumer_id}">自己</c:if>
+										<c:if test="${item.consumer_id != item2.consumer_id}">${item2.nickname}</c:if>
+										<div class="detail">${item2.copies}</div>
+									</div>
+								</c:if>
+							</c:forEach>
+						</div>
 					</div>
 				</div>
-			</div>
 		</c:forEach>
-	</div>
+	</div> --%>
 
-	<div style="height: 44px;"></div>
+	<div style="height: 64px;"></div>
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu">
 		<a class="item"
@@ -159,8 +244,8 @@
 			<div class="ui message" style="text-align: center;">
 				<a class="ui huge purple circular label"><i class="cart icon"></i>
 					<span id="czsCountSpan">1</span></a><a
-					class="ui huge red circular label"><i class="yen icon"></i>
-					<span id="czsTotalSpan"></span></a>
+					class="ui huge red circular label"><i class="yen icon"></i> <span
+					id="czsTotalSpan"></span></a>
 			</div>
 			<div class="2 fluid ui huge buttons">
 				<div class="negative fluid ui button czsReduce">减一份</div>
@@ -185,15 +270,15 @@
 		var _consumerId;
 		var _price;
 		var _this;
-		
-		function imageHandler(id){
-			$('#image-div-' + id + " > img").each(function(){
+
+		function imageHandler(id) {
+			$('#image-div-' + id + " > img").each(function() {
 				$(this).attr('src', $(this).attr('czz-src'));
 			});
 			$('#image-div-' + id).toggle();
 		}
-		
-		function introduceHandler(id){
+
+		function introduceHandler(id) {
 			$('#introduce-p-' + id).toggle();
 		}
 
