@@ -189,9 +189,10 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode, String order) {
+	public List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode, String order,
+			String consumerId) {
 
-		List<Map<String, Object>> list = menuDao.query(locale, menu, consumeCode, null, null, order);
+		List<Map<String, Object>> list = menuDao.query(locale, menu, consumeCode, null, null, order, consumerId);
 
 		Map<String, Map<String, Object>> mapMap = new HashMap<String, Map<String, Object>>();
 
@@ -238,6 +239,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 					map2.put("copies", map.get("copies"));
 					map2.put("consume_code", map.get("consume_code"));
 					map2.put("nickname", map.get("nickname"));
+					map2.put("fav_status", map.get("fav_status"));
 				}
 			}
 		}
@@ -251,42 +253,61 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 		User user = new User();
 		user.setUserName(menuBill.getConsumerId());
 
-		List list = hibernateTemplate.findByExample(user);
+		User user2 = findOneByExample(user, User.class);
 
-		if (list.size() > 0) {
+		if (user2 != null) {
 
 			MenuBill menuBill2 = new MenuBill();
-			menuBill2.setConsumeCode(((User) list.get(0)).getConsumeCode());
+			menuBill2.setConsumeCode(user2.getConsumeCode());
 			menuBill2.setConsumerId(menuBill.getConsumerId());
 			menuBill2.setMenuId(menuBill.getMenuId());
 
-			List list2 = hibernateTemplate.findByExample(menuBill2);
+			MenuBill menuBill3 = findOneByExample(menuBill2, MenuBill.class);
 
-			if (list2.size() > 0) {
-				MenuBill menuBill3 = (MenuBill) list2.get(0);
+			if (menuBill3 != null) {
 
-				// 原来 待定 =>请求 定了
 				if (menuBill3.getStatus() == 0) {
-					if (menuBill.getStatus() == 1) {
+					if (menuBill.getStatus() == 0) { // 待定追加
 						menuBill3.setDateTime(DateUtil.now());
-						menuBill3.setStatus(menuBill.getStatus());
 
-						if (StringUtil.isEmpty(menuBill.getCopies())) {
+						if (StringUtil.isEmpty(menuBill3.getCopies())) {
 							menuBill3.setCopies(1L);
 						} else {
-							menuBill3.setCopies(menuBill.getCopies());
+							menuBill3.setCopies(menuBill3.getCopies() + 1);
+						}
+
+						hibernateTemplate.update(menuBill3);
+						return true;
+					} else if (menuBill.getStatus() == 1) {// 待定 =>提交订单
+						menuBill3.setDateTime(DateUtil.now());
+						menuBill3.setStatus(SysConstant.MENU_BILL_STATUS_CONFIRM);
+
+						if (StringUtil.isEmpty(menuBill3.getCopies())) {
+							menuBill3.setCopies(1L);
+						}
+
+						hibernateTemplate.update(menuBill3);
+						return true;
+					} else if (menuBill.getStatus() == 2) {// 待定 =>退订
+
+						menuBill3.setDateTime(DateUtil.now());
+
+						if (menuBill3.getCopies() == 1) {
+							menuBill3.setStatus(SysConstant.MENU_BILL_STATUS_DEBOOK);
+						} else if (menuBill3.getCopies() > 1) {
+							menuBill3.setCopies(menuBill3.getCopies() - 1);
 						}
 
 						hibernateTemplate.update(menuBill3);
 						return true;
 					}
-				} else if (menuBill3.getStatus() == 1) {
-					if (menuBill.getStatus() == 2) {// TODO 商家同意可以退订
+				} else if (menuBill3.getStatus() == 1) {// 退订
+					if (menuBill.getStatus() == 2) {
 
 						menuBill3.setDateTime(DateUtil.now());
 
 						if (menuBill3.getCopies() == 1) {
-							menuBill3.setStatus(menuBill.getStatus());
+							menuBill3.setStatus(SysConstant.MENU_BILL_STATUS_DEBOOK);
 						} else if (menuBill3.getCopies() > 1) {
 							menuBill3.setCopies(menuBill3.getCopies() - 1);
 						}
@@ -300,30 +321,27 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 						hibernateTemplate.update(menuBill3);
 						return true;
 					}
-				} else if (menuBill3.getStatus() == 2) {
+				} else if (menuBill3.getStatus() == 2) {// 退订 =>待定 | 提交
 					if (menuBill.getStatus() == 0) {
 						menuBill3.setDateTime(DateUtil.now());
-						menuBill3.setStatus(menuBill.getStatus());
+						menuBill3.setStatus(SysConstant.MENU_BILL_STATUS_STOW);
+						menuBill3.setCopies(StringUtil.isEmpty(menuBill.getCopies()) ? 1L : menuBill.getCopies());
 
 						hibernateTemplate.update(menuBill3);
 						return true;
 					} else if (menuBill.getStatus() == 1) {
 						menuBill3.setDateTime(DateUtil.now());
-						menuBill3.setStatus(menuBill.getStatus());
-
-						if (StringUtil.isEmpty(menuBill.getCopies())) {
-							menuBill3.setCopies(1L);
-						} else {
-							menuBill3.setCopies(menuBill.getCopies());
-						}
+						menuBill3.setStatus(SysConstant.MENU_BILL_STATUS_CONFIRM);
+						menuBill3.setCopies(StringUtil.isEmpty(menuBill.getCopies()) ? 1L : menuBill.getCopies());
 
 						hibernateTemplate.update(menuBill3);
 						return true;
 					}
 				}
+
 				return false;
 			} else {
-				menuBill.setConsumeCode(((User) list.get(0)).getConsumeCode());
+				menuBill.setConsumeCode(user2.getConsumeCode());
 				menuBill.setDateTime(DateUtil.now());
 
 				if (StringUtil.isEmpty(menuBill.getCopies())) {
@@ -331,19 +349,19 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 				}
 
 				BusinessConsumer businessConsumer = new BusinessConsumer();
-				businessConsumer.setConsumeCode(((User) list.get(0)).getConsumeCode());
-				businessConsumer.setConsumerId(menuBill.getConsumerId());
+				businessConsumer.setConsumeCode(user2.getConsumeCode());
 
-				List list3 = hibernateTemplate.findByExample(businessConsumer);
+				BusinessConsumer businessConsumer2 = findOneByExample(businessConsumer, BusinessConsumer.class);
 
-				if (list3.size() > 0) {
-					menuBill.setSceneId(((BusinessConsumer) list3.get(0)).getSceneId());
+				if (businessConsumer2 != null) {
+					menuBill.setSceneId(businessConsumer2.getSceneId());
 				} else {
 					logger.debug("BusinessConsumer信息不存在!");
 					return false;
 				}
 
 				hibernateTemplate.save(menuBill);
+
 				return true;
 			}
 		} else {
@@ -370,19 +388,23 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 		MenuBill menuBill2 = hibernateTemplate.get(MenuBill.class, menuBill.getId());
 
 		if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(menuBill2.getStatus())) {
-			menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
 
-			hibernateTemplate.update(menuBill2);
+			if (menuBill.getCopies().equals(menuBill2.getCopies())) {
 
-			Menu menu = hibernateTemplate.get(Menu.class, menuBill2.getMenuId());
+				menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
 
-			if (menu != null) {
-				long orderTimes = StringUtil.isEmpty(menu.getOrderTimes()) ? 0L : menu.getOrderTimes();
-				menu.setOrderTimes(menu.getOrderTimes() + 1);
-				hibernateTemplate.update(menu);
+				hibernateTemplate.update(menuBill2);
+
+				Menu menu = hibernateTemplate.get(Menu.class, menuBill2.getMenuId());
+
+				if (menu != null) {
+					long orderTimes = StringUtil.isEmpty(menu.getOrderTimes()) ? 0L : menu.getOrderTimes();
+					menu.setOrderTimes(menu.getOrderTimes() + menuBill2.getCopies());
+					hibernateTemplate.update(menu);
+				}
+
+				return true;
 			}
-
-			return true;
 		}
 
 		return false;
@@ -394,21 +416,29 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public boolean acceptBillJoin(Locale locale, String[] ids) {
+	public boolean acceptBillJoin(Locale locale, String[] ids, Long[] copies) {
+
+		int i = -1;
 
 		for (String id : ids) {
+			i++;
 			MenuBill menuBill2 = hibernateTemplate.get(MenuBill.class, Long.valueOf(id));
 
 			if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(menuBill2.getStatus())) {
-				menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
+				if (menuBill2.getCopies().equals(copies[i])) {
 
-				hibernateTemplate.update(menuBill2);
+					menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
 
-				Menu menu = hibernateTemplate.get(Menu.class, menuBill2.getMenuId());
+					hibernateTemplate.update(menuBill2);
 
-				if (menu != null) {
-					menu.setOrderTimes(menu.getOrderTimes() + 1);
-					hibernateTemplate.update(menu);
+					Menu menu = hibernateTemplate.get(Menu.class, menuBill2.getMenuId());
+
+					if (menu != null) {
+						menu.setOrderTimes(menu.getOrderTimes() + copies[i]);
+						hibernateTemplate.update(menu);
+					}
+				} else {
+					throwRuntimeException("批量接受订单失败!");
 				}
 			} else {
 				throwRuntimeException("批量接受订单失败!");
@@ -416,6 +446,11 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean billSubmit(Locale locale, String openId) {
+		return menuDao.billSubmit(locale, openId);
 	}
 
 }

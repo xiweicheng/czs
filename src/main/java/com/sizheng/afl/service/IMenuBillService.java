@@ -134,4 +134,6 @@ public interface IMenuBillService extends IBaseService {
 	 * @return
 	 */
 	List<Map<String, Object>> query4GroupMapList(Locale locale, MenuBill menuBill);
+
+	double getOwnTotal(Locale locale, String openId);
 }

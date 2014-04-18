@@ -94,4 +94,58 @@ public class UserDaoImpl extends BaseDaoImpl implements IUserDao {
 		return getMapList(sqlSb, openId);
 	}
 
+	@Override
+	public List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu.id,\n");
+		sqlSb.append("	menu.`name`,\n");
+		sqlSb.append("	menu.category_id,\n");
+		sqlSb.append("	menu.price,\n");
+		sqlSb.append("	menu.privilege,\n");
+		sqlSb.append("	menu.taste_id,\n");
+		sqlSb.append("	menu.introduce,\n");
+		sqlSb.append("	menu.resource_id,\n");
+		sqlSb.append("	menu.is_delete,\n");
+		sqlSb.append("	menu.`owner`,\n");
+		sqlSb.append("	menu.date_time,\n");
+		sqlSb.append("	menu.order_times,\n");
+		sqlSb.append("	menu_category.`name` AS category,\n");
+		sqlSb.append("	menu_taste.`name` AS taste,\n");
+		sqlSb.append("	resources.path,\n");
+		sqlSb.append("	resources.file_name,\n");
+		sqlSb.append("	menu_bill.copies,\n");
+		sqlSb.append("	menu_bill.`status`\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	favorites\n");
+		sqlSb.append("INNER JOIN menu ON favorites.ref_id = menu.id\n");
+		sqlSb.append("LEFT JOIN menu_category ON menu.category_id = menu_category.id\n");
+		sqlSb.append("LEFT JOIN menu_taste ON menu.taste_id = menu_taste.id\n");
+		sqlSb.append("LEFT JOIN resources ON menu.resource_id = resources.id\n");
+		sqlSb.append("LEFT JOIN (\n");
+		sqlSb.append("	SELECT\n");
+		sqlSb.append("		*\n");
+		sqlSb.append("	FROM\n");
+		sqlSb.append("		menu_bill\n");
+		sqlSb.append("	WHERE\n");
+		sqlSb.append("		menu_bill.consume_code = (\n");
+		sqlSb.append("		SELECT\n");
+		sqlSb.append("			consume_code\n");
+		sqlSb.append("		FROM\n");
+		sqlSb.append("			`user`\n");
+		sqlSb.append("		WHERE\n");
+		sqlSb.append("			user_name = ?\n");
+		sqlSb.append("	)\n");
+		sqlSb.append(") menu_bill ON menu.id = menu_bill.menu_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	favorites.is_delete = 0\n");
+		sqlSb.append("AND favorites.open_id = ?\n");
+		sqlSb.append("AND favorites.type = 1\n");
+		sqlSb.append("AND menu.`owner` = ?\n");
+		sqlSb.append("AND menu.is_delete = 0\n");
+
+		return getMapList(sqlSb, openId, openId, businessId);
+	}
+
 }

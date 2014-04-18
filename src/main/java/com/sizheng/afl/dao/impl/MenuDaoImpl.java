@@ -32,7 +32,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 
 	@Override
 	public List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit,
-			String order) {
+			String order, String consumerId) {
 
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
@@ -52,6 +52,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	favorites.is_delete AS fav_status,\n");
 		sqlSb.append("	subscriber.nickname\n");
 		sqlSb.append("FROM\n");
 		sqlSb.append("	menu\n");
@@ -60,7 +61,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("LEFT JOIN menu_category ON menu.category_id = menu_category.id\n");
 		sqlSb.append("LEFT JOIN (\n");
 		sqlSb.append("	SELECT\n");
-		sqlSb.append("		*\n");
+		sqlSb.append("		menu_bill.*\n");
 		sqlSb.append("	FROM\n");
 		sqlSb.append("		menu_bill\n");
 		sqlSb.append("	WHERE\n");
@@ -83,6 +84,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("		)\n");
 		sqlSb.append(") menu_bill ON menu.id = menu_bill.menu_id\n");
 		sqlSb.append("LEFT JOIN subscriber ON subscriber.user_name = menu_bill.consumer_id\n");
+		sqlSb.append("LEFT JOIN favorites ON (menu.id = favorites.ref_id AND favorites.open_id = ?)\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu.`owner` = ?\n");
 		sqlSb.append("AND menu.is_delete = 0\n");
@@ -98,7 +100,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 			sqlSb.append("ORDER BY menu.order_times DESC, menu.id ASC\n");
 		}
 
-		return getMapList(sqlSb, consumeCode, menu.getOwner());
+		return getMapList(sqlSb, consumeCode, consumerId, menu.getOwner());
 	}
 
 	@Override
@@ -196,6 +198,26 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.date_time ASC\n");
 
 		return getMapList(sqlSb, menu.getOwner(), menu.getId());
+	}
+
+	@Override
+	public boolean billSubmit(Locale locale, String openId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("UPDATE menu_bill\n");
+		sqlSb.append("SET `status` = 1\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	consume_code = (\n");
+		sqlSb.append("		SELECT\n");
+		sqlSb.append("			consume_code\n");
+		sqlSb.append("		FROM\n");
+		sqlSb.append("			`user`\n");
+		sqlSb.append("		WHERE\n");
+		sqlSb.append("			`user`.user_name = ?\n");
+		sqlSb.append("	)\n");
+		sqlSb.append("AND `status` = 0\n");
+
+		return update(sqlSb, openId) > 0;
 	}
 
 }

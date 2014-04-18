@@ -33,9 +33,10 @@ public interface IMenuDao {
 	 * @param start
 	 * @param limit
 	 * @param order TODO
+	 * @param consumerId TODO
 	 * @return
 	 */
-	List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit, String order);
+	List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit, String order, String consumerId);
 
 	/**
 	 * 查询总数查询【菜单】.
@@ -86,5 +87,7 @@ public interface IMenuDao {
 	 * @return
 	 */
 	List<Map<String, Object>> queryJoinBill(Locale locale, Menu menu);
+
+	boolean billSubmit(Locale locale, String openId);
 	
 }

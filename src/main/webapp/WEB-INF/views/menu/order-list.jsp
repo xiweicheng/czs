@@ -13,7 +13,8 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
@@ -34,6 +35,7 @@
 <script id="joinTrTpl" type="text/x-jquery-tmpl">
 <tr id="item-tr-join-{{html id}}" class="item-tr-{{html menu_id}}">
 <input type="hidden" name="id" value="{{html id}}">
+<input type="hidden" name="copies" value="{{html copies}}">
 	<td class="">{{html name}}</td>
 	<td class="">{{html copies}}</td>
 	<td class="">{{html date_time}}</td>
@@ -41,7 +43,7 @@
 	<td class="">{{html nickname}}</td>
 	<td class="">{{html description}}</td>
 	<td class=""><a class="ui purple label"
-		onclick="acceptHandler('{{html id}}', '{{html menu_id}}', '1')"
+		onclick="acceptHandler('{{html id}}', '{{html menu_id}}', '1', '{{html copies}}')"
 		href="javascript:void(0);">接受</a></td>
 </tr>
 </script>
@@ -100,10 +102,10 @@
 						<td class="">${item.nickname}</td>
 						<td class="">${item.description}</td>
 						<td class=""><a class="ui purple label czsRequest"
-							onclick="acceptHandler('${item.id}', '${item.menu_id}', '0')"
+							onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
 							href="javascript:void(0);">接受</a><a
 							class="ui purple label czsRequest"
-							onclick="acceptJoinHandler('${item.id}', '${item.menu_id}')"
+							onclick="acceptJoinHandler('${item.id}', '${item.menu_id}'))"
 							href="javascript:void(0);">合并接受</a></td>
 					</tr>
 				</c:forEach>
@@ -177,10 +179,12 @@
 		var _menu_id;
 		var _interval;
 		var _type;
-		function acceptHandler(id, menu_id, type) {
+		var _copies;
+		function acceptHandler(id, menu_id, type, copies) {
 			_id = id;
 			_menu_id = menu_id;
 			_type = type;
+			_copies = copies;
 			$('.ui.modal.czsConfirm').modal('show');
 		}
 		function acceptJoinHandler(id, menu_id) {
@@ -220,7 +224,8 @@
 			$('.ui.modal.czsConfirm').modal({
 				onApprove : function() {
 					$.post('menu/accept.do', {
-						id : _id
+						id : _id,
+						copies : _copies
 					}, function(msg) {
 						if (msg.succeed) {
 							if (_type == '0') {

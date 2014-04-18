@@ -71,6 +71,13 @@ public abstract class BaseServiceImpl implements IBaseService {
 		return list.size() > 0 ? list.get(0) : null;
 	}
 
+	@Override
+	public <T> T findOneByExample(Object example, Class<T> clazz) {
+		List<?> list = hibernateTemplate.findByExample(example);
+
+		return (T) (list.size() > 0 ? list.get(0) : null);
+	}
+
 	/**
 	 * 当为false时抛出运行时异常.
 	 * 

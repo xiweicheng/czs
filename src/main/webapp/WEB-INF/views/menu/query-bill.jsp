@@ -32,227 +32,237 @@
 <body style="margin: 0px; padding: 0px;">
 
 	<h4 class="ui top attached header" style="margin-top: 0px;">${title}
-	</h4>
-	<div class="ui segment attached">
-		<div class="ui segment">
-			<div class="ui toggle checkbox czsImage"
-				style="margin-top: 5px; margin-bottom: 5px;">
-				<input type="checkbox" name="mode"> <label for="">图文模式</label>
-			</div>
-			<div class="ui toggle checkbox czsGroup"
-				style="margin-top: 5px; margin-bottom: 5px;">
-				<input type="checkbox" name="mode"
-					<c:if test="${isOwn == '0'}"> checked="checked"</c:if>> <label
-					for="">集体消费</label>
-			</div>
-			<form class="czsOwn" action="menu/free/billQuery.do" method="post">
-				<input type="hidden" name="status" value="${status}"> <input
-					type="hidden" name="isOwn" value="1"> <input type="hidden"
-					name="consumerId" value="${openId}"> <input type="hidden"
-					name="isShowImg" value="0">
-			</form>
-			<form class="czsGroup" action="menu/free/billQuery.do" method="post">
-				<input type="hidden" name="status" value="${status}"> <input
-					type="hidden" name="isOwn" value="0"> <input type="hidden"
-					name="consumerId" value="${openId}"> <input type="hidden"
-					name="isShowImg" value="0">
-			</form>
+		<div class="ui checkbox czsImage" style="float: right;">
+			<input type="checkbox" name="mode"> <label>图文模式</label>
 		</div>
-		<div class="ui stackable items" id="bill-query-ui-stackable-items">
-			<c:forEach items="${billList}" var="item">
-				<div class="item" id="bill-item-${item.menu_id}"
-					style="min-height: 0px;">
-					<div class="image" style="display: none;" id="image-div-${item.id}">
-						<img src="" czz-src="../../../${item.path}640/${item.file_name}">
-						<!-- <a
-							class="like ui corner label"> <i class="like icon"></i> -->
-						</a>
-					</div>
-					<div class="content">
-						<div class="name">${item.name}
-							<div class="ui label" onclick="imageHandler('${item.id}')">
-								<i class="photo icon"></i>
-							</div>
-							<div class="ui label" onclick="introduceHandler('${item.id}')">
-								<i class="comment icon"></i>
-							</div>
+	</h4>
+	<div class="2 fluid ui buttons">
+		<c:if test="${isOwn == 1}">
+			<div class="ui active huge button czsOwn">个人订单</div>
+			<div class="ui huge button czsGroup">集体订单</div>
+		</c:if>
+		<c:if test="${isOwn == 0}">
+			<div class="ui huge button czsOwn">个人订单</div>
+			<div class="ui active huge button czsGroup">集体订单</div>
+		</c:if>
+	</div>
+	<form class="czsOwn" action="menu/free/billQuery.do" method="post">
+		<input type="hidden" name="isOwn" value="1"> <input
+			type="hidden" name="consumerId" value="${openId}"> <input
+			type="hidden" name="isShowImg" value="0">
+	</form>
+	<form class="czsGroup" action="menu/free/billQuery.do" method="post">
+		<input type="hidden" name="isOwn" value="0"> <input
+			type="hidden" name="consumerId" value="${openId}"> <input
+			type="hidden" name="isShowImg" value="0">
+	</form>
+	<form class="czsSubmit" action="menu/free/billSubmit.do" method="post">
+		<input type="hidden" name="openId" value="${openId}">
+	</form>
 
-						</div>
-						<p class="description" style="display: none;" id="introduce-p-${item.id}">${item.introduce}</p>
-						<div style="margin-top: 10px; margin-bottom: 10px;">
-							<div class="ui red label">
-								<i class="yen icon"></i> ${item.price}
-							</div>
-							<div class="ui green label">${item.category}</div>
-							<div class="ui blue label">${item.taste}</div>
-						</div>
-						<c:if test="${isOwn == '1'}">
-							<div
-								class="<c:if test="${item.status == 2}">2</c:if><c:if test="${item.status != 2}">1</c:if> fluid ui buttons">
-								<c:if test="${item.status == 1 || item.status == 3}">
-									<div class="2 fluid ui buttons">
-										<input type="hidden" id="copies-${item.menu_id}"
-											value="${item.copies}">
-										<c:if test="${item.status == 1}">
-											<div class="positive ui button"
-												id="debook-ui-btn-${item.menu_id}"
-												onclick="billDealHandler('${item.menu_id}', '${openId}', '2', 'debook', ${item.price}, ${item.privilege})">
-												<i class="remove icon"></i>退一份
-											</div>
-											<div class="or"></div>
-											<div class="negative ui button"
-												onclick="billDealHandler('${item.menu_id}', '${openId}', '1', 'add', ${item.price}, ${item.privilege})">
-												<i class="remove icon"></i>加一份
-											</div>
-										</c:if>
-										<c:if test="${item.status == 3}">
-											<div class="positive disabled ui button"
-												id="debook-ui-btn-${item.menu_id}">
-												<i class="remove icon"></i>退一份
-											</div>
-											<div class="or"></div>
-											<div class="negative disabled ui button">
-												<i class="remove icon"></i>加一份
-											</div>
-										</c:if>
+	<c:if test="${isOwn == 1}">
+		<div class="1 fluid ui buttons">
+			<div class="ui huge button czsSubmit" style="display: none;">提交订单</div>
+		</div>
+	</c:if>
 
-									</div>
-									<div class="ui divider"></div>
-									<div style="margin-top: 10px;">
-										<div class="ui label">
-											自己
-											<div class="detail" id="confirm-bill-msg-${item.menu_id}">${item.copies}</div>
-											<c:if test="${item.status == 3}">
-												<i class="checkmark icon"></i>
-											</c:if>
-											<c:if test="${item.status == 1}">
-												<i class="loading icon"></i>
-											</c:if>
+	<div class="ui segment attached">
+		<div class="ui left aligned one column grid">
+			<div class="row">
+				<div class="column">
+					<div class="ui vertical fluid menu czsMenuList">
+						<c:forEach items="${billList}" var="item">
+							<div class="ui segment item" id="menu-item-${item.menu_id}">
+								<div class="image" style="display: none; margin-bottom: 10px;"
+									id="image-div-${item.id}">
+									<img style="width: 100%;" src=""
+										czz-src="../../../${item.path}640/${item.file_name}"
+										onclick="imageHandler('${item.id}')">
+									<c:if test="${item.status == 1}">
+										<a class="like ui corner label"> <i class="checkmark icon"></i>
+									</c:if>
+									<c:if test="${item.status == 0}">
+										<a class="like ui corner label"> <i
+											class="heart empty icon"></i>
+									</c:if>
+									</a>
+								</div>
+								<div class="content">
+									<div>
+										<span class="name" style="font-weight: bold;" onclick="imageHandler('${item.id}')">${item.name}</span>
+										<div class="ui huge label"
+											onclick="imageHandler('${item.id}')">
+											<i class="photo icon"></i>
+										</div>
+										<div class="ui huge label"
+											onclick="introduceHandler('${item.id}')">
+											<i class="comment icon"></i>
 										</div>
 									</div>
-								</c:if>
-								<c:if test="${item.status == 0}">
-									<div class="positive ui button"
-										onclick="billDealHandler('${item.menu_id}', '${openId}', '1')">
-										<i class="checkmark icon"></i>定了
+
+									<p class="description" style="display: none;"
+										id="introduce-p-${item.id}"
+										onclick="introduceHandler('${item.id}')">${item.introduce}</p>
+									<div class="ui divider"></div>
+									<div style="margin-top: 10px; margin-bottom: 10px;">
+										<div class="ui red label">
+											<i class="yen icon"></i>${item.price}</div>
+										<div class="ui green label">${item.category}</div>
+										<div class="ui blue label">${item.taste}</div>
 									</div>
-								</c:if>
-								<c:if test="${item.status == 2}">
-									<div class="positive ui button"
-										onclick="billDealHandler('${item.menu_id}', '${openId}', '1')">
-										<i class="checkmark icon"></i>定了
-									</div>
-									<div class="or"></div>
-									<div class="negative ui button"
-										onclick="billDealHandler('${item.menu_id}', '${openId}', '0')">
-										<i class="heart empty icon"></i>待选
-									</div>
-								</c:if>
+									<div class="ui divider"></div>
+
+									<!-- 个人 -->
+									<c:if test="${isOwn == 1}">
+										<div class="2 fluid ui buttons">
+											<c:if test="${item.status == 3}">
+												<div class="negative ui button disabled">减一份</div>
+												<div class="or"></div>
+												<div class="positive ui button disabled">加一份</div>
+											</c:if>
+											<c:if test="${item.status == 0 || item.status == 1}">
+												<div class="negative ui button"
+													onclick="billReduceHandler('${item.menu_id}', '${openId}', ${item.price})">
+													减一份</div>
+												<div class="or"></div>
+												<div class="positive ui button" id="hold-ui-btn-${item.id}"
+													onclick="billAddHandler('${item.menu_id}', '${openId}', ${item.price})">
+													加一份</div>
+											</c:if>
+										</div>
+
+										<div style="margin-top: 10px;" class="czsCopies">
+											<input type="hidden" value="${item.status}"
+												class="czsBillStatus">
+											<div class="ui label"
+												style="margin-top: 5px; margin-bottom: 5px;">
+												自己(<span id="item-copies-${item.menu_id}">${item.copies}</span>)
+												<div class="detail">
+													<c:if test="${item.status == 0}">待提交</c:if>
+													<c:if test="${item.status == 1}">已下单</c:if>
+													<c:if test="${item.status == 3}">已接受</c:if>
+												</div>
+											</div>
+										</div>
+									</c:if>
+
+									<!-- 集体 -->
+									<c:if test="${isOwn == 0}">
+										<c:forEach items="${item.menuBill}" var="item2">
+											<div class="ui label"
+												style="margin-top: 5px; margin-bottom: 5px;">
+												${item.nickname}(<span id="item-copies-${item.menu_id}">${item.copies}</span>)
+												<div class="detail">
+													<c:if test="${item.status == 0}">待提交</c:if>
+													<c:if test="${item.status == 1}">已下单</c:if>
+													<c:if test="${item.status == 3}">已接受</c:if>
+												</div>
+											</div>
+										</c:forEach>
+									</c:if>
+								</div>
 							</div>
-						</c:if>
-						<c:if test="${isOwn =='0'}">
-							<div class="ui divider"></div>
-							<div>
-								<c:forEach items="${item.menuBill}" var="item2">
-									<div class="ui label">
-										${item2.nickname}
-										<div class="detail">${item2.copies}</div>
-										<c:if test="${item2.status == 3}">
-											<i class="checkmark icon"></i>
-										</c:if>
-										<c:if test="${item2.status == 1}">
-											<i class="loading icon"></i>
-										</c:if>
-									</div>
-								</c:forEach>
-							</div>
-						</c:if>
+						</c:forEach>
 					</div>
 				</div>
-			</c:forEach>
+			</div>
 		</div>
 	</div>
 
+	<c:if test="${isOwn == 1}">
+		<div class="1 fluid ui buttons">
+			<div class="ui huge button czsSubmit" style="display: none;">提交订单</div>
+		</div>
+	</c:if>
+
 	<div style="height: 44px;"></div>
+
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu">
 		<a class="item"
-			href="menu/free/billQuery.do?status=1&isOwn=1&consumerId=${openId}"><i
+			href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}"><i
 			class="icon yen"></i><span id="bill-total-span">${total}</span></a> <a
 			class="item" href="menu/free/list4bill.do?openId=${openId}"><i
 			class="icon align justify"></i>商家菜单</a> <a class="item"
-			href="menu/free/billQuery.do?status=0&isOwn=1&consumerId=${openId}"><i
+			href="user/free/stowQuery.do?openId=${openId}"><i
 			class="icon heart"></i>收藏菜品</a>
+	</div>
+
+
+	<div class="ui modal czsConfirm">
+		<div class="header">确认提示</div>
+		<div class="content">
+			<div class="left">
+				<i class="warning icon"></i>
+			</div>
+			<div class="right" style="font-size: 30px;">
+				<p>确认要提交订单吗?</p>
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui negative labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui positive right labeled icon button">
+					确认 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<script type="text/javascript">
 	
-	function imageHandler(id){
-		$('#image-div-' + id + " > img").each(function(){
-			$(this).attr('src', $(this).attr('czz-src'));
-		});
-		$('#image-div-' + id).toggle();
-	}
+		function imageHandler(id){
+			$('#image-div-' + id + " > img").each(function(){
+				$(this).attr('src', $(this).attr('czz-src'));
+			});
+			$('#image-div-' + id).toggle();
+		}
+		
+		function introduceHandler(id){
+			$('#introduce-p-' + id).toggle();
+		}
 	
-	function introduceHandler(id){
-		$('#introduce-p-' + id).toggle();
-	}
-	
-		function billDealHandler(menuId, consumerId, status, cmd, price, privilege) {
+		function billReduceHandler(menuId, consumerId, price) {
 			$.post('menu/free/billDeal.do', {
 				menuId : menuId,
 				consumerId : consumerId,
-				status : status
+				status : 2
 			}, function(msg) {
 				if (msg.succeed) {
-
-					if (!!cmd && cmd == 'debook') {
-						var copies = Number($('#copies-' + menuId).val());
-						if (copies > 1) {
-							$('#copies-' + menuId).val(copies - 1);
-							$('#confirm-bill-msg-' + menuId).text(copies - 1)
-						} else {
-							$('#bill-item-' + menuId).remove();
-						}
-						
-						var total = Number($('#bill-total-span').text());
-						
-						if(!!privilege && privilege >= 1){
-							$('#bill-total-span').text(format_number(total-=(price - privilege), 2));
-						}else if(!!privilege && (privilege < 1) && (privilege > 0)){
-							$('#bill-total-span').text(format_number(total-=(price * privilege), 2));
-						}else{
-							$('#bill-total-span').text(format_number(total-=(price), 2));
-						}
-						
-					} else if (!!cmd && cmd == 'add') {
-						var copies = Number($('#copies-' + menuId).val());
-						$('#copies-' + menuId).val(copies + 1);
-						$('#confirm-bill-msg-' + menuId).text(copies + 1)
-						
-						var total = Number($('#bill-total-span').text());
-						
-						if(!!privilege && privilege >= 1){
-							$('#bill-total-span').text(format_number(total+=(price - privilege), 2));
-						}else if(!!privilege && (privilege < 1) && (privilege > 0)){
-							$('#bill-total-span').text(format_number(total+=(price * privilege), 2));
-						}else{
-							$('#bill-total-span').text(format_number(total+=(price), 2));
-						}
+					var copies = Number($('#item-copies-' + menuId).text());
+					if (copies > 1) {
+						$('#item-copies-' + menuId).text(copies - 1);
 					} else {
-						$('#bill-item-' + menuId).remove();
+						$('#menu-item-' + menuId).remove();
 					}
-
+					
+					var total = Number($('#bill-total-span').text());
+					$('#bill-total-span').text(format_number(total-=(price), 2));
 				} else {
 					alert('操作失败!')
 				}
 			});
 		}
-
-		/**
-		*   Usage:  CurrencyFormatted(12345.678);
-		*   result: 12345.68
-		**/
+	
+		function billAddHandler(menuId, consumerId, price) {
+			$.post('menu/free/billDeal.do', {
+				menuId : menuId,
+				consumerId : consumerId,
+				status : 1
+			}, function(msg) {
+				if (msg.succeed) {
+					var copies = Number($('#item-copies-' + menuId).text());
+					$('#item-copies-' + menuId).text(copies + 1);
+					
+					var total = Number($('#bill-total-span').text());
+					$('#bill-total-span').text(format_number(total+=(price), 2));
+				} else {
+					alert('操作失败!')
+				}
+			});
+		}
 
 		function format_number(pnumber,decimals){
 		    if (isNaN(pnumber)) { return 0};
@@ -286,23 +296,15 @@
 		}
 		
 		jQuery(function($) {
-			$('#menu-item-${type}-bill').addClass('active');
 			
-			$('.item.czsMenu').click(function() {
-				$('.ui.left.sidebar').sidebar("toggle");
-			});
-
 			$('.ui.checkbox.czsImage').checkbox({
 				onEnable : function() {
-					$('input[name="isShowImg"]').val('1');
-					$('#bill-query-ui-stackable-items').find('div[class="image"]').show().end().find('img').each(
-							function() {
-								$(this).attr('src', $(this).attr('czz-src'));
-							});
+					$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
+						$(this).attr('src', $(this).attr('czz-src'));
+					});
 				},
 				onDisable : function() {
-					$('input[name="isShowImg"]').val('0');
-					$('#bill-query-ui-stackable-items').find('div[class="image"]').hide();
+					$('.ui.menu.czsMenuList .image').hide();
 				}
 			});
 			
@@ -310,14 +312,30 @@
 				$('.ui.checkbox.czsImage').checkbox('enable');
 			}
 			
-			$('.ui.checkbox.czsGroup').checkbox({
-				onEnable : function() {
-					$('form[class="czsGroup"]').submit();
-				},
-				onDisable : function() {
-					$('form[class="czsOwn"]').submit();
+			$('.ui.button.czsOwn').click(function(){
+				$('form[class="czsOwn"]').submit();
+			});
+			$('.ui.button.czsGroup').click(function(){
+				$('form[class="czsGroup"]').submit();
+			});
+			
+			$('.ui.button.czsSubmit').click(function(){
+				$('.ui.modal.czsConfirm').modal('show');
+			});
+			
+			$('.ui.modal.czsConfirm').modal({
+				onApprove : function() {
+					$('form[class="czsSubmit"]').submit();
 				}
 			});
+			
+			$('input[class="czsBillStatus"]').each(function(){
+				if($(this).val() == 0){
+					$('.ui.button.czsSubmit').show();
+					return false;
+				}
+			});
+			
 		});
 	</script>
 </body>

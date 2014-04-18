@@ -468,27 +468,22 @@ public class MenuController extends BaseController {
 
 		User user2 = userService.get(locale, user);
 
-		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu, user2.getConsumeCode(), order);
+		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu, user2.getConsumeCode(), order,
+				openId);
 
 		double total = 0;
 
 		for (Map<String, Object> map : mapList) {
 			double price = NumberUtil.getDouble(map, "price");
+			int copies = NumberUtil.getInteger(map, "copies");
 
-			List<Map<String, Object>> maps = (List<Map<String, Object>>) map.get("menuBill");
-
-			int copies = 0;
-
-			for (Map<String, Object> map2 : maps) {
-
-				if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(NumberUtil.getShort(map2, "status"))) {
-					copies += (NumberUtil.getInteger(map2, "copies"));
-				} else if (SysConstant.MENU_BILL_STATUS_ACCEPT.equals(NumberUtil.getShort(map2, "status"))) {
-					copies += (NumberUtil.getInteger(map2, "copies"));
-				}
+			if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(NumberUtil.getShort(map, "status"))) {
+				total += (price * copies);
+			} else if (SysConstant.MENU_BILL_STATUS_ACCEPT.equals(NumberUtil.getShort(map, "status"))) {
+				total += (price * copies);
+			} else if (SysConstant.MENU_BILL_STATUS_STOW.equals(NumberUtil.getShort(map, "status"))) {
+				total += (price * copies);
 			}
-
-			total += (price * copies);
 		}
 
 		model.addAttribute("menuList", mapList);
@@ -551,6 +546,7 @@ public class MenuController extends BaseController {
 		logger.debug("顾客订单处理【菜单】");
 
 		Assert.notNull(menuBill.getId());
+		Assert.notNull(menuBill.getCopies());
 
 		boolean value = menuService.acceptBill(locale, menuBill);
 
@@ -567,11 +563,12 @@ public class MenuController extends BaseController {
 	 */
 	@RequestMapping("acceptJoin")
 	@ResponseBody
-	public ResultMsg acceptJoin(HttpServletRequest request, Locale locale, @RequestParam("id") String[] ids) {
+	public ResultMsg acceptJoin(HttpServletRequest request, Locale locale, @RequestParam("id") String[] ids,
+			@RequestParam("copies") Long[] copies) {
 
 		logger.debug("顾客订单处理【菜单】");
 
-		boolean value = menuService.acceptBillJoin(locale, ids);
+		boolean value = menuService.acceptBillJoin(locale, ids, copies);
 
 		return new ResultMsg(value);
 	}
@@ -677,7 +674,6 @@ public class MenuController extends BaseController {
 
 		logger.debug("顾客订单查询【菜单】");
 
-		Assert.notNull(menuBill.getStatus());
 		Assert.notNull(menuBill.getConsumerId());
 
 		model.addAttribute("openId", menuBill.getConsumerId());
@@ -697,7 +693,6 @@ public class MenuController extends BaseController {
 
 			for (Map<String, Object> map : list) {
 				Double price = NumberUtil.getDouble(map, "price");
-				Double privilege = NumberUtil.getDouble(map, "privilege");
 				int copies = 0;
 
 				if (isOwn) {
@@ -710,38 +705,49 @@ public class MenuController extends BaseController {
 				}
 
 				if (price != null) {
-					if (privilege != null && privilege > 0) {
-						if (privilege >= 1) {
-							total += ((price - privilege) * copies);
-						} else {
-							total += ((price * privilege) * copies);
-						}
-					} else {
-						total += (price * copies);
-					}
+					total += (price * copies);
 				}
 			}
 
 			model.addAttribute("billList", list);
 			model.addAttribute("total", format.format(total));
-			model.addAttribute("status", menuBill.getStatus());
 			model.addAttribute("isOwn", isOwn ? "1" : "0");
 			model.addAttribute("isShowImg", (isShowImg == null || !isShowImg) ? "0" : "1");
 
-			String pre = isOwn ? "个人" : "集体";
-
-			if (menuBill.getStatus() == 0) {
-				model.addAttribute("title", pre + "收藏");
-				model.addAttribute("type", "hold");
-			} else if (menuBill.getStatus() == 1) {
-				model.addAttribute("title", pre + "订单");
-				model.addAttribute("type", "confirm");
-			}
+			model.addAttribute("title", (isOwn ? "个人" : "集体") + "订单");
 
 			return "menu/query-bill";
 		} else {
 			model.addAttribute("message", "消费信息不存在!");
 			return "message";
+		}
+	}
+
+	/**
+	 * 提交订单.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("free/billSubmit")
+	public String billSubmit(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId) {
+
+		logger.debug("提交订单【消费者】");
+
+		boolean val = menuService.billSubmit(locale, openId);
+
+		if (val) {
+			return StringUtil.replace("forward:billQuery.do?isOwn=1&status=1&consumerId={?1}", openId);
+		} else {
+			model.addAttribute("message", "提交订单失败!");
+			return "error";
 		}
 	}
 }

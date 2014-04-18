@@ -427,4 +427,52 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 	public List<Map<String, Object>> getInfo(Locale locale, String openId) {
 		return userDao.getInfo(locale, openId);
 	}
+
+	@Override
+	public boolean stowFood(Locale locale, Favorites favorites) {
+
+		Favorites favorites2 = new Favorites();
+		favorites2.setOpenId(favorites.getOpenId());
+		favorites2.setRefId(favorites.getRefId());
+		favorites2.setType(SysConstant.FAVORITES_TYPE_MENU);
+
+		Favorites favorites3 = findOneByExample(favorites2, Favorites.class);
+
+		// 删除收藏
+		if (SysConstant.SHORT_TRUE.equals(favorites.getIsDelete())) {
+
+			if (favorites3 != null) {
+				if (SysConstant.SHORT_FALSE.equals(favorites3.getIsDelete())) {
+					favorites3.setDateTime(DateUtil.now());
+					favorites3.setIsDelete(SysConstant.SHORT_TRUE);
+
+					hibernateTemplate.update(favorites3);
+					return true;
+				}
+			}
+		} else {// 添加收藏
+			if (favorites3 == null) {
+				favorites.setDateTime(DateUtil.now());
+				favorites.setIsDelete(SysConstant.SHORT_FALSE);
+				favorites.setType(SysConstant.FAVORITES_TYPE_MENU);
+
+				hibernateTemplate.save(favorites);
+
+				return true;
+			} else if (SysConstant.SHORT_TRUE.equals(favorites3.getIsDelete())) {
+				favorites.setDateTime(DateUtil.now());
+				favorites3.setIsDelete(SysConstant.SHORT_FALSE);
+
+				hibernateTemplate.update(favorites3);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId) {
+		return userDao.stowQuery(locale, openId, businessId);
+	}
 }

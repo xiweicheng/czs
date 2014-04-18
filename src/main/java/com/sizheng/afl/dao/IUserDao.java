@@ -61,4 +61,6 @@ public interface IUserDao {
 
 	List<Map<String, Object>> getInfo(Locale locale, String openId);
 
+	List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId);
+
 }

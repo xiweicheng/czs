@@ -18,8 +18,10 @@ import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
 import com.sizheng.afl.dao.IMenuBillDao;
 import com.sizheng.afl.pojo.entity.MenuBill;
+import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IMenuBillService;
+import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 
 /**
@@ -185,6 +187,36 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 
 		return new ArrayList<>(mapMap.values());
 
+	}
+
+	@Override
+	public double getOwnTotal(Locale locale, String openId) {
+
+		User user = new User();
+		user.setUserName(openId);
+
+		User user2 = findOneByExample(user, User.class);
+
+		if (user2 != null) {
+			MenuBill menuBill = new MenuBill();
+			menuBill.setConsumeCode(user2.getConsumeCode());
+
+			List<Map<String, Object>> list = query4MapList(locale, menuBill);
+
+			double total = 0;
+
+			for (Map<String, Object> map : list) {
+				Double price = NumberUtil.getDouble(map, "price");
+				int copies = NumberUtil.getInteger(map, "copies");
+
+				if (price != null) {
+					total += (price * copies);
+				}
+			}
+			return total;
+		}
+
+		return 0;
 	}
 
 }

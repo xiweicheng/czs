@@ -211,4 +211,8 @@ public interface IUserService extends IBaseService {
 	 * @return
 	 */
 	List<Map<String, Object>> getInfo(Locale locale, String openId);
+
+	boolean stowFood(Locale locale, Favorites favorites);
+
+	List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId);
 }

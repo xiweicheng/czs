@@ -440,13 +440,47 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("free/foodStow")
-	public String foodStow(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+	@ResponseBody
+	public ResultMsg foodStow(HttpServletRequest request, Locale locale, Model model,
+			@ModelAttribute Favorites favorites) {
 
 		logger.debug("美食收藏【消费者】");
 
-		model.addAttribute("message", "[美食收藏]页面建设中...");
+		boolean val = userService.stowFood(locale, favorites);
 
-		return "message";
+		return new ResultMsg(val);
+
+	}
+
+	/**
+	 * 美食收藏查询.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("free/stowQuery")
+	public String stowQuery(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId) {
+
+		logger.debug("美食收藏查询【消费者】");
+
+		String businessId = userService.getBusiness(locale, openId);
+
+		List<Map<String, Object>> stowList = userService.stowQuery(locale, openId, businessId);
+
+		double total = menuBillService.getOwnTotal(locale, openId);
+
+		model.addAttribute("stowList", stowList);
+		model.addAttribute("openId", openId);
+		model.addAttribute("total", total);
+
+		return "menu/menu-stow";
 
 	}
 

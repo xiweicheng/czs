@@ -32,4 +32,6 @@ public interface IBaseService {
 
 	Object findOneByExample(Object example);
 
+	<T> T findOneByExample(Object example, Class<T> clazz);
+
 }

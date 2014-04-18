@@ -136,9 +136,10 @@ public interface IMenuService extends IBaseService {
 	 * @param menu
 	 * @param consumeCode TODO
 	 * @param order TODO
+	 * @param consumerId TODO
 	 * @return
 	 */
-	List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode, String order);
+	List<Map<String, Object>> queryMapList(Locale locale, Menu menu, String consumeCode, String order, String consumerId);
 
 	/**
 	 * 顾客下单
@@ -209,7 +210,10 @@ public interface IMenuService extends IBaseService {
 	 * @modification 2014年4月13日 下午11:35:09
 	 * @param locale
 	 * @param ids
+	 * @param copies TODO
 	 * @return
 	 */
-	boolean acceptBillJoin(Locale locale, String[] ids);
+	boolean acceptBillJoin(Locale locale, String[] ids, Long[] copies);
+
+	boolean billSubmit(Locale locale, String openId);
 }

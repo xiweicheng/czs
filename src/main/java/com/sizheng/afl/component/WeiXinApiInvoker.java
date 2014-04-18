@@ -352,9 +352,14 @@ public class WeiXinApiInvoker {
 				} else {
 					logger.debug("[access token]过期,重新获取失败!");
 				}
+			} else {
+				logger.error("发送客服消息失败! errcode:" + invoke.getString("errcode") + " errmsg:"
+						+ invoke.getString("errmsg"));
 			}
+		} else {
+			logger.debug("发送客服消息失败!");
 		}
-		logger.debug("发送客服消息失败!");
+
 		return false;
 	}
 
