@@ -475,14 +475,17 @@ public class MenuController extends BaseController {
 
 		for (Map<String, Object> map : mapList) {
 			double price = NumberUtil.getDouble(map, "price");
-			int copies = NumberUtil.getInteger(map, "copies");
+			Integer copies = NumberUtil.getInteger(map, "copies");
 
-			if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(NumberUtil.getShort(map, "status"))) {
-				total += (price * copies);
-			} else if (SysConstant.MENU_BILL_STATUS_ACCEPT.equals(NumberUtil.getShort(map, "status"))) {
-				total += (price * copies);
-			} else if (SysConstant.MENU_BILL_STATUS_STOW.equals(NumberUtil.getShort(map, "status"))) {
-				total += (price * copies);
+			if (copies != null) {
+
+				if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(NumberUtil.getShort(map, "status"))) {
+					total += (price * copies);
+				} else if (SysConstant.MENU_BILL_STATUS_ACCEPT.equals(NumberUtil.getShort(map, "status"))) {
+					total += (price * copies);
+				} else if (SysConstant.MENU_BILL_STATUS_STOW.equals(NumberUtil.getShort(map, "status"))) {
+					total += (price * copies);
+				}
 			}
 		}
 

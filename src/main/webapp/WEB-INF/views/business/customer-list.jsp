@@ -52,7 +52,7 @@
 		<div class="header">{{html name}} (￥{{html price}})</div>
 			{{if menuBill}}
 				{{each menuBill}}
-					<span>{{html $value.nickname}}({{html $value.copies}}份)</span>
+					<span>{{html $value.nickname}}({{html $value.copies}}份)</span><br/>
 				{{/each}}
 			{{else}}
 				<span>{{html nickname}}({{html copies}}份)</span>
@@ -92,21 +92,25 @@
 		<div>
 			{{if menuBill}}
 				{{each menuBill}}
-					<div class="ui label">{{html $value.nickname}}<div class="detail">{{html $value.copies}}</div>
+					<div class="ui label" style="margin-top:5px; margin-bottom:5px;">{{html $value.nickname}}({{html $value.copies}})
+					<div class="detail">
 					{{if $value.status == '3'}}
-						<i class="checkmark icon"></i>
+						已接单
 					{{else}}
-						<i class="loading icon"></i>
+						未接单
 					{{/if}}
+					</div>
 					</div>
 				{{/each}}
 			{{else}}
-				<div class="ui label">自己<div class="detail">{{html copies}}</div>
+				<div class="ui label" style="margin-top:5px; margin-bottom:5px;">{{html nickname}}({{html copies}})
+					<div class="detail">
 					{{if status == '3'}}
-						<i class="checkmark icon"></i>
+						已接单
 					{{else}}
-						<i class="loading icon"></i>
+						未接单
 					{{/if}}
+					</div>
 				</div>
 			{{/if}}
 		</div>
@@ -346,29 +350,31 @@
 	<!-- 消费信息展示modal -->
 	<div class="ui modal" id="bill-detail-modal">
 		<i class="close icon"></i>
-		<div class="header" id="bill-detail-header">
-			消费详情 <a class="ui huge red label"><i class="icon yen"></i> <span></span>
-			</a>
-		</div>
+		<div class="header">消费详情</div>
 		<div class="content" style="padding-top: 20px;">
 			<div class="ui segment">
-				<div class="ui toggle checkbox czzImage" style="margin-top: 10px;">
+
+				<div class="2 ui buttons">
+					<div class="ui active button czsOwn">个人消费</div>
+					<div class="ui button czsGroup">集体消费</div>
+				</div>
+
+				<div class="ui toggle checkbox czzImage"
+					style="margin-top: 5px; margin-left: 20px;">
 					<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
 						for="">图文模式</label>
 				</div>
-				<div class="ui toggle checkbox czzGroup" style="margin-top: 10px;">
-					<input type="checkbox" name="mode" id="group-ui-checkbox">
-					<label for="">集体消费</label>
-				</div>
 
-				<div class="ui green vertical animated button czsPrint">
+				<div class="ui green vertical animated button czsPrint"
+					style="float: right; margin-left: 20px;">
 					<div class="hidden content">打印个人账单</div>
 					<div class="visible content">
 						<i class="print icon"></i>账单打印
 					</div>
 				</div>
 
-				<div class="ui red animated fade button czsTakeBill" czs-status="3">
+				<div class="ui red animated fade button czsTakeBill"
+					style="float: right;" czs-status="3">
 					<div class="visible content">￥12.99</div>
 					<div class="hidden content">个人结账</div>
 				</div>
@@ -430,7 +436,10 @@
 
 	<!-- 消费账单打印 -->
 	<div style="display: none;">
-		<div class="ui bulleted list menuList"></div>
+		<div id="bill-print-div">
+			<div class="ui bulleted list menuList"></div>
+			<div id="print-total-div"></div>
+		</div>
 	</div>
 
 	<script type="text/javascript">
@@ -439,6 +448,7 @@
 		var _scene_id;
 		var _consumer_id;
 		var _interval;
+		var _bill_total;
 
 		function billDetailHandler(consume_code, scene_id, consumer_id) {
 			_consume_code = consume_code;
@@ -454,7 +464,7 @@
 				if (msg.succeed) {
 					$('#billDetailTpl').tmpl(msg.values).appendTo($('#bill-detail-ui-stackable-items').empty());
 					$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
-					$('#bill-detail-header span').text(msg.value)
+					$('#print-total-div').text('总价: ￥' + msg.value);
 					$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
 					$('#bill-detail-modal').modal('show');
 				} else {
@@ -511,6 +521,7 @@
 				sceneId : _scene_id
 			}, function(msg) {
 				if (msg.succeed) {
+					_bill_total = msg.value;
 					$('#bill-total-p').html(
 							'消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.value + '</a>');
 					$('#confirm-ui-modal').modal('show');
@@ -580,7 +591,8 @@
 						status : _status,
 						consumeCode : _consume_code,
 						consumerId : _consumer_id,
-						sceneId : _scene_id
+						sceneId : _scene_id,
+						billTotal : _bill_total
 					}, function(msg) {
 						if (msg.succeed) {
 							$('#item-tr-' + _consumer_id).remove();
@@ -644,29 +656,16 @@
 				}
 			});
 
-			$('.ui.toggle.checkbox.czsFilterOver').checkbox({
+			$('.ui.checkbox.czsFilterOver').checkbox({
 				onEnable : function() {
 					$('.ui.label.czsStatus').each(function() {
 						$(this).attr('href', $(this).attr('href').replace('filterOver=0', 'filterOver=1'));
 					});
-
-					//window.location = window.location.href.replace('filterOver=0', 'filterOver=1');
-					/* if (!!_interval) {
-						$('.ui.label.total').attr('href', "business/list.do?filterOver=1&interval=" + _interval);
-					} else {
-						$('.ui.label.total').attr('href', "business/list.do?filterOver=1");
-					} */
 				},
 				onDisable : function() {
 					$('.ui.label.czsStatus').each(function() {
 						$(this).attr('href', $(this).attr('href').replace('filterOver=1', 'filterOver=0'));
 					});
-					//window.location = window.location.href.replace('filterOver=1', 'filterOver=0');
-					/* if (!!_interval) {
-						$('.ui.label.total').attr('href', "business/list.do?filterOver=0&interval=" + _interval);
-					} else {
-						$('.ui.label.total').attr('href', "business/list.do?filterOver=0");
-					} */
 				}
 			});
 
@@ -696,7 +695,7 @@
 			});
 
 			if ('${filterOver}' != '' && '${filterOver}' != '0') {
-				$('.ui.toggle.checkbox.czsFilterOver').checkbox('enable');
+				$('.ui.checkbox.czsFilterOver').checkbox('enable');
 			}
 
 			if ('${interval}' != '' && '${interval}' != '0') {
@@ -724,61 +723,74 @@
 						}
 					});
 
-			$('.ui.toggle.checkbox.czzGroup').checkbox(
-					{
-						onEnable : function() {
-							$('.ui.button.czsPrint > .hidden.content').text('打印集体账单');
-							$('.ui.button.czsTakeBill > .hidden.content').text('集体结账');
-							$('.ui.button.czsTakeBill').attr('czs-status', '4');
-							$.post('user/billDetail.do', {
-								type : 1,//集体消费查询
-								consumeCode : _consume_code,
-								sceneId : _scene_id,
-								consumerId : _consumer_id
-							}, function(msg) {
-								if (msg.succeed) {
-									$('#billDetailTpl').tmpl(msg.values).appendTo(
-											$('#bill-detail-ui-stackable-items').empty());
-									$('#bill-detail-header span').text(msg.value)
-									$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
+			$('.ui.button.czsOwn').click(
+					function() {
+						$('.ui.button.czsGroup').removeClass('active');
+						$(this).addClass('active');
 
-									if ($('#mode-ui-checkbox')[0].checked) {
-										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end()
-												.find('img').each(function() {
-													$(this).attr("src", $(this).attr('czz-src'));
-												});
-									}
-								} else {
-									alert('操作失败!')
+						$('.ui.button.czsPrint > .hidden.content').text('打印个人账单');
+						$('.ui.button.czsTakeBill > .hidden.content').text('个人结账');
+						$('.ui.button.czsTakeBill').attr('czs-status', '3');
+
+						$.post('user/billDetail.do', {
+							type : 0,//个人消费查询
+							consumeCode : _consume_code,
+							sceneId : _scene_id,
+							consumerId : _consumer_id
+						}, function(msg) {
+							if (msg.succeed) {
+								$('#billDetailTpl').tmpl(msg.values).appendTo(
+										$('#bill-detail-ui-stackable-items').empty());
+
+								$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
+								$('#print-total-div').text('总价: ￥' + msg.value);
+
+								$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
+								if ($('#mode-ui-checkbox')[0].checked) {
+									$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find(
+											'img').each(function() {
+										$(this).attr("src", $(this).attr('czz-src'));
+									});
 								}
-							});
-						},
-						onDisable : function() {
-							$('.ui.button.czsPrint > .hidden.content').text('打印个人账单');
-							$('.ui.button.czsTakeBill > .hidden.content').text('个人结账');
-							$('.ui.button.czsTakeBill').attr('czs-status', '3');
-							$.post('user/billDetail.do', {
-								type : 0,//个人消费查询
-								consumeCode : _consume_code,
-								sceneId : _scene_id,
-								consumerId : _consumer_id
-							}, function(msg) {
-								if (msg.succeed) {
-									$('#billDetailTpl').tmpl(msg.values).appendTo(
-											$('#bill-detail-ui-stackable-items').empty());
-									$('#bill-detail-header span').text(msg.value);
-									$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
-									if ($('#mode-ui-checkbox')[0].checked) {
-										$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end()
-												.find('img').each(function() {
-													$(this).attr("src", $(this).attr('czz-src'));
-												});
-									}
-								} else {
-									alert('操作失败!')
+							} else {
+								alert('操作失败!')
+							}
+						});
+					});
+			$('.ui.button.czsGroup').click(
+					function() {
+						$('.ui.button.czsOwn').removeClass('active');
+						$(this).addClass('active');
+
+						$('.ui.button.czsPrint > .hidden.content').text('打印集体账单');
+						$('.ui.button.czsTakeBill > .hidden.content').text('集体结账');
+						$('.ui.button.czsTakeBill').attr('czs-status', '4');
+
+						$.post('user/billDetail.do', {
+							type : 1,//集体消费查询
+							consumeCode : _consume_code,
+							sceneId : _scene_id,
+							consumerId : _consumer_id
+						}, function(msg) {
+							if (msg.succeed) {
+								$('#billDetailTpl').tmpl(msg.values).appendTo(
+										$('#bill-detail-ui-stackable-items').empty());
+
+								$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
+								$('#print-total-div').text('总价: ￥' + msg.value);
+
+								$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
+
+								if ($('#mode-ui-checkbox')[0].checked) {
+									$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find(
+											'img').each(function() {
+										$(this).attr("src", $(this).attr('czz-src'));
+									});
 								}
-							});
-						}
+							} else {
+								alert('操作失败!')
+							}
+						});
 					});
 
 			var requestFunction = function() {
@@ -832,7 +844,7 @@
 			});
 
 			$('.ui.button.czsPrint').click(function() {
-				$('.ui.list.menuList').jqprint();
+				$('#bill-print-div').jqprint();
 			});
 			$('.ui.button.czsTakeBill').click(function() {
 				checkoutHandler($(this).attr('czs-status'), _consume_code, _scene_id, _consumer_id);

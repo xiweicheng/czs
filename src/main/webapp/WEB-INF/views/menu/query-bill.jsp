@@ -33,17 +33,17 @@
 
 	<h4 class="ui top attached header" style="margin-top: 0px;">${title}
 		<div class="ui checkbox czsImage" style="float: right;">
-			<input type="checkbox" name="mode"> <label>图文模式</label>
+			<input type="checkbox"> <label>图文模式</label>
 		</div>
 	</h4>
 	<div class="2 fluid ui buttons">
 		<c:if test="${isOwn == 1}">
-			<div class="ui active huge button czsOwn">个人订单</div>
-			<div class="ui huge button czsGroup">集体订单</div>
+			<div class="ui active large button czsOwn">个人订单</div>
+			<div class="ui large button czsGroup">集体订单</div>
 		</c:if>
 		<c:if test="${isOwn == 0}">
-			<div class="ui huge button czsOwn">个人订单</div>
-			<div class="ui active huge button czsGroup">集体订单</div>
+			<div class="ui large button czsOwn">个人订单</div>
+			<div class="ui active large button czsGroup">集体订单</div>
 		</c:if>
 	</div>
 	<form class="czsOwn" action="menu/free/billQuery.do" method="post">
@@ -62,11 +62,11 @@
 
 	<c:if test="${isOwn == 1}">
 		<div class="1 fluid ui buttons">
-			<div class="ui huge button czsSubmit" style="display: none;">提交订单</div>
+			<div class="ui large button czsSubmit" style="display: none;">提交订单</div>
 		</div>
 	</c:if>
 
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="padding: 5px;">
 		<div class="ui left aligned one column grid">
 			<div class="row">
 				<div class="column">
@@ -78,23 +78,21 @@
 									<img style="width: 100%;" src=""
 										czz-src="../../../${item.path}640/${item.file_name}"
 										onclick="imageHandler('${item.id}')">
-									<c:if test="${item.status == 1}">
-										<a class="like ui corner label"> <i class="checkmark icon"></i>
-									</c:if>
-									<c:if test="${item.status == 0}">
-										<a class="like ui corner label"> <i
-											class="heart empty icon"></i>
+									<c:if test="${item.fav_status == 0}">
+										<a class="like ui corner label"> <i class="heart icon"></i>
 									</c:if>
 									</a>
 								</div>
 								<div class="content">
 									<div>
-										<span class="name" style="font-weight: bold;" onclick="imageHandler('${item.id}')">${item.name}</span>
-										<div class="ui huge label"
+										<span class="name" style="font-weight: bold;"
+											onclick="imageHandler('${item.id}')">${item.name}</span>
+
+										<div class="ui huge label" style="float: right;"
 											onclick="imageHandler('${item.id}')">
 											<i class="photo icon"></i>
 										</div>
-										<div class="ui huge label"
+										<div class="ui huge label" style="float: right;"
 											onclick="introduceHandler('${item.id}')">
 											<i class="comment icon"></i>
 										</div>
@@ -105,10 +103,10 @@
 										onclick="introduceHandler('${item.id}')">${item.introduce}</p>
 									<div class="ui divider"></div>
 									<div style="margin-top: 10px; margin-bottom: 10px;">
-										<div class="ui red label">
+										<div class="ui green label">
 											<i class="yen icon"></i>${item.price}</div>
-										<div class="ui green label">${item.category}</div>
-										<div class="ui blue label">${item.taste}</div>
+										<div class="ui label">${item.category}</div>
+										<div class="ui label">${item.taste}</div>
 									</div>
 									<div class="ui divider"></div>
 
@@ -116,16 +114,16 @@
 									<c:if test="${isOwn == 1}">
 										<div class="2 fluid ui buttons">
 											<c:if test="${item.status == 3}">
-												<div class="negative ui button disabled">减一份</div>
+												<div class="ui button disabled">减一份</div>
 												<div class="or"></div>
-												<div class="positive ui button disabled">加一份</div>
+												<div class="ui button disabled">加一份</div>
 											</c:if>
 											<c:if test="${item.status == 0 || item.status == 1}">
-												<div class="negative ui button"
+												<div class="ui button"
 													onclick="billReduceHandler('${item.menu_id}', '${openId}', ${item.price})">
 													减一份</div>
 												<div class="or"></div>
-												<div class="positive ui button" id="hold-ui-btn-${item.id}"
+												<div class="ui button" id="hold-ui-btn-${item.id}"
 													onclick="billAddHandler('${item.menu_id}', '${openId}', ${item.price})">
 													加一份</div>
 											</c:if>
@@ -140,7 +138,7 @@
 												<div class="detail">
 													<c:if test="${item.status == 0}">待提交</c:if>
 													<c:if test="${item.status == 1}">已下单</c:if>
-													<c:if test="${item.status == 3}">已接受</c:if>
+													<c:if test="${item.status == 3}">已接单</c:if>
 												</div>
 											</div>
 										</div>
@@ -151,11 +149,11 @@
 										<c:forEach items="${item.menuBill}" var="item2">
 											<div class="ui label"
 												style="margin-top: 5px; margin-bottom: 5px;">
-												${item.nickname}(<span id="item-copies-${item.menu_id}">${item.copies}</span>)
+												${item2.nickname}(<span>${item2.copies}</span>)
 												<div class="detail">
-													<c:if test="${item.status == 0}">待提交</c:if>
-													<c:if test="${item.status == 1}">已下单</c:if>
-													<c:if test="${item.status == 3}">已接受</c:if>
+													<c:if test="${item2.status == 0}">待提交</c:if>
+													<c:if test="${item2.status == 1}">已下单</c:if>
+													<c:if test="${item2.status == 3}">已接单</c:if>
 												</div>
 											</div>
 										</c:forEach>
@@ -171,7 +169,7 @@
 
 	<c:if test="${isOwn == 1}">
 		<div class="1 fluid ui buttons">
-			<div class="ui huge button czsSubmit" style="display: none;">提交订单</div>
+			<div class="ui large button czsSubmit" style="display: none;">提交订单</div>
 		</div>
 	</c:if>
 
@@ -195,7 +193,7 @@
 			<div class="left">
 				<i class="warning icon"></i>
 			</div>
-			<div class="right" style="font-size: 30px;">
+			<div class="right" style="font-size: 25px;">
 				<p>确认要提交订单吗?</p>
 			</div>
 		</div>

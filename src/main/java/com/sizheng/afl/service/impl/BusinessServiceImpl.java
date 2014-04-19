@@ -533,7 +533,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public Boolean checkout(Locale locale, BusinessConsumer businessConsumer) {
+	public Boolean checkout(Locale locale, final BusinessConsumer businessConsumer) {
 
 		if (businessConsumer.getStatus() == 3) {
 			BusinessConsumer businessConsumer2 = new BusinessConsumer();
@@ -577,6 +577,15 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 					hibernateTemplate.update(user2);
 				}
 
+				hibernateTemplate.execute(new HibernateCallback<Integer>() {
+
+					@Override
+					public Integer doInHibernate(Session session) throws HibernateException, SQLException {
+						return session.createQuery("update MenuBill set status=1 where status=0 and consumeCode=?")
+								.setString(0, businessConsumer.getConsumeCode()).executeUpdate();
+					}
+				});
+
 				return true;
 			} else {
 				logger.error("消费信息不存在!");
@@ -595,6 +604,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				for (Object object : list) {
 					BusinessConsumer businessConsumer3 = (BusinessConsumer) object;
 					businessId = businessConsumer3.getBusinessId();
+
+					final String consumeCode = businessConsumer3.getConsumeCode();
 
 					if (businessConsumer3.getStatus() == 1 || businessConsumer3.getStatus() == 3
 							|| businessConsumer3.getStatus() == 4) {
@@ -616,6 +627,16 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 							hibernateTemplate.update(user2);
 						}
+
+						hibernateTemplate.execute(new HibernateCallback<Integer>() {
+
+							@Override
+							public Integer doInHibernate(Session session) throws HibernateException, SQLException {
+								return session
+										.createQuery("update MenuBill set status=1 where status=0 and consumeCode=?")
+										.setString(0, consumeCode).executeUpdate();
+							}
+						});
 					}
 				}
 

@@ -33,10 +33,9 @@
 
 	<!-- top title bar -->
 	<h4 class="ui top attached header" style="margin-top: 44px;">
-		我的菜单
-		<div class="ui checkbox" style="margin-left: 10px; float: right;">
-			<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
-				for="">图文模式</label>
+		商家菜单
+		<div class="ui checkbox czsImage" style="margin-left: 10px; float: right;">
+			<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label>图文模式</label>
 		</div>
 	</h4>
 
@@ -81,7 +80,7 @@
 		</form>
 	</div>
 
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="padding: 5px;">
 		<!-- menu content list -->
 		<div class="ui left aligned one column grid">
 			<div class="row">
@@ -94,29 +93,28 @@
 									<img style="width: 100%;" src=""
 										czz-src="../../../${item.path}640/${item.file_name}"
 										onclick="imageHandler('${item.id}')">
-									<c:if test="${item.status == 1}">
-										<a class="like ui corner label"> <i class="checkmark icon"></i>
-									</c:if>
-									<c:if test="${item.status == 0}">
-										<a class="like ui corner label"> <i
-											class="heart empty icon"></i>
+									<c:if test="${item.fav_status == 0}">
+										<a class="like ui corner label"> <i class="heart icon"></i>
 									</c:if>
 									</a>
 								</div>
 								<div class="content">
 									<div>
-										<span class="name" style="font-weight: bold;" onclick="imageHandler('${item.id}')">${item.name}</span>
-										<div class="ui label" style="float: right;">${item.order_times}</div>
+										<span class="name"
+											style="font-weight: bold; margin-left: 8px;"
+											onclick="imageHandler('${item.id}')">${item.name}</span>
+										<div class="ui left corner label">
+											<div class="text">${item.order_times}</div>
+										</div>
 
-										<div class="ui huge label"
+										<div class="ui huge label" style="float: right;"
 											onclick="imageHandler('${item.id}')">
 											<i class="photo icon"></i>
 										</div>
-										<div class="ui huge label"
+										<div class="ui huge label" style="float: right;"
 											onclick="introduceHandler('${item.id}')">
 											<i class="comment icon"></i>
 										</div>
-										<div style="clear: both;"></div>
 									</div>
 
 									<p class="description" style="display: none;"
@@ -124,21 +122,22 @@
 										onclick="introduceHandler('${item.id}')">${item.introduce}</p>
 									<div class="ui divider"></div>
 									<div style="margin-top: 10px; margin-bottom: 10px;">
-										<div class="ui green label">${item.category}</div>
-										<div class="ui blue label">${item.taste}</div>
+										<div class="ui label">${item.category}</div>
+										<div class="ui label">${item.taste}</div>
 									</div>
 									<div class="ui divider"></div>
 									<div class="2 fluid ui buttons">
 
-										<c:if test="${item.status == 0 || item.status == 1 || item.status == 3}">
-											<div class="positive ui button disabled"
+										<c:if
+											test="${item.status == 0 || item.status == 1 || item.status == 3}">
+											<div class="ui button disabled"
 												id="confirm-ui-btn-${item.id}">
 												<i class="yen icon"></i>${item.price}
 											</div>
 										</c:if>
-										<c:if test="${item.status != 0 && item.status != 1 && item.status != 3}">
-											<div class="positive ui button"
-												id="confirm-ui-btn-${item.id}"
+										<c:if
+											test="${item.status != 0 && item.status != 1 && item.status != 3}">
+											<div class="ui button" id="confirm-ui-btn-${item.id}"
 												onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')">
 												<i class="yen icon"></i>${item.price}
 											</div>
@@ -148,14 +147,13 @@
 
 										<c:if
 											test="${(empty item.fav_status) || item.fav_status == 1}">
-											<div class="negative ui button" id="hold-ui-btn-${item.id}"
+											<div class="ui button" id="hold-ui-btn-${item.id}"
 												onclick="menuStowHandler(this, '${item.id}', '${openId}')">
 												<i class="heart empty icon"></i>收藏
 											</div>
 										</c:if>
 										<c:if test="${item.fav_status == 0}">
-											<div class="negative ui button disabled"
-												id="hold-ui-btn-${item.id}">
+											<div class="ui button disabled" id="hold-ui-btn-${item.id}">
 												<i class="heart empty icon"></i>已收藏
 											</div>
 										</c:if>
@@ -163,13 +161,48 @@
 									</div>
 
 									<div style="margin-top: 10px;" class="czsCopies">
+
+										<div class="ui label"
+											style="margin-top: 5px; margin-bottom: 5px;">
+											自己(${item.copies})
+											<div class="detail">
+												<c:if test="${item.status == 0}">
+													<a
+														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a>
+												</c:if>
+												<c:if test="${item.status == 1}">
+													<a
+														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已下单</a>
+												</c:if>
+												<c:if test="${item.status == 3}">
+													<a
+														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已接单</a>
+												</c:if>
+											</div>
+										</div>
 										<c:forEach items="${item.menuBill}" var="item2">
-											<c:if test="${item2.status == 0 || item2.status == 1 || item2.status == 3}">
-												<div class="ui label"
-													style="margin-top: 5px; margin-bottom: 5px;">
-													<c:if test="${item.consumer_id == item2.consumer_id}">自己(${item2.copies})</c:if>
-													<c:if test="${item.consumer_id != item2.consumer_id}">${item2.nickname}(${item2.copies})</c:if>
-												</div>
+											<c:if
+												test="${item2.status == 0 || item2.status == 1 || item2.status == 3}">
+												<c:if test="${item.consumer_id != item2.consumer_id}">
+													<div class="ui label"
+														style="margin-top: 5px; margin-bottom: 5px;">
+														${item2.nickname}(${item2.copies})
+														<div class="detail">
+															<c:if test="${item2.status == 0}">
+																<a
+																	href="menu/free/billQuery.do?isOwn=0&consumerId=${openId}">待提交</a>
+															</c:if>
+															<c:if test="${item2.status == 1}">
+																<a
+																	href="menu/free/billQuery.do?isOwn=0&consumerId=${openId}">已下单</a>
+															</c:if>
+															<c:if test="${item2.status == 3}">
+																<a
+																	href="menu/free/billQuery.do?isOwn=0&consumerId=${openId}">已接单</a>
+															</c:if>
+														</div>
+													</div>
+												</c:if>
 											</c:if>
 										</c:forEach>
 									</div>
@@ -184,7 +217,6 @@
 
 	<!-- 页面底部填充 -->
 	<div style="height: 44px;"></div>
-
 
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu">
@@ -203,15 +235,18 @@
 		<div class="header">确认提示</div>
 		<div class="content">
 			<div class="ui message" style="text-align: center;">
-				<a class="ui huge purple circular label"><i class="cart icon"></i>
-					<span id="czsCountSpan">1</span></a><a
-					class="ui huge red circular label"><i class="yen icon"></i> <span
-					id="czsTotalSpan"></span></a>
+
+				<div class="ui huge green label">
+					<i class="cart icon"></i> <span id="czsCountSpan">1</span>
+					<div class="detail">
+						<i class="yen icon"></i><span id="czsTotalSpan">300.00</span>
+					</div>
+				</div>
 			</div>
-			<div class="2 fluid ui huge buttons">
-				<div class="negative fluid ui button czsReduce">减一份</div>
+			<div class="2 fluid ui large buttons">
+				<div class="fluid ui button czsReduce">减一份</div>
 				<div class="or"></div>
-				<div class="positive fluid ui button czsAdd">加一份</div>
+				<div class="fluid ui button czsAdd">加一份</div>
 			</div>
 		</div>
 		<div class="actions">
@@ -294,7 +329,7 @@
 
 			$('.ui.modal.czsAdd > .header').text(name);
 			$('#czsCountSpan').text(1);
-			$('#czsTotalSpan').text(_price, 2);
+			$('#czsTotalSpan').text(format_number(_price, 2));
 			$('.ui.modal.czsAdd').modal('show');
 
 		}
@@ -350,8 +385,8 @@
 							}, function(msg) {
 								if (msg.succeed) {
 									$('#confirm-ui-btn-' + _menuId).addClass('disabled');
-									$('#confirm-ui-btn-' + _menuId).parent().next().append(
-											'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己(' + copies + ')');
+									$('#confirm-ui-btn-' + _menuId).parent().next().prepend(
+											'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己(' + copies + ')<div class="detail"><a href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a></div></div>');
 
 									$('#bill-total-span').text(
 											format_number(Number($('#bill-total-span').text()) + Number(_price)
@@ -363,8 +398,7 @@
 							});
 						}
 					});
-
-			$('.ui.checkbox').checkbox({
+			$('.ui.checkbox.czsImage').checkbox({
 				onEnable : function() {
 					$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
 						$(this).attr('src', $(this).attr('czz-src'));

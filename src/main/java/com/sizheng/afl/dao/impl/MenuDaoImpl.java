@@ -98,6 +98,8 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 			sqlSb.append("ORDER BY menu.price DESC, menu.id ASC\n");
 		} else if (SysConstant.ORDER_LIKE.equals(order)) {
 			sqlSb.append("ORDER BY menu.order_times DESC, menu.id ASC\n");
+		} else {
+			sqlSb.append("ORDER BY menu.category_id\n");
 		}
 
 		return getMapList(sqlSb, consumeCode, consumerId, menu.getOwner());

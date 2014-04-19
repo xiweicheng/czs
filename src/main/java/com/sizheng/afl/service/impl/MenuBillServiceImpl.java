@@ -190,6 +190,75 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 	}
 
 	@Override
+	public List<Map<String, Object>> query4MapList2(Locale locale, MenuBill menuBill) {
+		return menuBillDao.query2(locale, menuBill, null, null);
+	}
+
+	@Override
+	public List<Map<String, Object>> query4GroupMapList2(Locale locale, MenuBill menuBill) {
+
+		List<Map<String, Object>> list = menuBillDao.queryGroup2(locale, menuBill, null, null);
+
+		Map<String, Map<String, Object>> mapMap = new HashMap<String, Map<String, Object>>();
+
+		for (Map<String, Object> map : list) {
+			String id = StringUtil.getNotNullString(map, "menu_id");
+
+			if (!mapMap.containsKey(id)) {
+				mapMap.put(id, map);
+				List<Map<String, Object>> mapList = new ArrayList<>();
+				map.put("menuBill", mapList);
+				Map<String, Object> map2 = new HashMap<>();
+				mapList.add(map2);
+				map2.put("id", map.get("id"));
+				map2.put("date_time", map.get("date_time"));
+				map2.put("status", map.get("status"));
+				map2.put("copies", map.get("copies"));
+				map2.put("consumer_id", map.get("consumer_id"));
+				map2.put("nickname", map.get("nickname"));
+				map2.put("consume_code", map.get("consume_code"));
+
+				if (!menuBill.getConsumeCode().equals(map.get("consume_code"))) {
+					map.remove("id");
+					map.remove("date_time");
+					map.remove("status");
+					map.remove("copies");
+					map.remove("consumer_id");
+					map.remove("nickname");
+					map.remove("consume_code");
+				}
+
+			} else {
+				Map<String, Object> map2 = mapMap.get(id);
+				List<Map<String, Object>> mapList = (List<Map<String, Object>>) map2.get("menuBill");
+
+				Map<String, Object> map3 = new HashMap<>();
+				map3.put("id", map.get("id"));
+				map3.put("date_time", map.get("date_time"));
+				map3.put("status", map.get("status"));
+				map3.put("copies", map.get("copies"));
+				map3.put("consumer_id", map.get("consumer_id"));
+				map3.put("nickname", map.get("nickname"));
+				map3.put("consume_code", map.get("consume_code"));
+				mapList.add(map3);
+
+				if (menuBill.getConsumeCode().equals(map.get("consume_code"))) {
+					map2.put("id", map.get("id"));
+					map2.put("date_time", map.get("date_time"));
+					map2.put("status", map.get("status"));
+					map2.put("copies", map.get("copies"));
+					map2.put("consumer_id", map.get("consumer_id"));
+					map2.put("nickname", map.get("nickname"));
+					map2.put("consume_code", map.get("consume_code"));
+				}
+			}
+		}
+
+		return new ArrayList<>(mapMap.values());
+
+	}
+
+	@Override
 	public double getOwnTotal(Locale locale, String openId) {
 
 		User user = new User();

@@ -60,5 +60,9 @@ public interface IMenuBillDao {
 	 * @return
 	 */
 	List<Map<String, Object>> queryGroup(Locale locale, MenuBill menuBill, Long start, Long limit);
+
+	List<Map<String, Object>> query2(Locale locale, MenuBill menuBill, Long start, Long limit);
+
+	List<Map<String, Object>> queryGroup2(Locale locale, MenuBill menuBill, Long start, Long limit);
 	
 }

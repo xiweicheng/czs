@@ -478,7 +478,7 @@ public class UserController extends BaseController {
 
 		model.addAttribute("stowList", stowList);
 		model.addAttribute("openId", openId);
-		model.addAttribute("total", total);
+		model.addAttribute("total", NumberUtil.format2Money(total));
 
 		return "menu/menu-stow";
 
@@ -512,9 +512,9 @@ public class UserController extends BaseController {
 		List<Map<String, Object>> list = null;
 
 		if (SysConstant.NUMBER_0.equals(type)) {
-			list = menuBillService.query4MapList(locale, menuBill);
+			list = menuBillService.query4MapList2(locale, menuBill);
 		} else if (SysConstant.NUMBER_1.equals(type)) {
-			list = menuBillService.query4GroupMapList(locale, menuBill);
+			list = menuBillService.query4GroupMapList2(locale, menuBill);
 		} else {
 			return new ResultMsg(false);
 		}
@@ -522,8 +522,8 @@ public class UserController extends BaseController {
 		double total = 0;
 
 		for (Map<String, Object> map : list) {
+
 			Double price = NumberUtil.getDouble(map, "price");
-			Double privilege = NumberUtil.getDouble(map, "privilege");
 
 			int copies = 0;
 
@@ -537,15 +537,7 @@ public class UserController extends BaseController {
 			}
 
 			if (price != null) {
-				if (privilege != null && privilege > 0) {
-					if (privilege >= 1) {
-						total += ((price - privilege) * copies);
-					} else {
-						total += ((price * privilege) * copies);
-					}
-				} else {
-					total += (price * copies);
-				}
+				total += (price * copies);
 			}
 		}
 

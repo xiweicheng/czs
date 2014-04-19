@@ -44,6 +44,7 @@ import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.EncoderUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
+import com.sizheng.afl.util.ThreadUtil;
 import com.sizheng.afl.util.WebUtil;
 
 /**
@@ -996,7 +997,7 @@ public class BusinessController extends BaseController {
 	@RequestMapping("checkout")
 	@ResponseBody
 	public ResultMsg checkout(HttpServletRequest request, Locale locale,
-			@ModelAttribute BusinessConsumer businessConsumer) {
+			@ModelAttribute final BusinessConsumer businessConsumer, @RequestParam("billTotal") Double billTotal) {
 
 		logger.debug("顾客结账确认处理【商家】");
 
@@ -1005,10 +1006,28 @@ public class BusinessController extends BaseController {
 		Assert.notNull(businessConsumer.getStatus());
 		Assert.notNull(businessConsumer.getConsumerId());
 
+		double consume = 0;
+
+		if (businessConsumer.getStatus() == 3) {
+			consume = businessService.getConsume(locale, businessConsumer.getConsumeCode(), "own");
+		} else if (businessConsumer.getStatus() == 4) {
+			consume = businessService.getConsume(locale, businessConsumer.getConsumeCode(), "group");
+		}
+
+		if (consume != billTotal) {
+			return new ResultMsg(false, new Msg(false, "结账金额不一致,请刷新数据后再操作!"));
+		}
+
 		Boolean value = businessService.checkout(locale, businessConsumer);
 
 		if (value) {
-			weiXinApiInvoker.sendServiceMsg(businessConsumer.getConsumerId(), "结账成功!\n欢迎再次光顾!\n\n记得分享本店给自己的人脉圈哦!");
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(businessConsumer.getConsumerId(),
+							"结账成功!\n欢迎再次光顾!\n\n记得分享本店给自己的人脉圈哦!");
+				}
+			});
+
 		}
 
 		return new ResultMsg(value);

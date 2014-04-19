@@ -33,11 +33,11 @@
 
 	<h4 class="ui top attached header" style="margin-top: 0px;">
 		收藏美食
-		<div class="ui toggle checkbox czsImage" style="float: right;">
-			<input type="checkbox" name="mode"> <label>图文模式</label>
+		<div class="ui checkbox czsImage" style="float: right;">
+			<input type="checkbox"> <label>图文模式</label>
 		</div>
 	</h4>
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="padding: 5px;">
 		<div class="ui left aligned one column grid">
 			<div class="row">
 				<div class="column">
@@ -60,19 +60,22 @@
 								</div>
 								<div class="content">
 									<div>
-										<span class="name" style="font-weight: bold;"
+										<span class="name"
+											style="font-weight: bold; margin-left: 8px;"
 											onclick="imageHandler('${item.id}')">${item.name}</span>
-										<div class="ui label" style="float: right;">${item.order_times}</div>
 
-										<div class="ui huge label"
+										<div class="ui left corner label">
+											<div class="text">${item.order_times}</div>
+										</div>
+
+										<div class="ui huge label" style="float: right;"
 											onclick="imageHandler('${item.id}')">
 											<i class="photo icon"></i>
 										</div>
-										<div class="ui huge label"
+										<div class="ui huge label" style="float: right;"
 											onclick="introduceHandler('${item.id}')">
 											<i class="comment icon"></i>
 										</div>
-										<div style="clear: both;"></div>
 									</div>
 
 									<p class="description" style="display: none;"
@@ -80,23 +83,22 @@
 										onclick="introduceHandler('${item.id}')">${item.introduce}</p>
 									<div class="ui divider"></div>
 									<div style="margin-top: 10px; margin-bottom: 10px;">
-										<div class="ui green label">${item.category}</div>
-										<div class="ui blue label">${item.taste}</div>
+										<div class="ui label">${item.category}</div>
+										<div class="ui label">${item.taste}</div>
 									</div>
 									<div class="ui divider"></div>
 									<div class="2 fluid ui buttons">
 
 										<c:if
 											test="${item.status == 0 || item.status == 1 || item.status == 3}">
-											<div class="positive ui button disabled"
+											<div class="ui button disabled"
 												id="confirm-ui-btn-${item.id}">
 												<i class="yen icon"></i>${item.price}
 											</div>
 										</c:if>
 										<c:if
 											test="${(empty item.status) || (item.status != 0 && item.status != 1 && item.status != 3)}">
-											<div class="positive ui button"
-												id="confirm-ui-btn-${item.id}"
+											<div class="ui button" id="confirm-ui-btn-${item.id}"
 												onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')">
 												<i class="yen icon"></i>${item.price}
 											</div>
@@ -104,9 +106,9 @@
 
 										<div class="or"></div>
 
-										<div class="negative ui button" id="hold-ui-btn-${item.id}"
+										<div class="ui button" id="hold-ui-btn-${item.id}"
 											onclick="menuStowHandler('${item.id}', '${openId}')">
-											<i class="heart empty icon"></i>移除收藏
+											<i class="heart empty icon"></i>移除
 										</div>
 
 									</div>
@@ -117,9 +119,18 @@
 												style="margin-top: 5px; margin-bottom: 5px;">
 												自己(${item.copies})
 												<div class="detail">
-													<c:if test="${item.status == 0}">待提交</c:if>
-													<c:if test="${item.status == 1}">已下单</c:if>
-													<c:if test="${item.status == 3}">已接受</c:if>
+													<c:if test="${item.status == 0}">
+														<a
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a>
+													</c:if>
+													<c:if test="${item.status == 1}">
+														<a
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已下单</a>
+													</c:if>
+													<c:if test="${item.status == 3}">
+														<a
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已接单</a>
+													</c:if>
 												</div>
 
 											</div>
@@ -140,15 +151,17 @@
 		<div class="header">确认提示</div>
 		<div class="content">
 			<div class="ui message" style="text-align: center;">
-				<a class="ui huge purple circular label"><i class="cart icon"></i>
-					<span id="czsCountSpan">1</span></a><a
-					class="ui huge red circular label"><i class="yen icon"></i> <span
-					id="czsTotalSpan"></span></a>
+				<div class="ui huge green label">
+					<i class="cart icon"></i> <span id="czsCountSpan">1</span>
+					<div class="detail">
+						<i class="yen icon"></i><span id="czsTotalSpan">300.00</span>
+					</div>
+				</div>
 			</div>
 			<div class="2 fluid ui huge buttons">
-				<div class="negative fluid ui button czsReduce">减一份</div>
+				<div class="fluid ui button czsReduce">减一份</div>
 				<div class="or"></div>
-				<div class="positive fluid ui button czsAdd">加一份</div>
+				<div class="fluid ui button czsAdd">加一份</div>
 			</div>
 		</div>
 		<div class="actions">
@@ -295,8 +308,8 @@
 							}, function(msg) {
 								if (msg.succeed) {
 									$('#confirm-ui-btn-' + _menuId).addClass('disabled');
-									$('#confirm-ui-btn-' + _menuId).parent().next().append(
-											'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己(' + copies + ')<div class="detail">待提交</div></div>');
+									$('#confirm-ui-btn-' + _menuId).parent().next().prepend(
+											'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己(' + copies + ')<div class="detail"><a href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a></div></div>');
 
 									$('#bill-total-span').text(
 											format_number(Number($('#bill-total-span').text()) + Number(_price)

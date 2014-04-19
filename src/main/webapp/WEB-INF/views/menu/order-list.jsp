@@ -105,7 +105,7 @@
 							onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
 							href="javascript:void(0);">接受</a><a
 							class="ui purple label czsRequest"
-							onclick="acceptJoinHandler('${item.id}', '${item.menu_id}'))"
+							onclick="acceptJoinHandler('${item.id}', '${item.menu_id}')"
 							href="javascript:void(0);">合并接受</a></td>
 					</tr>
 				</c:forEach>
