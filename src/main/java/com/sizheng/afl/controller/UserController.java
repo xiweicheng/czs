@@ -474,11 +474,12 @@ public class UserController extends BaseController {
 
 		List<Map<String, Object>> stowList = userService.stowQuery(locale, openId, businessId);
 
-		double total = menuBillService.getOwnTotal(locale, openId);
+		double[] valArr = menuBillService.getOwnTotalAndCopies(locale, openId);
 
 		model.addAttribute("stowList", stowList);
 		model.addAttribute("openId", openId);
-		model.addAttribute("total", NumberUtil.format2Money(total));
+		model.addAttribute("total", NumberUtil.format2Money(valArr[0]));
+		model.addAttribute("count", (int) valArr[1]);
 
 		return "menu/menu-stow";
 

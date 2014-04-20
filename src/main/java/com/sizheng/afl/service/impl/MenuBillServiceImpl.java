@@ -259,8 +259,9 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 	}
 
 	@Override
-	public double getOwnTotal(Locale locale, String openId) {
+	public double[] getOwnTotalAndCopies(Locale locale, String openId) {
 
+		double[] valArr = new double[2];
 		User user = new User();
 		user.setUserName(openId);
 
@@ -273,6 +274,7 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 			List<Map<String, Object>> list = query4MapList(locale, menuBill);
 
 			double total = 0;
+			double count = 0;
 
 			for (Map<String, Object> map : list) {
 				Double price = NumberUtil.getDouble(map, "price");
@@ -280,12 +282,13 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 
 				if (price != null) {
 					total += (price * copies);
+					count += copies;
 				}
 			}
-			return total;
+			valArr[0] = total;
+			valArr[1] = count;
 		}
 
-		return 0;
+		return valArr;
 	}
-
 }

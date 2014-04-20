@@ -194,10 +194,14 @@
 
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu">
-		<a class="item"
-			href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}"><i
-			class="icon yen"></i><span id="bill-total-span">${total}</span></a> <a
-			class="item" href="menu/free/list4bill.do?openId=${openId}"><i
+		<a class="item" style="padding-top: 5px; padding-bottom: 5px;"
+			href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}"><div
+				style="font-size: small;">
+				<i class="cart icon"></i><span id="bill-count-span">${count}</span>份
+			</div>
+			<div style="font-size: small;">
+				<i class="icon yen"></i><span id="bill-total-span">${total}</span>
+			</div></a> <a class="item" href="menu/free/list4bill.do?openId=${openId}"><i
 			class="icon align justify"></i>商家菜单</a> <a class="item"
 			href="user/free/stowQuery.do?openId=${openId}"><i
 			class="icon heart"></i>收藏美食</a>
@@ -255,6 +259,9 @@
 					
 					var total = Number($('#bill-total-span').text());
 					$('#bill-total-span').text(format_number(total-=(price), 2));
+					var count = Number($('#bill-count-span').text());
+					$('#bill-count-span').text(count - 1);
+					
 				} else {
 					if(!!msg.msg && !!msg.msg.detail){
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
@@ -279,6 +286,8 @@
 					
 					var total = Number($('#bill-total-span').text());
 					$('#bill-total-span').text(format_number(total+=(price), 2));
+					var count = Number($('#bill-count-span').text());
+					$('#bill-count-span').text(count + 1);
 				} else {
 					if(!!msg.msg && !!msg.msg.detail){
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);

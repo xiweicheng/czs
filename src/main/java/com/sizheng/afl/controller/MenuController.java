@@ -471,12 +471,15 @@ public class MenuController extends BaseController {
 				openId);
 
 		double total = 0;
+		int count = 0;
 
 		for (Map<String, Object> map : mapList) {
 			double price = NumberUtil.getDouble(map, "price");
 			Integer copies = NumberUtil.getInteger(map, "copies");
 
 			if (copies != null) {
+
+				count += copies;
 
 				if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(NumberUtil.getShort(map, "status"))) {
 					total += (price * copies);
@@ -490,6 +493,7 @@ public class MenuController extends BaseController {
 
 		model.addAttribute("menuList", mapList);
 		model.addAttribute("total", NumberUtil.format2Money(total));
+		model.addAttribute("count", count);
 
 		MenuCategory menuCategory = new MenuCategory();
 		menuCategory.setOwner(businessOpenId);
@@ -692,6 +696,7 @@ public class MenuController extends BaseController {
 					.query4GroupMapList(locale, menuBill);
 
 			double total = 0;
+			int count = 0;
 
 			for (Map<String, Object> map : list) {
 				Double price = NumberUtil.getDouble(map, "price");
@@ -708,11 +713,13 @@ public class MenuController extends BaseController {
 
 				if (price != null) {
 					total += (price * copies);
+					count += copies;
 				}
 			}
 
 			model.addAttribute("billList", list);
 			model.addAttribute("total", format.format(total));
+			model.addAttribute("count", count);
 			model.addAttribute("isOwn", isOwn ? "1" : "0");
 			model.addAttribute("isShowImg", (isShowImg == null || !isShowImg) ? "0" : "1");
 
