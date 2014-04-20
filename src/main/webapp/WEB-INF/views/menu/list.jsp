@@ -135,7 +135,12 @@
 			});
 
 			$('#menu-item-menu-list').addClass('active');
-			$('.ui.accordion').accordion();
+
+			$('.ui.accordion').accordion({
+				onOpen : function() {
+					//alert('dd');
+				}
+			});
 
 			$('#confirm-ui-modal').modal({
 				closable : false,
@@ -157,9 +162,9 @@
 								$('#menu-item-content-' + deleteMenuId).remove();
 								return true;
 							} else {
-								if(!!msg.msg && !!msg.msg.detail){
+								if (!!msg.msg && !!msg.msg.detail) {
 									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-								}else{
+								} else {
 									$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 								}
 								$('.ui.dimmer.czsMsg > .content').show();

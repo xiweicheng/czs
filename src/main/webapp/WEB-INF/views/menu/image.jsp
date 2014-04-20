@@ -40,7 +40,7 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">菜品图片</h4>
 
-	<div class="ui segment">
+	<div class="ui segment" style="overflow: hidden;">
 		<h2>图片上传</h2>
 		<div class="ui message segment">
 			<p><b>说明:</b>选择文件或者直接拖拽文件到当前页面上!</p>
