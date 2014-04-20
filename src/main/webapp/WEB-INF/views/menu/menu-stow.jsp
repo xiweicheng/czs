@@ -31,10 +31,23 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<h4 class="ui top attached header" style="margin-top: 0px;">
 		收藏美食
-		<div class="ui checkbox czsImage" style="float: right;">
-			<input type="checkbox"> <label>图文模式</label>
+		<div class="ui small buttons"
+			style="position: absolute; right: 2px; top: 1px;">
+			<div class="ui button czsSimple">简单</div>
+			<div class="or"></div>
+			<div class="ui button czsImage">图文</div>
 		</div>
 	</h4>
 	<div class="ui segment attached" style="padding: 5px;">
@@ -72,10 +85,12 @@
 											onclick="imageHandler('${item.id}')">
 											<i class="photo icon"></i>
 										</div>
-										<div class="ui huge label" style="float: right;"
-											onclick="introduceHandler('${item.id}')">
-											<i class="comment icon"></i>
-										</div>
+										<c:if test="${! empty item.introduce}">
+											<div class="ui huge label" style="float: right;"
+												onclick="introduceHandler('${item.id}')">
+												<i class="comment icon"></i>
+											</div>
+										</c:if>
 									</div>
 
 									<p class="description" style="display: none;"
@@ -185,7 +200,7 @@
 			class="item" href="menu/free/list4bill.do?openId=${openId}"><i
 			class="icon align justify"></i>商家菜单</a> <a class="item"
 			href="user/free/stowQuery.do?openId=${openId}"><i
-			class="icon heart"></i>收藏菜品</a>
+			class="icon heart"></i>收藏美食</a>
 	</div>
 
 	<script type="text/javascript">
@@ -211,7 +226,13 @@
 				if (msg.succeed) {
 					$('#menu-item-' + menuId).remove();
 				} else {
-					alert('操作失败!')
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
@@ -265,22 +286,19 @@
 		}
 		
 		jQuery(function($) {
-
-			if('${isShowImg}' == '1'){
-				$('.ui.checkbox.czsImage').checkbox('enable');
-			}
 			
-			$('.ui.checkbox.czsImage').checkbox({
-				onEnable : function() {
-					$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
-						$(this).attr('src', $(this).attr('czz-src'));
-					});
-				},
-				onDisable : function() {
-					$('.ui.menu.czsMenuList .image').hide();
-				}
+			$('.ui.dimmer.czsMsg').click(function(){
+				$('.ui.dimmer.czsMsg > .content').hide();
 			});
-			
+
+			$('.ui.button.czsSimple').click(function(){
+				$('.ui.menu.czsMenuList .image').hide();
+			});
+			$('.ui.button.czsImage').click(function(){
+				$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
+					$(this).attr('src', $(this).attr('czz-src'));
+				});
+			});
 			
 			$('.ui.button.czsReduce').click(function() {
 				var num = Number($('#czsCountSpan').text());
@@ -316,7 +334,13 @@
 													* copies, 2))
 
 								} else {
-									alert('操作失败!')
+									if(!!msg.msg && !!msg.msg.detail){
+										$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+									}else{
+										$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+									}
+									$('.ui.dimmer.czsMsg > .content').show();
+									$('.ui.dimmer.czsMsg').dimmer('show');
 								}
 							});
 						}

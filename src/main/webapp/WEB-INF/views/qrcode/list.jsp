@@ -13,7 +13,8 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
@@ -29,6 +30,17 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -51,7 +63,8 @@
 							id="qrcode-desc-div-${item.id}">${item.description}</div>
 						<div class="extra">使用次数:${item.useTimes}
 							限制次数:${item.useLimit}</div>
-						<div class="czsEditBtn" style="display: none; position: absolute; right:0px;">
+						<div class="czsEditBtn"
+							style="display: none; position: absolute; right: 0px;">
 							<div class="ui green button" onclick="editHander('${item.id}')">编辑描述</div>
 						</div>
 					</div>
@@ -95,6 +108,11 @@
 		}
 
 		jQuery(function($) {
+
+			$('.ui.dimmer.czsMsg').click(function() {
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
+
 			$('#menu-item-qrcode-list').addClass('active');
 
 			$('#edit-desc-modal').modal({
@@ -114,7 +132,14 @@
 						if (data.succeed) {
 							$('#qrcode-desc-div-' + _id).text(desc);
 						} else {
-							alert(data.msg.detail);
+							if (!!data.msg && !!data.msg.detail) {
+								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + data.msg.detail);
+							} else {
+								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+							}
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
+
 						}
 					});
 				}

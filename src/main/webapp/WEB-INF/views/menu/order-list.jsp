@@ -49,6 +49,17 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -203,13 +214,24 @@
 					$('.ui.modal.czsBillJoin > .header').text('合并订单信息 - 共' + total + '份');
 					$('.ui.modal.czsBillJoin').modal('show');
 				} else {
-					alert(msg.msg.detail);
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
+
 				}
 
 			});
 		}
 
 		jQuery(function($) {
+
+			$('.ui.dimmer.czsMsg').click(function() {
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
 
 			$('table').tablesort().data('tablesort');
 
@@ -236,7 +258,14 @@
 							}
 							return true;
 						} else {
-							alert("操作失败!");
+							if(!!msg.msg && !!msg.msg.detail){
+								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+							}else{
+								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+							}
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
+
 						}
 					});
 				}
@@ -249,7 +278,14 @@
 							$('.item-tr-' + _menu_id).remove();
 							return true;
 						} else {
-							alert("操作失败!");
+							if(!!msg.msg && !!msg.msg.detail){
+								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+							}else{
+								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+							}
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
+
 						}
 					});
 				}

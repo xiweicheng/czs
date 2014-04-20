@@ -34,7 +34,7 @@
 		</div>
 	</div>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">信息提示</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">商家信息</h4>
 	<div class="ui segment attached">
 
 		<div class="ui segment">

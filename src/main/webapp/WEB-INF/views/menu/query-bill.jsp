@@ -31,18 +31,34 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<h4 class="ui top attached header" style="margin-top: 0px;">${title}
-		<div class="ui checkbox czsImage" style="float: right;">
-			<input type="checkbox"> <label>图文模式</label>
+		<div class="ui small buttons"
+			style="position: absolute; right: 2px; top: 2px;">
+			<div class="ui button czsSimple">简单</div>
+			<div class="or"></div>
+			<div class="ui button czsImage">图文</div>
 		</div>
 	</h4>
+
 	<div class="2 fluid ui buttons">
 		<c:if test="${isOwn == 1}">
 			<div class="ui active large button czsOwn">个人订单</div>
+			<div class="or"></div>
 			<div class="ui large button czsGroup">集体订单</div>
 		</c:if>
 		<c:if test="${isOwn == 0}">
 			<div class="ui large button czsOwn">个人订单</div>
+			<div class="or"></div>
 			<div class="ui active large button czsGroup">集体订单</div>
 		</c:if>
 	</div>
@@ -92,10 +108,12 @@
 											onclick="imageHandler('${item.id}')">
 											<i class="photo icon"></i>
 										</div>
-										<div class="ui huge label" style="float: right;"
-											onclick="introduceHandler('${item.id}')">
-											<i class="comment icon"></i>
-										</div>
+										<c:if test="${! empty item.introduce}">
+											<div class="ui huge label" style="float: right;"
+												onclick="introduceHandler('${item.id}')">
+												<i class="comment icon"></i>
+											</div>
+										</c:if>
 									</div>
 
 									<p class="description" style="display: none;"
@@ -113,11 +131,11 @@
 									<!-- 个人 -->
 									<c:if test="${isOwn == 1}">
 										<div class="2 fluid ui buttons">
-											<c:if test="${item.status == 3}">
+											<%-- <c:if test="${item.status == 3}">
 												<div class="ui button disabled">减一份</div>
 												<div class="or"></div>
 												<div class="ui button disabled">加一份</div>
-											</c:if>
+											</c:if> --%>
 											<c:if test="${item.status == 0 || item.status == 1}">
 												<div class="ui button"
 													onclick="billReduceHandler('${item.menu_id}', '${openId}', ${item.price})">
@@ -128,8 +146,7 @@
 													加一份</div>
 											</c:if>
 										</div>
-
-										<div style="margin-top: 10px;" class="czsCopies">
+										<div>
 											<input type="hidden" value="${item.status}"
 												class="czsBillStatus">
 											<div class="ui label"
@@ -183,7 +200,7 @@
 			class="item" href="menu/free/list4bill.do?openId=${openId}"><i
 			class="icon align justify"></i>商家菜单</a> <a class="item"
 			href="user/free/stowQuery.do?openId=${openId}"><i
-			class="icon heart"></i>收藏菜品</a>
+			class="icon heart"></i>收藏美食</a>
 	</div>
 
 
@@ -239,7 +256,13 @@
 					var total = Number($('#bill-total-span').text());
 					$('#bill-total-span').text(format_number(total-=(price), 2));
 				} else {
-					alert('操作失败!')
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
@@ -257,7 +280,13 @@
 					var total = Number($('#bill-total-span').text());
 					$('#bill-total-span').text(format_number(total+=(price), 2));
 				} else {
-					alert('操作失败!')
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
@@ -295,20 +324,18 @@
 		
 		jQuery(function($) {
 			
-			$('.ui.checkbox.czsImage').checkbox({
-				onEnable : function() {
-					$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
-						$(this).attr('src', $(this).attr('czz-src'));
-					});
-				},
-				onDisable : function() {
-					$('.ui.menu.czsMenuList .image').hide();
-				}
+			$('.ui.dimmer.czsMsg').click(function(){
+				$('.ui.dimmer.czsMsg > .content').hide();
 			});
 			
-			if('${isShowImg}' == '1'){
-				$('.ui.checkbox.czsImage').checkbox('enable');
-			}
+			$('.ui.button.czsSimple').click(function(){
+				$('.ui.menu.czsMenuList .image').hide();
+			});
+			$('.ui.button.czsImage').click(function(){
+				$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
+					$(this).attr('src', $(this).attr('czz-src'));
+				});
+			});
 			
 			$('.ui.button.czsOwn').click(function(){
 				$('form[class="czsOwn"]').submit();

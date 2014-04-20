@@ -20,7 +20,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -30,6 +31,17 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -61,6 +73,11 @@
 
 	<script type="text/javascript">
 		jQuery(function($) {
+
+			$('.ui.dimmer.czsMsg').click(function() {
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
+			
 			$('#menu-item-business-service-stat').addClass('active');
 
 			Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
@@ -113,68 +130,67 @@
 
 				if (msg.succeed) {
 
-					$('.ui.segment.czsService').highcharts(
-							{
-								chart : {
-									type : 'column'
-								},
-								title : {
-									text : '服务统计'
-								},
-								subtitle : {
-									text : '按天统计'
-								},
-								xAxis : {
-									categories : msg.value.date,
-									labels : {
-										rotation : -45,
-										align : 'right',
-									}
-								},
-								yAxis : {
-									min : 0,
-									title : {
-										text : '服务数 (次)'
-									}
-								},
-								credits : {
-									enabled : false
-								},
-								tooltip : {
-									shared : true
-								},
-								plotOptions : {
-									column : {
-										pointPadding : 0.2,
-										borderWidth : 0,
-										events : {
-											click : function(e) {
-												$.post('business/serviceDayGraph.do', {
-													date : e.point.category
-												}, function(msg) {
-													if (msg.succeed) {
+					$('.ui.segment.czsService').highcharts({
+						chart : {
+							type : 'column'
+						},
+						title : {
+							text : '服务统计'
+						},
+						subtitle : {
+							text : '按天统计'
+						},
+						xAxis : {
+							categories : msg.value.date,
+							labels : {
+								rotation : -45,
+								align : 'right',
+							}
+						},
+						yAxis : {
+							min : 0,
+							title : {
+								text : '服务数 (次)'
+							}
+						},
+						credits : {
+							enabled : false
+						},
+						tooltip : {
+							shared : true
+						},
+						plotOptions : {
+							column : {
+								pointPadding : 0.2,
+								borderWidth : 0,
+								events : {
+									click : function(e) {
+										$.post('business/serviceDayGraph.do', {
+											date : e.point.category
+										}, function(msg) {
+											if (msg.succeed) {
 
-														$('.ui.modal.czsServiceDay').modal('show');
+												$('.ui.modal.czsServiceDay').modal('show');
 
-														serviceDayGraphFunction(msg.value, e.point.category);
+												serviceDayGraphFunction(msg.value, e.point.category);
 
-													} else {
-														alert('获取数据失败!');
-													}
-												});
+											} else {
+												alert('获取数据失败!');
 											}
-										}
+										});
 									}
-								},
-								series : [ {
-									name : '日服务数',
-									data : msg.value.cnt
-								}, {
-									name : '日服务数',
-									type : 'spline',
-									data : msg.value.cnt
-								} ]
-							});
+								}
+							}
+						},
+						series : [ {
+							name : '日服务数',
+							data : msg.value.cnt
+						}, {
+							name : '日服务数',
+							type : 'spline',
+							data : msg.value.cnt
+						} ]
+					});
 				} else {
 					alert('获取数据失败!');
 				}

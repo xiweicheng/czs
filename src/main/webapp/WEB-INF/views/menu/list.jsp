@@ -13,7 +13,8 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
@@ -29,6 +30,17 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -49,21 +61,23 @@
 					href="menu/update.do?id=${item.id}">修改</a>
 			</div>
 			<div class="content" id="menu-item-content-${item.id}">
-				<img class="ui large image left floated" src="../../../${item.path}640/${item.file_name}">
+				<img class="ui large image left floated"
+					src="../../../${item.path}640/${item.file_name}">
 
 				<div style="padding-bottom: 10px;">
 					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}
 				</div>
 				<div style="padding-bottom: 10px;">
 					<b>价格:</b>${item.price}<c:if test="${item.privilege>0}">&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>
-					<c:choose>
-						<c:when test="${item.privilege < 1}">
-							<c:out value="${item.privilege * 10}"></c:out>折
+						<c:choose>
+							<c:when test="${item.privilege < 1}">
+								<c:out value="${item.privilege * 10}"></c:out>折
 						</c:when>
-						<c:otherwise>
+							<c:otherwise>
 							${item.privilege}
 						</c:otherwise>
-					</c:choose></c:if>
+						</c:choose>
+					</c:if>
 				</div>
 				<div style="padding-bottom: 10px;">
 					<b>添加时间:</b>
@@ -115,6 +129,11 @@
 		}
 
 		jQuery(function($) {
+
+			$('.ui.dimmer.czsMsg').click(function() {
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
+
 			$('#menu-item-menu-list').addClass('active');
 			$('.ui.accordion').accordion();
 
@@ -138,7 +157,14 @@
 								$('#menu-item-content-' + deleteMenuId).remove();
 								return true;
 							} else {
-								alert('删除失败!')
+								if(!!msg.msg && !!msg.msg.detail){
+									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+								}else{
+									$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+								}
+								$('.ui.dimmer.czsMsg > .content').show();
+								$('.ui.dimmer.czsMsg').dimmer('show');
+
 								return false;
 							}
 						}

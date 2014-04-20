@@ -15,6 +15,9 @@ public class PropUtil {
 	@Value("#{systemProperties['weixin.send.msg.is.save']}")
 	private boolean saveWeixinMsg;
 
+	@Value("#{systemProperties['switch.consumer.in.confirm']}")
+	private boolean consumerInConfirm;
+
 	@Value("#{systemProperties['weixin.token']}")
 	private String token;
 
@@ -235,6 +238,10 @@ public class PropUtil {
 
 	public long getUploadImageMax() {
 		return uploadImageMax;
+	}
+
+	public boolean isConsumerInConfirm() {
+		return consumerInConfirm;
 	}
 
 }

@@ -298,6 +298,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		final BusinessConsumer businessConsumer = (BusinessConsumer) findOneByExample(businessConsumer1);
 
+		// 顾客进入是否需要商家确认.
+		final boolean isConsumerInConfirm = propUtil.isConsumerInConfirm();
+
 		if (businessConsumer != null) {
 
 			// 回头客 告知消费者&商家,消费了多少次,最后消费时间.
@@ -323,7 +326,12 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			businessConsumer.setConsumeTimes(businessConsumer.getConsumeTimes() + 1);
 			businessConsumer.setLastConsumeTime(DateUtil.now());
 			businessConsumer.setSceneId(Long.valueOf(qrsceneId));
-			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_REQ);// 消费中
+
+			if (isConsumerInConfirm) {
+				businessConsumer.setStatus(SysConstant.CONSUME_STATUS_REQ);// 进入请求中.
+			} else {
+				businessConsumer.setStatus(SysConstant.CONSUME_STATUS_ONGOING);// 消费进行中
+			}
 
 			hibernateTemplate.update(businessConsumer);
 
@@ -344,7 +352,13 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 					request.setConsumerId(bean.getFromUserName());
 					request.setDateTime(DateUtil.now());
 					request.setIsDelete(SysConstant.SHORT_FALSE);
-					request.setName("进入请求中");
+
+					if (isConsumerInConfirm) {
+						request.setName("进入请求中");
+					} else {
+						request.setName("新顾客进入");
+					}
+
 					request.setSceneId(Long.valueOf(qrsceneId));
 					request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
 					request.setType(SysConstant.REQUEST_TYPE_ENTER);
@@ -355,21 +369,40 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 				@Override
 				public void run() {
-					String agreeUrl = StringUtil.replace(
-							"<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
-							propUtil.getRedirectUrl(), bean.getFromUserName());
-					// 通知商家
-					weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
-							"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}\n\n{?5}", nickName,
-							businessConsumer.getConsumeTimes(), qrsceneId, qrcode2.getDescription(), agreeUrl));
+
+					if (isConsumerInConfirm) {
+						String agreeUrl = StringUtil.replace(
+								"<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
+								propUtil.getRedirectUrl(), bean.getFromUserName());
+						// 通知商家
+						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
+								"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}\n\n{?5}", nickName,
+								businessConsumer.getConsumeTimes(), qrsceneId, qrcode2.getDescription(), agreeUrl));
+					} else {
+						// 通知商家
+						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
+								"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}", nickName,
+								businessConsumer.getConsumeTimes(), qrsceneId, qrcode2.getDescription()));
+					}
+
 				}
 			});
 
 			qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
 			hibernateTemplate.update(qrcode2);
 
-			return StringUtil.replace("这是您第[{?1}]次光顾{?2}店!谢谢您的亲睐!\n\n结账消费码:{?3}\n\n请求处理中,请稍等...",
-					businessConsumer.getConsumeTimes(), businessName, qrsceneId);
+			if (isConsumerInConfirm) {
+				return StringUtil.replace("这是您第[{?1}]次光顾{?2}店!谢谢您的亲睐!\n\n结账消费码:{?3}\n\n请求处理中,请稍等...",
+						businessConsumer.getConsumeTimes(), businessName, qrsceneId);
+			} else {
+
+				String url = StringUtil.replace(
+						"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
+						propUtil.getRedirectUrl(), bean.getFromUserName());
+				return StringUtil.replace("这是您第[{?1}]次光顾{?2}店!谢谢您的亲睐!\n\n结账消费码:{?3}\n\n{?4}",
+						businessConsumer.getConsumeTimes(), businessName, qrsceneId, url);
+			}
+
 		} else {
 			// 第一次来此商家消费 新顾客 告知消费者&商家
 			final BusinessConsumer businessConsumer2 = new BusinessConsumer();
@@ -402,7 +435,13 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 					request.setConsumerId(bean.getFromUserName());
 					request.setDateTime(DateUtil.now());
 					request.setIsDelete(SysConstant.SHORT_FALSE);
-					request.setName("进入请求中");
+
+					if (isConsumerInConfirm) {
+						request.setName("进入请求中");
+					} else {
+						request.setName("新顾客进入");
+					}
+
 					request.setSceneId(Long.valueOf(qrsceneId));
 					request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
 					request.setType(SysConstant.REQUEST_TYPE_ENTER);
@@ -413,20 +452,36 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 				@Override
 				public void run() {
-					String agreeUrl = StringUtil.replace(
-							"<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
-							propUtil.getRedirectUrl(), bean.getFromUserName());
-					// 通知商家
-					weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
-							"顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}\n\n{?4}", nickName, qrsceneId,
-							qrcode2.getDescription(), agreeUrl));
+					if (isConsumerInConfirm) {
+						String agreeUrl = StringUtil.replace(
+								"<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
+								propUtil.getRedirectUrl(), bean.getFromUserName());
+						// 通知商家
+						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
+								"顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}\n\n{?4}", nickName, qrsceneId,
+								qrcode2.getDescription(), agreeUrl));
+					} else {
+						// 通知商家
+						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(),
+								StringUtil.replace("顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}", nickName, qrsceneId,
+										qrcode2.getDescription()));
+					}
+
 				}
 			});
 
 			qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
 			hibernateTemplate.update(qrcode2);
 
-			return StringUtil.replace("这是您[首次]光顾{?1}店!谢谢您的亲睐!\n\n结账消费码:{?2}\n\n请求处理中,请稍等...", businessName, qrsceneId);
+			if (isConsumerInConfirm) {
+				return StringUtil.replace("这是您[首次]光顾{?1}店!谢谢您的亲睐!\n\n结账消费码:{?2}\n\n请求处理中,请稍等...", businessName,
+						qrsceneId);
+			} else {
+				String url = StringUtil.replace(
+						"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
+						propUtil.getRedirectUrl(), bean.getFromUserName());
+				return StringUtil.replace("这是您[首次]光顾{?1}店!谢谢您的亲睐!\n\n结账消费码:{?2}\n\n{?3}", businessName, qrsceneId, url);
+			}
 		}
 	}
 

@@ -31,11 +31,24 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- top title bar -->
 	<h4 class="ui top attached header" style="margin-top: 44px;">
 		商家菜单
-		<div class="ui checkbox czsImage" style="margin-left: 10px; float: right;">
-			<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label>图文模式</label>
+		<div class="ui small buttons"
+			style="position: absolute; right: 2px; top: 1px;">
+			<div class="ui button czsSimple">简单</div>
+			<div class="or"></div>
+			<div class="ui button czsImage">图文</div>
 		</div>
 	</h4>
 
@@ -111,10 +124,13 @@
 											onclick="imageHandler('${item.id}')">
 											<i class="photo icon"></i>
 										</div>
-										<div class="ui huge label" style="float: right;"
-											onclick="introduceHandler('${item.id}')">
-											<i class="comment icon"></i>
-										</div>
+
+										<c:if test="${! empty item.introduce}">
+											<div class="ui huge label" style="float: right;"
+												onclick="introduceHandler('${item.id}')">
+												<i class="comment icon"></i>
+											</div>
+										</c:if>
 									</div>
 
 									<p class="description" style="display: none;"
@@ -162,24 +178,26 @@
 
 									<div style="margin-top: 10px;" class="czsCopies">
 
-										<div class="ui label"
-											style="margin-top: 5px; margin-bottom: 5px;">
-											自己(${item.copies})
-											<div class="detail">
-												<c:if test="${item.status == 0}">
-													<a
-														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a>
-												</c:if>
-												<c:if test="${item.status == 1}">
-													<a
-														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已下单</a>
-												</c:if>
-												<c:if test="${item.status == 3}">
-													<a
-														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已接单</a>
-												</c:if>
+										<c:if test="${! empty item.consumer_id}">
+											<div class="ui label"
+												style="margin-top: 5px; margin-bottom: 5px;">
+												自己(${item.copies})
+												<div class="detail">
+													<c:if test="${item.status == 0}">
+														<a
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a>
+													</c:if>
+													<c:if test="${item.status == 1}">
+														<a
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已下单</a>
+													</c:if>
+													<c:if test="${item.status == 3}">
+														<a
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已接单</a>
+													</c:if>
+												</div>
 											</div>
-										</div>
+										</c:if>
 										<c:forEach items="${item.menuBill}" var="item2">
 											<c:if
 												test="${item2.status == 0 || item2.status == 1 || item2.status == 3}">
@@ -347,11 +365,21 @@
 				if (msg.succeed) {
 					$('#hold-ui-btn-' + menuId).addClass('disabled');
 				} else {
-					alert('操作失败!')
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
 		jQuery(function($) {
+			
+			$('.ui.dimmer.czsMsg').click(function(){
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
 
 			$('.ui.dropdown').dropdown({
 				onChange : function(value, text) {
@@ -393,32 +421,26 @@
 													* copies, 2))
 
 								} else {
-									alert('操作失败!')
+									if(!!msg.msg && !!msg.msg.detail){
+										$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+									}else{
+										$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+									}
+									$('.ui.dimmer.czsMsg > .content').show();
+									$('.ui.dimmer.czsMsg').dimmer('show');
 								}
 							});
 						}
 					});
-			$('.ui.checkbox.czsImage').checkbox({
-				onEnable : function() {
-					$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
-						$(this).attr('src', $(this).attr('czz-src'));
-					});
-				},
-				onDisable : function() {
-					$('.ui.menu.czsMenuList .image').hide();
-				}
+			
+			$('.ui.button.czsSimple').click(function(){
+				$('.ui.menu.czsMenuList .image').hide();
 			});
-
-			(function() {
-				if ('${mode}' == 'on') {
-					$('#mode-ui-checkbox').attr('checked', "checked");
-					$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
-						$(this).attr('src', $(this).attr('czz-src'));
-					});
-				} else {
-					$('.ui.menu.czsMenuList .image').hide();
-				}
-			})();
+			$('.ui.button.czsImage').click(function(){
+				$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
+					$(this).attr('src', $(this).attr('czz-src'));
+				});
+			});
 
 		});
 	</script>

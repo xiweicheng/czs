@@ -181,6 +181,17 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -468,7 +479,13 @@
 					$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
 					$('#bill-detail-modal').modal('show');
 				} else {
-					alert('操作失败!')
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
@@ -489,7 +506,13 @@
 							'消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.values[0] + '</a>');
 					$('#group-info-show-modal').modal('show');
 				} else {
-					alert(msg.msg.detail);
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
@@ -503,7 +526,13 @@
 				if (msg.succeed) {
 					$('#item-tr-' + consumer_id).remove();
 				} else {
-					alert('处理失败!')
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
@@ -526,7 +555,13 @@
 							'消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.value + '</a>');
 					$('#confirm-ui-modal').modal('show');
 				} else {
-					alert('查询消费金额失败!');
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 
@@ -539,7 +574,13 @@
 				if (msg.succeed) {
 					$('#request-item-' + id).remove();
 				} else {
-					alert(msg.msg.detail);
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
@@ -563,12 +604,22 @@
 							.appendTo($('.ui.modal.czsGetConsumerInfo > .content').empty());
 					$('.ui.modal.czsGetConsumerInfo').modal('show');
 				} else {
-					alert(msg.msg.detail);
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			});
 		}
 
 		jQuery(function($) {
+			
+			$('.ui.dimmer.czsMsg').click(function(){
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
 
 			$('table').tablesort().data('tablesort');
 
@@ -600,8 +651,13 @@
 							$('#bill-detail-modal').modal('hide');
 							return true;
 						} else {
-							alert('结账失败!')
-							return false;
+							if(!!msg.msg && !!msg.msg.detail){
+								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+							}else{
+								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+							}
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
 						}
 					});
 				}
@@ -753,7 +809,13 @@
 									});
 								}
 							} else {
-								alert('操作失败!')
+								if(!!msg.msg && !!msg.msg.detail){
+									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+								}else{
+									$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+								}
+								$('.ui.dimmer.czsMsg > .content').show();
+								$('.ui.dimmer.czsMsg').dimmer('show');
 							}
 						});
 					});
@@ -788,7 +850,13 @@
 									});
 								}
 							} else {
-								alert('操作失败!')
+								if(!!msg.msg && !!msg.msg.detail){
+									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+								}else{
+									$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+								}
+								$('.ui.dimmer.czsMsg > .content').show();
+								$('.ui.dimmer.czsMsg').dimmer('show');
 							}
 						});
 					});
@@ -800,7 +868,13 @@
 					} else {
 						if (msg.msg.id == '1000') {
 							clearInterval(intervalRef);
-							alert(msg.msg.detail);
+							if(!!msg.msg && !!msg.msg.detail){
+								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+							}else{
+								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+							}
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
 						}
 					}
 				}, 'json');

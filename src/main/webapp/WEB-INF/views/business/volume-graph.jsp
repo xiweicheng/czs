@@ -164,7 +164,13 @@
 														volumeDayGraphFunction(msg.value, e.point.category);
 
 													} else {
-														alert('获取数据失败!');
+														if(!!msg.msg && !!msg.msg.detail){
+															$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+														}else{
+															$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+														}
+														$('.ui.dimmer.czsMsg > .content').show();
+														$('.ui.dimmer.czsMsg').dimmer('show');
 													}
 												});
 											}
@@ -181,7 +187,13 @@
 								} ]
 							});
 				} else {
-					alert('获取数据失败!');
+					if(!!msg.msg && !!msg.msg.detail){
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					}else{
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			}, 'json');
 		});

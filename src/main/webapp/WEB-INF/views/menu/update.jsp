@@ -50,6 +50,17 @@
 
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -244,69 +255,25 @@
 
 	<script type="text/javascript">
 		jQuery(function($) {
+
+			$('.ui.dimmer.czsMsg').click(function() {
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
+
 			$('#menu-item-menu-update').addClass('active');
 
 			$('.ui.dropdown').dropdown();
 
 			$('.ui.checkbox').checkbox();
 
-			/* $('#add-category-modal').modal(
-					{
-						closable : false,
-						onDeny : function() {
-							return true;
-						},
-						onApprove : function() {
-							var category = $('#category-text').val();
-							if (!category) {// 不能为空
-								return false;
-							}
-							$.post('menuCategory/add.do', {
-								name : category
-							}, function(data) {
-								if (data.succeed) {
-									$('#category-menu-items').append(
-											$('<div class="item"></div>').attr('data-value', data.value.id).text(
-													data.value.name));
-									$('.ui.dropdown').dropdown();
-								} else {
-									alert(data.msg.detail);
-								}
-							});
-						}
-					}).modal('attach events', '#add-category-btn', 'show'); */
-
-			/* $('#add-taste-modal').modal(
-					{
-						closable : false,
-						onDeny : function() {
-							return true;
-						},
-						onApprove : function() {
-							var taste = $('#taste-text').val();
-							if (!taste) {// 不能为空
-								return false;
-							}
-							$.post('menuTaste/add.do', {
-								name : taste
-							}, function(data) {
-								if (data.succeed) {
-									$('#taste-menu-items').append(
-											$('<div class="item"></div>').attr('data-value', data.value.id).text(
-													data.value.name));
-									$('.ui.dropdown').dropdown();
-								} else {
-									alert(data.msg.detail);
-								}
-							});
-						}
-					}).modal('attach events', '#add-taste-btn', 'show'); */
-
 			$('#add-category-btn').click(
 					function() {
 						var category = $('#add-category-text-input').val();
 						if (!category) {// 不能为空
-							alert('不能为空!');
+							$('.ui.dimmer.czsMsg .center span').text('分类不能为空!');
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
+
 							return false;
 						}
 						$.post('menuCategory/add.do', {
@@ -320,7 +287,14 @@
 								$('#add-category-text-input').val('');
 								$('.ui.dropdown').dropdown();
 							} else {
-								alert(data.msg.detail);
+								if (!!data.msg && !!data.msg.detail) {
+									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + data.msg.detail);
+								} else {
+									$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+								}
+								$('.ui.dimmer.czsMsg > .content').show();
+								$('.ui.dimmer.czsMsg').dimmer('show');
+
 							}
 						});
 					});
@@ -329,7 +303,10 @@
 					function() {
 						var taste = $('#add-taste-text-input').val();
 						if (!taste) {// 不能为空
-							alert('不能为空!');
+							$('.ui.dimmer.czsMsg .center span').text('口味不能为空!');
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
+
 							return false;
 						}
 						$.post('menuTaste/add.do', {
@@ -343,7 +320,14 @@
 								$('#add-taste-text-input').val('');
 								$('.ui.dropdown').dropdown();
 							} else {
-								alert(data.msg.detail);
+								if (!!data.msg && !!data.msg.detail) {
+									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + data.msg.detail);
+								} else {
+									$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+								}
+								$('.ui.dimmer.czsMsg > .content').show();
+								$('.ui.dimmer.czsMsg').dimmer('show');
+
 							}
 						});
 					});
@@ -356,7 +340,7 @@
 				onApprove : function() {
 					return true;
 				}
-			});//.modal('attach events', '#select-image-btn', 'show');
+			});
 
 			$('#select-image-btn,#resourceImage').click(function() {
 				$.ajax({
@@ -365,7 +349,6 @@
 					contentType : 'application/json',
 					processData : false,
 					dataType : "json",
-					//data : JSON.stringify({}),
 					success : function(msg) {
 						if (msg.succeed) {
 
@@ -373,7 +356,14 @@
 
 							$('#select-image-modal').modal('show');
 						} else {
-							alert('获取图片失败!')
+							if (!!msg.msg && !!msg.msg.detail) {
+								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+							} else {
+								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+							}
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
+
 						}
 					}
 				});
@@ -416,25 +406,28 @@
 					$.post('menu/updateSubmit.do', $('#add-menu-form').serialize(), function(data) {
 
 						if (data.succeed) {
-							alert('更新成功!');
+							$('.ui.dimmer.czsMsg .center span').text('菜品信息更新成功!');
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
+
 						} else {
-							alert(data.msg.detail);
+							if(!!data.msg && !!data.msg.detail){
+								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + data.msg.detail);
+							}else{
+								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+							}
+							$('.ui.dimmer.czsMsg > .content').show();
+							$('.ui.dimmer.czsMsg').dimmer('show');
+
 						}
 					});
-					//alert('success');
 				},
 				onFailure : function() {
 					$("html,body").animate({
 						scrollTop : $("#error-msg-anchor").offset().top
 					}, 500);
-					//alert('输入有误!');
 				}
 			});
-
-			/* $('#add-menu-btn').click(function() {
-				//$('#add-menu-ui-form').form('validate form');
-				$('#add-menu-ui-form').form('submit');
-			}); */
 		});
 
 		/**选中图片 **/
@@ -447,7 +440,6 @@
 			$(_this).find('i').removeClass('like').addClass('checkmark');
 		}
 	</script>
-
 
 </body>
 </html>

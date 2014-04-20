@@ -19,7 +19,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -29,6 +30,17 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<div class="ui dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -211,23 +223,44 @@
 			if (!isUpdate) {
 				$.post('business/newPassword.do', $('#password-form').serialize(), function(msg) {
 					if (msg.succeed) {
-						alert('设置成功!');
+						$('.ui.dimmer.czsMsg .center span').text('设置成功!');
+						$('.ui.dimmer.czsMsg > .content').show();
+						$('.ui.dimmer.czsMsg').dimmer('show');
 					} else {
-						alert(msg.msg.detail);
+						if (!!msg.msg && !!msg.msg.detail) {
+							$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+						} else {
+							$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+						}
+						$('.ui.dimmer.czsMsg > .content').show();
+						$('.ui.dimmer.czsMsg').dimmer('show');
 					}
 				});
 			} else {
 				$.post('business/updatePassword.do', $('#password-form').serialize(), function(msg) {
 					if (msg.succeed) {
-						alert('更新成功!');
+						$('.ui.dimmer.czsMsg .center span').text('更新成功!');
+						$('.ui.dimmer.czsMsg > .content').show();
+						$('.ui.dimmer.czsMsg').dimmer('show');
 					} else {
-						alert(msg.msg.detail);
+						if (!!msg.msg && !!msg.msg.detail) {
+							$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+						} else {
+							$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+						}
+						$('.ui.dimmer.czsMsg > .content').show();
+						$('.ui.dimmer.czsMsg').dimmer('show');
 					}
 				});
 			}
 		}
 
 		jQuery(function($) {
+
+			$('.ui.dimmer.czsMsg').click(function() {
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
+
 			$('#menu-item-business-main').addClass('active');
 
 			$('#business-update-modal').modal({

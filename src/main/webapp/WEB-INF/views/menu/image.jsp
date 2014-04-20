@@ -13,17 +13,17 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<link href="../../../resources/upload/css/main.css" rel="stylesheet"
-	type="text/css">
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
+	charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.html5uploader.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/upload/js/script.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -40,82 +40,43 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">菜品图片</h4>
 
-	<div class="ui fluid accordion">
-		<div class="title">
-			<i class="dropdown icon"></i> 图片上传
+	<div class="ui segment">
+		<h2>图片上传</h2>
+		<div class="ui message segment">
+			<p><b>说明:</b>选择文件或者直接拖拽文件到当前页面上!</p>
 		</div>
-		<div class="content">
-			<div id="container">
-				<div class="upload_form_cont">
-					<form id="upload_form" enctype="multipart/form-data" method="post"
-						action="menu/upload.do">
-						<div>
-							<input type="file" name="image_file" id="image_file"
-								onchange="fileSelected();" />
-						</div>
-						<div>
-							<div style="float: left;">
-								<div class="ui green button" onclick="startUploading()">上传</div>
-								<div id="fileinfo">
-									<div id="filename"></div>
-									<div id="filesize"></div>
-									<div id="filetype"></div>
-									<div id="filedim"></div>
-								</div>
-							</div>
-							<img id="preview" />
-							<div style="clear: both;"></div>
-						</div>
+		<form enctype="multipart/form-data" method="post"
+			action="menu/upload.do">
+			<input type="file" name="image_file" id="image_file"
+				style="font-size: 20px;" />
+		</form>
+	</div>
 
-						<div id="error">你应该只选择有效的图像文件!</div>
-						<div id="error2">在上传文件时发生了一个错误!</div>
-						<div id="abort">上传已由用户或浏览器取消!</div>
-						<div id="warnsize">你的文件是非常大的,我们不能接受,请选择更小的文件!</div>
-
-						<div id="progress_info">
-							<div id="progress"></div>
-							<div id="progress_percent">&nbsp;</div>
-							<div class="clear_both"></div>
-							<div>
-								<div id="speed">&nbsp;</div>
-								<div id="remaining">&nbsp;</div>
-								<div id="b_transfered">&nbsp;</div>
-								<div class="clear_both"></div>
-							</div>
-							<div id="upload_response"></div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="active title">
-			<i class="dropdown icon"></i> 图片一览
-		</div>
-		<div class="active content">
-			<div class="ui stackable items">
-				<c:forEach items="${imageList}" var="item">
-					<div class="item" style="min-height: 0px;"
-						id="image-item-${item.id}">
-						<div class="image">
-							<img src="../../../${item.path}640/${item.fileName}"> <a
-								class="like ui corner label"
-								onclick="deleteHandler('${item.id}');"> <i
-								class="remove icon"></i>
-							</a>
-						</div>
-						<div class="content" style="display: block;">
-							<div class="meta">
-								<fmt:formatDate value="${item.dateTime}" pattern="yyyy/MM/dd" />
-							</div>
-							<div class="name">${item.name }</div>
-						</div>
+	<div class="ui segment">
+		<h2>图片一览</h2>
+		<div class="ui stackable items">
+			<c:forEach items="${imageList}" var="item">
+				<div class="item" style="min-height: 0px;"
+					id="image-item-${item.id}">
+					<div class="image">
+						<img src="../../../${item.path}640/${item.fileName}"> <a
+							class="like ui corner label"
+							onclick="deleteHandler('${item.id}');"> <i
+							class="remove icon"></i>
+						</a>
 					</div>
-				</c:forEach>
-			</div>
+					<div class="content" style="display: block;">
+						<div class="meta">
+							<fmt:formatDate value="${item.dateTime}" pattern="yyyy/MM/dd" />
+						</div>
+						<div class="name">${item.name }</div>
+					</div>
+				</div>
+			</c:forEach>
 		</div>
 	</div>
 
-	<div class="ui modal" id="confirm-ui-modal">
+	<div class="ui small modal" id="confirm-ui-modal">
 		<div class="header">确认提示</div>
 		<div class="content">
 			<div class="left">
@@ -139,6 +100,20 @@
 
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
+
+
+	<div class="ui page dimmer upload">
+		<div class="content">
+			<div class="center">
+				<div class="ui medium image">
+					<img>
+				</div>
+				<div class="ui green striped progress">
+					<div class="bar">文件上传中...</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script type="text/javascript">
 		// 删除image id.
@@ -172,11 +147,55 @@
 								$('#image-item-' + deleteImgId).remove();
 								return true;
 							} else {
-								alert('删除失败!')
+								
+		alert('删除失败!')
 								return false;
 							}
 						}
 					});
+				}
+			});
+
+			$('.ui.page.dimmer.upload').click(function() {
+				window.location.reload();
+			});
+
+			$("body, #image_file").html5Uploader({
+				name : "image_file",
+				postUrl : "menu/upload.do",
+				onClientLoadStart : function(e, file) {
+					$('.ui.page.dimmer.upload').dimmer('show');
+					var filter = /^(image\/bmp|image\/gif|image\/jpeg|image\/png|image\/tiff)$/i;
+					if (!filter.test(file.type)) {
+						$('.ui.progress > .bar').text('不是可识别的图片类型文件!');
+					}
+				},
+				onClientLoad : function(e, file) {
+					$('.ui.page.dimmer.upload img').attr('src', e.target.result);
+				},
+				onServerLoadStart : function(e, file) {
+					$('.ui.progress > .bar').css('width', 0);
+				},
+				onServerProgress : function(e, file) {
+					if (e.lengthComputable) {
+						var percentComplete = (e.loaded / e.total) * 100;
+						$('.ui.progress > .bar').css('width', percentComplete + '%');
+					}
+				},
+				onServerLoad : function(e, file) {
+					$('.ui.progress > .bar').css('width', '100%');
+					$('.ui.progress > .bar').text('文件上传完毕!');
+				},
+				onServerError : function(e, file) {
+					$('.ui.progress > .bar').text('');
+				},
+				onSuccess : function(e, file, msg) {
+					var json = $.parseJSON(msg);
+					if (json.succeed) {
+						$('.ui.progress > .bar').text('文件上传完毕!');
+					} else {
+						$('.ui.progress > .bar').text(json.msg.detail);
+					}
 				}
 			});
 		});

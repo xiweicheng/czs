@@ -13,7 +13,8 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
@@ -239,6 +240,16 @@
 		</div>
 	</div>
 
+	<div class="ui page dimmer czsMsg">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui huge message">
+					<span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script type="text/javascript">
 		jQuery(function($) {
 			$('#menu-item-menu-input').addClass('active');
@@ -248,12 +259,18 @@
 			$('.ui.checkbox').checkbox();
 
 			$('.ui.modal').modal();
+			
+			$('.ui.page.dimmer.czsMsg').click(function(){
+				$('.ui.page.dimmer.czsMsg > .content').hide();
+			});
 
 			$('#add-category-btn').click(
 					function() {
 						var category = $('#add-category-text-input').val();
 						if (!category) {// 不能为空
-							alert('不能为空!');
+							$('.ui.page.dimmer.czsMsg .center span').text('分类不能为空!');
+							$('.ui.page.dimmer.czsMsg > .content').show();
+							$('.ui.page.dimmer.czsMsg').dimmer('show');
 							return false;
 						}
 						$.post('menuCategory/add.do', {
@@ -267,7 +284,9 @@
 								$('#add-category-text-input').val('');
 								$('.ui.dropdown').dropdown();
 							} else {
-								alert(data.msg.detail);
+								$('.ui.page.dimmer.czsMsg .center span').text(data.msg.detail);
+								$('.ui.page.dimmer.czsMsg > .content').show();
+								$('.ui.page.dimmer.czsMsg').dimmer('show');
 							}
 						});
 					});
@@ -276,7 +295,9 @@
 					function() {
 						var taste = $('#add-taste-text-input').val();
 						if (!taste) {// 不能为空
-							alert('不能为空!');
+							$('.ui.page.dimmer.czsMsg .center span').text('口味不能为空!');
+							$('.ui.page.dimmer.czsMsg > .content').show();
+							$('.ui.page.dimmer.czsMsg').dimmer('show');
 							return false;
 						}
 						$.post('menuTaste/add.do', {
@@ -290,7 +311,9 @@
 								$('#add-taste-text-input').val('');
 								$('.ui.dropdown').dropdown();
 							} else {
-								alert(data.msg.detail);
+								$('.ui.page.dimmer.czsMsg .center span').text(data.msg.detail);
+								$('.ui.page.dimmer.czsMsg > .content').show();
+								$('.ui.page.dimmer.czsMsg').dimmer('show');
 							}
 						});
 					});
@@ -319,7 +342,9 @@
 
 							$('#select-image-modal').modal('show');
 						} else {
-							alert('获取图片失败!')
+							$('.ui.page.dimmer.czsMsg .center span').text('获取图片失败!');
+							$('.ui.page.dimmer.czsMsg > .content').show();
+							$('.ui.page.dimmer.czsMsg').dimmer('show');
 						}
 					}
 				});
@@ -369,9 +394,13 @@
 					$.post('menu/add.do', $('#add-menu-form').serialize(), function(data) {
 
 						if (data.succeed) {
-							alert('添加成功!');
+							$('.ui.page.dimmer.czsMsg .center span').text('菜品添加成功!');
+							$('.ui.page.dimmer.czsMsg > .content').show();
+							$('.ui.page.dimmer.czsMsg').dimmer('show');
 						} else {
-							alert(data.msg.detail);
+							$('.ui.page.dimmer.czsMsg .center span').text(data.msg.detail);
+							$('.ui.page.dimmer.czsMsg > .content').show();
+							$('.ui.page.dimmer.czsMsg').dimmer('show');
 						}
 					});
 				},
@@ -392,6 +421,8 @@
 			$(_this).siblings("div[class='item']").find('i').removeClass('checkmark').addClass('like');
 
 			$(_this).find('i').removeClass('like').addClass('checkmark');
+			
+			$('#select-image-modal').modal('hide');
 		}
 	</script>
 

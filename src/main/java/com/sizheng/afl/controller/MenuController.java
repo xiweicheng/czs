@@ -237,24 +237,23 @@ public class MenuController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("upload")
-	public void upload(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale,
+	@ResponseBody
+	public ResultMsg upload(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale,
 			@RequestParam("image_file") MultipartFile imageFile) {
 
 		logger.debug("菜单图片上传【菜单】");
 
 		if (resourcesService.isLimited(locale, WebUtil.getSessionBusiness(request).getOpenId())) {
-			WebUtil.writeString(response, "上传图片数量达到最大限制,文件上传失败!");
-			return;
+			return new ResultMsg(false, new Msg(false, "上传图片数量达到最大限制,文件上传失败!"));
 		}
 
 		if (menuService.upload(WebUtil.calcServerBaseUrl(request), WebUtil.getRealPath(request), imageFile, locale,
 				WebUtil.getSessionBusiness(request).getOpenId())) {
-			WebUtil.writeString(
-					response,
-					StringUtil.replace("<p>你的文件: [{?1}] 已经成功上传.</p><p>类型: {?2}</p><p>大小: {?3}</p>",
-							imageFile.getOriginalFilename(), imageFile.getContentType(), imageFile.getSize()));
+			WebUtil.writeString(response, StringUtil.replace("文件:[{?1}]上传成功!", imageFile.getOriginalFilename()));
+			return new ResultMsg(true);
 		} else {
-			WebUtil.writeString(response, "文件上传失败!");
+			return new ResultMsg(false, new Msg(false, StringUtil.replace("文件:[{?1}]上传失败!",
+					imageFile.getOriginalFilename())));
 		}
 	}
 
