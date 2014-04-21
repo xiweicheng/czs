@@ -78,7 +78,11 @@
 
 	<c:if test="${isOwn == 1}">
 		<div class="1 fluid ui buttons">
-			<div class="ui large button czsSubmit" style="display: none;">提交订单</div>
+			<div class="ui large button czsSubmit" style="display: none;">
+				提交订单<a class="ui red circular label"> <span
+					class="czsSubmit czsCount">${submitCount}</span>份待提交
+				</a>
+			</div>
 		</div>
 	</c:if>
 
@@ -131,18 +135,13 @@
 									<!-- 个人 -->
 									<c:if test="${isOwn == 1}">
 										<div class="2 fluid ui buttons">
-											<%-- <c:if test="${item.status == 3}">
-												<div class="ui button disabled">减一份</div>
-												<div class="or"></div>
-												<div class="ui button disabled">加一份</div>
-											</c:if> --%>
 											<c:if test="${item.status == 0 || item.status == 1}">
 												<div class="ui button"
-													onclick="billReduceHandler('${item.menu_id}', '${openId}', ${item.price})">
+													onclick="billReduceHandler('${item.menu_id}', '${openId}', ${item.price}, '${item.status}')">
 													减一份</div>
 												<div class="or"></div>
 												<div class="ui button" id="hold-ui-btn-${item.id}"
-													onclick="billAddHandler('${item.menu_id}', '${openId}', ${item.price})">
+													onclick="billAddHandler('${item.menu_id}', '${openId}', ${item.price}, '${item.status}')">
 													加一份</div>
 											</c:if>
 										</div>
@@ -186,7 +185,11 @@
 
 	<c:if test="${isOwn == 1}">
 		<div class="1 fluid ui buttons">
-			<div class="ui large button czsSubmit" style="display: none;">提交订单</div>
+			<div class="ui large button czsSubmit" style="display: none;">
+				提交订单<a class="ui red circular label"> <span
+					class="czsSubmit czsCount">${submitCount}</span>份待提交
+				</a>
+			</div>
 		</div>
 	</c:if>
 
@@ -243,7 +246,7 @@
 			$('#introduce-p-' + id).toggle();
 		}
 	
-		function billReduceHandler(menuId, consumerId, price) {
+		function billReduceHandler(menuId, consumerId, price, status) {
 			$.post('menu/free/billDeal.do', {
 				menuId : menuId,
 				consumerId : consumerId,
@@ -262,6 +265,15 @@
 					var count = Number($('#bill-count-span').text());
 					$('#bill-count-span').text(count - 1);
 					
+					if(status == 0){
+						var submit = Number($('.czsSubmit.czsCount').first().text());
+						$('.czsSubmit.czsCount').text(submit - 1);
+						
+						if(submit - 1 == 0){
+							$('.ui.button.czsSubmit').hide();
+						}
+					}
+					
 				} else {
 					if(!!msg.msg && !!msg.msg.detail){
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
@@ -274,11 +286,11 @@
 			});
 		}
 	
-		function billAddHandler(menuId, consumerId, price) {
+		function billAddHandler(menuId, consumerId, price, status) {
 			$.post('menu/free/billDeal.do', {
 				menuId : menuId,
 				consumerId : consumerId,
-				status : 1
+				status : status
 			}, function(msg) {
 				if (msg.succeed) {
 					var copies = Number($('#item-copies-' + menuId).text());
@@ -288,6 +300,11 @@
 					$('#bill-total-span').text(format_number(total+=(price), 2));
 					var count = Number($('#bill-count-span').text());
 					$('#bill-count-span').text(count + 1);
+					
+					if(status == 0){
+						var submit = Number($('.czsSubmit.czsCount').first().text());
+						$('.czsSubmit.czsCount').text(submit + 1);
+					}
 				} else {
 					if(!!msg.msg && !!msg.msg.detail){
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);

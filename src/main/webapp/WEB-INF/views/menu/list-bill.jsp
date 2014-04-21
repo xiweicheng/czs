@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -44,8 +45,9 @@
 	<!-- top title bar -->
 	<h4 class="ui top attached header" style="margin-top: 44px;">
 		商家菜单
+		<div class="circular ui red label">${fn:length(menuList)}个</div>
 		<div class="ui small buttons"
-			style="position: absolute; right: 2px; top: 1px;">
+			style="position: absolute; right: 2px; top: 2px;">
 			<div class="ui button czsSimple">简单</div>
 			<div class="or"></div>
 			<div class="ui button czsImage">图文</div>
@@ -115,7 +117,8 @@
 									<div>
 										<span class="name"
 											style="font-weight: bold; margin-left: 8px;"
-											onclick="imageHandler('${item.id}')">${item.name}</span>
+											onclick="imageHandler('${item.id}')">${item.name}<div
+												class="circular ui green label">￥${item.price}</div></span>
 										<div class="ui left corner label">
 											<div class="text">${item.order_times}</div>
 										</div>
@@ -148,14 +151,14 @@
 											test="${item.status == 0 || item.status == 1 || item.status == 3}">
 											<div class="ui button disabled"
 												id="confirm-ui-btn-${item.id}">
-												<i class="yen icon"></i>${item.price}
+												<i class="cart icon"></i>下单
 											</div>
 										</c:if>
 										<c:if
 											test="${item.status != 0 && item.status != 1 && item.status != 3}">
 											<div class="ui button" id="confirm-ui-btn-${item.id}"
 												onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')">
-												<i class="yen icon"></i>${item.price}
+												<i class="cart icon"></i>下单
 											</div>
 										</c:if>
 
@@ -178,7 +181,8 @@
 
 									<div style="margin-top: 10px;" class="czsCopies">
 
-										<c:if test="${! empty item.consumer_id}">
+										<c:if
+											test="${! empty item.consumer_id && (item.status == 0 || item.status == 1 || item.status == 3)}">
 											<div class="ui label"
 												style="margin-top: 5px; margin-bottom: 5px;">
 												自己(${item.copies})
@@ -246,7 +250,7 @@
 			<div style="font-size: small;">
 				<i class="icon yen"></i><span id="bill-total-span">${total}</span>
 			</div></a> <a class="item" href="menu/free/list4bill.do?openId=${openId}"><i
-			class="icon align justify"></i>商家菜单</a> <a class="item"
+			class="icon align justify"></i>商家菜单 </a> <a class="item"
 			href="user/free/stowQuery.do?openId=${openId}"><i
 			class="icon heart"></i>收藏美食</a>
 	</div>

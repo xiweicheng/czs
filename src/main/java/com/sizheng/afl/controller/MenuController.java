@@ -479,14 +479,15 @@ public class MenuController extends BaseController {
 
 			if (copies != null) {
 
-				count += copies;
-
 				if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(NumberUtil.getShort(map, "status"))) {
 					total += (price * copies);
+					count += copies;
 				} else if (SysConstant.MENU_BILL_STATUS_ACCEPT.equals(NumberUtil.getShort(map, "status"))) {
 					total += (price * copies);
+					count += copies;
 				} else if (SysConstant.MENU_BILL_STATUS_STOW.equals(NumberUtil.getShort(map, "status"))) {
 					total += (price * copies);
+					count += copies;
 				}
 			}
 		}
@@ -697,6 +698,7 @@ public class MenuController extends BaseController {
 
 			double total = 0;
 			int count = 0;
+			int submitCount = 0;
 
 			for (Map<String, Object> map : list) {
 				Double price = NumberUtil.getDouble(map, "price");
@@ -704,6 +706,11 @@ public class MenuController extends BaseController {
 
 				if (isOwn) {
 					copies = NumberUtil.getInteger(map, "copies");
+					Short status = NumberUtil.getShort(map, "status");
+
+					if (status != null && status.equals(SysConstant.MENU_BILL_STATUS_STOW)) {
+						submitCount += copies;
+					}
 				} else {
 					List<Map<String, Object>> maps = (List<Map<String, Object>>) map.get("menuBill");
 					for (Map<String, Object> map2 : maps) {
@@ -720,6 +727,7 @@ public class MenuController extends BaseController {
 			model.addAttribute("billList", list);
 			model.addAttribute("total", format.format(total));
 			model.addAttribute("count", count);
+			model.addAttribute("submitCount", submitCount);
 			model.addAttribute("isOwn", isOwn ? "1" : "0");
 			model.addAttribute("isShowImg", (isShowImg == null || !isShowImg) ? "0" : "1");
 

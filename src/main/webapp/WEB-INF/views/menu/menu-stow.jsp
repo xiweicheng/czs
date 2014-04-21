@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -42,7 +43,7 @@
 	</div>
 
 	<h4 class="ui top attached header" style="margin-top: 0px;">
-		收藏美食
+		收藏美食<div class="circular ui red label">${fn:length(stowList)}个</div>
 		<div class="ui small buttons"
 			style="position: absolute; right: 2px; top: 1px;">
 			<div class="ui button czsSimple">简单</div>
@@ -75,7 +76,8 @@
 									<div>
 										<span class="name"
 											style="font-weight: bold; margin-left: 8px;"
-											onclick="imageHandler('${item.id}')">${item.name}</span>
+											onclick="imageHandler('${item.id}')">${item.name}<div
+												class="circular ui green label">￥${item.price}</div></span>
 
 										<div class="ui left corner label">
 											<div class="text">${item.order_times}</div>
@@ -108,14 +110,14 @@
 											test="${item.status == 0 || item.status == 1 || item.status == 3}">
 											<div class="ui button disabled"
 												id="confirm-ui-btn-${item.id}">
-												<i class="yen icon"></i>${item.price}
+												<i class="cart icon"></i>下单
 											</div>
 										</c:if>
 										<c:if
 											test="${(empty item.status) || (item.status != 0 && item.status != 1 && item.status != 3)}">
 											<div class="ui button" id="confirm-ui-btn-${item.id}"
 												onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')">
-												<i class="yen icon"></i>${item.price}
+												<i class="cart icon"></i>下单
 											</div>
 										</c:if>
 
