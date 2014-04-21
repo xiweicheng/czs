@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -53,7 +54,7 @@
 	</div>
 
 	<div class="ui segment">
-		<h2>图片一览</h2>
+		<h2>图片一览<div class="circular ui red label">${fn:length(imageList)}张</div></h2>
 		<div class="ui stackable items">
 			<c:forEach items="${imageList}" var="item">
 				<div class="item" style="min-height: 0px;"

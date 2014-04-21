@@ -206,7 +206,7 @@
 	<%@ include file="../header.jsp"%>
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">
-		顾客一览 - 共${fn:length(customerList)}人
+		顾客一览 <div class="circular ui red label">${fn:length(customerList)}人</div>
 		<div class="ui toggle checkbox" style="margin-left: 20px;"
 			id="refresh-ui-toggle-checkbox">
 			<input type="checkbox" name="pet"> <label>定时刷新</label>
@@ -907,12 +907,14 @@
 
 					if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 						$('#refresh-ui-toggle-checkbox > label').hide();
+						$('.ui.checkbox.czsFilterOver > label').hide();
 					}
 
 				} else {
 					clearInterval(intervalRef);
 					if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 						$('#refresh-ui-toggle-checkbox > label').show();
+						$('.ui.checkbox.czsFilterOver > label').show();
 					}
 				}
 			});

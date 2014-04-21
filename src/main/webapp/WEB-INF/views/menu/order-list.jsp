@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -68,6 +69,7 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">
 		订单一览
+		<div class="circular ui red label">${fn:length(orderList)}个</div>
 		<div class="ui toggle checkbox" style="margin-left: 20px;"
 			id="refresh-ui-toggle-checkbox">
 			<input type="checkbox" name="pet"> <label>定时刷新</label>
@@ -214,9 +216,9 @@
 					$('.ui.modal.czsBillJoin > .header').text('合并订单信息 - 共' + total + '份');
 					$('.ui.modal.czsBillJoin').modal('show');
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
@@ -258,9 +260,9 @@
 							}
 							return true;
 						} else {
-							if(!!msg.msg && !!msg.msg.detail){
+							if (!!msg.msg && !!msg.msg.detail) {
 								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-							}else{
+							} else {
 								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 							}
 							$('.ui.dimmer.czsMsg > .content').show();
@@ -278,9 +280,9 @@
 							$('.item-tr-' + _menu_id).remove();
 							return true;
 						} else {
-							if(!!msg.msg && !!msg.msg.detail){
+							if (!!msg.msg && !!msg.msg.detail) {
 								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-							}else{
+							} else {
 								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 							}
 							$('.ui.dimmer.czsMsg > .content').show();

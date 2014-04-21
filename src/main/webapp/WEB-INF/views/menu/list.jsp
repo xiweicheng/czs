@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -47,7 +48,10 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">菜品一览</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">
+		菜品一览
+		<div class="circular ui red label">${fn:length(menuList)}个</div>
+	</h4>
 
 	<div class="ui fluid accordion">
 
