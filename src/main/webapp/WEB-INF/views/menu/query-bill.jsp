@@ -44,22 +44,22 @@
 	<h4 class="ui top attached header" style="margin-top: 0px;">${title}
 		<div class="ui small buttons"
 			style="position: absolute; right: 2px; top: 2px;">
-			<div class="ui button czsSimple">简单</div>
+			<div class="ui button czsSimple" czs-status="0">简单</div>
 			<div class="or"></div>
-			<div class="ui button czsImage">图文</div>
+			<div class="ui button czsImage" czs-status="0">图文</div>
 		</div>
 	</h4>
 
 	<div class="2 fluid ui buttons">
 		<c:if test="${isOwn == 1}">
-			<div class="ui active large button czsOwn">个人订单</div>
+			<div class="ui active green large button czsOwn">个人订单</div>
 			<div class="or"></div>
 			<div class="ui large button czsGroup">集体订单</div>
 		</c:if>
 		<c:if test="${isOwn == 0}">
 			<div class="ui large button czsOwn">个人订单</div>
 			<div class="or"></div>
-			<div class="ui active large button czsGroup">集体订单</div>
+			<div class="ui active green large button czsGroup">集体订单</div>
 		</c:if>
 	</div>
 	<form class="czsOwn" action="menu/free/billQuery.do" method="post">
@@ -107,7 +107,7 @@
 									<div>
 										<span class="name" style="font-weight: bold;"
 											onclick="imageHandler('${item.id}')">${item.name}</span>
-
+										<div class="circular ui green label">￥${item.price}</div>
 										<div class="ui huge label" style="float: right;"
 											onclick="imageHandler('${item.id}')">
 											<i class="photo icon"></i>
@@ -123,29 +123,31 @@
 									<p class="description" style="display: none;"
 										id="introduce-p-${item.id}"
 										onclick="introduceHandler('${item.id}')">${item.introduce}</p>
-									<div class="ui divider"></div>
-									<div style="margin-top: 10px; margin-bottom: 10px;">
-										<div class="ui green label">
-											<i class="yen icon"></i>${item.price}</div>
+
+									<div class="ui divider czsSimpleMode"></div>
+
+									<div style="margin-top: 10px; margin-bottom: 10px;"
+										class="czsSimpleMode">
 										<div class="ui label">${item.category}</div>
 										<div class="ui label">${item.taste}</div>
 									</div>
+
 									<div class="ui divider"></div>
 
 									<!-- 个人 -->
 									<c:if test="${isOwn == 1}">
 										<div class="2 fluid ui buttons">
 											<c:if test="${item.status == 0 || item.status == 1}">
-												<div class="ui button"
+												<div class="ui small button"
 													onclick="billReduceHandler('${item.menu_id}', '${openId}', ${item.price}, '${item.status}')">
 													减一份</div>
 												<div class="or"></div>
-												<div class="ui button" id="hold-ui-btn-${item.id}"
+												<div class="ui small button" id="hold-ui-btn-${item.id}"
 													onclick="billAddHandler('${item.menu_id}', '${openId}', ${item.price}, '${item.status}')">
 													加一份</div>
 											</c:if>
 										</div>
-										<div>
+										<div class="czsSimpleMode">
 											<input type="hidden" value="${item.status}"
 												class="czsBillStatus">
 											<div class="ui label"
@@ -160,20 +162,22 @@
 										</div>
 									</c:if>
 
-									<!-- 集体 -->
-									<c:if test="${isOwn == 0}">
-										<c:forEach items="${item.menuBill}" var="item2">
-											<div class="ui label"
-												style="margin-top: 5px; margin-bottom: 5px;">
-												${item2.nickname}(<span>${item2.copies}</span>)
-												<div class="detail">
-													<c:if test="${item2.status == 0}">待提交</c:if>
-													<c:if test="${item2.status == 1}">已下单</c:if>
-													<c:if test="${item2.status == 3}">已接单</c:if>
+									<div class="czsSimpleMode">
+										<!-- 集体 -->
+										<c:if test="${isOwn == 0}">
+											<c:forEach items="${item.menuBill}" var="item2">
+												<div class="ui label"
+													style="margin-top: 5px; margin-bottom: 5px;">
+													${item2.nickname}(<span>${item2.copies}</span>)
+													<div class="detail">
+														<c:if test="${item2.status == 0}">待提交</c:if>
+														<c:if test="${item2.status == 1}">已下单</c:if>
+														<c:if test="${item2.status == 3}">已接单</c:if>
+													</div>
 												</div>
-											</div>
-										</c:forEach>
-									</c:if>
+											</c:forEach>
+										</c:if>
+									</div>
 								</div>
 							</div>
 						</c:forEach>
@@ -355,12 +359,29 @@
 			});
 			
 			$('.ui.button.czsSimple').click(function(){
-				$('.ui.menu.czsMenuList .image').hide();
+				if($(this).attr('czs-status') == '0'){
+					$(this).attr('czs-status', '1');
+					$(this).addClass('green');
+					$('.czsSimpleMode').hide();
+				}else{
+					$(this).attr('czs-status', '0');
+					$(this).removeClass('green');
+					$('.czsSimpleMode').show();
+				}
 			});
+			
 			$('.ui.button.czsImage').click(function(){
-				$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
-					$(this).attr('src', $(this).attr('czz-src'));
-				});
+				if($(this).attr('czs-status') == '0'){
+					$(this).attr('czs-status', '1');
+					$(this).addClass('green');
+					$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
+						$(this).attr('src', $(this).attr('czz-src'));
+					});
+				}else{
+					$(this).attr('czs-status', '0');
+					$(this).removeClass('green');
+					$('.ui.menu.czsMenuList .image').hide();
+				}
 			});
 			
 			$('.ui.button.czsOwn').click(function(){

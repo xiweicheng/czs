@@ -48,9 +48,9 @@
 		<div class="circular ui red label">${fn:length(menuList)}个</div>
 		<div class="ui small buttons"
 			style="position: absolute; right: 2px; top: 2px;">
-			<div class="ui button czsSimple">简单</div>
+			<div class="ui button czsSimple" czs-status="0">简单</div>
 			<div class="or"></div>
-			<div class="ui button czsImage">图文</div>
+			<div class="ui button czsImage" czs-status="0">图文</div>
 		</div>
 	</h4>
 
@@ -117,8 +117,8 @@
 									<div>
 										<span class="name"
 											style="font-weight: bold; margin-left: 8px;"
-											onclick="imageHandler('${item.id}')">${item.name}<div
-												class="circular ui green label">￥${item.price}</div></span>
+											onclick="imageHandler('${item.id}')">${item.name}</span>
+										<div class="circular ui green label">￥${item.price}</div>
 										<div class="ui left corner label">
 											<div class="text">${item.order_times}</div>
 										</div>
@@ -139,8 +139,9 @@
 									<p class="description" style="display: none;"
 										id="introduce-p-${item.id}"
 										onclick="introduceHandler('${item.id}')">${item.introduce}</p>
-									<div class="ui divider"></div>
-									<div style="margin-top: 10px; margin-bottom: 10px;">
+									<div class="ui divider czsSimpleMode"></div>
+									<div style="margin-top: 10px; margin-bottom: 10px;"
+										class="czsSimpleMode">
 										<div class="ui label">${item.category}</div>
 										<div class="ui label">${item.taste}</div>
 									</div>
@@ -149,14 +150,14 @@
 
 										<c:if
 											test="${item.status == 0 || item.status == 1 || item.status == 3}">
-											<div class="ui button disabled"
+											<div class="ui small button disabled"
 												id="confirm-ui-btn-${item.id}">
 												<i class="cart icon"></i>下单
 											</div>
 										</c:if>
 										<c:if
 											test="${item.status != 0 && item.status != 1 && item.status != 3}">
-											<div class="ui button" id="confirm-ui-btn-${item.id}"
+											<div class="ui small button" id="confirm-ui-btn-${item.id}"
 												onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')">
 												<i class="cart icon"></i>下单
 											</div>
@@ -166,20 +167,21 @@
 
 										<c:if
 											test="${(empty item.fav_status) || item.fav_status == 1}">
-											<div class="ui button" id="hold-ui-btn-${item.id}"
+											<div class="ui small button" id="hold-ui-btn-${item.id}"
 												onclick="menuStowHandler(this, '${item.id}', '${openId}')">
 												<i class="heart empty icon"></i>收藏
 											</div>
 										</c:if>
 										<c:if test="${item.fav_status == 0}">
-											<div class="ui button disabled" id="hold-ui-btn-${item.id}">
+											<div class="ui small button disabled"
+												id="hold-ui-btn-${item.id}">
 												<i class="heart empty icon"></i>已收藏
 											</div>
 										</c:if>
 
 									</div>
 
-									<div style="margin-top: 10px;" class="czsCopies">
+									<div style="margin-top: 10px;" class="czsCopies czsSimpleMode">
 
 										<c:if
 											test="${! empty item.consumer_id && (item.status == 0 || item.status == 1 || item.status == 3)}">
@@ -443,12 +445,28 @@
 					});
 			
 			$('.ui.button.czsSimple').click(function(){
-				$('.ui.menu.czsMenuList .image').hide();
+				if($(this).attr('czs-status') == '0'){
+					$(this).attr('czs-status', '1');
+					$(this).addClass('green');
+					$('.czsSimpleMode').hide();
+				}else{
+					$(this).attr('czs-status', '0');
+					$(this).removeClass('green');
+					$('.czsSimpleMode').show();
+				}
 			});
 			$('.ui.button.czsImage').click(function(){
-				$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
-					$(this).attr('src', $(this).attr('czz-src'));
-				});
+				if($(this).attr('czs-status') == '0'){
+					$(this).attr('czs-status', '1');
+					$(this).addClass('green');
+					$('.ui.menu.czsMenuList .image').show().end().find('img').each(function() {
+						$(this).attr('src', $(this).attr('czz-src'));
+					});
+				}else{
+					$(this).attr('czs-status', '0');
+					$(this).removeClass('green');
+					$('.ui.menu.czsMenuList .image').hide();
+				}
 			});
 
 		});
