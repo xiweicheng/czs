@@ -312,6 +312,24 @@ public final class SqlUtil {
 	 * @author xiweicheng
 	 * @creation 2013年11月9日 下午4:07:10
 	 * @modification 2013年11月9日 下午4:07:10
+	 * @param strs
+	 * @return
+	 */
+	public static String joinAsIntIn2(String... strs) {
+
+		if (strs == null || strs.length == 0) {
+			return EMPTY;
+		}
+
+		return StringUtil.join2(",", strs);
+	}
+
+	/**
+	 * 将查询条件拼接成in查询条件.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2013年11月9日 下午4:07:10
+	 * @modification 2013年11月9日 下午4:07:10
 	 * @param list
 	 * @return
 	 */

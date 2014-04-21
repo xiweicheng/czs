@@ -332,7 +332,7 @@
 						<th class="">头像</th>
 						<th class="">名称</th>
 						<th class="">性别</th>
-						<th class="">消费次数</th>
+						<th class="number">消费次数</th>
 						<th class="sorted descending">最后消费时间</th>
 						<th class="">距今</th>
 					</tr>
@@ -622,6 +622,9 @@
 			});
 
 			$('table').tablesort().data('tablesort');
+			$('thead th.number').data('sortBy', function(th, td, sorter) {
+				return parseInt(td.text(), 10);
+			});
 
 			$('.ui.checkbox').checkbox();
 

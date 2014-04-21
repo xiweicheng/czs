@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -14,7 +15,9 @@ import com.sizheng.afl.base.impl.BaseDaoImpl;
 import com.sizheng.afl.dao.IMenuDao;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Menu;
+import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.SqlUtil;
+import com.sizheng.afl.util.StringUtil;
 
 /**
  * 【菜单】持久化实现层.
@@ -222,4 +225,45 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		return update(sqlSb, openId) > 0;
 	}
 
+	@Override
+	public List<Map<String, Object>> queryHistoryMenuBill(Locale locale, String businessId, Date start, Date end,
+			String... status) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu_bill.id,\n");
+		sqlSb.append("	menu_bill.menu_id,\n");
+		sqlSb.append("	menu_bill.consumer_id,\n");
+		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,menu_bill.date_time,NOW()) as sec_diff,\n");
+		sqlSb.append("	menu_bill.`status`,\n");
+		sqlSb.append("	menu_bill.scene_id,\n");
+		sqlSb.append("	menu_bill.copies,\n");
+		sqlSb.append("	menu.`name`,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	qrcode.description\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu_bill\n");
+		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("INNER JOIN subscriber ON menu_bill.consumer_id = subscriber.user_name\n");
+		sqlSb.append("INNER JOIN qrcode ON menu_bill.scene_id = qrcode.scene_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("    menu.`owner` = ?\n");
+
+		if (end != null) {
+			sqlSb.append(StringUtil.replace("AND menu_bill.date_time <= '{?1}'\n",
+					DateUtil.format(end, DateUtil.FORMAT1)));
+		} else if (start != null) {
+			sqlSb.append(StringUtil.replace("AND menu_bill.date_time >= '{?1}'\n",
+					DateUtil.format(start, DateUtil.FORMAT1)));
+		}
+
+		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND menu_bill.`status` IN ({?1})\n", SqlUtil.joinAsIntIn(status)));
+		sqlSb.append("ORDER BY\n");
+		sqlSb.append("	date_time DESC\n");
+
+		return getMapList(sqlSb, businessId);
+
+	}
 }

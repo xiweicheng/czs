@@ -5,6 +5,7 @@ package com.sizheng.afl.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -451,6 +452,12 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	@Override
 	public boolean billSubmit(Locale locale, String openId) {
 		return menuDao.billSubmit(locale, openId);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryHistoryMenuBill(Locale locale, String businessId, Date start, Date end,
+			String... status) {
+		return menuDao.queryHistoryMenuBill(locale, businessId, start, end, status);
 	}
 
 }

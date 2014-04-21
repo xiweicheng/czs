@@ -15,7 +15,8 @@
 		<a class="item" href="business/main.do" id="menu-item-business-main">
 			基本信息 </a><a class="item" href="business/roleMgr.do"
 			id="menu-item-business-role-mgr"> 角色分配 </a><a class="item"
-			href="business/list.do?filterOver=1" id="menu-item-business-list">顾客一览 </a>
+			href="business/list.do?filterOver=1" id="menu-item-business-list">顾客一览
+		</a>
 		<div class="header item">
 			<i class="qr code icon"></i> 二维码
 		</div>
@@ -23,11 +24,16 @@
 			二维码生成</a> <a class="item" href="qrcode/list.do"
 			id="menu-item-qrcode-list"> 二维码一览</a>
 		<div class="header item">
-			<i class="setting icon"></i> 菜单管理
+			<i class="cart icon"></i> 订单管理
 		</div>
 		<a class="item" href="menu/orderList.do" id="menu-item-order-list">
-			订单一览 </a> <a class="item" href="menu/list.do" id="menu-item-menu-list">
-			菜品一览 </a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
+			订单一览 </a><a class="item" href="menu/orderHistory.do"
+			id="menu-item-order-history"> 历史订单 </a>
+		<div class="header item">
+			<i class="book icon"></i> 菜品管理
+		</div>
+		<a class="item" href="menu/list.do" id="menu-item-menu-list"> 菜品一览
+		</a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
 			菜品添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
 			菜品图片 </a>
 		<div class="header item">

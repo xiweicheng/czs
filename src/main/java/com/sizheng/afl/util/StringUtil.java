@@ -181,6 +181,28 @@ public final class StringUtil {
 	 * 连接字符串.
 	 * 
 	 * @param connector
+	 * @param strs
+	 * @return
+	 */
+	public static String join2(String connector, String... strs) {
+
+		StringBuffer sBuffer = new StringBuffer();
+
+		for (Object object : strs) {
+			sBuffer.append(object).append(connector);
+		}
+
+		if (sBuffer.length() > 0) {
+			sBuffer.delete(sBuffer.length() - connector.length(), sBuffer.length());
+		}
+
+		return sBuffer.toString();
+	}
+
+	/**
+	 * 连接字符串.
+	 * 
+	 * @param connector
 	 * @param objects
 	 * @return
 	 */

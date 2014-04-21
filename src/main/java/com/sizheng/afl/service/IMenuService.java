@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -215,5 +216,31 @@ public interface IMenuService extends IBaseService {
 	 */
 	boolean acceptBillJoin(Locale locale, String[] ids, Long[] copies);
 
+	/**
+	 * 订单提交处理.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月21日 下午12:44:12
+	 * @modification 2014年4月21日 下午12:44:12
+	 * @param locale
+	 * @param openId
+	 * @return
+	 */
 	boolean billSubmit(Locale locale, String openId);
+
+	/**
+	 * 查询历史账单
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月21日 下午12:44:02
+	 * @modification 2014年4月21日 下午12:44:02
+	 * @param locale
+	 * @param businessId
+	 * @param start
+	 * @param end
+	 * @param status
+	 * @return
+	 */
+	List<Map<String, Object>> queryHistoryMenuBill(Locale locale, String businessId, Date start, Date end,
+			String... status);
 }

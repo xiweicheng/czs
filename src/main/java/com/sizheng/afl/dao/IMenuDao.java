@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,14 +30,18 @@ public interface IMenuDao {
 	 * @modification 2014年03月29日 08:37:32
 	 * @param locale
 	 * @param menu
-	 * @param consumeCode TODO
+	 * @param consumeCode
+	 *            TODO
 	 * @param start
 	 * @param limit
-	 * @param order TODO
-	 * @param consumerId TODO
+	 * @param order
+	 *            TODO
+	 * @param consumerId
+	 *            TODO
 	 * @return
 	 */
-	List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit, String order, String consumerId);
+	List<Map<String, Object>> query(Locale locale, Menu menu, String consumeCode, Long start, Long limit, String order,
+			String consumerId);
 
 	/**
 	 * 查询总数查询【菜单】.
@@ -88,6 +93,32 @@ public interface IMenuDao {
 	 */
 	List<Map<String, Object>> queryJoinBill(Locale locale, Menu menu);
 
+	/**
+	 * 提交订单.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月21日 下午12:42:06
+	 * @modification 2014年4月21日 下午12:42:06
+	 * @param locale
+	 * @param openId
+	 * @return
+	 */
 	boolean billSubmit(Locale locale, String openId);
-	
+
+	/**
+	 * 查询历史账单.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月21日 下午12:41:48
+	 * @modification 2014年4月21日 下午12:41:48
+	 * @param locale
+	 * @param businessId
+	 * @param start
+	 * @param end
+	 * @param status
+	 * @return
+	 */
+	List<Map<String, Object>> queryHistoryMenuBill(Locale locale, String businessId, Date start, Date end,
+			String... status);
+
 }

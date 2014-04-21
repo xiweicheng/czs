@@ -5,6 +5,7 @@ package com.sizheng.afl.controller;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -766,5 +767,64 @@ public class MenuController extends BaseController {
 			model.addAttribute("message", "提交订单失败!");
 			return "error";
 		}
+	}
+
+	/**
+	 * 历史订单查询.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("orderHistory")
+	public String orderHistory(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "start", required = false) Date start,
+			@RequestParam(value = "end", required = false) Date end,
+			@RequestParam(value = "status", required = false) String[] status) {
+
+		logger.debug("历史订单查询【消费者】");
+
+		List<Map<String, Object>> historyMenuBillList = menuService.queryHistoryMenuBill(locale, WebUtil
+				.getSessionBusiness(request).getOpenId(), start, end, status);
+
+		List<Map<String, Object>> historyMenuBillList2 = menuService.queryHistoryMenuBill(locale, WebUtil
+				.getSessionBusiness(request).getOpenId(), start, end);
+
+		long accept = 0;
+		long submited = 0;
+		long submiting = 0;
+		long debook = 0;
+		for (Map<String, Object> map : historyMenuBillList2) {
+			Short status2 = NumberUtil.getShort(map, "status");
+			if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(status2)) {
+				submited++;
+			} else if (SysConstant.MENU_BILL_STATUS_ACCEPT.equals(status2)) {
+				accept++;
+			} else if (SysConstant.MENU_BILL_STATUS_DEBOOK.equals(status2)) {
+				debook++;
+			} else if (SysConstant.MENU_BILL_STATUS_STOW.equals(status2)) {
+				submiting++;
+			}
+		}
+
+		for (Map<String, Object> map : historyMenuBillList) {
+			long sec = NumberUtil.getLong(map, "sec_diff");
+			String c = DateUtil.convert(sec);
+			map.put("sec_diff", c);
+		}
+
+		model.addAttribute("historyMenuBillList", historyMenuBillList);
+		model.addAttribute("accept", accept);
+		model.addAttribute("submited", submited);
+		model.addAttribute("submiting", submiting);
+		model.addAttribute("debook", debook);
+		model.addAttribute("total", historyMenuBillList2.size());
+
+		return "menu/order-history";
 	}
 }
