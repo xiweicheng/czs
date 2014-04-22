@@ -287,7 +287,8 @@ public class WeiXinApiInvoker {
 
 			weiXinButton = new WeiXinButton("商家服务");
 			sub_button = new ArrayList<>();
-			sub_button.add(new WeiXinClickButton("商家入驻", "business_evt_key_1"));
+			sub_button.add(new WeiXinClickButton("申请入驻", "business_evt_key_1"));
+			sub_button.add(new WeiXinClickButton("店员入口", "business_evt_key_3"));
 			sub_button.add(new WeiXinClickButton("其它服务", "business_evt_key_2"));
 
 			weiXinButton.setSub_button(sub_button);

@@ -127,10 +127,10 @@
 							<c:if test="${item.msg_type=='image'}">图片消息</c:if></td>
 						<td class=""><c:if test="${item.msg_type=='text'}">${item.content}</c:if>
 							<c:if test="${item.msg_type=='image'}">
-								<a target="_blank" href="${item.pic_url}">图片链接</a>
+								<a class="ui label" style="text-decoration: underline;" target="_blank" href="${item.pic_url}">图片链接</a>
 							</c:if></td>
 						<td class=""><c:if test="${item.status==0}">新消息<a
-									class="ui label" onclick="msgHandler(this, '1', '${item.id}')">了解</a>
+									class="ui label" onclick="msgHandler(this, '1', '${item.id}')">已读</a>
 								<a class="ui label"
 									onclick="msgHandler(this, '2', '${item.id}')">收藏</a>
 							</c:if> <c:if test="${item.status==1}">已了解<a class="ui label"

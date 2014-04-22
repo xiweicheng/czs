@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -49,7 +50,10 @@
 	<!-- header -->
 	<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">角色分配</h4>
+	<h4 class="ui top attached header" style="margin-top: 45px;">
+		角色分配
+		<div class="circular ui red label">${fn:length(roleList)}个</div>
+	</h4>
 	<div class="ui segment attached">
 		<div>
 			<a class="ui label" id="roleType-0" onclick="filterHandler('0')"
@@ -60,13 +64,14 @@
 				class="ui label" id="roleType-2" onclick="filterHandler('2')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 后厨角色 ${cook} 人</a> <a
 				class="ui label" id="roleType-3" onclick="filterHandler('3')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 服务员角色 ${waiter} 人
-			</a> <a class="ui label" onclick="filterHandler('4')" id="roleType-4"
+				style="margin-top: 5px; margin-bottom: 5px;"> 服务员角色 ${waiter} 人 </a>
+			<a class="ui label" onclick="filterHandler('4')" id="roleType-4"
 				style="margin-top: 5px; margin-bottom: 5px;"> 前台角色 ${proscenium}
 				人</a> </a><a class="ui label" onclick="filterHandler('')" id="roleType-"
 				style="margin-top: 5px; margin-bottom: 5px;"> 总计 ${total} 人 </a>
 		</div>
-		<table class="ui sortable table segment" style="display: table;">
+		<table class="ui sortable table segment"
+			style="display: table; font-size: 15px;">
 			<thead>
 				<tr>
 					<th class="">头像</th>

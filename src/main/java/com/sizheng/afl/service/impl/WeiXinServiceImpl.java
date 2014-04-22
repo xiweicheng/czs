@@ -364,6 +364,14 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 					+ "/business/sendLink.do", bean.getFromUserName());
 
 			return StringUtil.replace("{?1}", url1);
+		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_3.getValue().equals(eventKey)) {
+
+			String link1 = "<a>[点击此]服务员入口</a>";
+			String link2 = "<a>[点击此]后厨入口</a>";
+			String link3 = "<a>[点击此]前台入口</a>";
+			String link4 = "<a>[点击此]店主入口</a>";
+
+			return StringUtil.replace("{?1}\n\n{?2}\n\n{?3}\n\n{?4}", link1, link2, link3, link4);
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_1.getValue().equals(eventKey)) {
 			return StringUtil.replace("功能开发设计中,敬请期待...");
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_2.getValue().equals(eventKey)) {
