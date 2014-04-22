@@ -122,4 +122,5 @@ public interface IRequestService extends IBaseService {
 	 * @return
 	 */
 	boolean updateStatus(long id, Short status);
+
 }

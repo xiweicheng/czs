@@ -32,6 +32,7 @@ import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.pojo.entity.Favorites;
+import com.sizheng.afl.pojo.entity.Message;
 import com.sizheng.afl.pojo.entity.Request;
 import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.vo.Msg;
@@ -39,6 +40,7 @@ import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.IMessageService;
 import com.sizheng.afl.service.IRequestService;
 import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.util.DateUtil;
@@ -77,6 +79,9 @@ public class BusinessController extends BaseController {
 
 	@Autowired
 	IUserService userService;
+
+	@Autowired
+	IMessageService messageService;
 
 	@Autowired
 	IRequestService requestService;
@@ -1240,6 +1245,31 @@ public class BusinessController extends BaseController {
 	}
 
 	/**
+	 * 顾客消息处理.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("msgHandle")
+	@ResponseBody
+	public ResultMsg msgHandle(HttpServletRequest request, Locale locale, @ModelAttribute Message message) {
+
+		logger.debug("顾客消息处理【商家】");
+
+		Assert.notNull(message.getId());
+		Assert.notNull(message.getStatus());
+
+		boolean val = messageService.updateStatus(locale, message);
+
+		return new ResultMsg(val);
+	}
+
+	/**
 	 * 顾客消息.
 	 * 
 	 * @author xiweicheng
@@ -1274,6 +1304,7 @@ public class BusinessController extends BaseController {
 
 		long newCount = 0;
 		long understanding = 0;
+		long stow = 0;
 
 		for (Map<String, Object> map : msgList2) {
 			Short status2 = NumberUtil.getShort(map, "status");
@@ -1281,6 +1312,8 @@ public class BusinessController extends BaseController {
 				newCount++;
 			} else if (SysConstant.MESSAGE_STATUS_UNDERSTANDING.equals(status2)) {
 				understanding++;
+			} else if (SysConstant.MESSAGE_STATUS_STOW.equals(status2)) {
+				stow++;
 			}
 		}
 
@@ -1294,6 +1327,7 @@ public class BusinessController extends BaseController {
 		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
 		model.addAttribute("newCount", newCount);
 		model.addAttribute("understanding", understanding);
+		model.addAttribute("stow", stow);
 		model.addAttribute("total", msgList2.size());
 
 		return "business/customer-msg";

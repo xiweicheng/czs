@@ -94,9 +94,11 @@
 					style="margin-top: 5px; margin-bottom: 5px;"> 新消息 ${newCount} 个
 				</a> <a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
 					style="margin-top: 5px; margin-bottom: 5px;"> 已了解
-					${understanding} 个 </a><a class="ui label" onclick="filterHandler('')"
-					id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;">
-					全部 ${total} 个 </a>
+					${understanding} 个 </a><a class="ui label" id="czsStatus-2"
+					onclick="filterHandler('2')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 收藏消息 ${stow} 个 </a><a
+					class="ui label" onclick="filterHandler('')" id="czsStatus-"
+					style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
 			</div>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
@@ -127,8 +129,15 @@
 							<c:if test="${item.msg_type=='image'}">
 								<a target="_blank" href="${item.pic_url}">图片链接</a>
 							</c:if></td>
-						<td class=""><c:if test="${item.status==0}">新消息</c:if> <c:if
-								test="${item.status==1}">已了解</c:if></td>
+						<td class=""><c:if test="${item.status==0}">新消息<a
+									class="ui label" onclick="msgHandler(this, '1', '${item.id}')">了解</a>
+								<a class="ui label"
+									onclick="msgHandler(this, '2', '${item.id}')">收藏</a>
+							</c:if> <c:if test="${item.status==1}">已了解<a class="ui label"
+									onclick="msgHandler(this, '2', '${item.id}')">收藏</a>
+							</c:if> <c:if test="${item.status==2}">已收藏<a class="ui label"
+									onclick="msgHandler(this, '1', '${item.id}')">移除</a>
+							</c:if></td>
 						<td class="">${item.date_time}</td>
 						<td class="">${item.sec_diff}</td>
 					</tr>
@@ -150,8 +159,28 @@
 							$('<input type="hidden">').attr('name', 'end').attr('value',
 									$('#datetimepickerEnd > input').val())).submit();
 		}
+		
+		function msgHandler(_this, status, msgId){
+			$.post('business/msgHandle.do', {status:status, id:msgId}, function(msg){
+				if(msg.succeed){
+					$(_this).hide();
+				}else{
+					if (!!msg.msg && !!msg.msg.detail) {
+						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+					} else {
+						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+					}
+					$('.ui.dimmer.czsMsg > .content').show();
+					$('.ui.dimmer.czsMsg').dimmer('show');
+				}
+			});
+		}
 
 		jQuery(function($) {
+			
+			$('.ui.dimmer.czsMsg').click(function() {
+				$('.ui.dimmer.czsMsg > .content').hide();
+			});
 
 			$('table').tablesort().data('tablesort');
 			$('thead th.number').data('sortBy', function(th, td, sorter) {

@@ -164,5 +164,6 @@ public final class SysConstant {
 	/** MESSAGE_STATUS_NEW [Short] */
 	public static final Short MESSAGE_STATUS_NEW = 0;
 	public static final Short MESSAGE_STATUS_UNDERSTANDING = 1;
+	public static final Short MESSAGE_STATUS_STOW = 2;
 
 }
