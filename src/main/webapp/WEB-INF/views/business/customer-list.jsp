@@ -261,19 +261,19 @@
 			style="display: table; font-size: 15px;">
 			<thead>
 				<tr>
+					<th class="number">序号</th>
 					<th class="">头像</th>
 					<th class="">名称</th>
-					<!-- <th class="">性别</th> -->
 					<th class="">状态</th>
-					<!-- <th class="">消费次数</th> -->
 					<th class="sorted descending">开始时间</th>
 					<th class="">距今</th>
 					<th class="">位置描述</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${customerList}" var="item">
+				<c:forEach items="${customerList}" var="item" varStatus="sts">
 					<tr id="item-tr-${item.consumer_id}">
+						<td>${sts.index + 1}</td>
 						<td><img class="ui avatar image" src="${item.headimgurl}/64"></td>
 						<td class=""><a href="javascript:void(0);"
 							onclick="getConsumerInfoHandler('${item.consumer_id}')">${item.nickname}</a>

@@ -91,12 +91,12 @@
 			</div>
 			<div style="margin-top: 10px;">
 				<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 新消息 ${newCount} 份
+					style="margin-top: 5px; margin-bottom: 5px;"> 新消息 ${newCount} 个
 				</a> <a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
 					style="margin-top: 5px; margin-bottom: 5px;"> 已了解
-					${understanding} 份 </a><a class="ui label" onclick="filterHandler('')"
+					${understanding} 个 </a><a class="ui label" onclick="filterHandler('')"
 					id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;">
-					全部 ${total} 份 </a>
+					全部 ${total} 个 </a>
 			</div>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
@@ -106,6 +106,7 @@
 					<th class="">头像</th>
 					<th class="">姓名</th>
 					<th class="">性别</th>
+					<th class="">类型</th>
 					<th class="">消息</th>
 					<th class="">状态</th>
 					<th class="">时间</th>
@@ -120,7 +121,12 @@
 							src="${item.headimgurl}/64"></td>
 						<td class="">${item.nickname}</td>
 						<td class="">${item.sex}</td>
-						<td class="">${item.content}</td>
+						<td class=""><c:if test="${item.msg_type=='text'}">文本消息</c:if>
+							<c:if test="${item.msg_type=='image'}">图片消息</c:if></td>
+						<td class=""><c:if test="${item.msg_type=='text'}">${item.content}</c:if>
+							<c:if test="${item.msg_type=='image'}">
+								<a target="_blank" href="${item.pic_url}">图片链接</a>
+							</c:if></td>
 						<td class=""><c:if test="${item.status==0}">新消息</c:if> <c:if
 								test="${item.status==1}">已了解</c:if></td>
 						<td class="">${item.date_time}</td>

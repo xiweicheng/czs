@@ -67,7 +67,7 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">
 		历史订单
-		<div class="circular ui red label">${fn:length(historyMenuBillList)}个</div>
+		<div class="circular ui red label">${fn:length(historyMenuBillList)}份</div>
 	</h4>
 	<div class="ui segment attached">
 
