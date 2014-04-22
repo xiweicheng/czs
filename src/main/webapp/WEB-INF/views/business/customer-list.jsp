@@ -191,7 +191,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -206,9 +206,9 @@
 	<%@ include file="../header.jsp"%>
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">
-		顾客一览 <div class="circular ui red label">${fn:length(customerList)}人</div>
-		<div class="ui toggle checkbox" style="margin-left: 20px;"
-			id="refresh-ui-toggle-checkbox">
+		顾客一览
+		<div class="circular ui red label">${fn:length(customerList)}人</div>
+		<div class="ui toggle checkbox czsRefresh" style="margin-left: 20px;">
 			<input type="checkbox" name="pet"> <label>定时刷新</label>
 		</div>
 		<div class="ui radio checkbox">
@@ -235,29 +235,30 @@
 	</h4>
 	<div class="ui segment attached">
 		<div>
-			<a class="ui purple label czsRequest czsStatus"
-				href="business/list.do?status=5&filterOver=${filterOver}&interval=${interval}"
+			<a class="ui label czsRequest czsStatus" id="czsStatus-5"
+				onclick="filterHandler('5')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中
-				${requesting} 人 </a> <a class="ui teal label czsRequestOwn czsStatus"
-				href="business/list.do?status=3&filterOver=${filterOver}&interval=${interval}"
+				${requesting} 人 </a> <a class="ui label czsRequestOwn czsStatus"
+				id="czsStatus-3" onclick="filterHandler('3')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 个人结账申请
-				${requestOwn} 人 </a><a class="ui orange label czsRequestGroup czsStatus"
-				href="business/list.do?status=4&filterOver=${filterOver}&interval=${interval}"
+				${requestOwn} 人 </a><a class="ui label czsRequestGroup czsStatus"
+				id="czsStatus-4" onclick="filterHandler('4')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 集体结账申请
-				${requestGroup} 人</a> <a class="ui black label czsStatus"
-				href="business/list.do?status=1&filterOver=${filterOver}&interval=${interval}"
+				${requestGroup} 人</a> <a class="ui label czsStatus" id="czsStatus-1"
+				onclick="filterHandler('1')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人 </a>
-			<a class="ui red label czsStatus"
-				href="business/list.do?status=0&filterOver=${filterOver}&interval=${interval}"
+			<a class="ui label czsStatus" id="czsStatus-0"
+				onclick="filterHandler('0')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a
-				class="ui green label czsStatus"
-				href="business/list.do?status=2&filterOver=${filterOver}&interval=${interval}"
+				class="ui label czsStatus" id="czsStatus-2"
+				onclick="filterHandler('2')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled} 人
-			</a><a class="ui blue label total czsStatus"
-				href="business/list.do?filterOver=${filterOver}&interval=${interval}"
+			</a><a class="ui label total czsStatus" id="czsStatus-"
+				onclick="filterHandler('')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a>
 		</div>
-		<table class="ui sortable table segment" style="display: table;">
+		<table class="ui sortable table segment"
+			style="display: table; font-size: 15px;">
 			<thead>
 				<tr>
 					<th class="">头像</th>
@@ -461,6 +462,26 @@
 		var _interval;
 		var _bill_total;
 
+		var _filterOver = '${filterOver}';
+		var _refresh = '${refresh}';
+		var _request = '${request}';
+
+		function filterHandler(status) {
+
+			$('.ui.radio.checkbox').each(function(item) {
+				if ($(this).children('input[type="radio"]')[0].checked) {
+					_interval = Number($(this).children('input[type="hidden"]').val());
+				}
+			});
+
+			$('<form action="business/list.do" method="post"></form>').append(
+					$('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
+					$('<input type="hidden">').attr('name', 'filterOver').attr('value', _filterOver)).append(
+					$('<input type="hidden">').attr('name', 'refresh').attr('value', _refresh)).append(
+					$('<input type="hidden">').attr('name', 'request').attr('value', _request)).append(
+					$('<input type="hidden">').attr('name', 'interval').attr('value', _interval)).submit();
+		}
+
 		function billDetailHandler(consume_code, scene_id, consumer_id) {
 			_consume_code = consume_code;
 			_scene_id = scene_id;
@@ -479,9 +500,9 @@
 					$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
 					$('#bill-detail-modal').modal('show');
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
@@ -506,9 +527,9 @@
 							'消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.values[0] + '</a>');
 					$('#group-info-show-modal').modal('show');
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
@@ -526,9 +547,9 @@
 				if (msg.succeed) {
 					$('#item-tr-' + consumer_id).remove();
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
@@ -555,9 +576,9 @@
 							'消费金额:<a class="ui huge red label"><i class="icon yen"></i>' + msg.value + '</a>');
 					$('#confirm-ui-modal').modal('show');
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
@@ -574,9 +595,9 @@
 				if (msg.succeed) {
 					$('#request-item-' + id).remove();
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
@@ -604,9 +625,9 @@
 							.appendTo($('.ui.modal.czsGetConsumerInfo > .content').empty());
 					$('.ui.modal.czsGetConsumerInfo').modal('show');
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
@@ -616,8 +637,8 @@
 		}
 
 		jQuery(function($) {
-			
-			$('.ui.dimmer.czsMsg').click(function(){
+
+			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
 			});
 
@@ -627,6 +648,8 @@
 			});
 
 			$('.ui.checkbox').checkbox();
+
+			$('#czsStatus-' + '${status}').addClass('green');
 
 			$('#menu-item-business-list').addClass('active');
 
@@ -654,9 +677,9 @@
 							$('#bill-detail-modal').modal('hide');
 							return true;
 						} else {
-							if(!!msg.msg && !!msg.msg.detail){
+							if (!!msg.msg && !!msg.msg.detail) {
 								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-							}else{
+							} else {
 								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 							}
 							$('.ui.dimmer.czsMsg > .content').show();
@@ -675,87 +698,48 @@
 
 			var _refreshInterval;
 
-			$('#refresh-ui-toggle-checkbox').checkbox({
+			$('.ui.checkbox.czsRefresh').checkbox({
 				onEnable : function() {
-
+					_refresh = '1';
 					$('.ui.radio.checkbox').show().each(function(item) {
-
 						if ($(this).children('input[type="radio"]')[0].checked) {
 							_interval = Number($(this).children('input[type="hidden"]').val());
 						}
 					});
 					_refreshInterval = setInterval(function() {
-
-						var search = window.location.search;
-						var index = window.location.href.indexOf("interval=");
-						if (index == -1) {
-							if (search == '') {
-								window.location = window.location + '?interval=' + _interval;
-							} else {
-								window.location = window.location + '&interval=' + _interval;
-							}
-						} else {
-							window.location = (window.location.href).substr(0, index + 9) + _interval;
-						}
-
+						filterHandler('${status}');
 					}, _interval * 1000);
 				},
 				onDisable : function() {
-					clearInterval(_refreshInterval)
+					_refresh = '0';
 					$('.ui.radio.checkbox').hide();
-					var index = window.location.href.indexOf("?interval=");
-					if (index >= 0) {
-						window.location = window.location.href.substr(0, index);
-					} else {
-						index = window.location.href.indexOf("&interval=");
-						if (index >= 0) {
-							window.location = window.location.href.substr(0, index);
-						}
-					}
-				}
-			});
-
-			$('.ui.checkbox.czsFilterOver').checkbox({
-				onEnable : function() {
-					$('.ui.label.czsStatus').each(function() {
-						$(this).attr('href', $(this).attr('href').replace('filterOver=0', 'filterOver=1'));
-					});
-				},
-				onDisable : function() {
-					$('.ui.label.czsStatus').each(function() {
-						$(this).attr('href', $(this).attr('href').replace('filterOver=1', 'filterOver=0'));
-					});
+					clearInterval(_refreshInterval);
 				}
 			});
 
 			$('.ui.radio.checkbox').click(function() {
 				clearInterval(_refreshInterval);
-				$('.ui.radio.checkbox').each(function(item) {
-
-					if ($(this).children('input[type="radio"]')[0].checked) {
-						_interval = Number($(this).children('input[type="hidden"]').val());
-					}
-				});
 				_refreshInterval = setInterval(function() {
-
-					var search = window.location.search;
-					var index = window.location.href.indexOf("interval=");
-					if (index == -1) {
-						if (search == '') {
-							window.location = window.location + '?interval=' + _interval;
-						} else {
-							window.location = window.location + '&interval=' + _interval;
-						}
-					} else {
-						window.location = (window.location.href).substr(0, index + 9) + _interval;
-					}
-
+					filterHandler('${status}');
 				}, _interval * 1000);
 			});
 
 			if ('${filterOver}' != '' && '${filterOver}' != '0') {
 				$('.ui.checkbox.czsFilterOver').checkbox('enable');
 			}
+
+			if ('${refresh}' != '' && '${refresh}' != '0') {
+				$('.ui.checkbox.czsRefresh').checkbox('enable');
+			}
+
+			$('.ui.checkbox.czsFilterOver').checkbox({
+				onEnable : function() {
+					_filterOver = '1';
+				},
+				onDisable : function() {
+					_filterOver = '0';
+				}
+			});
 
 			if ('${interval}' != '' && '${interval}' != '0') {
 
@@ -765,8 +749,6 @@
 						$(this).children('input[type="radio"]').attr("checked", "checked");
 					}
 				});
-
-				$('#refresh-ui-toggle-checkbox').checkbox('enable');
 			}
 
 			$('.ui.toggle.checkbox.czzImage').checkbox(
@@ -812,9 +794,9 @@
 									});
 								}
 							} else {
-								if(!!msg.msg && !!msg.msg.detail){
+								if (!!msg.msg && !!msg.msg.detail) {
 									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-								}else{
+								} else {
 									$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 								}
 								$('.ui.dimmer.czsMsg > .content').show();
@@ -853,9 +835,9 @@
 									});
 								}
 							} else {
-								if(!!msg.msg && !!msg.msg.detail){
+								if (!!msg.msg && !!msg.msg.detail) {
 									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-								}else{
+								} else {
 									$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 								}
 								$('.ui.dimmer.czsMsg > .content').show();
@@ -871,9 +853,9 @@
 					} else {
 						if (msg.msg.id == '1000') {
 							clearInterval(intervalRef);
-							if(!!msg.msg && !!msg.msg.detail){
+							if (!!msg.msg && !!msg.msg.detail) {
 								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-							}else{
+							} else {
 								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 							}
 							$('.ui.dimmer.czsMsg > .content').show();
@@ -890,9 +872,14 @@
 					$('.ui.right.sidebar').sidebar('hide');
 					$('.container.czzTopMenu > .title.item').hide();
 				} else {
-					$('.ui.right.sidebar').sidebar('show');
-					requestFunction();
-					intervalRef = setInterval(requestFunction, 5 * 1000);
+
+					if ('${request}' != '' && '${request}' != '0') {
+						$('.ui.right.sidebar').sidebar('show');
+						requestFunction();
+						intervalRef = setInterval(requestFunction, 5 * 1000);
+					} else {
+						$('.ui.right.sidebar').sidebar('hide');
+					}
 				}
 			} catch (e) {
 				$('.ui.right.sidebar').sidebar('show');
@@ -905,18 +892,20 @@
 				$('.ui.right.sidebar').sidebar('toggle');
 
 				if ($('.ui.right.sidebar').sidebar('is open')) {
+					_request = '1';
 					requestFunction();
 					intervalRef = setInterval(requestFunction, 5 * 1000);
 
 					if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-						$('#refresh-ui-toggle-checkbox > label').hide();
+						$('.ui.checkbox.czsRefresh > label').hide();
 						$('.ui.checkbox.czsFilterOver > label').hide();
 					}
 
 				} else {
+					_request = '0';
 					clearInterval(intervalRef);
 					if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-						$('#refresh-ui-toggle-checkbox > label').show();
+						$('.ui.checkbox.czsRefresh > label').show();
 						$('.ui.checkbox.czsFilterOver > label').show();
 					}
 				}

@@ -251,12 +251,9 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("WHERE\n");
 		sqlSb.append("    menu.`owner` = ?\n");
 
-		if (end != null) {
-			sqlSb.append(StringUtil.replace("AND menu_bill.date_time <= '{?1}'\n",
-					DateUtil.format(end, DateUtil.FORMAT1)));
-		} else if (start != null) {
-			sqlSb.append(StringUtil.replace("AND menu_bill.date_time >= '{?1}'\n",
-					DateUtil.format(start, DateUtil.FORMAT1)));
+		if (start != null && end != null) {
+			sqlSb.append(StringUtil.replace("AND (menu_bill.date_time between '{?1}' and '{?2}')\n",
+					DateUtil.format(start, DateUtil.FORMAT1), DateUtil.format(end, DateUtil.FORMAT1)));
 		}
 
 		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND menu_bill.`status` IN ({?1})\n", SqlUtil.joinAsIntIn(status)));

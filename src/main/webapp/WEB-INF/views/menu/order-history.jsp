@@ -34,7 +34,7 @@
 	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.min.js"
 	charset="utf-8"></script>
 <script
-	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.pt-BR.js"
+	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.zh-CN.js"
 	charset="utf-8"></script>
 <script src="../../../resources/bootstrap/js/bootstrap.min.js"
 	charset="utf-8"></script>
@@ -70,36 +70,41 @@
 		<div class="circular ui red label">${fn:length(historyMenuBillList)}个</div>
 	</h4>
 	<div class="ui segment attached">
-		<div>
-			<a class="ui purple label czsRequest czsStatus"
-				href="menu/orderHistory.do?status=3"
-				style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 人 </a> <a
-				class="ui teal label czsRequestOwn czsStatus"
-				href="menu/orderHistory.do?status=1"
-				style="margin-top: 5px; margin-bottom: 5px;"> 已提交 ${submited} 人
-			</a><a class="ui orange label czsRequestGroup czsStatus"
-				href="menu/orderHistory.do?status=0"
-				style="margin-top: 5px; margin-bottom: 5px;"> 待提交 ${submiting} 人</a>
-			<a class="ui black label czsStatus"
-				href="menu/orderHistory.do?status=2"
-				style="margin-top: 5px; margin-bottom: 5px;"> 已退订 ${debook} 人 </a> <a
-				class="ui red label czsStatus" href="menu/orderHistory.do"
-				style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a> <a
-				class="ui label">
-				<div id="datetimepickerStart" class="input-append date"
-					style="display: inline;">
-					<input type="text"></input> <span class="add-on"> <i
-						data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-					</span>
-				</div>
-			</a><a class="ui label">～</a><a class="ui label">
-				<div id="datetimepickerEnd" class="input-append date"
-					style="display: inline;">
-					<input type="text"></input> <span class="add-on"> <i
-						data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-					</span>
-				</div>
-			</a>
+
+		<div class="ui segment">
+			<div class="">
+				<a class="ui label">
+					<div id="datetimepickerStart" class="input-append date"
+						style="display: inline;">
+						<input type="text"></input> <span class="add-on"> <i
+							data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+						</span>
+					</div>
+				</a><a class="ui label">～</a><a class="ui label">
+					<div id="datetimepickerEnd" class="input-append date"
+						style="display: inline;">
+						<input type="text"></input> <span class="add-on"> <i
+							data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+						</span>
+					</div>
+				</a>
+			</div>
+			<div style="margin-top: 10px;">
+				<a class="ui label czsRequest czsStatus" id="czsStatus-3"
+					onclick="filterHandler('3')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 人 </a>
+				<a class="ui label czsRequestOwn czsStatus" id="czsStatus-1"
+					onclick="filterHandler('1')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 已提交 ${submited} 人
+				</a><a class="ui label czsRequestGroup czsStatus" id="czsStatus-0"
+					onclick="filterHandler('0')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 待提交 ${submiting}
+					人</a> <a class="ui label czsStatus" onclick="filterHandler('2')"
+					id="czsStatus-2" style="margin-top: 5px; margin-bottom: 5px;">
+					已退订 ${debook} 人 </a> <a class="ui label czsStatus"
+					onclick="filterHandler('')" id="czsStatus-"
+					style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a>
+			</div>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
 			<thead>
@@ -138,6 +143,16 @@
 	<%@ include file="../footer.jsp"%>
 
 	<script type="text/javascript">
+		function filterHandler(status) {
+			$('<form action="menu/orderHistory.do" method="post"></form>').append(
+					$('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
+					$('<input type="hidden">').attr('name', 'start').attr('value',
+							$('#datetimepickerStart > input').val()))
+					.append(
+							$('<input type="hidden">').attr('name', 'end').attr('value',
+									$('#datetimepickerEnd > input').val())).submit();
+		}
+
 		jQuery(function($) {
 
 			$('table').tablesort().data('tablesort');
@@ -146,26 +161,29 @@
 			});
 
 			$('#menu-item-order-history').addClass('active');
+			
+			$('#czsStatus-' + '${status}').addClass('green');
 
 			$('#datetimepickerStart').datetimepicker({
-				format : 'yyyy-dd-MM hh:mm:ss',
-				language : 'pt-BR'
+				format : 'yyyy-MM-dd hh:mm:ss',
+				language : 'zh-CN'
 			});
 
 			$('#datetimepickerEnd').datetimepicker({
-				format : 'yyyy-dd-MM hh:mm:ss',
-				language : 'pt-BR'
+				format : 'yyyy-MM-dd hh:mm:ss',
+				language : 'zh-CN'
 			});
 
 			var pickerStart = $('#datetimepickerStart').data('datetimepicker');
 			var pickerEnd = $('#datetimepickerEnd').data('datetimepicker');
 
 			var startDate = new Date();
-			startDate.setTime(startDate.getTime() - 24 * 60 * 60 * 1000);
+			startDate.setTime(${start});
 			var endDate = new Date();
+			endDate.setTime(${end});
 
-			pickerStart.setDate(startDate);
-			pickerEnd.setDate(endDate);
+			pickerStart.setLocalDate(startDate);
+			pickerEnd.setLocalDate(endDate);
 		});
 	</script>
 </body>

@@ -27,7 +27,7 @@
 			<i class="cart icon"></i> 订单管理
 		</div>
 		<a class="item" href="menu/orderList.do" id="menu-item-order-list">
-			订单一览 </a><a class="item" href="menu/orderHistory.do"
+			订单一览 </a><a class="item" href="menu/orderHistory.do?status=3"
 			id="menu-item-order-history"> 历史订单 </a>
 		<div class="header item">
 			<i class="book icon"></i> 菜品管理

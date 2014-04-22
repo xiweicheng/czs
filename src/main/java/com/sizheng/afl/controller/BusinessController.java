@@ -203,7 +203,9 @@ public class BusinessController extends BaseController {
 	public String list(HttpServletRequest request, Locale locale, Model model,
 			@RequestParam(value = "status", required = false) String status,
 			@RequestParam(value = "interval", required = false) String interval,
-			@RequestParam(value = "filterOver", required = false) Boolean filterOver) {
+			@RequestParam(value = "filterOver", required = false) Boolean filterOver,
+			@RequestParam(value = "request", required = false) Boolean _request,
+			@RequestParam(value = "refresh", required = false) Boolean refresh) {
 
 		logger.debug("顾客列举【商家】");
 
@@ -241,6 +243,7 @@ public class BusinessController extends BaseController {
 		}
 
 		model.addAttribute("customerList", customerList);
+		model.addAttribute("status", status != null ? status : "");
 		model.addAttribute("total", list.size());
 		model.addAttribute("ongoing", ongoing);
 		model.addAttribute("disabled", disabled);
@@ -251,6 +254,8 @@ public class BusinessController extends BaseController {
 
 		model.addAttribute("interval", interval);
 		model.addAttribute("filterOver", (filterOver == null || !filterOver) ? "0" : "1");
+		model.addAttribute("refresh", (refresh == null || !refresh) ? "0" : "1");
+		model.addAttribute("request", (_request == null || !_request) ? "0" : "1");
 
 		return "business/customer-list";
 	}

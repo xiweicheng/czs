@@ -783,17 +783,24 @@ public class MenuController extends BaseController {
 	 */
 	@RequestMapping("orderHistory")
 	public String orderHistory(HttpServletRequest request, Locale locale, Model model,
-			@RequestParam(value = "start", required = false) Date start,
-			@RequestParam(value = "end", required = false) Date end,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end,
 			@RequestParam(value = "status", required = false) String[] status) {
 
 		logger.debug("历史订单查询【消费者】");
 
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : DateUtil.now();
+
+		model.addAttribute("start", sDate.getTime());
+		model.addAttribute("end", eDate.getTime());
+
 		List<Map<String, Object>> historyMenuBillList = menuService.queryHistoryMenuBill(locale, WebUtil
-				.getSessionBusiness(request).getOpenId(), start, end, status);
+				.getSessionBusiness(request).getOpenId(), sDate, eDate, status);
 
 		List<Map<String, Object>> historyMenuBillList2 = menuService.queryHistoryMenuBill(locale, WebUtil
-				.getSessionBusiness(request).getOpenId(), start, end);
+				.getSessionBusiness(request).getOpenId(), sDate, eDate);
 
 		long accept = 0;
 		long submited = 0;
@@ -819,6 +826,7 @@ public class MenuController extends BaseController {
 		}
 
 		model.addAttribute("historyMenuBillList", historyMenuBillList);
+		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
 		model.addAttribute("accept", accept);
 		model.addAttribute("submited", submited);
 		model.addAttribute("submiting", submiting);
