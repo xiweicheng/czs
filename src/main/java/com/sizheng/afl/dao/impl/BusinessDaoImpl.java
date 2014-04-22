@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -15,8 +16,10 @@ import com.sizheng.afl.dao.IBusinessDao;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
 import com.sizheng.afl.pojo.entity.BusinessRole;
+import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.SqlUtil;
+import com.sizheng.afl.util.StringUtil;
 
 /**
  * 【商家】持久化实现层.
@@ -409,4 +412,42 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		return getMapList(sqlSb, openId, date);
 	}
 
+	@Override
+	public List<Map<String, Object>> queryCustomerMsg(Locale locale, String openId, Date sDate, Date eDate,
+			String... status) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	message.id,\n");
+		sqlSb.append("	message.from_user_name,\n");
+		sqlSb.append("	message.msg_type,\n");
+		sqlSb.append("	message.content,\n");
+		sqlSb.append("	message.msg_id,\n");
+		sqlSb.append("	message.pic_url,\n");
+		sqlSb.append("	DATE_FORMAT(message.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,message.date_time,NOW()) as sec_diff,\n");
+		sqlSb.append("	message.`status`,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
+		sqlSb.append("	subscriber.headimgurl\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	message\n");
+		sqlSb.append("INNER JOIN subscriber ON message.from_user_name = subscriber.user_name\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	message.to_open_id = ?\n");
+
+		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND message.`status` IN ({?1})\n", SqlUtil.joinAsIntIn2(status)));
+
+		sqlSb.append("AND (\n");
+		sqlSb.append("	msg_type = 'text'\n");
+		sqlSb.append("	OR msg_type = 'image'\n");
+		sqlSb.append(")\n");
+
+		if (sDate != null && eDate != null) {
+			sqlSb.append(StringUtil.replace("AND (message.date_time between '{?1}' and '{?2}')\n",
+					DateUtil.format(sDate, DateUtil.FORMAT1), DateUtil.format(eDate, DateUtil.FORMAT1)));
+		}
+
+		return getMapList(sqlSb, openId);
+	}
 }

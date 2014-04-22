@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-15 13:03:16 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-22 14:37:27 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Service" table="service" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -24,7 +24,7 @@
         </property>
         <property name="status" type="java.lang.Short">
             <column name="status">
-                <comment>&#215;&#180;&#204;&#172;,0:&#186;&#244;&#189;&#208;&#214;&#208;,1:&#210;&#209;&#189;&#211;&#202;&#220;</comment>
+                <comment>&#215;&#180;&#204;&#172;,1:&#186;&#244;&#189;&#208;&#214;&#208;,0:&#210;&#209;&#189;&#211;&#202;&#220;</comment>
             </column>
         </property>
         <property name="isDelete" type="java.lang.Short">

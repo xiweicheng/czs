@@ -161,4 +161,8 @@ public final class SysConstant {
 
 	public static final Short SERVICE_TYPE_CALL = 0;
 
+	/** MESSAGE_STATUS_NEW [Short] */
+	public static final Short MESSAGE_STATUS_NEW = 0;
+	public static final Short MESSAGE_STATUS_UNDERSTANDING = 1;
+
 }

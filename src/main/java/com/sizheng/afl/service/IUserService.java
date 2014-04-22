@@ -215,4 +215,6 @@ public interface IUserService extends IBaseService {
 	boolean stowFood(Locale locale, Favorites favorites);
 
 	List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId);
+
+	String getBusinessId(Locale locale, String openId);
 }

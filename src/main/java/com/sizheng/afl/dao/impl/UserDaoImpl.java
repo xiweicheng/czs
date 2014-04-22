@@ -148,4 +148,19 @@ public class UserDaoImpl extends BaseDaoImpl implements IUserDao {
 		return getMapList(sqlSb, openId, openId, businessId);
 	}
 
+	@Override
+	public String getBusinessId(Locale locale, String openId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	business_consumer.business_id\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	`user`\n");
+		sqlSb.append("INNER JOIN business_consumer ON `user`.consume_code = business_consumer.consume_code\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	`user`.user_name = ?\n");
+
+		return getString(sqlSb, openId);
+	}
+
 }

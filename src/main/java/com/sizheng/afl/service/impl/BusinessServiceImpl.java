@@ -6,6 +6,7 @@ package com.sizheng.afl.service.impl;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1009,6 +1010,12 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		}
 
 		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryCustomerMsg(Locale locale, String openId, Date sDate, Date eDate,
+			String... status) {
+		return businessDao.queryCustomerMsg(locale, openId, sDate, eDate, status);
 	}
 
 }

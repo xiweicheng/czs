@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -127,5 +128,7 @@ public interface IBusinessDao {
 	List<Map<String, Object>> serviceGraph(String openId);
 
 	List<Map<String, Object>> serviceDayGraph(String openId, String date);
+
+	List<Map<String, Object>> queryCustomerMsg(Locale locale, String openId, Date sDate, Date eDate, String... status);
 	
 }

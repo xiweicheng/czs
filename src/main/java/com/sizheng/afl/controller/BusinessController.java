@@ -5,6 +5,7 @@ package com.sizheng.afl.controller;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1236,5 +1237,65 @@ public class BusinessController extends BaseController {
 		boolean val = requestService.updateStatus(request2.getId(), SysConstant.REQUEST_STATUS_STOP);
 
 		return new ResultMsg(val);
+	}
+
+	/**
+	 * 顾客消息.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("listMsg")
+	public String listMsg(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end,
+			@RequestParam(value = "status", required = false) String[] status) {
+
+		logger.debug("顾客消息【消费者】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : DateUtil.now();
+
+		model.addAttribute("start", sDate.getTime());
+		model.addAttribute("end", eDate.getTime());
+
+		List<Map<String, Object>> msgList = businessService.queryCustomerMsg(locale, WebUtil
+				.getSessionBusiness(request).getOpenId(), sDate, eDate, status);
+
+		List<Map<String, Object>> msgList2 = businessService.queryCustomerMsg(locale,
+				WebUtil.getSessionBusiness(request).getOpenId(), sDate, eDate);
+
+		long newCount = 0;
+		long understanding = 0;
+
+		for (Map<String, Object> map : msgList2) {
+			Short status2 = NumberUtil.getShort(map, "status");
+			if (SysConstant.MESSAGE_STATUS_NEW.equals(status2)) {
+				newCount++;
+			} else if (SysConstant.MESSAGE_STATUS_UNDERSTANDING.equals(status2)) {
+				understanding++;
+			}
+		}
+
+		for (Map<String, Object> map : msgList) {
+			long sec = NumberUtil.getLong(map, "sec_diff");
+			String c = DateUtil.convert(sec);
+			map.put("sec_diff", c);
+		}
+
+		model.addAttribute("msgList", msgList);
+		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
+		model.addAttribute("newCount", newCount);
+		model.addAttribute("understanding", understanding);
+		model.addAttribute("total", msgList2.size());
+
+		return "business/customer-msg";
 	}
 }

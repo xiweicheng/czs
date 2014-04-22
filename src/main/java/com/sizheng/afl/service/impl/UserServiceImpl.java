@@ -191,6 +191,11 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 	}
 
 	@Override
+	public String getBusinessId(Locale locale, String openId) {
+		return userDao.getBusinessId(locale, openId);
+	}
+
+	@Override
 	public String getBusiness(Locale locale, String openId) {
 
 		User user = new User();

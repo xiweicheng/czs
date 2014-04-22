@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -344,4 +345,6 @@ public interface IBusinessService extends IBaseService {
 	Map<String, List<Object>> serviceGraph(Locale locale, String openId);
 
 	List<List<Object>> serviceDayGraph(Locale locale, String openId, String date);
+
+	List<Map<String, Object>> queryCustomerMsg(Locale locale, String openId, Date sDate, Date eDate, String... status);
 }
