@@ -674,6 +674,7 @@ public class BusinessController extends BaseController {
 		}
 
 		model.addAttribute("roleList", list);
+		model.addAttribute("type", type != null ? type : "");
 
 		model.addAttribute("undetermined", undetermined);
 		model.addAttribute("boss", boss);

@@ -42,7 +42,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -52,18 +52,18 @@
 	<h4 class="ui top attached header" style="margin-top: 45px;">角色分配</h4>
 	<div class="ui segment attached">
 		<div>
-			<a class="ui purple label" href="business/roleMgr.do?type=0"
+			<a class="ui label" id="roleType-0" onclick="filterHandler('0')"
 				style="margin-top: 5px; margin-bottom: 5px;">等待分配
-				${undetermined} 人 </a> <a class="ui teal label"
-				href="business/roleMgr.do?type=1"
+				${undetermined} 人 </a> <a class="ui label" id="roleType-1"
+				onclick="filterHandler('1')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 店主角色 ${boss} 人 </a><a
-				class="ui orange label" href="business/roleMgr.do?type=2"
+				class="ui label" id="roleType-2" onclick="filterHandler('2')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 后厨角色 ${cook} 人</a> <a
-				class="ui black label" href="business/roleMgr.do?type=3"
+				class="ui label" id="roleType-3" onclick="filterHandler('3')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 服务员角色 ${waiter} 人
-			</a> <a class="ui red label" href="business/roleMgr.do?type=4"
+			</a> <a class="ui label" onclick="filterHandler('4')" id="roleType-4"
 				style="margin-top: 5px; margin-bottom: 5px;"> 前台角色 ${proscenium}
-				人</a> </a><a class="ui blue label" href="business/roleMgr.do"
+				人</a> </a><a class="ui label" onclick="filterHandler('')" id="roleType-"
 				style="margin-top: 5px; margin-bottom: 5px;"> 总计 ${total} 人 </a>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
@@ -159,13 +159,20 @@
 			$('.ui.modal.czsDelete').modal('show');
 		}
 
+		function filterHandler(type) {
+			$('<form action="business/roleMgr.do" method="post"></form>').append(
+					$('<input type="hidden">').attr('name', 'type').attr('value', type)).submit();
+		}
+
 		jQuery(function($) {
-			
-			$('.ui.dimmer.czsMsg').click(function(){
+
+			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
 			});
 
 			$('table').tablesort().data('tablesort');
+
+			$('#roleType-' + '${type}').addClass('green');
 
 			$('#menu-item-business-role-mgr').addClass('active');
 
@@ -180,9 +187,9 @@
 							$('.ui.dimmer.czsMsg > .content').show();
 							$('.ui.dimmer.czsMsg').dimmer('show');
 						} else {
-							if(!!msg.msg && !!msg.msg.detail){
+							if (!!msg.msg && !!msg.msg.detail) {
 								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-							}else{
+							} else {
 								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 							}
 							$('.ui.dimmer.czsMsg > .content').show();
@@ -203,14 +210,13 @@
 							$('#item-tr-' + _id).remove();
 							return true;
 						} else {
-							if(!!msg.msg && !!msg.msg.detail){
+							if (!!msg.msg && !!msg.msg.detail) {
 								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-							}else{
+							} else {
 								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 							}
 							$('.ui.dimmer.czsMsg > .content').show();
 							$('.ui.dimmer.czsMsg').dimmer('show');
-
 
 						}
 					});

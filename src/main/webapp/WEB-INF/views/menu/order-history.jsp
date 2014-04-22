@@ -92,18 +92,18 @@
 			<div style="margin-top: 10px;">
 				<a class="ui label czsRequest czsStatus" id="czsStatus-3"
 					onclick="filterHandler('3')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 人 </a>
+					style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 份 </a>
 				<a class="ui label czsRequestOwn czsStatus" id="czsStatus-1"
 					onclick="filterHandler('1')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 已提交 ${submited} 人
+					style="margin-top: 5px; margin-bottom: 5px;"> 已提交 ${submited} 份
 				</a><a class="ui label czsRequestGroup czsStatus" id="czsStatus-0"
 					onclick="filterHandler('0')"
 					style="margin-top: 5px; margin-bottom: 5px;"> 待提交 ${submiting}
-					人</a> <a class="ui label czsStatus" onclick="filterHandler('2')"
+					份</a> <a class="ui label czsStatus" onclick="filterHandler('2')"
 					id="czsStatus-2" style="margin-top: 5px; margin-bottom: 5px;">
-					已退订 ${debook} 人 </a> <a class="ui label czsStatus"
+					已退订 ${debook} 份 </a> <a class="ui label czsStatus"
 					onclick="filterHandler('')" id="czsStatus-"
-					style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a>
+					style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 份 </a>
 			</div>
 		</div>
 		<table class="ui sortable table segment" style="display: table;">
