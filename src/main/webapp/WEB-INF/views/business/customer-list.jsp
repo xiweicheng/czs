@@ -73,7 +73,7 @@
 </script>
 <script id="billDetailTpl" type="text/x-jquery-tmpl">
 <div class="item" id="bill-detail-{{html menu_id}}"
-	style="min-height: 0px;">
+	style="min-height: 0px; margin-bottom:20px;">
 	<div class="image" style="display: none;">
 		<img src="" czz-src="../../../{{html path}}640/{{html file_name}}">
 		<!-- <a
@@ -81,12 +81,12 @@
 		</a>
 	</div>
 	<div class="content">
-		<div class="name">{{html name}}</div>
+		<div class="name">{{html name}}<div class="circular ui green label">￥{{html price}}</div></div>
 		<p class="description" style="display: none;">{{html introduce}}</p>
-		<div style="margin-top:10px;">
-			<div class="ui red label"><i class="yen icon"></i> {{html price}}</div>
-			<div class="ui green label">{{html category}}</div>
-			<div class="ui blue label">{{html taste}}</div>
+		<div class="ui divider czsSimpleMode" style="display: none;"></div>
+		<div style="margin-top:10px; display:none;" class="czsSimpleMode">
+			<div class="ui label">{{html category}}</div>
+			<div class="ui label">{{html taste}}</div>
 		</div>
 		<div class="ui divider"></div>
 		<div>
@@ -362,37 +362,35 @@
 	<!-- 消费信息展示modal -->
 	<div class="ui modal" id="bill-detail-modal">
 		<i class="close icon"></i>
-		<div class="header">消费详情</div>
-		<div class="content" style="padding-top: 20px;">
-			<div class="ui segment">
+		<div class="header">
+			<div class="ui buttons">
+				<div class="ui active green button czsOwn">个人消费</div>
+				<div class="ui button czsGroup">集体消费</div>
+			</div>
 
-				<div class="2 ui buttons">
-					<div class="ui active button czsOwn">个人消费</div>
-					<div class="ui button czsGroup">集体消费</div>
-				</div>
+			<div class="ui small buttons" style="">
+				<div class="ui green button czsSimple" czs-status="1">简单</div>
+				<div class="or"></div>
+				<div class="ui button czsImage" czs-status="0">图文</div>
+			</div>
 
-				<div class="ui toggle checkbox czzImage"
-					style="margin-top: 5px; margin-left: 20px;">
-					<input type="checkbox" name="mode" id="mode-ui-checkbox"> <label
-						for="">图文模式</label>
-				</div>
-
-				<div class="ui green vertical animated button czsPrint"
-					style="float: right; margin-left: 20px;">
-					<div class="hidden content">打印个人账单</div>
-					<div class="visible content">
-						<i class="print icon"></i>账单打印
-					</div>
-				</div>
-
-				<div class="ui red animated fade button czsTakeBill"
-					style="float: right;" czs-status="3">
-					<div class="visible content">￥12.99</div>
-					<div class="hidden content">个人结账</div>
+			<div class="ui green vertical animated button czsPrint"
+				style="float: right; margin-left: 20px;">
+				<div class="hidden content">打印个人账单</div>
+				<div class="visible content">
+					<i class="print icon"></i>账单打印
 				</div>
 			</div>
-			<div class="ui stackable items" id="bill-detail-ui-stackable-items"
-				style="height: 300px; overflow: auto;"></div>
+
+			<div class="ui red animated fade button czsTakeBill"
+				style="float: right;" czs-status="3">
+				<div class="visible content">￥12.99</div>
+				<div class="hidden content">个人结账</div>
+			</div>
+		</div>
+		<div class="content" style="padding-top: 10px;">
+			<div class="ui three items" id="bill-detail-ui-stackable-items"
+				style="height: 350px; overflow: auto;"></div>
 		</div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
@@ -707,7 +705,10 @@
 						}
 					});
 					_refreshInterval = setInterval(function() {
-						filterHandler('${status}');
+
+						if (!($('.ui.dimmer.czsMsg').dimmer('is active'))) {
+							filterHandler('${status}');
+						}
 					}, _interval * 1000);
 				},
 				onDisable : function() {
@@ -751,23 +752,10 @@
 				});
 			}
 
-			$('.ui.toggle.checkbox.czzImage').checkbox(
-					{
-						onEnable : function() {
-							$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find('img')
-									.each(function() {
-										$(this).attr("src", $(this).attr('czz-src'));
-									});
-						},
-						onDisable : function() {
-							$('#bill-detail-ui-stackable-items').find('div[class="image"]').hide();
-						}
-					});
-
 			$('.ui.button.czsOwn').click(
 					function() {
-						$('.ui.button.czsGroup').removeClass('active');
-						$(this).addClass('active');
+						$('.ui.button.czsGroup').removeClass('active green');
+						$(this).addClass('active green');
 
 						$('.ui.button.czsPrint > .hidden.content').text('打印个人账单');
 						$('.ui.button.czsTakeBill > .hidden.content').text('个人结账');
@@ -787,7 +775,7 @@
 								$('#print-total-div').text('总价: ￥' + msg.value);
 
 								$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
-								if ($('#mode-ui-checkbox')[0].checked) {
+								if ($('.ui.button.czsImage').attr('czs-status') == '1') {
 									$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find(
 											'img').each(function() {
 										$(this).attr("src", $(this).attr('czz-src'));
@@ -806,8 +794,8 @@
 					});
 			$('.ui.button.czsGroup').click(
 					function() {
-						$('.ui.button.czsOwn').removeClass('active');
-						$(this).addClass('active');
+						$('.ui.button.czsOwn').removeClass('active green');
+						$(this).addClass('active green');
 
 						$('.ui.button.czsPrint > .hidden.content').text('打印集体账单');
 						$('.ui.button.czsTakeBill > .hidden.content').text('集体结账');
@@ -828,7 +816,7 @@
 
 								$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
 
-								if ($('#mode-ui-checkbox')[0].checked) {
+								if ($('.ui.button.czsImage').attr('czs-status') == '1') {
 									$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find(
 											'img').each(function() {
 										$(this).attr("src", $(this).attr('czz-src'));
@@ -917,6 +905,33 @@
 			$('.ui.button.czsTakeBill').click(function() {
 				checkoutHandler($(this).attr('czs-status'), _consume_code, _scene_id, _consumer_id);
 			});
+
+			$('.ui.button.czsSimple').click(function() {
+				if ($(this).attr('czs-status') == '0') {
+					$(this).attr('czs-status', '1');
+					$(this).addClass('green');
+					$('.czsSimpleMode').hide();
+				} else {
+					$(this).attr('czs-status', '0');
+					$(this).removeClass('green');
+					$('.czsSimpleMode').show();
+				}
+			});
+			$('.ui.button.czsImage').click(
+					function() {
+						if ($(this).attr('czs-status') == '0') {
+							$(this).attr('czs-status', '1');
+							$(this).addClass('green');
+							$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find('img')
+									.each(function() {
+										$(this).attr("src", $(this).attr('czz-src'));
+									});
+						} else {
+							$(this).attr('czs-status', '0');
+							$(this).removeClass('green');
+							$('#bill-detail-ui-stackable-items').find('div[class="image"]').hide();
+						}
+					});
 
 		});
 	</script>

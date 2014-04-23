@@ -122,15 +122,15 @@
 			<tbody>
 				<c:forEach items="${historyMenuBillList}" var="item" varStatus="sts">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
-						<td class="">${sts.index + 1}</td>
+						<td class="number">${sts.index + 1}</td>
 						<td class="">${item.name}</td>
-						<td class="">${item.copies}</td>
+						<td class="number">${item.copies}</td>
 						<td class=""><c:if test="${item.status==0}">待提交</c:if> <c:if
 								test="${item.status==1}">已提交</c:if> <c:if
 								test="${item.status==2}">已退订</c:if> <c:if
 								test="${item.status==3}">已接受</c:if></td>
 						<td class="">${item.date_time}</td>
-						<td class="">${item.sec_diff}</td>
+						<td class="number" data-sort-value="${item.sec_diff}">${item.diff}</td>
 						<td class="">${item.nickname}</td>
 						<td class="">${item.description}</td>
 					</tr>

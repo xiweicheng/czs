@@ -122,12 +122,13 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	menu.id,\n");
-		sqlSb.append("	menu.date_time,\n");
+		sqlSb.append("	DATE_FORMAT(menu.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
 		sqlSb.append("	menu.introduce,\n");
 		sqlSb.append("	menu.is_delete,\n");
 		sqlSb.append("	menu.`name`,\n");
 		sqlSb.append("	menu.price,\n");
 		sqlSb.append("	menu.privilege,\n");
+		sqlSb.append("	menu.order_times,\n");
 		sqlSb.append("	menu_category.`name` AS category,\n");
 		sqlSb.append("	menu_taste.`name` AS taste,\n");
 		sqlSb.append("	resources.file_name,\n");
@@ -262,5 +263,66 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 
 		return getMapList(sqlSb, businessId);
 
+	}
+
+	@Override
+	public List<Map<String, Object>> queryOrderHistoryMapList(Locale locale, String businessId, String openId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	menu_bill.menu_id,\n");
+		sqlSb.append("	menu_bill.consumer_id,\n");
+		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	DATE_FORMAT(\n");
+		sqlSb.append("		menu_bill.date_time,\n");
+		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+		sqlSb.append("	) AS date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(\n");
+		sqlSb.append("		SECOND,\n");
+		sqlSb.append("		menu_bill.date_time,\n");
+		sqlSb.append("		NOW()\n");
+		sqlSb.append("	) AS sec_diff,\n");
+		sqlSb.append("	menu_bill.`status`,\n");
+		sqlSb.append("	menu_bill.copies,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	subscriber.sex,\n");
+		sqlSb.append("	subscriber.headimgurl,\n");
+		sqlSb.append("	qrcode.description,\n");
+		sqlSb.append("	menu_bill.id,\n");
+		sqlSb.append("	menu.`name`,\n");
+		sqlSb.append("	menu_bill.scene_id\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu_bill\n");
+		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("LEFT JOIN subscriber ON menu_bill.consumer_id = subscriber.user_name\n");
+		sqlSb.append("INNER JOIN qrcode ON menu_bill.scene_id = qrcode.scene_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu_bill.accepter_id = ?\n");
+		sqlSb.append("AND menu_bill.`status` = 3\n");
+		sqlSb.append("AND menu.`owner` = ?\n");
+		sqlSb.append("AND (\n");
+		sqlSb.append("	TO_DAYS(NOW()) - TO_DAYS(menu_bill.date_time) <= 2\n");
+		sqlSb.append(")\n");
+
+		sqlSb.append("ORDER BY menu_bill.date_time DESC\n");
+
+		return getMapList(sqlSb, openId, businessId);
+	}
+
+	@Override
+	public Long queryBillCount(Locale locale, String businessId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	COUNT(*)\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	menu_bill\n");
+		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
+		sqlSb.append("INNER JOIN `user` ON menu_bill.consume_code = `user`.consume_code\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	menu.`owner` = ?\n");
+		sqlSb.append("AND menu_bill.`status` = 1\n");
+
+		return getCount(sqlSb, businessId);
 	}
 }

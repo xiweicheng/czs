@@ -34,6 +34,7 @@ import com.sizheng.afl.pojo.model.WeiXinEventKey;
 import com.sizheng.afl.pojo.model.WeiXinMsg;
 import com.sizheng.afl.pojo.model.WeiXinUserInfo;
 import com.sizheng.afl.pojo.vo.PageResult;
+import com.sizheng.afl.service.IBusinessRoleService;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IQrcodeService;
 import com.sizheng.afl.service.IUserService;
@@ -79,6 +80,9 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 	@Autowired
 	IUserService userService;
+
+	@Autowired
+	IBusinessRoleService businessRoleService;
 
 	@Autowired
 	PropUtil propUtil;
@@ -230,148 +234,23 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		String eventKey = bean.getEventKey();
 
 		if (WeiXinEventKey.CUSTOMER_EVT_KEY_4.getValue().equals(eventKey)) {
-
-			User user = new User();
-			user.setUserName(bean.getFromUserName());
-
-			List list = hibernateTemplate.findByExample(user);
-
-			if (list.size() > 0) {
-				User user2 = (User) list.get(0);
-
-				if (StringUtil.isEmpty(user2.getConsumeCode())) {
-					return "您没有消费记录!";
-				} else {
-
-					long size = businessService.getGroupSize(locale, user2.getConsumeCode());
-
-					if (size == 1) {
-						double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
-
-						if (consume > 0) {
-							return StringUtil
-									.replace(
-											"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
-											propUtil.getRedirectUrl() + "/user/free/billReq.do",
-											bean.getFromUserName(), user2.getConsumeCode(),
-											NumberUtil.format2Money(consume), "own");
-						} else {
-							return StringUtil.replace(
-									"您没有消费记录,\n\n<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]结束消费状态</a>",
-									propUtil.getRedirectUrl() + "/user/free/checkout.do", bean.getFromUserName(),
-									user2.getConsumeCode());
-						}
-					} else if (size > 1) {
-						double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
-						double totalConsume = businessService.getConsume(locale, user2.getConsumeCode(), "group");
-
-						if (consume > 0) {
-							return StringUtil
-									.replace(
-											"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
-											propUtil.getRedirectUrl() + "/user/free/billReq.do",
-											bean.getFromUserName(), user2.getConsumeCode(),
-											NumberUtil.format2Money(consume), "own")
-									+ StringUtil
-											.replace(
-													"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
-													propUtil.getRedirectUrl() + "/user/free/billReq.do",
-													bean.getFromUserName(), user2.getConsumeCode(),
-													NumberUtil.format2Money(totalConsume), "group");
-						} else {
-							return StringUtil.replace(
-									"您没有消费记录,\n\n<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]结束消费状态</a>",
-									propUtil.getRedirectUrl() + "/user/free/checkout.do", bean.getFromUserName(),
-									user2.getConsumeCode())
-									+ StringUtil
-											.replace(
-													"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
-													propUtil.getRedirectUrl() + "/user/free/billReq.do",
-													bean.getFromUserName(), user2.getConsumeCode(),
-													NumberUtil.format2Money(totalConsume), "group");
-						}
-					} else {
-						return "您的信息不存在!";
-					}
-				}
-			} else {
-				logger.error("用户信息不存在!");
-				return "您的信息不存在!";
-			}
-
+			return billHandle(bean, locale);
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_5.getValue().equals(eventKey)) {
 			return StringUtil.replace("暂无其它服务项,敬请期待...");
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_2.getValue().equals(eventKey)) {
 			return StringUtil.replace("功能开发设计中,敬请期待...");
-		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_1.getValue().equals(eventKey)) { // 顾客我的菜单
-
-			User user = new User();
-			user.setUserName(bean.getFromUserName());
-
-			List list = hibernateTemplate.findByExample(user);
-
-			if (list.size() > 0) {
-				String consumeCode = ((User) list.get(0)).getConsumeCode();
-				if (!StringUtil.isEmpty(consumeCode)) {
-
-					BusinessConsumer businessConsumer = new BusinessConsumer();
-					businessConsumer.setConsumeCode(consumeCode);
-					businessConsumer.setConsumerId(bean.getFromUserName());
-
-					List list2 = hibernateTemplate.findByExample(businessConsumer);
-
-					if (list2.size() > 0) {
-						if (SysConstant.CONSUME_STATUS_ONGOING.equals(((BusinessConsumer) list2.get(0)).getStatus())) {
-							return StringUtil.replace(
-									"<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
-									propUtil.getRedirectUrl(), bean.getFromUserName());
-						} else {
-							return "您不在消费进行状态中,无法使用该功能.";
-						}
-					}
-				} else {
-					return "您不在消费中,请先扫描二维码接入商家.";
-				}
-			} else {
-				return "您的用户信息不存在!";
-			}
-
+		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_1.getValue().equals(eventKey)) {
+			return customerMenu(bean);
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_3.getValue().equals(eventKey)) {
 			return callServiceHandler(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_1.getValue().equals(eventKey)) {// 商家入驻
-
-			Business business = new Business();
-			business.setOpenId(bean.getFromUserName());
-
-			String dynamicCode = null;
-
-			// 判断商家是否已经入驻
-			if (!businessService.exists(locale, business)) {
-				dynamicCode = NumberUtil.random(6);
-				business.setDynamicCode(dynamicCode);
-
-				businessService.save(locale, business);
-			} else {
-				dynamicCode = businessService.createDynamicCode(locale, business);
-			}
-
-			return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}&isPhone=1'>[点击此]入驻登录</a>",
-					propUtil.getRedirectUrl(), "/business/verify.do", bean.getFromUserName(), dynamicCode);
-
+			return businessRegister(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_2.getValue().equals(eventKey)) {
-
 			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]发送登录链接</a>", propUtil.getRedirectUrl()
 					+ "/business/sendLink.do", bean.getFromUserName());
-
 			return StringUtil.replace("{?1}", url1);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_3.getValue().equals(eventKey)) {
-
-			String link1 = "<a>[点击此]服务员入口</a>";
-			String link2 = "<a>[点击此]后厨入口</a>";
-			String link3 = "<a>[点击此]前台入口</a>";
-			String link4 = "<a>[点击此]店主入口</a>";
-
-			return StringUtil.replace("{?1}\n\n{?2}\n\n{?3}\n\n{?4}", link1, link2, link3, link4);
+			return businessRoleLogin(bean, locale);
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_1.getValue().equals(eventKey)) {
 			return StringUtil.replace("功能开发设计中,敬请期待...");
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_2.getValue().equals(eventKey)) {
@@ -381,6 +260,211 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		}
 
 		return null;
+	}
+
+	/**
+	 * 商家店员角色入口.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月22日 下午10:14:15
+	 * @modification 2014年4月22日 下午10:14:15
+	 * @param bean
+	 * @param locale
+	 * @return
+	 */
+	private String businessRoleLogin(final WeiXinBaseMsg bean, final Locale locale) {
+		BusinessRole businessRole = new BusinessRole();
+		businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+		businessRole.setOpenId(bean.getFromUserName());
+
+		List<BusinessRole> list = businessRoleService.query(locale, businessRole);
+
+		StringBuffer sb = new StringBuffer();
+
+		for (BusinessRole businessRole2 : list) {
+
+			if (SysConstant.ROLE_TYPE_BOSS.equals(businessRole2.getType())) {
+				sb.append(
+						StringUtil.replace(
+										"<a href='{?1}/businessRole/free/bossLogin.do?openId={?2}&businessId={?3}'>[点击此]店主入口</a>",
+								propUtil.getRedirectUrl(), bean.getFromUserName(), businessRole2.getBusinessId()))
+						.append("\n\n");
+			} else if (SysConstant.ROLE_TYPE_COOK.equals(businessRole2.getType())) {
+				sb.append(
+						StringUtil
+								.replace(
+										"<a href='{?1}/businessRole/free/kitchenLogin.do?openId={?2}&businessId={?3}'>[点击此]后厨入口</a>",
+										propUtil.getRedirectUrl(), bean.getFromUserName(),
+										businessRole2.getBusinessId())).append("\n\n");
+			} else if (SysConstant.ROLE_TYPE_PROSCENIUM.equals(businessRole2.getType())) {
+				sb.append(
+						StringUtil
+								.replace(
+										"<a href='{?1}/businessRole/free/prosceniumLogin.do?openId={?2}&businessId={?3}'>[点击此]前台入口</a>",
+										propUtil.getRedirectUrl(), bean.getFromUserName(),
+										businessRole2.getBusinessId())).append("\n\n");
+			} else if (SysConstant.ROLE_TYPE_WAITER.equals(businessRole2.getType())) {
+				sb.append(
+						StringUtil
+								.replace(
+										"<a href='{?1}/businessRole/free/waiterLogin.do?openId={?2}&businessId={?3}'>[点击此]服务员入口</a>",
+										propUtil.getRedirectUrl(), bean.getFromUserName(),
+										businessRole2.getBusinessId())).append("\n\n");
+			}
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * 商家申请入住.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月22日 下午9:57:37
+	 * @modification 2014年4月22日 下午9:57:37
+	 * @param bean
+	 * @param locale
+	 * @return
+	 */
+	private String businessRegister(final WeiXinBaseMsg bean, final Locale locale) {
+		Business business = new Business();
+		business.setOpenId(bean.getFromUserName());
+
+		String dynamicCode = null;
+
+		// 判断商家是否已经入驻
+		if (!businessService.exists(locale, business)) {
+			dynamicCode = NumberUtil.random(6);
+			business.setDynamicCode(dynamicCode);
+
+			businessService.save(locale, business);
+		} else {
+			dynamicCode = businessService.createDynamicCode(locale, business);
+		}
+
+		return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}&isPhone=1'>[点击此]入驻登录</a>",
+				propUtil.getRedirectUrl(), "/business/verify.do", bean.getFromUserName(), dynamicCode);
+	}
+
+	/**
+	 * 顾客菜单.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月22日 下午9:56:47
+	 * @modification 2014年4月22日 下午9:56:47
+	 * @param bean
+	 * @return
+	 */
+	private String customerMenu(final WeiXinBaseMsg bean) {
+		User user = new User();
+		user.setUserName(bean.getFromUserName());
+
+		List list = hibernateTemplate.findByExample(user);
+
+		if (list.size() > 0) {
+			String consumeCode = ((User) list.get(0)).getConsumeCode();
+			if (!StringUtil.isEmpty(consumeCode)) {
+
+				BusinessConsumer businessConsumer = new BusinessConsumer();
+				businessConsumer.setConsumeCode(consumeCode);
+				businessConsumer.setConsumerId(bean.getFromUserName());
+
+				List list2 = hibernateTemplate.findByExample(businessConsumer);
+
+				if (list2.size() > 0) {
+					if (SysConstant.CONSUME_STATUS_ONGOING.equals(((BusinessConsumer) list2.get(0)).getStatus())) {
+						return StringUtil.replace("<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
+								propUtil.getRedirectUrl(), bean.getFromUserName());
+					} else {
+						return "您不在消费进行状态中,无法使用该功能.";
+					}
+				} else {
+					return "您没有消费记录!";
+				}
+			} else {
+				return "您不在消费中,请先扫描二维码接入商家.";
+			}
+		} else {
+			return "您的用户信息不存在!";
+		}
+	}
+
+	/**
+	 * 申请结账.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月22日 下午9:53:45
+	 * @modification 2014年4月22日 下午9:53:45
+	 * @param bean
+	 * @param locale
+	 * @return
+	 */
+	private String billHandle(final WeiXinBaseMsg bean, final Locale locale) {
+		User user = new User();
+		user.setUserName(bean.getFromUserName());
+
+		List list = hibernateTemplate.findByExample(user);
+
+		if (list.size() > 0) {
+			User user2 = (User) list.get(0);
+
+			if (StringUtil.isEmpty(user2.getConsumeCode())) {
+				return "您没有消费记录!";
+			} else {
+
+				long size = businessService.getGroupSize(locale, user2.getConsumeCode());
+
+				if (size == 1) {
+					double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
+
+					if (consume > 0) {
+						return StringUtil
+								.replace(
+										"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
+										propUtil.getRedirectUrl() + "/user/free/billReq.do", bean.getFromUserName(),
+										user2.getConsumeCode(), NumberUtil.format2Money(consume), "own");
+					} else {
+						return StringUtil.replace(
+								"您没有消费记录,\n\n<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]结束消费状态</a>",
+								propUtil.getRedirectUrl() + "/user/free/checkout.do", bean.getFromUserName(),
+								user2.getConsumeCode());
+					}
+				} else if (size > 1) {
+					double consume = businessService.getConsume(locale, user2.getConsumeCode(), "own");
+					double totalConsume = businessService.getConsume(locale, user2.getConsumeCode(), "group");
+
+					if (consume > 0) {
+						return StringUtil
+								.replace(
+										"您个人消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请个人结账</a>",
+										propUtil.getRedirectUrl() + "/user/free/billReq.do", bean.getFromUserName(),
+										user2.getConsumeCode(), NumberUtil.format2Money(consume), "own")
+								+ StringUtil
+										.replace(
+												"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
+												propUtil.getRedirectUrl() + "/user/free/billReq.do",
+												bean.getFromUserName(), user2.getConsumeCode(),
+												NumberUtil.format2Money(totalConsume), "group");
+					} else {
+						return StringUtil.replace(
+								"您没有消费记录,\n\n<a href='{?1}?openId={?2}&consumeCode={?3}'>[点击此]结束消费状态</a>",
+								propUtil.getRedirectUrl() + "/user/free/checkout.do", bean.getFromUserName(),
+								user2.getConsumeCode())
+								+ StringUtil
+										.replace(
+												"\n\n集体消费[{?4}]元\n\n<a href='{?1}?openId={?2}&consumeCode={?3}&type={?5}'>[点击此]申请集体结账</a>",
+												propUtil.getRedirectUrl() + "/user/free/billReq.do",
+												bean.getFromUserName(), user2.getConsumeCode(),
+												NumberUtil.format2Money(totalConsume), "group");
+					}
+				} else {
+					return "您的信息不存在!";
+				}
+			}
+		} else {
+			logger.error("用户信息不存在!");
+			return "您的信息不存在!";
+		}
 	}
 
 	/**

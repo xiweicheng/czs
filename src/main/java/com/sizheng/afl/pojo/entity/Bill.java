@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-22 14:37:27 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-23 10:33:06 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -28,12 +28,13 @@ public class Bill implements java.io.Serializable {
 	private Short type;
 	private String consumeCode;
 	private Long sceneId;
+	private Short status;
 
 	public Bill() {
 	}
 
 	public Bill(String businessId, String consumerId, Date dateTime, BigDecimal amount, Short type, String consumeCode,
-			Long sceneId) {
+			Long sceneId, Short status) {
 		this.businessId = businessId;
 		this.consumerId = consumerId;
 		this.dateTime = dateTime;
@@ -41,6 +42,7 @@ public class Bill implements java.io.Serializable {
 		this.type = type;
 		this.consumeCode = consumeCode;
 		this.sceneId = sceneId;
+		this.status = status;
 	}
 
 	@Id
@@ -116,6 +118,15 @@ public class Bill implements java.io.Serializable {
 
 	public void setSceneId(Long sceneId) {
 		this.sceneId = sceneId;
+	}
+
+	@Column(name = "status")
+	public Short getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
 	}
 
 }

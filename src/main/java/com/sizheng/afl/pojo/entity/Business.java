@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-22 14:37:27 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-23 10:33:06 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,13 +29,14 @@ public class Business implements java.io.Serializable {
 	private Short isMailVerify;
 	private Short isPhoneVerify;
 	private String password;
+	private Short status;
 
 	public Business() {
 	}
 
 	public Business(String openId, Short isDeleted, String name, String address, String mail, String introduce,
 			String phoneNumber, Long qrcodeLimit, String dynamicCode, Short isMailVerify, Short isPhoneVerify,
-			String password) {
+			String password, Short status) {
 		this.openId = openId;
 		this.isDeleted = isDeleted;
 		this.name = name;
@@ -48,6 +49,7 @@ public class Business implements java.io.Serializable {
 		this.isMailVerify = isMailVerify;
 		this.isPhoneVerify = isPhoneVerify;
 		this.password = password;
+		this.status = status;
 	}
 
 	@Id
@@ -167,6 +169,15 @@ public class Business implements java.io.Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Column(name = "status")
+	public Short getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
 	}
 
 }

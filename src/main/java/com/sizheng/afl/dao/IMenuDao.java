@@ -121,4 +121,8 @@ public interface IMenuDao {
 	List<Map<String, Object>> queryHistoryMenuBill(Locale locale, String businessId, Date start, Date end,
 			String... status);
 
+	List<Map<String, Object>> queryOrderHistoryMapList(Locale locale, String businessId, String openId);
+
+	Long queryBillCount(Locale locale, String businessId);
+
 }

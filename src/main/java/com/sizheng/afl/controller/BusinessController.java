@@ -40,6 +40,7 @@ import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
+import com.sizheng.afl.service.IMenuService;
 import com.sizheng.afl.service.IMessageService;
 import com.sizheng.afl.service.IRequestService;
 import com.sizheng.afl.service.IUserService;
@@ -85,6 +86,9 @@ public class BusinessController extends BaseController {
 
 	@Autowired
 	IRequestService requestService;
+
+	@Autowired
+	IMenuService menuService;
 
 	/**
 	 * 添加【商家】.

@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -12,21 +11,20 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tmpl.min.js"
 	charset="utf-8"></script>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>餐助手-后厨服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -37,12 +35,9 @@
 <tr id="item-tr-join-{{html id}}" class="item-tr-{{html menu_id}}">
 <input type="hidden" name="id" value="{{html id}}">
 <input type="hidden" name="copies" value="{{html copies}}">
-	<td class="">{{html name}}</td>
-	<td class="">{{html copies}}</td>
-	<td class="">{{html date_time}}</td>
-	<td class="number" data-sort-value="{{html sec_diff}}">{{html diff}}</td>
-	<td class="">{{html nickname}}</td>
-	<td class="">{{html description}}</td>
+	<td class="">{{html name}}({{html copies}}份)</td>
+	<td class="">{{html date_time}}({{html diff}})</td>
+	<td class="">{{html nickname}}({{html description}})</td>
 	<td class=""><a class="ui purple label"
 		onclick="acceptHandler('{{html id}}', '{{html menu_id}}', '1', '{{html copies}}')"
 		href="javascript:void(0);">接受</a></td>
@@ -61,43 +56,28 @@
 		</div>
 	</div>
 
-	<!-- 侧边栏 -->
-	<%@ include file="../menu.jsp"%>
-
-	<!-- header -->
-	<%@ include file="../header.jsp"%>
-
-	<h4 class="ui top attached header" style="margin-top: 45px;">
+	<h4 class="ui top attached header" style="margin-top: 0px;">
 		订单一览
 		<div class="circular ui red label">
 			<span id="orderCount-span">${fn:length(orderList)}</span>份
 		</div>
-		<div class="ui green tiny button czsManual" style="margin-left: 20px;">手动刷新</div>
 	</h4>
 	<div class="ui segment attached">
 		<table class="ui sortable table segment" style="display: table;">
 			<thead>
 				<tr>
-					<th class="">序号</th>
 					<th class="">菜名</th>
-					<th class="">份数</th>
 					<th class="">时间</th>
-					<th class="">距今</th>
 					<th class="">顾客</th>
-					<th class="">位置</th>
 					<th class="">操作</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${orderList}" var="item" varStatus="sts">
+				<c:forEach items="${orderList}" var="item">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
-						<td class="number">${sts.index + 1}</td>
-						<td class="">${item.name}</td>
-						<td class="number">${item.copies}</td>
-						<td class="">${item.date_time}</td>
-						<td class="number" data-sort-value="${item.sec_diff}">${item.diff}</td>
-						<td class="">${item.nickname}</td>
-						<td class="">${item.description}</td>
+						<td class="">${item.name}(${item.copies}份)</td>
+						<td class="number" data-sort-value="${item.sec_diff}">${item.date_time}(${item.diff})</td>
+						<td class="">${item.nickname}(${item.description})</td>
 						<td class=""><a class="ui purple label czsRequest"
 							onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
 							href="javascript:void(0);">接受</a><a
@@ -110,24 +90,44 @@
 		</table>
 	</div>
 
-	<!-- footer -->
-	<%@ include file="../footer.jsp"%>
+
+	<div class="ui small modal czsConfirm">
+		<i class="close icon"></i>
+		<div class="header">确认提示</div>
+		<div class="content">
+			<div class="left">
+				<i class="warning icon"></i>
+			</div>
+			<div class="right" style="font-size: 25px;">
+				<p>确认要接受吗?</p>
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui negative labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui positive right labeled icon button">
+					确认 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 	<div class="ui modal czsBillJoin">
 		<i class="close icon"></i>
 		<div class="header">合并订单信息</div>
-		<div class="content" style="padding-top: 0px; padding-bottom: 0px;"
+		<div class="content" style="padding: 1px;"
 			id="czsGetConsumerInfo-content">
 			<form id="join-form">
+				<input type="hidden" name="accepterId" value="${param.openId}">
 				<table class="ui sortable table segment" style="display: table;">
 					<thead>
 						<tr>
 							<th class="">菜名</th>
-							<th class="">份数</th>
 							<th class="">时间</th>
-							<th class="">距今</th>
 							<th class="">顾客</th>
-							<th class="">位置</th>
 							<th class="">操作</th>
 						</tr>
 					</thead>
@@ -148,27 +148,15 @@
 		</div>
 	</div>
 
-	<div class="ui small modal czsConfirm">
-		<i class="close icon"></i>
-		<div class="header">确认提示</div>
-		<div class="content">
-			<div class="left">
-				<i class="warning icon"></i>
-			</div>
-			<div class="right" style="font-size: 30px;">
-				<p>确认要接受吗?</p>
-			</div>
-		</div>
-		<div class="actions">
-			<div class="two fluid ui buttons">
-				<div class="ui negative labeled icon button">
-					<i class="remove icon"></i> 取消
-				</div>
-				<div class="ui positive right labeled icon button">
-					确认 <i class="checkmark icon"></i>
-				</div>
-			</div>
-		</div>
+	<div style="height: 44px;"></div>
+
+	<!-- bottom header -->
+	<div class="ui fixed bottom inverted fluid three item menu">
+		<a class="item"
+			href="businessRole/free/kitchenLogin.do?openId=${param.openId}&businessId=${param.businessId}"><i
+			class="icon align justify"></i>订单一览 </a> <a class="item"
+			href="businessRole/free/kitchenHistory.do?openId=${param.openId}&businessId=${param.businessId}"><i
+			class="ok sign icon"></i>历史订单</a>
 	</div>
 
 	<script type="text/javascript">
@@ -184,13 +172,15 @@
 			_type = type;
 			_copies = copies;
 			$('.ui.modal.czsConfirm').modal('show');
+			$('.ui.modal.czsBillJoin').modal('hide');
 		}
 
 		function acceptJoinHandler(id, menu_id) {
 			_id = id;
 			_menu_id = menu_id;
-			$.post('menu/queryJoinBill.do', {
-				id : _menu_id
+			$.post('businessRole/free/queryJoinBill.do', {
+				id : _menu_id,
+				owner : '${param.businessId}'
 			}, function(msg) {
 
 				if (msg.succeed) {
@@ -221,16 +211,13 @@
 				$('.ui.dimmer.czsMsg > .content').hide();
 			});
 
-			$('table').tablesort().data('tablesort');
-
-			$('#menu-item-order-list').addClass('active');
-
 			$('.ui.modal.czsConfirm').modal({
 				closable : false,
 				onApprove : function() {
-					$.post('menu/accept.do', {
+					$.post('businessRole/free/accept.do', {
 						id : _id,
-						copies : _copies
+						copies : _copies,
+						accepterId : '${param.openId}'
 					}, function(msg) {
 						if (msg.succeed) {
 							if (_type == '0') {
@@ -257,7 +244,7 @@
 			$('.ui.modal.czsBillJoin').modal({
 				closable : false,
 				onApprove : function() {
-					$.post('menu/acceptJoin.do', $('#join-form').serialize(), function(msg) {
+					$.post('businessRole/free/acceptJoin.do', $('#join-form').serialize(), function(msg) {
 						if (msg.succeed) {
 							$('.item-tr-' + _menu_id).remove();
 							return true;
@@ -275,13 +262,9 @@
 				}
 			});
 
-			$('.ui.button.czsManual').click(function() {
-				window.location.reload();
-			});
-
 			setInterval(function() {
 				$.post('businessRole/free/checkBill.do', {
-					businessId : '${businessId}'
+					businessId : '${param.businessId}'
 				}, function(msg) {
 					if (msg.succeed) {
 						if (!($('.ui.dimmer.czsMsg').dimmer('is active'))) {

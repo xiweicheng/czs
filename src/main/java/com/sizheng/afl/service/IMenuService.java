@@ -212,9 +212,10 @@ public interface IMenuService extends IBaseService {
 	 * @param locale
 	 * @param ids
 	 * @param copies TODO
+	 * @param accepterId TODO
 	 * @return
 	 */
-	boolean acceptBillJoin(Locale locale, String[] ids, Long[] copies);
+	boolean acceptBillJoin(Locale locale, String[] ids, Long[] copies, String accepterId);
 
 	/**
 	 * 订单提交处理.
@@ -243,4 +244,8 @@ public interface IMenuService extends IBaseService {
 	 */
 	List<Map<String, Object>> queryHistoryMenuBill(Locale locale, String businessId, Date start, Date end,
 			String... status);
+
+	List<Map<String, Object>> queryOrderHistoryMapList(Locale locale, String businessId, String openId);
+
+	Long queryBillCount(Locale locale, String businessId);
 }

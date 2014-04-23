@@ -393,6 +393,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 			if (menuBill.getCopies().equals(menuBill2.getCopies())) {
 
 				menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
+				menuBill2.setAccepterId(menuBill.getAccepterId());
 
 				hibernateTemplate.update(menuBill2);
 
@@ -417,7 +418,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	}
 
 	@Override
-	public boolean acceptBillJoin(Locale locale, String[] ids, Long[] copies) {
+	public boolean acceptBillJoin(Locale locale, String[] ids, Long[] copies, String accepterId) {
 
 		int i = -1;
 
@@ -429,6 +430,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 				if (menuBill2.getCopies().equals(copies[i])) {
 
 					menuBill2.setStatus(SysConstant.MENU_BILL_STATUS_ACCEPT);
+					menuBill2.setAccepterId(accepterId);
 
 					hibernateTemplate.update(menuBill2);
 
@@ -458,6 +460,16 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 	public List<Map<String, Object>> queryHistoryMenuBill(Locale locale, String businessId, Date start, Date end,
 			String... status) {
 		return menuDao.queryHistoryMenuBill(locale, businessId, start, end, status);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryOrderHistoryMapList(Locale locale, String businessId, String openId) {
+		return menuDao.queryOrderHistoryMapList(locale, businessId, openId);
+	}
+
+	@Override
+	public Long queryBillCount(Locale locale, String businessId) {
+		return menuDao.queryBillCount(locale, businessId);
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-22 14:37:27 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-23 10:33:06 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -27,12 +27,13 @@ public class MenuBill implements java.io.Serializable {
 	private Short status;
 	private Long sceneId;
 	private Long copies;
+	private String accepterId;
 
 	public MenuBill() {
 	}
 
 	public MenuBill(Long menuId, String consumerId, String consumeCode, Date dateTime, Short status, Long sceneId,
-			Long copies) {
+			Long copies, String accepterId) {
 		this.menuId = menuId;
 		this.consumerId = consumerId;
 		this.consumeCode = consumeCode;
@@ -40,6 +41,7 @@ public class MenuBill implements java.io.Serializable {
 		this.status = status;
 		this.sceneId = sceneId;
 		this.copies = copies;
+		this.accepterId = accepterId;
 	}
 
 	@Id
@@ -115,6 +117,15 @@ public class MenuBill implements java.io.Serializable {
 
 	public void setCopies(Long copies) {
 		this.copies = copies;
+	}
+
+	@Column(name = "accepter_id")
+	public String getAccepterId() {
+		return this.accepterId;
+	}
+
+	public void setAccepterId(String accepterId) {
+		this.accepterId = accepterId;
 	}
 
 }

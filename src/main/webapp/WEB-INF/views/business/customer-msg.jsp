@@ -125,9 +125,14 @@
 						<td class="">${item.sex}</td>
 						<td class=""><c:if test="${item.msg_type=='text'}">文本消息</c:if>
 							<c:if test="${item.msg_type=='image'}">图片消息</c:if></td>
-						<td class=""><c:if test="${item.msg_type=='text'}">${item.content}</c:if>
-							<c:if test="${item.msg_type=='image'}">
-								<a class="ui label" style="text-decoration: underline;" target="_blank" href="${item.pic_url}">图片链接</a>
+						<td class=""><c:if test="${item.msg_type=='text'}">
+								<a class="ui label czsMsgText"
+									data-html="<p>${item.content}</p>">消息内容</a>
+							</c:if> <c:if test="${item.msg_type=='image'}">
+								<a class="ui label czsMsgImage"
+									data-html="<img style='width:200px;' src='${item.pic_url}'>"
+									style="text-decoration: underline;" target="_blank"
+									href="${item.pic_url}">图片链接</a>
 							</c:if></td>
 						<td class=""><c:if test="${item.status==0}">新消息<a
 									class="ui label" onclick="msgHandler(this, '1', '${item.id}')">已读</a>
@@ -180,6 +185,10 @@
 			
 			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
+			});
+			
+			$('.ui.label.czsMsgImage, .ui.label.czsMsgText').popup({
+				inline : true
 			});
 
 			$('table').tablesort().data('tablesort');

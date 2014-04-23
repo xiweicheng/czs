@@ -23,6 +23,8 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tablesort.min.js"
+	charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -53,49 +55,48 @@
 		<div class="circular ui red label">${fn:length(menuList)}个</div>
 	</h4>
 
-	<div class="ui fluid accordion">
-
-		<c:forEach items="${menuList}" var="item">
-			<div class="title" id="menu-item-title-${item.id}">
-				<i class="dropdown icon"></i> ${item.name}<a class="ui red label"
-					style="float: right; margin-right: 10px;"
-					href="javascript:void(0);"
-					onclick="menuDeleteHandler('${item.id}');">删除</a> <a
-					class="ui purple label" style="float: right; margin-right: 10px;"
-					href="menu/update.do?id=${item.id}">修改</a>
-			</div>
-			<div class="content" id="menu-item-content-${item.id}">
-				<img class="ui large image left floated"
-					src="../../../${item.path}640/${item.file_name}">
-
-				<div style="padding-bottom: 10px;">
-					<b>分类:</b>${item.category}&nbsp;&nbsp;&nbsp;&nbsp;<b>口味:</b>${item.taste}
-				</div>
-				<div style="padding-bottom: 10px;">
-					<b>价格:</b>${item.price}<c:if test="${item.privilege>0}">&nbsp;&nbsp;&nbsp;&nbsp;<b>优惠:</b>
-						<c:choose>
-							<c:when test="${item.privilege < 1}">
-								<c:out value="${item.privilege * 10}"></c:out>折
-						</c:when>
-							<c:otherwise>
-							${item.privilege}
-						</c:otherwise>
-						</c:choose>
-					</c:if>
-				</div>
-				<div style="padding-bottom: 10px;">
-					<b>添加时间:</b>
-					<fmt:formatDate value="${item.date_time}"
-						pattern="yyyy/MM/dd hh:mm:ss" />
-				</div>
-
-				<p>
-					<b>介绍:</b>${item.introduce}
-				</p>
-				<div style="clear: both;"></div>
-			</div>
-		</c:forEach>
-	</div>
+	<table class="ui sortable table segment" style="display: table;">
+		<thead>
+			<tr>
+				<th class="number">序号</th>
+				<th class="">菜名</th>
+				<th class="number">价格</th>
+				<th class="">图片</th>
+				<th class="">介绍</th>
+				<th class="">分类</th>
+				<th class="">口味</th>
+				<th class="">添加时间</th>
+				<th class="number">被点次数</th>
+				<th class="">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach items="${menuList}" var="item" varStatus="sts">
+				<tr id="menu-item-${item.id}">
+					<td class="">${sts.index + 1}</td>
+					<td class="">${item.name}</td>
+					<td class="">${item.price}</td>
+					<td class=""><c:if test="${! empty item.file_name}">
+							<a class="ui label czsMenuImg" target="_blank"
+								href="../../../${item.path}640/${item.file_name}"
+								data-html="<img style='width:200px;' src='../../../${item.path}640/${item.file_name}'>">图片链接</a>
+						</c:if></td>
+					<td class=""><c:if test="${! empty item.introduce}">
+							<a class="ui label czsMenuIntroduce"
+								data-html="<p>${item.introduce}</p>">菜品介绍</a>
+						</c:if></td>
+					<td class="">${item.category}</td>
+					<td class="">${item.taste}</td>
+					<td class="">${item.date_time}</td>
+					<td class="">${item.order_times}</td>
+					<td class=""><a class="ui red label"
+						href="javascript:void(0);"
+						onclick="menuDeleteHandler('${item.id}');">删除</a> <a
+						class="ui purple label" href="menu/update.do?id=${item.id}">修改</a></td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
 
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
@@ -134,17 +135,20 @@
 
 		jQuery(function($) {
 
+			$('table').tablesort().data('tablesort');
+			$('thead th.number').data('sortBy', function(th, td, sorter) {
+				return parseInt(td.text(), 10);
+			});
+
+			$('.ui.label.czsMenuImg, .ui.label.czsMenuIntroduce').popup({
+				inline : true
+			});
+
 			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
 			});
 
 			$('#menu-item-menu-list').addClass('active');
-
-			$('.ui.accordion').accordion({
-				onOpen : function() {
-					//alert('dd');
-				}
-			});
 
 			$('#confirm-ui-modal').modal({
 				closable : false,
@@ -162,9 +166,7 @@
 						}),
 						success : function(msg) {
 							if (msg.succeed) {
-								$('#menu-item-title-' + deleteMenuId).remove();
-								$('#menu-item-content-' + deleteMenuId).remove();
-								return true;
+								$('#menu-item-' + deleteMenuId).remove();
 							} else {
 								if (!!msg.msg && !!msg.msg.detail) {
 									$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
@@ -173,8 +175,6 @@
 								}
 								$('.ui.dimmer.czsMsg > .content').show();
 								$('.ui.dimmer.czsMsg').dimmer('show');
-
-								return false;
 							}
 						}
 					});

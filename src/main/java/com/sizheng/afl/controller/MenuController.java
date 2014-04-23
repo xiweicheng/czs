@@ -399,19 +399,22 @@ public class MenuController extends BaseController {
 
 		logger.debug("列举订单【菜单】");
 
+		String businessId = WebUtil.getSessionBusiness(request).getOpenId();
+
 		Menu menu = new Menu();
-		menu.setOwner(WebUtil.getSessionBusiness(request).getOpenId());
+		menu.setOwner(businessId);
 
 		List<Map<String, Object>> mapList = menuService.queryOrderMapList(locale, menu);
 
 		for (Map<String, Object> map : mapList) {
 			long sec = NumberUtil.getLong(map, "sec_diff");
 			String c = DateUtil.convert(sec);
-			map.put("sec_diff", c);
+			map.put("diff", c);
 		}
 
 		model.addAttribute("orderList", mapList);
 		model.addAttribute("interval", interval);
+		model.addAttribute("businessId", businessId);
 
 		return "menu/order-list";
 	}
@@ -555,6 +558,7 @@ public class MenuController extends BaseController {
 
 		Assert.notNull(menuBill.getId());
 		Assert.notNull(menuBill.getCopies());
+		menuBill.setAccepterId(WebUtil.getSessionBusiness(request).getOpenId());
 
 		boolean value = menuService.acceptBill(locale, menuBill);
 
@@ -576,7 +580,8 @@ public class MenuController extends BaseController {
 
 		logger.debug("顾客订单处理【菜单】");
 
-		boolean value = menuService.acceptBillJoin(locale, ids, copies);
+		boolean value = menuService
+				.acceptBillJoin(locale, ids, copies, WebUtil.getSessionBusiness(request).getOpenId());
 
 		return new ResultMsg(value);
 	}
@@ -822,7 +827,7 @@ public class MenuController extends BaseController {
 		for (Map<String, Object> map : historyMenuBillList) {
 			long sec = NumberUtil.getLong(map, "sec_diff");
 			String c = DateUtil.convert(sec);
-			map.put("sec_diff", c);
+			map.put("diff", c);
 		}
 
 		model.addAttribute("historyMenuBillList", historyMenuBillList);
