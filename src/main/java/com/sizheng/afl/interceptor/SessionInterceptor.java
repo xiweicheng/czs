@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.sizheng.afl.pojo.entity.Business;
+import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.vo.Msg;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.util.StringUtil;
@@ -17,9 +17,9 @@ public class SessionInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-		Business sessionBusiness = WebUtil.getSessionBusiness(request);
+		Object attribute = request.getSession().getAttribute(SysConstant.SESSION_OBJECT);
 
-		if (sessionBusiness == null) {
+		if (attribute == null) {
 
 			String requestURI = request.getRequestURI();
 
@@ -37,6 +37,14 @@ public class SessionInterceptor implements HandlerInterceptor {
 					return true;
 				}
 
+				if (requestURI.contains("/czs/login.do")) {
+					return true;
+				}
+
+				if (requestURI.contains("/czs/verify.do")) {
+					return true;
+				}
+
 				if (requestURI.contains("/weixin/invoke.do")) {
 					return true;
 				}
@@ -47,7 +55,12 @@ public class SessionInterceptor implements HandlerInterceptor {
 			if (StringUtil.isNotEmpty(requestType)) {// XMLHttpRequest
 				WebUtil.writeResult(response, new ResultMsg(false, new Msg("1000", false, "会话过期,请重新登录!")));
 			} else {
-				response.sendRedirect("/business/login.do");
+
+				if (requestURI.contains("czs/")) {
+					response.sendRedirect("/czs/login.do");
+				} else {
+					response.sendRedirect("/business/login.do");
+				}
 			}
 
 			return false;

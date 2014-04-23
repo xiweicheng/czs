@@ -243,7 +243,7 @@ public class CzsUserController extends BaseController {
 		return new ResultMsg(reqBody.getId(), pageResult.getList(), pageResult.getTotal());
 	}
 
-	@RequestMapping("free/login")
+	@RequestMapping("login")
 	public String login(HttpServletRequest request, Locale locale, Model model) {
 
 		logger.debug("平台登录【平台用户】");
@@ -311,7 +311,7 @@ public class CzsUserController extends BaseController {
 		if (czsUser != null && StringUtil.isNotEmpty(czsUser.getUserName())) {
 
 			HttpSession session = request.getSession();
-			session.setAttribute(SysConstant.SESSION_CZS, czsUser);
+			session.setAttribute(SysConstant.SESSION_OBJECT, czsUser);
 
 			return "forward:main.do";
 		} else {

@@ -112,8 +112,7 @@ public final class SysConstant {
 	/** CONSUME_STATUS_REQ [Short] 进入请求中 */
 	public static final Short CONSUME_STATUS_REQ = 5;
 	public static final String RESOURCES_IMAGE = "image";
-	public static final String SESSION_BUSINESS = "session_business";
-	public static final String SESSION_CZS = "session_czs";
+	public static final String SESSION_OBJECT = "session_object";
 	public static final Short SHORT_FALSE = 0;
 	public static final Short SHORT_TRUE = 1;
 	public static final String CHECK_ON = "on";

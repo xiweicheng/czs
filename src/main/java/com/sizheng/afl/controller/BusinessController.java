@@ -483,7 +483,7 @@ public class BusinessController extends BaseController {
 			}
 
 			HttpSession session = request.getSession();
-			session.setAttribute(SysConstant.SESSION_BUSINESS, business2);
+			session.setAttribute(SysConstant.SESSION_OBJECT, business2);
 
 			return "forward:list.do?filterOver=1";
 		} else {

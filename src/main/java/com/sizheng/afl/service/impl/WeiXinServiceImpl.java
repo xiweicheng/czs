@@ -285,10 +285,11 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 			if (SysConstant.ROLE_TYPE_BOSS.equals(businessRole2.getType())) {
 				sb.append(
-						StringUtil.replace(
+						StringUtil
+								.replace(
 										"<a href='{?1}/businessRole/free/bossLogin.do?openId={?2}&businessId={?3}'>[点击此]店主入口</a>",
-								propUtil.getRedirectUrl(), bean.getFromUserName(), businessRole2.getBusinessId()))
-						.append("\n\n");
+										propUtil.getRedirectUrl(), bean.getFromUserName(),
+										businessRole2.getBusinessId())).append("\n\n");
 			} else if (SysConstant.ROLE_TYPE_COOK.equals(businessRole2.getType())) {
 				sb.append(
 						StringUtil
@@ -313,7 +314,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			}
 		}
 
-		return sb.toString();
+		return sb.toString().trim();
 	}
 
 	/**

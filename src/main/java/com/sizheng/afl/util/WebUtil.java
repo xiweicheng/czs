@@ -18,6 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
+import com.sizheng.afl.pojo.entity.CzsUser;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 
 /**
@@ -411,12 +412,36 @@ public final class WebUtil {
 
 		HttpSession session = request.getSession();
 
-		Object attribute = session.getAttribute(SysConstant.SESSION_BUSINESS);
+		Object attribute = session.getAttribute(SysConstant.SESSION_OBJECT);
 
-		if (attribute != null) {
+		if (attribute != null && attribute instanceof Business) {
 			return (Business) attribute;
 		} else {
 			logger.error("session business不存在!");
+		}
+
+		return null;
+	}
+
+	/**
+	 * 获取session czsUser
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月29日 下午7:10:27
+	 * @modification 2014年3月29日 下午7:10:27
+	 * @param request
+	 * @return
+	 */
+	public static CzsUser getSessionCzsUser(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+
+		Object attribute = session.getAttribute(SysConstant.SESSION_OBJECT);
+
+		if (attribute != null && attribute instanceof CzsUser) {
+			return (CzsUser) attribute;
+		} else {
+			logger.error("session czsUser不存在!");
 		}
 
 		return null;

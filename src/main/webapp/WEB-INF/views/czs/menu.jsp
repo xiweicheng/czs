@@ -12,7 +12,7 @@
 		<div class="header item">
 			<i class="user icon"></i> 平台管理
 		</div>
-		<a class="item" href="czs/main.do" id="menu-item-czs-main">
+		<a class="item" href="czs/main.do" id="menu-item-czs-main">基本信息</a>
 	</div>
 	<script type="text/javascript">
 		jQuery(function($) {
