@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-23 10:33:06 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-23 16:31:58 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -46,6 +46,7 @@ public class Message implements java.io.Serializable {
 	private String toOpenId;
 	private Date dateTime;
 	private Short status;
+	private Short isDelete;
 
 	public Message() {
 	}
@@ -54,7 +55,7 @@ public class Message implements java.io.Serializable {
 			String mediaId, String format, String thumbMediaId, BigDecimal locationX, BigDecimal locationY,
 			BigDecimal scale, String label, String title, String description, String url, String eventKey,
 			BigDecimal latitude, BigDecimal longitude, BigDecimal precision, String ticket, String event,
-			String toOpenId, Date dateTime, Short status) {
+			String toOpenId, Date dateTime, Short status, Short isDelete) {
 		this.fromUserName = fromUserName;
 		this.createTime = createTime;
 		this.msgType = msgType;
@@ -80,6 +81,7 @@ public class Message implements java.io.Serializable {
 		this.toOpenId = toOpenId;
 		this.dateTime = dateTime;
 		this.status = status;
+		this.isDelete = isDelete;
 	}
 
 	@Id
@@ -317,6 +319,15 @@ public class Message implements java.io.Serializable {
 
 	public void setStatus(Short status) {
 		this.status = status;
+	}
+
+	@Column(name = "is_delete")
+	public Short getIsDelete() {
+		return this.isDelete;
+	}
+
+	public void setIsDelete(Short isDelete) {
+		this.isDelete = isDelete;
 	}
 
 }

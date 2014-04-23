@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-23 10:33:06 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-23 16:31:58 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Message" table="message" catalog="afl">
         <id name="id" type="Integer">
@@ -82,6 +82,9 @@
         </property>
         <property name="status" type="java.lang.Short">
             <column name="status" />
+        </property>
+        <property name="isDelete" type="java.lang.Short">
+            <column name="is_delete" />
         </property>
     </class>
 </hibernate-mapping>

@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -133,4 +134,6 @@ public interface IMessageService extends IBaseService {
 	 * @return
 	 */
 	boolean updateStatus(Locale locale, Message message);
+
+	Long queryCount(Locale locale, Message message, Date start, Date end);
 }

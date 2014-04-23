@@ -4,6 +4,7 @@
 package com.sizheng.afl.service.impl;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -141,5 +142,21 @@ public class MessageServiceImpl extends BaseServiceImpl implements IMessageServi
 			}
 		});
 
+	}
+
+	@Override
+	public Long queryCount(Locale locale, final Message message, final Date start, final Date end) {
+
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				return (Long) session
+						.createQuery(
+								"select count(*) from Message where (msgType='image' or msgType='text') and status=? and toOpenId=? and (dateTime between ? and ?)")
+						.setShort(0, message.getStatus()).setString(1, message.getToOpenId()).setDate(2, start)
+						.setDate(3, end).uniqueResult();
+			}
+		});
 	}
 }

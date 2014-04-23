@@ -1274,6 +1274,38 @@ public class BusinessController extends BaseController {
 	}
 
 	/**
+	 * 顾客消息总数检测.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("checkMsg")
+	@ResponseBody
+	public ResultMsg checkMsg(HttpServletRequest request, Locale locale, @ModelAttribute Message message,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end) {
+
+		logger.debug("顾客消息总数检测【商家】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24 * 60 * 60 * 1000);
+
+		String[] status = message.getStatus() != null ? new String[] { message.getStatus().toString() } : new String[0];
+
+		Long cnt = (long) businessService.queryCustomerMsg(locale, WebUtil.getSessionBusiness(request).getOpenId(),
+				sDate, eDate, status).size();
+
+		return new ResultMsg(true, cnt);
+	}
+
+	/**
 	 * 顾客消息.
 	 * 
 	 * @author xiweicheng
@@ -1295,7 +1327,8 @@ public class BusinessController extends BaseController {
 
 		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
 				.getTime() - 24 * 60 * 60 * 1000);
-		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : DateUtil.now();
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24 * 60 * 60 * 1000);
 
 		model.addAttribute("start", sDate.getTime());
 		model.addAttribute("end", eDate.getTime());
@@ -1322,9 +1355,9 @@ public class BusinessController extends BaseController {
 		}
 
 		for (Map<String, Object> map : msgList) {
-			long sec = NumberUtil.getLong(map, "sec_diff");
-			String c = DateUtil.convert(sec);
-			map.put("sec_diff", c);
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+			map.put("simple_content",
+					StringUtil.limitLength(StringUtil.getNotNullString(map, "content"), propUtil.getContentLenLimit()));
 		}
 
 		model.addAttribute("msgList", msgList);

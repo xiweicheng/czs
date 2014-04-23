@@ -67,7 +67,9 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">
 		顾客消息
-		<div class="circular ui red label">${fn:length(msgList)}个</div>
+		<div class="circular ui red label">
+			<span id="msgCount-span">${fn:length(msgList)}</span>个
+		</div>
 	</h4>
 	<div class="ui segment attached">
 
@@ -111,7 +113,7 @@
 					<th class="">类型</th>
 					<th class="">消息</th>
 					<th class="">状态</th>
-					<th class="">时间</th>
+					<th class="number">时间</th>
 					<th class="">距今</th>
 				</tr>
 			</thead>
@@ -127,10 +129,10 @@
 							<c:if test="${item.msg_type=='image'}">图片消息</c:if></td>
 						<td class=""><c:if test="${item.msg_type=='text'}">
 								<a class="ui label czsMsgText"
-									data-html="<p>${item.content}</p>">消息内容</a>
+									data-html="<p>${item.content}</p>">${item.simple_content}</a>
 							</c:if> <c:if test="${item.msg_type=='image'}">
 								<a class="ui label czsMsgImage"
-									data-html="<img style='width:200px;' src='${item.pic_url}'>"
+									data-html="<img style='max-width:200px;max-height:200px;' src='${item.pic_url}'>"
 									style="text-decoration: underline;" target="_blank"
 									href="${item.pic_url}">图片链接</a>
 							</c:if></td>
@@ -144,7 +146,7 @@
 									onclick="msgHandler(this, '1', '${item.id}')">移除</a>
 							</c:if></td>
 						<td class="">${item.date_time}</td>
-						<td class="">${item.sec_diff}</td>
+						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -220,6 +222,33 @@
 
 			pickerStart.setLocalDate(startDate);
 			pickerEnd.setLocalDate(endDate);
+			
+
+			setInterval(function() {
+				$.post('business/checkMsg.do', {
+					status: '${status}',
+					start: $('#datetimepickerStart > input').val(),
+					end :$('#datetimepickerEnd > input').val()
+				}, function(msg) {
+					if (msg.succeed) {
+						if (!($('.ui.dimmer.czsMsg').dimmer('is active'))) {
+							var cnt = Number($('#msgCount-span').text());
+							if (cnt != msg.value) {
+								filterHandler('${status}');
+							}
+						}
+					} else {
+						if (!!msg.msg && !!msg.msg.detail) {
+							$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+						} else {
+							$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+						}
+						$('.ui.dimmer.czsMsg > .content').show();
+						$('.ui.dimmer.czsMsg').dimmer('show');
+					}
+				});
+			}, 5 * 1000);
+			
 		});
 	</script>
 </body>

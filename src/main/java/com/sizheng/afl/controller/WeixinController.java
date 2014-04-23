@@ -191,23 +191,23 @@ public class WeixinController extends BaseController {
 
 			} else if (WeiXinMsgType.TEXT.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "文本消息!");
+				writeText(response, bean, "我们已经接收到您的文本消息,谢谢!");
 
 			} else if (WeiXinMsgType.IMAGE.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "图片消息!");
+				writeText(response, bean, "我们已经接收到您的图片消息,谢谢!");
 
 			} else if (WeiXinMsgType.VOICE.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "语音消息!");
+				writeText(response, bean, "我们已经接收到您的语音消息,谢谢!");
 
 			} else if (WeiXinMsgType.VIDEO.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "视频消息!");
+				writeText(response, bean, "我们已经接收到您的视频消息,谢谢!");
 
 			} else if (WeiXinMsgType.LOCATION.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "地理位置消息!");
+				writeText(response, bean, "我们已经接收到您的地理为位置消息,谢谢!");
 
 				bean.setLatitude(bean.getLocation_X());
 				bean.setLongitude(bean.getLocation_Y());
@@ -217,7 +217,7 @@ public class WeixinController extends BaseController {
 
 			} else if (WeiXinMsgType.LINK.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "链接消息!");
+				writeText(response, bean, "我们已经接收到您的链接消息,谢谢!");
 
 			} else {
 				weiXinService.handleMsgTypeFail(bean, locale);

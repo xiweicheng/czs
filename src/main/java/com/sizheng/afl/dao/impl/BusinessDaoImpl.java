@@ -436,7 +436,9 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	message.to_open_id = ?\n");
 
-		sqlSb.append(SqlUtil.replaceIfNotEmpty("AND message.`status` IN ({?1})\n", SqlUtil.joinAsIntIn2(status)));
+		if (status != null && status.length > 0) {
+			sqlSb.append(SqlUtil.replaceIfNotEmpty("AND message.`status` IN ({?1})\n", SqlUtil.joinAsIntIn2(status)));
+		}
 
 		sqlSb.append("AND (\n");
 		sqlSb.append("	msg_type = 'text'\n");
@@ -447,6 +449,8 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 			sqlSb.append(StringUtil.replace("AND (message.date_time between '{?1}' and '{?2}')\n",
 					DateUtil.format(sDate, DateUtil.FORMAT1), DateUtil.format(eDate, DateUtil.FORMAT1)));
 		}
+
+		sqlSb.append("ORDER BY message.date_time DESC\n");
 
 		return getMapList(sqlSb, openId);
 	}

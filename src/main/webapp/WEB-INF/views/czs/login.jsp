@@ -12,9 +12,8 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>平台登录</title>
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>商家登录</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-1.10.2.min.js"
@@ -58,7 +57,7 @@
 				</div>
 				<div class="ui tab" data-tab="passwordLogin">
 					<!-- 登陆框 -->
-					<form action="czs/verify.do" method="post">
+					<form action="business/verify.do" method="post">
 						<input type="hidden" name="type" value="1">
 						<div class="ui form segment" style="width: 300px; margin: 0 auto;">
 							<div class="field">
@@ -99,7 +98,7 @@
 			<div class="main container">
 				<div class="ui tab active" data-tab="passwordLogin">
 					<!-- 登陆框 -->
-					<form action="czs/verify.do" method="post">
+					<form action="business/verify.do" method="post">
 						<input type="hidden" name="type" value="1">
 						<div class="ui form segment" style="width: 300px; margin: 0 auto;">
 							<div class="field">

@@ -84,6 +84,9 @@ public class PropUtil {
 	@Value("#{systemProperties['upload.image.max']}")
 	private long uploadImageMax;
 
+	@Value("#{systemProperties['content.length.limit']}")
+	private int contentLenLimit;
+
 	@Value("#{systemProperties['image.scale.size.mini']}")
 	private int imgScaleSizeMini;
 
@@ -242,6 +245,10 @@ public class PropUtil {
 
 	public boolean isConsumerInConfirm() {
 		return consumerInConfirm;
+	}
+
+	public int getContentLenLimit() {
+		return contentLenLimit;
 	}
 
 }
