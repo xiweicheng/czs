@@ -270,9 +270,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		Business business = new Business();
 		business.setOpenId(qrcode2.getOpenId());
 
-		Business business2 = (Business) findOneByExample(business);
-
-		List list3 = hibernateTemplate.findByExample(business);
+		Business business2 = findOneByExample(business, Business.class);
 
 		String businessName = business2 != null ? business2.getName() : null;
 
@@ -288,9 +286,11 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		User user = new User();
 		user.setUserName(bean.getFromUserName());
 
-		User user2 = (User) findOneByExample(user);
+		User user2 = findOneByExample(user, User.class);
 
-		List list4 = hibernateTemplate.findByExample(user);
+		if (user2 != null && StringUtil.isNotEmpty(user2.getConsumeCode())) {
+			return StringUtil.replace("您在[{?1}]店的消费还没结束,仍在消费进行中...", businessName);
+		}
 
 		// 判断是否存在对该商家的消费记录.
 		BusinessConsumer businessConsumer1 = new BusinessConsumer();
@@ -413,7 +413,12 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			businessConsumer2.setLastConsumeTime(DateUtil.now());
 			businessConsumer2.setConsumeCode(UUID.randomUUID().toString());// 区别消费个人
 			businessConsumer2.setSceneId(Long.valueOf(qrsceneId));// 区别消费群体
-			businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_REQ);// 接入请求中
+
+			if (isConsumerInConfirm) {
+				businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_REQ);// 进入请求中.
+			} else {
+				businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_ONGOING);// 消费进行中
+			}
 
 			hibernateTemplate.save(businessConsumer2);
 

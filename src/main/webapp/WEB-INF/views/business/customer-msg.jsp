@@ -30,21 +30,19 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+<script src="../../../resources/bootstrap/js/bootstrap.min.js"
+	charset="utf-8"></script>
 <script
 	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.min.js"
 	charset="utf-8"></script>
 <script
 	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.zh-CN.js"
 	charset="utf-8"></script>
-<script src="../../../resources/bootstrap/js/bootstrap.min.js"
-	charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
 		WeixinJSBridge.call('hideOptionMenu');
 	});
-</script>
-<script id="joinTrTpl" type="text/x-jquery-tmpl">
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
@@ -166,12 +164,15 @@
 							$('<input type="hidden">').attr('name', 'end').attr('value',
 									$('#datetimepickerEnd > input').val())).submit();
 		}
-		
-		function msgHandler(_this, status, msgId){
-			$.post('business/msgHandle.do', {status:status, id:msgId}, function(msg){
-				if(msg.succeed){
+
+		function msgHandler(_this, status, msgId) {
+			$.post('business/msgHandle.do', {
+				status : status,
+				id : msgId
+			}, function(msg) {
+				if (msg.succeed) {
 					$(_this).hide();
-				}else{
+				} else {
 					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
 					} else {
@@ -184,11 +185,11 @@
 		}
 
 		jQuery(function($) {
-			
+
 			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
 			});
-			
+
 			$('.ui.label.czsMsgImage, .ui.label.czsMsgText').popup({
 				inline : true
 			});
@@ -199,7 +200,7 @@
 			});
 
 			$('#menu-item-business-listMsg').addClass('active');
-			
+
 			$('#czsStatus-' + '${status}').addClass('green');
 
 			$('#datetimepickerStart').datetimepicker({
@@ -216,19 +217,18 @@
 			var pickerEnd = $('#datetimepickerEnd').data('datetimepicker');
 
 			var startDate = new Date();
-			startDate.setTime(${start});
+			startDate.setTime(Number('${start}'));
 			var endDate = new Date();
-			endDate.setTime(${end});
+			endDate.setTime(Number('${end}'));
 
 			pickerStart.setLocalDate(startDate);
 			pickerEnd.setLocalDate(endDate);
-			
 
 			setInterval(function() {
 				$.post('business/checkMsg.do', {
-					status: '${status}',
-					start: $('#datetimepickerStart > input').val(),
-					end :$('#datetimepickerEnd > input').val()
+					status : '${status}',
+					start : $('#datetimepickerStart > input').val(),
+					end : $('#datetimepickerEnd > input').val()
 				}, function(msg) {
 					if (msg.succeed) {
 						if (!($('.ui.dimmer.czsMsg').dimmer('is active'))) {
@@ -248,7 +248,6 @@
 					}
 				});
 			}, 5 * 1000);
-			
 		});
 	</script>
 </body>

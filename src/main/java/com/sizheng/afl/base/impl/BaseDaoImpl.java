@@ -170,7 +170,7 @@ public abstract class BaseDaoImpl implements IBaseDao {
 		Object val = mapList.size() == 0 ? null : mapList.get(0);
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("获取对象[getObject]单个值: " + val.toString());
+			logger.debug("获取对象[getObject]单个值: " + String.valueOf(val));
 		}
 
 		return val;

@@ -34,6 +34,7 @@ import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.entity.Message;
 import com.sizheng.afl.pojo.entity.Request;
+import com.sizheng.afl.pojo.entity.Service;
 import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.vo.Msg;
 import com.sizheng.afl.pojo.vo.PageResult;
@@ -43,6 +44,7 @@ import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IMenuService;
 import com.sizheng.afl.service.IMessageService;
 import com.sizheng.afl.service.IRequestService;
+import com.sizheng.afl.service.IServiceService;
 import com.sizheng.afl.service.IUserService;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.EncoderUtil;
@@ -89,6 +91,9 @@ public class BusinessController extends BaseController {
 
 	@Autowired
 	IMenuService menuService;
+
+	@Autowired
+	IServiceService serviceService;
 
 	/**
 	 * 添加【商家】.
@@ -1274,6 +1279,33 @@ public class BusinessController extends BaseController {
 	}
 
 	/**
+	 * 顾客服务处理.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("serviceHandle")
+	@ResponseBody
+	public ResultMsg serviceHandle(HttpServletRequest request, Locale locale, @ModelAttribute Service service) {
+
+		logger.debug("顾客服务处理【商家】");
+
+		Assert.notNull(service.getId());
+		Assert.notNull(service.getStatus());
+
+		service.setHandler(WebUtil.getSessionBusiness(request).getOpenId());
+
+		boolean val = serviceService.updateStatus(locale, service);
+
+		return new ResultMsg(val);
+	}
+
+	/**
 	 * 顾客消息总数检测.
 	 * 
 	 * @author xiweicheng
@@ -1301,6 +1333,38 @@ public class BusinessController extends BaseController {
 
 		Long cnt = (long) businessService.queryCustomerMsg(locale, WebUtil.getSessionBusiness(request).getOpenId(),
 				sDate, eDate, status).size();
+
+		return new ResultMsg(true, cnt);
+	}
+
+	/**
+	 * 顾客呼叫服务总数检测.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("checkService")
+	@ResponseBody
+	public ResultMsg checkService(HttpServletRequest request, Locale locale, @RequestParam("status") String status,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end) {
+
+		logger.debug("顾客消息总数检测【商家】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24 * 60 * 60 * 1000);
+
+		String[] statusArr = status != null ? new String[] { status } : new String[0];
+
+		Long cnt = (long) businessService.queryCustomerService(locale, WebUtil.getSessionBusiness(request).getOpenId(),
+				sDate, eDate, statusArr).size();
 
 		return new ResultMsg(true, cnt);
 	}
@@ -1399,38 +1463,31 @@ public class BusinessController extends BaseController {
 		model.addAttribute("end", eDate.getTime());
 
 		List<Map<String, Object>> msgList = businessService.queryCustomerService(locale,
-				WebUtil
-				.getSessionBusiness(request).getOpenId(), sDate, eDate, status);
+				WebUtil.getSessionBusiness(request).getOpenId(), sDate, eDate, status);
 
 		List<Map<String, Object>> msgList2 = businessService.queryCustomerService(locale,
 				WebUtil.getSessionBusiness(request).getOpenId(), sDate, eDate);
 
 		long newCount = 0;
 		long understanding = 0;
-		long stow = 0;
 
 		for (Map<String, Object> map : msgList2) {
 			Short status2 = NumberUtil.getShort(map, "status");
-			if (SysConstant.MESSAGE_STATUS_NEW.equals(status2)) {
+			if (SysConstant.SERVICE_STATUS_ONGOING.equals(status2)) {
 				newCount++;
-			} else if (SysConstant.MESSAGE_STATUS_UNDERSTANDING.equals(status2)) {
+			} else if (SysConstant.SERVICE_STATUS_ACCEPT.equals(status2)) {
 				understanding++;
-			} else if (SysConstant.MESSAGE_STATUS_STOW.equals(status2)) {
-				stow++;
 			}
 		}
 
 		for (Map<String, Object> map : msgList) {
 			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
-			map.put("simple_content",
-					StringUtil.limitLength(StringUtil.getNotNullString(map, "content"), propUtil.getContentLenLimit()));
 		}
 
 		model.addAttribute("msgList", msgList);
 		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
 		model.addAttribute("newCount", newCount);
 		model.addAttribute("understanding", understanding);
-		model.addAttribute("stow", stow);
 		model.addAttribute("total", msgList2.size());
 
 		return "business/customer-service";

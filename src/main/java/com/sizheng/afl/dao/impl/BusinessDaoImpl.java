@@ -480,7 +480,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("FROM\n");
 		sqlSb.append("	service\n");
 		sqlSb.append("INNER JOIN subscriber AS subscriber1 ON service.consumer_id = subscriber1.user_name\n");
-		sqlSb.append("INNER JOIN subscriber AS subscriber2 ON service.`handler` = subscriber2.user_name\n");
+		sqlSb.append("LEFT JOIN subscriber AS subscriber2 ON service.`handler` = subscriber2.user_name\n");
 		sqlSb.append("INNER JOIN qrcode ON service.scene_id = qrcode.scene_id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	service.is_delete = 0\n");
@@ -494,6 +494,8 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 			sqlSb.append(StringUtil.replace("AND (service.date_time between '{?1}' and '{?2}')\n",
 					DateUtil.format(sDate, DateUtil.FORMAT1), DateUtil.format(eDate, DateUtil.FORMAT1)));
 		}
+
+		sqlSb.append("ORDER BY service.date_time DESC\n");
 
 		return getMapList(sqlSb, openId);
 	}

@@ -404,7 +404,7 @@
 		</div>
 	</div>
 
-	<div class="ui modal" id="confirm-ui-modal">
+	<div class="ui small modal" id="confirm-ui-modal">
 		<div class="header">确认提示</div>
 		<div class="content">
 			<div class="left">
