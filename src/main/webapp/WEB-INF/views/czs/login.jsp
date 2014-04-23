@@ -34,7 +34,7 @@
 			<div class="main container">
 				<div class="ui tab active" data-tab="dynamicCodeLogin">
 					<!-- 登陆框 -->
-					<form action="business/verify.do" method="post"
+					<form action="czs/verify.do" method="post"
 						class="czsDynamicCodeForm">
 						<input type="hidden" name="openId" value="${param.openId}">
 						<input type="hidden" name="type" value="0">
@@ -57,7 +57,7 @@
 				</div>
 				<div class="ui tab" data-tab="passwordLogin">
 					<!-- 登陆框 -->
-					<form action="business/verify.do" method="post">
+					<form action="czs/verify.do" method="post">
 						<input type="hidden" name="type" value="1">
 						<div class="ui form segment" style="width: 300px; margin: 0 auto;">
 							<div class="field">
@@ -98,7 +98,7 @@
 			<div class="main container">
 				<div class="ui tab active" data-tab="passwordLogin">
 					<!-- 登陆框 -->
-					<form action="business/verify.do" method="post">
+					<form action="czs/verify.do" method="post">
 						<input type="hidden" name="type" value="1">
 						<div class="ui form segment" style="width: 300px; margin: 0 auto;">
 							<div class="field">
