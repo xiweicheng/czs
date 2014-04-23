@@ -454,4 +454,47 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 
 		return getMapList(sqlSb, openId);
 	}
+
+	@Override
+	public List<Map<String, Object>> queryCustomerService(Locale locale, String openId, Date sDate, Date eDate,
+			String... status) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	service.consumer_id,\n");
+		sqlSb.append("	DATE_FORMAT(service.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,service.date_time,NOW()) as sec_diff,\n");
+		sqlSb.append("	service.type,\n");
+		sqlSb.append("	service.`status`,\n");
+		sqlSb.append("	service.`handler`,\n");
+		sqlSb.append("	service.appraise,\n");
+		sqlSb.append("	service.id,\n");
+		sqlSb.append("	service.scene_id,\n");
+		sqlSb.append("	subscriber1.nickname,\n");
+		sqlSb.append("	IF(subscriber1.sex = 1, '男', IF(subscriber1.sex = 2, '女', '未知')) as sex,\n");
+		sqlSb.append("	subscriber1.headimgurl,\n");
+		sqlSb.append("	subscriber2.nickname AS handler_name,\n");
+		sqlSb.append("	IF(subscriber2.sex = 1, '男', IF(subscriber2.sex = 2, '女', '未知')) as handler_sex,\n");
+		sqlSb.append("	subscriber2.headimgurl AS handler_headimgurl,\n");
+		sqlSb.append("	qrcode.description\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	service\n");
+		sqlSb.append("INNER JOIN subscriber AS subscriber1 ON service.consumer_id = subscriber1.user_name\n");
+		sqlSb.append("INNER JOIN subscriber AS subscriber2 ON service.`handler` = subscriber2.user_name\n");
+		sqlSb.append("INNER JOIN qrcode ON service.scene_id = qrcode.scene_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	service.is_delete = 0\n");
+		sqlSb.append("AND service.business_id = ?\n");
+
+		if (status != null && status.length > 0) {
+			sqlSb.append(SqlUtil.replaceIfNotEmpty("AND service.`status` IN ({?1})\n", SqlUtil.joinAsIntIn2(status)));
+		}
+
+		if (sDate != null && eDate != null) {
+			sqlSb.append(StringUtil.replace("AND (service.date_time between '{?1}' and '{?2}')\n",
+					DateUtil.format(sDate, DateUtil.FORMAT1), DateUtil.format(eDate, DateUtil.FORMAT1)));
+		}
+
+		return getMapList(sqlSb, openId);
+	}
 }

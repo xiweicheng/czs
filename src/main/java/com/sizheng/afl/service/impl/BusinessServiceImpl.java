@@ -1018,4 +1018,10 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		return businessDao.queryCustomerMsg(locale, openId, sDate, eDate, status);
 	}
 
+	@Override
+	public List<Map<String, Object>> queryCustomerService(Locale locale, String openId, Date sDate, Date eDate,
+			String... status) {
+		return businessDao.queryCustomerService(locale, openId, sDate, eDate, status);
+	}
+
 }

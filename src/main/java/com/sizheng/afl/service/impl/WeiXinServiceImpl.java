@@ -528,6 +528,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 					service.setType(SysConstant.SERVICE_TYPE_CALL);
 					service.setIsDelete(SysConstant.SHORT_FALSE);
 					service.setStatus(SysConstant.SERVICE_STATUS_ONGOING);
+					service.setSceneId(businessConsumer2.getSceneId());
 
 					com.sizheng.afl.pojo.entity.Service service2 = (com.sizheng.afl.pojo.entity.Service) findOneByExample(service);
 

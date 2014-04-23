@@ -1369,4 +1369,70 @@ public class BusinessController extends BaseController {
 
 		return "business/customer-msg";
 	}
+
+	/**
+	 * 顾客服务请求.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("listService")
+	public String listService(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end,
+			@RequestParam(value = "status", required = false) String[] status) {
+
+		logger.debug("顾客服务请求【消费者】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24 * 60 * 60 * 1000);
+
+		model.addAttribute("start", sDate.getTime());
+		model.addAttribute("end", eDate.getTime());
+
+		List<Map<String, Object>> msgList = businessService.queryCustomerService(locale,
+				WebUtil
+				.getSessionBusiness(request).getOpenId(), sDate, eDate, status);
+
+		List<Map<String, Object>> msgList2 = businessService.queryCustomerService(locale,
+				WebUtil.getSessionBusiness(request).getOpenId(), sDate, eDate);
+
+		long newCount = 0;
+		long understanding = 0;
+		long stow = 0;
+
+		for (Map<String, Object> map : msgList2) {
+			Short status2 = NumberUtil.getShort(map, "status");
+			if (SysConstant.MESSAGE_STATUS_NEW.equals(status2)) {
+				newCount++;
+			} else if (SysConstant.MESSAGE_STATUS_UNDERSTANDING.equals(status2)) {
+				understanding++;
+			} else if (SysConstant.MESSAGE_STATUS_STOW.equals(status2)) {
+				stow++;
+			}
+		}
+
+		for (Map<String, Object> map : msgList) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+			map.put("simple_content",
+					StringUtil.limitLength(StringUtil.getNotNullString(map, "content"), propUtil.getContentLenLimit()));
+		}
+
+		model.addAttribute("msgList", msgList);
+		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
+		model.addAttribute("newCount", newCount);
+		model.addAttribute("understanding", understanding);
+		model.addAttribute("stow", stow);
+		model.addAttribute("total", msgList2.size());
+
+		return "business/customer-service";
+	}
 }

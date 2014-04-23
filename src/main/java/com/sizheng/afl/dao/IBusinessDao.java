@@ -130,5 +130,8 @@ public interface IBusinessDao {
 	List<Map<String, Object>> serviceDayGraph(String openId, String date);
 
 	List<Map<String, Object>> queryCustomerMsg(Locale locale, String openId, Date sDate, Date eDate, String... status);
+
+	List<Map<String, Object>> queryCustomerService(Locale locale, String openId, Date sDate, Date eDate,
+			String... status);
 	
 }
