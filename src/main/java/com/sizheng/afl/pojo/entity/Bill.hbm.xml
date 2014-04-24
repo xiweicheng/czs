@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-23 18:00:43 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-24 11:30:36 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Bill" table="bill" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -33,8 +33,26 @@
         </property>
         <property name="status" type="java.lang.Short">
             <column name="status">
-                <comment>0:&#206;&#180;&#189;&#225;&#203;&#227;;1:&#210;&#209;&#189;&#225;&#203;&#227;</comment>
+                <comment>0:&#206;&#180;&#189;&#225;&#203;&#227;;1:&#210;&#209;&#189;&#225;&#203;&#227;;2&#186;&#246;&#194;&#212;</comment>
             </column>
+        </property>
+        <property name="settDateTime" type="timestamp">
+            <column name="sett_date_time" length="19">
+                <comment>&#189;&#225;&#203;&#227;&#200;&#213;&#198;&#218;</comment>
+            </column>
+        </property>
+        <property name="settHandler" type="string">
+            <column name="sett_handler">
+                <comment>&#189;&#225;&#203;&#227;&#213;&#223;</comment>
+            </column>
+        </property>
+        <property name="billHandler" type="string">
+            <column name="bill_handler">
+                <comment>&#189;&#225;&#213;&#203;&#181;&#199;&#188;&#199;&#213;&#223;</comment>
+            </column>
+        </property>
+        <property name="isDelete" type="java.lang.Short">
+            <column name="is_delete" />
         </property>
     </class>
 </hibernate-mapping>

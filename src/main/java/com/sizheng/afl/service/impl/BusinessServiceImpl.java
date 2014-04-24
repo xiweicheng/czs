@@ -622,7 +622,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				bill.setConsumerId(businessConsumer.getConsumerId());
 				bill.setDateTime(DateUtil.now());
 				bill.setSceneId(businessConsumer.getSceneId());
-				bill.setType((short) 0);
+				bill.setType(SysConstant.BILL_TYPE_OWN);
+				bill.setStatus(SysConstant.BILL_STATUS_NEW);
 
 				hibernateTemplate.save(bill);
 
@@ -642,7 +643,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 					@Override
 					public Integer doInHibernate(Session session) throws HibernateException, SQLException {
-						return session.createQuery("update MenuBill set status=1 where status=0 and consumeCode=?")
+						return session.createQuery("update MenuBill set status=3 where status=1 and consumeCode=?")
 								.setString(0, businessConsumer.getConsumeCode()).executeUpdate();
 					}
 				});
@@ -694,7 +695,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 							@Override
 							public Integer doInHibernate(Session session) throws HibernateException, SQLException {
 								return session
-										.createQuery("update MenuBill set status=1 where status=0 and consumeCode=?")
+										.createQuery("update MenuBill set status=3 where status=1 and consumeCode=?")
 										.setString(0, consumeCode).executeUpdate();
 							}
 						});
@@ -708,7 +709,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				bill.setConsumerId(businessConsumer.getConsumerId());
 				bill.setDateTime(DateUtil.now());
 				bill.setSceneId(businessConsumer.getSceneId());
-				bill.setType((short) 1);
+				bill.setType(SysConstant.BILL_TYPE_GROUP);
+				bill.setStatus(SysConstant.BILL_STATUS_NEW);
 
 				hibernateTemplate.save(bill);
 

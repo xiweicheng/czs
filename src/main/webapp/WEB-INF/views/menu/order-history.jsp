@@ -114,7 +114,7 @@
 					<th class="number">份数</th>
 					<th class="">状态</th>
 					<th class="">时间</th>
-					<th class="">距今</th>
+					<th class="number">距今</th>
 					<th class="">顾客</th>
 					<th class="">位置</th>
 				</tr>
@@ -122,16 +122,17 @@
 			<tbody>
 				<c:forEach items="${historyMenuBillList}" var="item" varStatus="sts">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
-						<td class="number">${sts.index + 1}</td>
+						<td class="">${sts.index + 1}</td>
 						<td class="">${item.name}</td>
-						<td class="number">${item.copies}</td>
+						<td class="">${item.copies}</td>
 						<td class=""><c:if test="${item.status==0}">待提交</c:if> <c:if
 								test="${item.status==1}">已提交</c:if> <c:if
 								test="${item.status==2}">已退订</c:if> <c:if
 								test="${item.status==3}">已接受</c:if></td>
 						<td class="">${item.date_time}</td>
-						<td class="number" data-sort-value="${item.sec_diff}">${item.diff}</td>
-						<td class="">${item.nickname}</td>
+						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
+						<td class=""><img class="ui avatar image"
+							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
 						<td class="">${item.description}</td>
 					</tr>
 				</c:forEach>

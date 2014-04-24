@@ -244,11 +244,13 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu.`name`,\n");
 		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	subscriber.headimgurl,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
 		sqlSb.append("	qrcode.description\n");
 		sqlSb.append("FROM\n");
 		sqlSb.append("	menu_bill\n");
 		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
-		sqlSb.append("INNER JOIN subscriber ON menu_bill.consumer_id = subscriber.user_name\n");
+		sqlSb.append("LEFT JOIN subscriber ON menu_bill.consumer_id = subscriber.user_name\n");
 		sqlSb.append("INNER JOIN qrcode ON menu_bill.scene_id = qrcode.scene_id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("    menu.`owner` = ?\n");

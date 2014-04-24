@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-23 18:00:43 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-24 11:30:35 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

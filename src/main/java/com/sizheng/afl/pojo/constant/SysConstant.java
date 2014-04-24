@@ -166,4 +166,10 @@ public final class SysConstant {
 	public static final Short MESSAGE_STATUS_UNDERSTANDING = 1;
 	public static final Short MESSAGE_STATUS_STOW = 2;
 
+	public static final Short BILL_STATUS_NEW = 0;
+	public static final Short BILL_STATUS_SETTLEMENT = 1;
+
+	public static final Short BILL_TYPE_OWN = 0;
+	public static final Short BILL_TYPE_GROUP = 1;
+
 }

@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-23 18:00:43 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-24 11:30:35 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -29,12 +29,16 @@ public class Bill implements java.io.Serializable {
 	private String consumeCode;
 	private Long sceneId;
 	private Short status;
+	private Date settDateTime;
+	private String settHandler;
+	private String billHandler;
+	private Short isDelete;
 
 	public Bill() {
 	}
 
 	public Bill(String businessId, String consumerId, Date dateTime, BigDecimal amount, Short type, String consumeCode,
-			Long sceneId, Short status) {
+			Long sceneId, Short status, Date settDateTime, String settHandler, String billHandler, Short isDelete) {
 		this.businessId = businessId;
 		this.consumerId = consumerId;
 		this.dateTime = dateTime;
@@ -43,6 +47,10 @@ public class Bill implements java.io.Serializable {
 		this.consumeCode = consumeCode;
 		this.sceneId = sceneId;
 		this.status = status;
+		this.settDateTime = settDateTime;
+		this.settHandler = settHandler;
+		this.billHandler = billHandler;
+		this.isDelete = isDelete;
 	}
 
 	@Id
@@ -127,6 +135,43 @@ public class Bill implements java.io.Serializable {
 
 	public void setStatus(Short status) {
 		this.status = status;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "sett_date_time", length = 19)
+	public Date getSettDateTime() {
+		return this.settDateTime;
+	}
+
+	public void setSettDateTime(Date settDateTime) {
+		this.settDateTime = settDateTime;
+	}
+
+	@Column(name = "sett_handler")
+	public String getSettHandler() {
+		return this.settHandler;
+	}
+
+	public void setSettHandler(String settHandler) {
+		this.settHandler = settHandler;
+	}
+
+	@Column(name = "bill_handler")
+	public String getBillHandler() {
+		return this.billHandler;
+	}
+
+	public void setBillHandler(String billHandler) {
+		this.billHandler = billHandler;
+	}
+
+	@Column(name = "is_delete")
+	public Short getIsDelete() {
+		return this.isDelete;
+	}
+
+	public void setIsDelete(Short isDelete) {
+		this.isDelete = isDelete;
 	}
 
 }
