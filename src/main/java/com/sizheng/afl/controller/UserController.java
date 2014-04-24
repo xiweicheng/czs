@@ -332,7 +332,7 @@ public class UserController extends BaseController {
 			businessConsumer.setConsumeCode(consumeCode);
 			businessConsumer.setStatus(SysConstant.CONSUME_STATUS_OWN);
 
-			if (businessService.checkout(locale, businessConsumer)) {
+			if (businessService.checkout(locale, businessConsumer, openId)) {
 				model.addAttribute("message", "操作成功,消费状态结束!");
 			} else {
 				model.addAttribute("message", "该操作已经失效,您已经不在[消费中]状态!");

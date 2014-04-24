@@ -1039,7 +1039,7 @@ public class BusinessController extends BaseController {
 			return new ResultMsg(false, new Msg(false, "结账金额不一致,请刷新数据后再操作!"));
 		}
 
-		Boolean value = businessService.checkout(locale, businessConsumer);
+		Boolean value = businessService.checkout(locale, businessConsumer, WebUtil.getSessionBusinessId(request));
 
 		if (value) {
 			ThreadUtil.exec(new Runnable() {
@@ -1491,5 +1491,96 @@ public class BusinessController extends BaseController {
 		model.addAttribute("total", msgList2.size());
 
 		return "business/customer-service";
+	}
+
+	@RequestMapping("billSettConfirm")
+	public String billSettConfirm(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end,
+			@RequestParam(value = "status", required = false) String[] status, @RequestParam("id") String[] ids) {
+
+		if (businessService.billSettConfirm(locale, WebUtil.getSessionBusinessId(request),
+				WebUtil.getSessionBusinessId(request), ids)) {
+			String sts = (status != null && status.length > 0) ? status[0] : "";
+			return StringUtil.replace("forward:billSett.do?start={?1}&end={?2}&status={?3}", start, end, sts);
+		} else {
+			model.addAttribute("message", "结算失败!");
+			return "message";
+		}
+	}
+
+	/**
+	 * 账目结算.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("billSett")
+	public String billSett(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end,
+			@RequestParam(value = "status", required = false) String[] status) {
+
+		logger.debug("账目结算【商家】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24 * 60 * 60 * 1000);
+
+		model.addAttribute("start", sDate.getTime());
+		model.addAttribute("end", eDate.getTime());
+
+		List<Map<String, Object>> billList = businessService.queryBillSett(locale,
+				WebUtil.getSessionBusinessId(request), sDate, eDate, status);
+
+		List<Map<String, Object>> billList2 = businessService.queryBillSett(locale,
+				WebUtil.getSessionBusinessId(request), sDate, eDate);
+
+		long newCount = 0;
+		long understanding = 0;
+
+		for (Map<String, Object> map : billList2) {
+			Short status2 = NumberUtil.getShort(map, "status");
+			if (SysConstant.BILL_STATUS_NEW.equals(status2)) {
+				newCount++;
+			} else if (SysConstant.BILL_STATUS_SETTLEMENT.equals(status2)) {
+				understanding++;
+			}
+		}
+
+		long count = 0;
+		double amount = 0;
+
+		for (Map<String, Object> map : billList) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+			if (StringUtil.isNotEmpty(StringUtil.getString(map, "sec_sett_diff"))) {
+				map.put("sett_diff", DateUtil.convert(NumberUtil.getLong(map, "sec_sett_diff")));
+			} else {
+				map.put("sett_diff", "");
+			}
+
+			if (SysConstant.BILL_STATUS_NEW.equals(NumberUtil.getShort(map, "status"))) {
+				count++;
+				amount += (NumberUtil.getDouble(map, "amount"));
+			}
+		}
+
+		model.addAttribute("billList", billList);
+		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
+		model.addAttribute("newCount", newCount);
+		model.addAttribute("understanding", understanding);
+		model.addAttribute("total", billList2.size());
+
+		model.addAttribute("count", count);
+		model.addAttribute("amount", NumberUtil.format2Money(amount));
+
+		return "business/bill-sett";
 	}
 }

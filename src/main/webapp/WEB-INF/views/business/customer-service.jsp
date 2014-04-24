@@ -109,7 +109,7 @@
 					<th class="">状态</th>
 					<th class="">时间</th>
 					<th class="number">距今</th>
-					<th class="">接收者</th>
+					<th class="">接受者</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -176,6 +176,9 @@
 
 			$('table').tablesort().data('tablesort');
 			$('thead th.number').data('sortBy', function(th, td, sorter) {
+				if (!!$(td).attr('data-sort-value')) {
+					return parseInt($(td).attr('data-sort-value'), 10);
+				}
 				return parseInt(td.text(), 10);
 			});
 

@@ -196,6 +196,9 @@
 
 			$('table').tablesort().data('tablesort');
 			$('thead th.number').data('sortBy', function(th, td, sorter) {
+				if (!!$(td).attr('data-sort-value')) {
+					return parseInt($(td).attr('data-sort-value'), 10);
+				}
 				return parseInt(td.text(), 10);
 			});
 

@@ -594,7 +594,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public Boolean checkout(Locale locale, final BusinessConsumer businessConsumer) {
+	public Boolean checkout(Locale locale, final BusinessConsumer businessConsumer, String billHandler) {
 
 		if (businessConsumer.getStatus() == 3) {
 			BusinessConsumer businessConsumer2 = new BusinessConsumer();
@@ -624,6 +624,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				bill.setSceneId(businessConsumer.getSceneId());
 				bill.setType(SysConstant.BILL_TYPE_OWN);
 				bill.setStatus(SysConstant.BILL_STATUS_NEW);
+				bill.setBillHandler(billHandler);
+				bill.setIsDelete(SysConstant.SHORT_FALSE);
 
 				hibernateTemplate.save(bill);
 
@@ -711,6 +713,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				bill.setSceneId(businessConsumer.getSceneId());
 				bill.setType(SysConstant.BILL_TYPE_GROUP);
 				bill.setStatus(SysConstant.BILL_STATUS_NEW);
+				bill.setBillHandler(billHandler);
+				bill.setIsDelete(SysConstant.SHORT_FALSE);
 
 				hibernateTemplate.save(bill);
 
@@ -1029,6 +1033,17 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	public List<Map<String, Object>> queryCustomerService(Locale locale, String openId, Date sDate, Date eDate,
 			String... status) {
 		return businessDao.queryCustomerService(locale, openId, sDate, eDate, status);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryBillSett(Locale locale, String sessionBusinessId, Date sDate, Date eDate,
+			String... status) {
+		return businessDao.queryBillSett(locale, sessionBusinessId, sDate, eDate, status);
+	}
+
+	@Override
+	public boolean billSettConfirm(Locale locale, String businessId, String settHandler, String... ids) {
+		return businessDao.billSettConfirm(locale, businessId, settHandler, ids);
 	}
 
 }

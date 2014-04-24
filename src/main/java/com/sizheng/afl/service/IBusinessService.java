@@ -237,9 +237,10 @@ public interface IBusinessService extends IBaseService {
 	 * @modification 2014年4月7日 下午1:46:36
 	 * @param locale
 	 * @param businessConsumer
+	 * @param billHandler TODO
 	 * @return
 	 */
-	Boolean checkout(Locale locale, BusinessConsumer businessConsumer);
+	Boolean checkout(Locale locale, BusinessConsumer businessConsumer, String billHandler);
 
 	/**
 	 * 获取集体人数.
@@ -350,4 +351,9 @@ public interface IBusinessService extends IBaseService {
 
 	List<Map<String, Object>> queryCustomerService(Locale locale, String openId, Date sDate, Date eDate,
 			String... status);
+
+	List<Map<String, Object>> queryBillSett(Locale locale, String sessionBusinessId, Date sDate, Date eDate,
+			String... status);
+
+	boolean billSettConfirm(Locale locale, String businessId, String settHandler, String... ids);
 }

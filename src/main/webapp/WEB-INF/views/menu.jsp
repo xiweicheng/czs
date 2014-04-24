@@ -19,13 +19,8 @@
 		</a><a class="item" href="business/listMsg.do?status=0"
 			id="menu-item-business-listMsg">顾客消息 </a><a class="item"
 			href="business/listService.do?status=1"
-			id="menu-item-business-listService">服务请求 </a>
-		<div class="header item">
-			<i class="qr code icon"></i> 二维码
-		</div>
-		<a class="item" href="qrcode/download.do" id="menu-item-qrcode-main">
-			二维码生成</a> <a class="item" href="qrcode/list.do"
-			id="menu-item-qrcode-list"> 二维码一览</a>
+			id="menu-item-business-listService">服务请求 </a> <a class="item"
+			href="business/billSett.do?status=0" id="menu-item-bill-sett"> 账目结算 </a>
 		<div class="header item">
 			<i class="cart icon"></i> 订单管理
 		</div>
@@ -39,6 +34,12 @@
 		</a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
 			菜品添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
 			菜品图片 </a>
+		<div class="header item">
+			<i class="qr code icon"></i> 二维码
+		</div>
+		<a class="item" href="qrcode/download.do" id="menu-item-qrcode-main">
+			二维码生成</a> <a class="item" href="qrcode/list.do"
+			id="menu-item-qrcode-list"> 二维码一览</a>
 		<div class="header item">
 			<i class="dashboard icon"></i> 统计分析
 		</div>

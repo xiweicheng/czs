@@ -424,6 +424,26 @@ public final class WebUtil {
 	}
 
 	/**
+	 * 获取session business
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年3月29日 下午7:10:27
+	 * @modification 2014年3月29日 下午7:10:27
+	 * @param request
+	 * @return
+	 */
+	public static String getSessionBusinessId(HttpServletRequest request) {
+
+		Business business = getSessionBusiness(request);
+
+		if (business == null) {
+			throw new RuntimeException("[Business Session]不存在!");
+		}
+
+		return business.getOpenId();
+	}
+
+	/**
 	 * 获取session czsUser
 	 * 
 	 * @author xiweicheng
