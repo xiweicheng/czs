@@ -30,19 +30,32 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/bootstrap/js/bootstrap.min.js"
-	charset="utf-8"></script>
 <script
 	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.min.js"
 	charset="utf-8"></script>
 <script
 	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.zh-CN.js"
 	charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tmpl.min.js"
+	charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
 		WeixinJSBridge.call('hideOptionMenu');
 	});
+</script>
+
+<script id="billTrTpl" type="text/x-jquery-tmpl">
+<tr id="item-tr-{{html id}}" class="item-tr-{{html id}}">
+	<td class="" data-sort-value="{{html nickname}}"><img
+		class="ui avatar image" src="{{html headimgurl}}/64">{{html nickname}}({{html sex}})</td>
+	<td class="">{{html amount}}</td>
+	<td class="">{{html description}}</td>
+	<td class="">{{if type == '0'}}个人结账{{else}}集体结账{{/if}}</td>
+	<td class="" data-sort-value="{{html bill_nickname}}"><img class="ui avatar image" src="{{html bill_headimgurl}}/64">{{html bill_nickname}}({{html bill_sex}})</td>
+	<td class="spec-diff2" data-sort-value="{{html sec_diff}}">{{html date_time}}({{html diff}})</td>
+	<td class="" data-sort-value="{{html sett_name}}"><img class="ui avatar image" src="{{html sett_headimgurl}}/64">{{html sett_nickname}}({{html sett_sex}})</td>
+</tr>
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
@@ -118,14 +131,13 @@
 				</div>
 			</div>
 
-
 			<table class="ui sortable table segment" style="display: table;">
 				<thead>
 					<tr>
 						<th class="number">序号</th>
 						<th class="" width="35px" style="width: 35px;"><div
 								class="ui checkbox czsSelectAll">
-								<input type="checkbox"><label
+								<input type="checkbox" checked="checked"><label
 									style="width: 0px; padding-left: 0px;"></label>
 							</div></th>
 						<th class="">消费者</th>
@@ -170,8 +182,10 @@
 									<img class="ui avatar image" src="${item.sett_headimgurl}/64">${item.sett_nickname}(${item.sett_sex})</c:if></td>
 							<td class="spec-diff" data-sort-value="${item.sec_sett_diff}"
 								data-html="距今:${item.sett_diff}"><c:if
-									test="${! empty item.sett_date_time}">${item.sett_date_time}</c:if>
-							</td>
+									test="${! empty item.sett_date_time}">
+									<a class="ui label" style="text-decoration: underline;"
+										onclick="queryByDateHandler('${item.sett_times}', '${item.sett_date_time}')">${item.sett_date_time}</a>
+								</c:if></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -181,6 +195,70 @@
 
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
+
+	<div class="ui small modal czsConfirm">
+		<div class="header">确认提示</div>
+		<div class="content">
+			<div class="left">
+				<i class="warning icon"></i>
+			</div>
+			<div class="right" style="font-size: 30px;">
+				<p>确认要结算吗?</p>
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui negative labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui positive right labeled icon button">
+					确认 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 集体信息展示modal -->
+	<div class="ui modal czsBillByDate">
+		<i class="close icon"></i>
+		<div class="header">结算详情</div>
+		<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
+			<table class="ui sortable table segment" style="display: table;">
+				<thead>
+					<tr>
+						<th class="">消费者</th>
+						<th class="number">消费金额</th>
+						<th class="">位置</th>
+						<th class="">类型</th>
+						<th class="">结账者</th>
+						<th class="number">结账时间(距今)</th>
+						<th class="">结算者</th>
+					</tr>
+				</thead>
+				<tbody id="bill-info-tbody">
+				</tbody>
+			</table>
+			<div class="ui segment">
+				<div class="ui label">
+					<a class="ui huge label"><span id="sett-count-span2"
+						style="font-weight: bold; color: red;">${count}</span>份 </a> <a
+						class="ui huge label"> <i class="yen icon"></i><span
+						id="sett-amount-span2" style="font-weight: bold; color: red;">${amount}</span>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui deny labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui approve right labeled icon button">
+					确定 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script type="text/javascript">
 		function filterHandler(status) {
@@ -193,13 +271,18 @@
 									$('#datetimepickerEnd > input').val())).submit();
 		}
 
-		function serviceHandler(status, id) {
-			$.post('business/settHandle.do', {
-				status : status,
-				id : id
+		function queryByDateHandler(times, date_time) {
+			$.post('business/billSettByDate.do', {
+				times : times
 			}, function(msg) {
 				if (msg.succeed) {
-					$('#ui-label-accept-' + id).hide();
+					$('#billTrTpl').tmpl(msg.values).appendTo($('#bill-info-tbody').empty());
+					$('#sett-count-span2').text(msg.total);
+					$('#sett-amount-span2').text(msg.value);
+
+					$('.ui.modal.czsBillByDate > .header').text('结算详情(' + date_time+")");
+					$('.ui.modal.czsBillByDate').modal('show');
+					return true;
 				} else {
 					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
@@ -216,6 +299,13 @@
 
 			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
+			});
+
+			$('.ui.modal.czsConfirm').modal({
+				closable : false,
+				onApprove : function() {
+					$('#bill-form').submit();
+				}
 			});
 
 			$('.ui.checkbox').checkbox();
@@ -256,7 +346,7 @@
 			pickerEnd.setLocalDate(endDate);
 
 			$('.ui.button.czsConfirm').click(function() {
-				$('#bill-form').submit();
+				$('.ui.modal.czsConfirm').modal('show');
 			});
 
 			$('.ui.checkbox.czsSelectAll').checkbox({

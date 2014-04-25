@@ -5525,7 +5525,7 @@ $.fn.modal = function(parameters) {
           $dimmable = $context
             .dimmer({
               closable : false,
-              useCSS   : true,
+              useCSS   : false,
               duration : {
                 show     : settings.duration * 0.9,
                 hide     : settings.duration * 1.1
@@ -5690,9 +5690,7 @@ $.fn.modal = function(parameters) {
             : function(){}
           ;
           if( !module.is.active() ) {
-            if(module.cache === undefined) {
-              module.cacheSizes();
-            }
+            module.cacheSizes();
             module.set.position();
             module.set.screenHeight();
             module.set.type();
@@ -5968,7 +5966,6 @@ $.fn.modal = function(parameters) {
         },
 
         setting: function(name, value) {
-          module.debug('Changing setting', name, value);
           if( $.isPlainObject(name) ) {
             $.extend(true, settings, name);
           }
@@ -11008,7 +11005,7 @@ $.fn.transition = function() {
             var
               displayType = module.get.displayType()
             ;
-            if(displayType !== 'block' && displayType !== 'none') {
+            if(displayType !== 'block') {
               module.verbose('Setting final visibility to', displayType);
               $module
                 .css({

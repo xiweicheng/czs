@@ -1583,4 +1583,51 @@ public class BusinessController extends BaseController {
 
 		return "business/bill-sett";
 	}
+
+	/**
+	 * 账目结算.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月9日 上午11:35:22
+	 * @modification 2014年4月9日 上午11:35:22
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("billSettByDate")
+	@ResponseBody
+	public ResultMsg billSettByDate(HttpServletRequest request, Locale locale, @RequestParam("times") Long times) {
+
+		logger.debug("账目结算【商家】");
+
+		List<Map<String, Object>> billList = businessService.queryBillSettByDate(locale,
+				WebUtil.getSessionBusinessId(request), times);
+
+		long count = 0;
+		double amount = 0;
+
+		for (Map<String, Object> map : billList) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+			if (StringUtil.isNotEmpty(StringUtil.getString(map, "sec_sett_diff"))) {
+				map.put("sett_diff", DateUtil.convert(NumberUtil.getLong(map, "sec_sett_diff")));
+			} else {
+				map.put("sett_diff", "");
+			}
+
+			if (SysConstant.BILL_STATUS_SETTLEMENT.equals(NumberUtil.getShort(map, "status"))) {
+				count++;
+				amount += (NumberUtil.getDouble(map, "amount"));
+			}
+		}
+
+		ResultMsg resultMsg = new ResultMsg(true);
+
+		resultMsg.setTotal(count);
+		resultMsg.setValue(amount);
+		resultMsg.setValues(billList);
+
+		return resultMsg;
+	}
 }

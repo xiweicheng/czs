@@ -522,6 +522,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	IF(subscriber1.sex = 1, '男', IF(subscriber1.sex = 2, '女', '未知')) as bill_sex,\n");
 		sqlSb.append("	subscriber1.headimgurl as bill_headimgurl,\n");
 		sqlSb.append("	DATE_FORMAT(bill.sett_date_time,  '%Y/%m/%d %H:%i:%s') as sett_date_time,\n");
+		sqlSb.append("	UNIX_TIMESTAMP(bill.sett_date_time) as sett_times,\n");
 		sqlSb.append("	TIMESTAMPDIFF(SECOND,bill.sett_date_time,NOW()) as sec_sett_diff,\n");
 		sqlSb.append("	qrcode.description,\n");
 		sqlSb.append("	subscriber2.nickname as sett_nickname,\n");
@@ -540,7 +541,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	bill.business_id = ?\n");
 		sqlSb.append("AND bill.is_delete = 0\n");
 
-		if (status != null && status.length > 0) {
+		if (status != null && status.length > 0 && StringUtil.isNotEmpty(status[0])) {
 			sqlSb.append(SqlUtil.replaceIfNotEmpty("AND bill.`status` IN ({?1})\n", SqlUtil.joinAsIntIn2(status)));
 		}
 
@@ -572,5 +573,53 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		}
 
 		return update(sqlSb, DateUtil.now(), settHandler, bussinessId) > 0;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryBillSettByDate(Locale locale, String sessionBusinessId, Long times) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	bill.id,\n");
+		sqlSb.append("	bill.business_id,\n");
+		sqlSb.append("	bill.consumer_id,\n");
+		sqlSb.append("  DATE_FORMAT(bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,bill.date_time,NOW()) as sec_diff,\n");
+		sqlSb.append("	bill.amount,\n");
+		sqlSb.append("	bill.type,\n");
+		sqlSb.append("	bill.consume_code,\n");
+		sqlSb.append("	bill.scene_id,\n");
+		sqlSb.append("	bill.`status`,\n");
+		sqlSb.append("	bill.sett_handler,\n");
+		sqlSb.append("	bill.bill_handler,\n");
+		sqlSb.append("	subscriber1.nickname as bill_nickname,\n");
+		sqlSb.append("	IF(subscriber1.sex = 1, '男', IF(subscriber1.sex = 2, '女', '未知')) as bill_sex,\n");
+		sqlSb.append("	subscriber1.headimgurl as bill_headimgurl,\n");
+		sqlSb.append("	DATE_FORMAT(bill.sett_date_time,  '%Y/%m/%d %H:%i:%s') as sett_date_time,\n");
+		sqlSb.append("	UNIX_TIMESTAMP(bill.sett_date_time) as sett_times,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,bill.sett_date_time,NOW()) as sec_sett_diff,\n");
+		sqlSb.append("	qrcode.description,\n");
+		sqlSb.append("	subscriber2.nickname as sett_nickname,\n");
+		sqlSb.append("	IF(subscriber2.sex = 1, '男', IF(subscriber2.sex = 2, '女', '未知')) as sett_sex,\n");
+		sqlSb.append("	subscriber2.headimgurl as sett_headimgurl,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
+		sqlSb.append("	subscriber.headimgurl\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	bill\n");
+		sqlSb.append("INNER JOIN qrcode ON bill.scene_id = qrcode.scene_id\n");
+		sqlSb.append("LEFT JOIN subscriber ON bill.consumer_id = subscriber.user_name\n");
+		sqlSb.append("LEFT JOIN subscriber AS subscriber1 ON bill.bill_handler = subscriber1.user_name\n");
+		sqlSb.append("LEFT JOIN subscriber AS subscriber2 ON bill.sett_handler = subscriber2.user_name\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	bill.business_id = ?\n");
+		sqlSb.append("AND bill.is_delete = 0\n");
+		sqlSb.append("AND bill.`status` = 1\n");
+		sqlSb.append("AND UNIX_TIMESTAMP(bill.sett_date_time) = ?\n");
+
+		sqlSb.append("ORDER BY bill.date_time DESC\n");
+
+		return getMapList(sqlSb, sessionBusinessId, times);
+
 	}
 }

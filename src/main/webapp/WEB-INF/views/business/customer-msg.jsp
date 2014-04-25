@@ -30,8 +30,6 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/bootstrap/js/bootstrap.min.js"
-	charset="utf-8"></script>
 <script
 	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.min.js"
 	charset="utf-8"></script>

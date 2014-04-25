@@ -137,5 +137,7 @@ public interface IBusinessDao {
 	List<Map<String, Object>> queryBillSett(Locale locale, String businessId, Date sDate, Date eDate, String... status);
 
 	boolean billSettConfirm(Locale locale, String bussinessId, String settHandler, String... ids);
+
+	List<Map<String, Object>> queryBillSettByDate(Locale locale, String sessionBusinessId, Long times);
 	
 }

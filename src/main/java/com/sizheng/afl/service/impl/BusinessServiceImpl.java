@@ -1046,4 +1046,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		return businessDao.billSettConfirm(locale, businessId, settHandler, ids);
 	}
 
+	@Override
+	public List<Map<String, Object>> queryBillSettByDate(Locale locale, String sessionBusinessId, Long times) {
+		return businessDao.queryBillSettByDate(locale, sessionBusinessId, times);
+	}
+
 }
