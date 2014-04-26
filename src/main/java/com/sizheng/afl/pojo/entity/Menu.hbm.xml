@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-26 0:07:04 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-26 23:24:24 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Menu" table="menu" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -40,6 +40,11 @@
         </property>
         <property name="orderTimes" type="java.lang.Long">
             <column name="order_times" />
+        </property>
+        <property name="tags" type="string">
+            <column name="tags">
+                <comment>&#178;&#203;&#181;&#165;&#177;&#234;&#199;&#169;&#203;&#181;&#195;&#247;</comment>
+            </column>
         </property>
     </class>
 </hibernate-mapping>

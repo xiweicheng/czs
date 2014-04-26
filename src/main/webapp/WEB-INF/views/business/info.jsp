@@ -26,7 +26,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
 	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>餐助手-顾客服务</title>
+<title>餐助手-推荐商家信息</title>
 </head>
 <body style="margin: 0px; padding: 0px;">
 

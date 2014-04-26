@@ -250,7 +250,6 @@ public class MenuController extends BaseController {
 
 		if (menuService.upload(WebUtil.calcServerBaseUrl(request), WebUtil.getRealPath(request), imageFile, locale,
 				WebUtil.getSessionBusiness(request).getOpenId())) {
-			WebUtil.writeString(response, StringUtil.replace("文件:[{?1}]上传成功!", imageFile.getOriginalFilename()));
 			return new ResultMsg(true);
 		} else {
 			return new ResultMsg(false, new Msg(false, StringUtil.replace("文件:[{?1}]上传失败!",

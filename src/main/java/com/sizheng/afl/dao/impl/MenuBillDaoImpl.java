@@ -38,6 +38,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	menu_bill.date_time,\n");
 		sqlSb.append("	menu_bill.status,\n");
 		sqlSb.append("	menu_bill.copies,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	menu.`name`,\n");
 		sqlSb.append("	menu.introduce,\n");
 		sqlSb.append("	menu_category.`name` AS category,\n");
@@ -71,6 +72,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	menu_bill.date_time,\n");
 		sqlSb.append("	menu_bill.status,\n");
 		sqlSb.append("	menu_bill.copies,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	menu.`name`,\n");
 		sqlSb.append("	menu.introduce,\n");
 		sqlSb.append("	menu_category.`name` AS category,\n");
@@ -114,6 +116,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	menu.`name`,\n");
 		sqlSb.append("	menu.introduce,\n");
 		sqlSb.append("	menu_category.`name` AS category,\n");
@@ -165,6 +168,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	menu.`name`,\n");
 		sqlSb.append("	menu.introduce,\n");
 		sqlSb.append("	menu_category.`name` AS category,\n");

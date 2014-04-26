@@ -117,7 +117,8 @@
 										</div>
 
 										<div>
-											<span class="name" style="margin-left: 8px;" onclick="imageHandler('${item.id}')">${item.name}</span>
+											<span class="name" style="margin-left: 8px;"
+												onclick="imageHandler('${item.id}')">${item.name}</span>
 											<div class="circular ui green label">￥${item.price}</div>
 
 											<c:if test="${! empty item.introduce}">
@@ -256,7 +257,7 @@
 	<div class="ui small modal czsAdd">
 		<i class="close icon"></i>
 		<div class="header">确认提示</div>
-		<div class="content">
+		<div class="content" style="padding:8px;">
 			<div class="3 fluid ui buttons">
 				<div class="ui button czsReduce">减</div>
 				<div class="ui button black"
@@ -264,6 +265,11 @@
 					<i class="cart icon"></i> <span id="czsCountSpan">1</span>
 				</div>
 				<div class="ui button czsAdd">加</div>
+			</div>
+			<div class="ui form" style="margin-top:10px;">
+				<div class="field" style="margin-bottom:0px;">
+					<input placeholder="特别备注" id="memo-input" type="text">
+				</div>
 			</div>
 		</div>
 		<div class="actions">
@@ -419,10 +425,12 @@
 						onApprove : function() {
 
 							var copies = Number($('#czsCountSpan').text());
+							var memo = $('#memo-input').val();
 							$.post('menu/free/billDeal.do', {
 								menuId : _menuId,
 								consumerId : _consumerId,
 								copies : copies,
+								memo : memo,
 								status : 0
 							}, function(msg) {
 								if (msg.succeed) {

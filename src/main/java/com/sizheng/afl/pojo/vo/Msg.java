@@ -14,7 +14,7 @@ public class Msg implements Serializable {
 	private Serializable id = "0";
 
 	/** 消息详细 **/
-	private String detail;
+	private String detail = "";
 
 	public Msg() {
 		super();

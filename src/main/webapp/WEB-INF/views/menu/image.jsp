@@ -25,6 +25,9 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+<link href="../../../resources/tinybox2/css/tinybox.min.css"
+	rel="stylesheet" type="text/css">
+<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -33,6 +36,20 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<div class="ui dimmer czsUpload">
+		<div class="content" style="display: none;">
+			<div class="center">
+				<div class="ui medium image">
+					<img>
+				</div>
+				<div class="ui green striped progress">
+					<div class="bar">文件上传中...</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -44,7 +61,9 @@
 	<div class="ui segment" style="overflow: hidden;">
 		<h2>图片上传</h2>
 		<div class="ui message segment">
-			<p><b>说明:</b>选择文件或者直接拖拽文件到当前页面上!</p>
+			<p>
+				<b>说明:</b>选择文件或者直接拖拽文件到当前页面上!
+			</p>
 		</div>
 		<form enctype="multipart/form-data" method="post"
 			action="menu/upload.do">
@@ -54,7 +73,10 @@
 	</div>
 
 	<div class="ui segment">
-		<h2>图片一览<div class="circular ui red label">${fn:length(imageList)}张</div></h2>
+		<h2>
+			图片一览
+			<div class="circular ui red label">${fn:length(imageList)}张</div>
+		</h2>
 		<div class="ui stackable items">
 			<c:forEach items="${imageList}" var="item">
 				<div class="item" style="min-height: 0px;"
@@ -70,7 +92,11 @@
 						<div class="meta">
 							<fmt:formatDate value="${item.dateTime}" pattern="yyyy/MM/dd" />
 						</div>
-						<div class="name">${item.name }</div>
+						<div class="name" id="image-name-${item.id}">${item.name }</div>
+						<div class="czsEditBtn"
+							style="display: none; position: absolute; right: 0px;">
+							<div class="ui green button" onclick="editHander('${item.id}')">编辑描述</div>
+						</div>
 					</div>
 				</div>
 			</c:forEach>
@@ -102,77 +128,115 @@
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
 
-
-	<div class="ui page dimmer upload">
+	<!-- 菜单口味modal -->
+	<div class="ui small modal" id="edit-desc-modal">
+		<i class="close icon"></i>
+		<div class="header">编辑描述</div>
 		<div class="content">
-			<div class="center">
-				<div class="ui medium image">
-					<img>
+			<div class="ui form">
+				<div class="field">
+					<label>输入描述</label> <input type="text" id="desc-text">
 				</div>
-				<div class="ui green striped progress">
-					<div class="bar">文件上传中...</div>
+			</div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui deny labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui approve right labeled icon button">
+					确定 <i class="checkmark icon"></i>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<script type="text/javascript">
-		// 删除image id.
-		var deleteImgId;
+		var _id;
+
+		function editHander(id) {
+			_id = id;
+			$('#desc-text').val($('#image-name-' + _id).text()).focus();
+			$('#edit-desc-modal').modal('show');
+		}
+
 		// 删除选择图片
 		function deleteHandler(id) {
-			deleteImgId = id;
+			_id = id;
 			$('#confirm-ui-modal').modal('show');
 		}
 
 		jQuery(function($) {
 			$('#menu-item-menu-image').addClass('active');
-			$('.ui.accordion').accordion();
 
-			$('#confirm-ui-modal').modal({
-				closable : false,
+			$('.ui.dimmer.czsUpload').dimmer({
+				onHide : function() {
+					$('.ui.dimmer.czsUpload > .content').hide();
+				}
+			});
+
+			$('#edit-desc-modal').modal({
 				onApprove : function() {
-					$.ajax({
-						type : "POST",
-						url : 'resources/delete.do',
-						contentType : 'application/json',
-						processData : false,
-						dataType : "json",
-						data : JSON.stringify({
-							params : {
-								id : deleteImgId
-							}
-						}),
-						success : function(msg) {
-							if (msg.succeed) {
-								$('#image-item-' + deleteImgId).remove();
-								return true;
-							} else {
-								
-		alert('删除失败!')
-								return false;
-							}
+					var desc = $('#desc-text').val();
+					if (!desc) {// 不能为空
+						return false;
+					}
+					$.post('resources/update.do', {
+						id : _id,
+						name : desc
+					}, function(data) {
+						if (data.succeed) {
+							$('#image-name-' + _id).text(desc);
+						} else {
+							TINY.box.show({
+								html : '操作失败!<br/>失败信息:' + msg.msg.detail,
+								animate : false,
+								close : false,
+								boxid : 'error',
+								topsplit : 3
+							});
 						}
 					});
 				}
 			});
 
-			$('.ui.page.dimmer.upload').click(function() {
-				window.location.reload();
+			$('#confirm-ui-modal').modal({
+				onApprove : function() {
+					$.post('resources/delete.do', {
+						id : _id
+					}, function(msg) {
+						if (msg.succeed) {
+							$('#image-item-' + _id).remove();
+						} else {
+							TINY.box.show({
+								html : '操作失败!<br/>失败信息:' + msg.msg.detail,
+								animate : false,
+								close : false,
+								boxid : 'error',
+								topsplit : 3
+							});
+						}
+					});
+				}
 			});
 
 			$("body, #image_file").html5Uploader({
 				name : "image_file",
 				postUrl : "menu/upload.do",
 				onClientLoadStart : function(e, file) {
-					$('.ui.page.dimmer.upload').dimmer('show');
+					$('.ui.dimmer.czsUpload > .content').show();
+					$('.ui.dimmer.czsUpload').dimmer('show');
+
+					$('.ui.dimmer.czsUpload').one("click", function() {
+						window.location.reload();
+					});
 					var filter = /^(image\/bmp|image\/gif|image\/jpeg|image\/png|image\/tiff)$/i;
 					if (!filter.test(file.type)) {
 						$('.ui.progress > .bar').text('不是可识别的图片类型文件!');
 					}
 				},
 				onClientLoad : function(e, file) {
-					$('.ui.page.dimmer.upload img').attr('src', e.target.result);
+					$('.ui.dimmer.czsUpload img').attr('src', e.target.result);
 				},
 				onServerLoadStart : function(e, file) {
 					$('.ui.progress > .bar').css('width', 0);
@@ -198,6 +262,12 @@
 						$('.ui.progress > .bar').text(json.msg.detail);
 					}
 				}
+			});
+
+			$('.ui.stackable.items').children('.item').hover(function() {
+				$(this).find('.czsEditBtn').show();
+			}, function() {
+				$(this).find('.czsEditBtn').hide();
 			});
 		});
 	</script>

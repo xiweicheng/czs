@@ -595,11 +595,11 @@
 
 		function refreshHandler(id, type) {
 			if (type == '0') {
-				location.href = $('.ui.label.czsRequest').attr('href');
+				filterHandler('5')
 			} else if (type == '1') {
-				location.href = $('.ui.label.czsRequestOwn').attr('href');
+				filterHandler('3')
 			} else if (type == '2') {
-				location.href = $('.ui.label.czsRequestGroup').attr('href');
+				filterHandler('4')
 			}
 		}
 

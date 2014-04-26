@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-26 0:07:03 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-26 23:24:24 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,12 +32,13 @@ public class Menu implements java.io.Serializable {
 	private String owner;
 	private Date dateTime;
 	private Long orderTimes;
+	private String tags;
 
 	public Menu() {
 	}
 
 	public Menu(String name, Long categoryId, BigDecimal price, BigDecimal privilege, Long tasteId, String introduce,
-			Long resourceId, Short isDelete, String owner, Date dateTime, Long orderTimes) {
+			Long resourceId, Short isDelete, String owner, Date dateTime, Long orderTimes, String tags) {
 		this.name = name;
 		this.categoryId = categoryId;
 		this.price = price;
@@ -49,6 +50,7 @@ public class Menu implements java.io.Serializable {
 		this.owner = owner;
 		this.dateTime = dateTime;
 		this.orderTimes = orderTimes;
+		this.tags = tags;
 	}
 
 	@Id
@@ -160,6 +162,15 @@ public class Menu implements java.io.Serializable {
 
 	public void setOrderTimes(Long orderTimes) {
 		this.orderTimes = orderTimes;
+	}
+
+	@Column(name = "tags")
+	public String getTags() {
+		return this.tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 
 }

@@ -36,6 +36,7 @@
 <input type="hidden" name="id" value="{{html id}}">
 <input type="hidden" name="copies" value="{{html copies}}">
 	<td class="">{{html name}}({{html copies}}份)</td>
+	<td class="">{{if memo}}<div class="ui red label">{{html memo}}</div>{{/if}}</td>
 	<td class="">{{html date_time}}({{html diff}})</td>
 	<td class="">{{html nickname}}({{html description}})</td>
 	<td class=""><a class="ui purple label"
@@ -67,6 +68,7 @@
 			<thead>
 				<tr>
 					<th class="">菜名</th>
+					<th class="">备注</th>
 					<th class="">时间</th>
 					<th class="">顾客</th>
 					<th class="">操作</th>
@@ -76,6 +78,7 @@
 				<c:forEach items="${orderList}" var="item">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
 						<td class="">${item.name}(${item.copies}份)</td>
+						<td class=""><c:if test="${! empty item.memo}"><div class="ui red label">${item.memo}</div></c:if></td>
 						<td class="number" data-sort-value="${item.sec_diff}">${item.date_time}(${item.diff})</td>
 						<td class="">${item.nickname}(${item.description})</td>
 						<td class=""><a class="ui purple label czsRequest"
@@ -126,6 +129,7 @@
 					<thead>
 						<tr>
 							<th class="">菜名</th>
+							<th class="">备注</th>
 							<th class="">时间</th>
 							<th class="">顾客</th>
 							<th class="">操作</th>

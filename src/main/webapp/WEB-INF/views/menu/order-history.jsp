@@ -112,11 +112,13 @@
 					<th class="number">序号</th>
 					<th class="">菜名</th>
 					<th class="number">份数</th>
+					<th class="">备注</th>
 					<th class="">状态</th>
 					<th class="">时间</th>
 					<th class="number">距今</th>
 					<th class="">顾客</th>
 					<th class="">位置</th>
+					<th class="">接受者</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -125,6 +127,7 @@
 						<td class="">${sts.index + 1}</td>
 						<td class="">${item.name}</td>
 						<td class="">${item.copies}</td>
+						<td class=""><c:if test="${! empty item.memo}"><div class="ui red label">${item.memo}</div></c:if></td>
 						<td class=""><c:if test="${item.status==0}">待提交</c:if> <c:if
 								test="${item.status==1}">已提交</c:if> <c:if
 								test="${item.status==2}">已退订</c:if> <c:if
@@ -134,6 +137,8 @@
 						<td class=""><img class="ui avatar image"
 							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
 						<td class="">${item.description}</td>
+						<td class=""><c:if test="${! empty item.accept_nickname}">
+								<img class="ui avatar image" src="${item.accept_headimgurl}/64">${item.accept_nickname}(${item.accept_sex})</c:if></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -165,7 +170,7 @@
 			});
 
 			$('#menu-item-order-history').addClass('active');
-			
+
 			$('#czsStatus-' + '${status}').addClass('green');
 
 			$('#datetimepickerStart').datetimepicker({
@@ -182,9 +187,9 @@
 			var pickerEnd = $('#datetimepickerEnd').data('datetimepicker');
 
 			var startDate = new Date();
-			startDate.setTime(${start});
+			startDate.setTime(Number('${start}'));
 			var endDate = new Date();
-			endDate.setTime(${end});
+			endDate.setTime(Number('${end}'));
 
 			pickerStart.setLocalDate(startDate);
 			pickerEnd.setLocalDate(endDate);

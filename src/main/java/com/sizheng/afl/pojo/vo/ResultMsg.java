@@ -36,7 +36,7 @@ public class ResultMsg implements Serializable {
 	private boolean succeed = true;
 
 	/** msg [Msg]单条消息 */
-	private Msg msg;
+	private Msg msg = new Msg();
 
 	/** msgs [List<Msg>]多条消息 */
 	private List<Msg> msgs;

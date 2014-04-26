@@ -199,7 +199,7 @@
 								boxid : 'success',
 								autohide : 2,
 								top : 48
-							})
+							});
 						} else {
 							if (!!msg.msg && !!msg.msg.detail) {
 								TINY.box.show({
@@ -208,7 +208,7 @@
 									close : false,
 									boxid : 'error',
 									topsplit : 3
-								})
+								});
 							} else {
 								TINY.box.show({
 									html : '操作失败!',
@@ -216,7 +216,7 @@
 									close : false,
 									boxid : 'error',
 									topsplit : 3
-								})
+								});
 							}
 						}
 					});

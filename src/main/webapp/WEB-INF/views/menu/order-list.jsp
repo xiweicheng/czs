@@ -42,8 +42,9 @@
 <input type="hidden" name="copies" value="{{html copies}}">
 	<td class="">{{html name}}</td>
 	<td class="">{{html copies}}</td>
+	<td class="">{{if memo}}<div class="ui red label">{{html memo}}</div>{{/if}}</td>
 	<td class="">{{html date_time}}</td>
-	<td class="number" data-sort-value="{{html sec_diff}}">{{html diff}}</td>
+	<td class="" data-sort-value="{{html sec_diff}}">{{html diff}}</td>
 	<td class="">{{html nickname}}</td>
 	<td class="">{{html description}}</td>
 	<td class=""><a class="ui purple label"
@@ -78,14 +79,15 @@
 		<div class="ui green tiny button czsManual" style="margin-left: 20px;">手动刷新</div>
 	</h4>
 	<div class="ui segment attached">
-		<table class="ui sortable table segment" style="display: table;">
+		<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 			<thead>
 				<tr>
-					<th class="">序号</th>
+					<th class="number">序号</th>
 					<th class="">菜名</th>
-					<th class="">份数</th>
+					<th class="number">份数</th>
+					<th class="">备注</th>
 					<th class="">时间</th>
-					<th class="">距今</th>
+					<th class="number">距今</th>
 					<th class="">顾客</th>
 					<th class="">位置</th>
 					<th class="">操作</th>
@@ -94,11 +96,12 @@
 			<tbody>
 				<c:forEach items="${orderList}" var="item" varStatus="sts">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
-						<td class="number">${sts.index + 1}</td>
+						<td class="">${sts.index + 1}</td>
 						<td class="">${item.name}</td>
-						<td class="number">${item.copies}</td>
+						<td class="">${item.copies}</td>
+						<td class=""><c:if test="${! empty item.memo}"><div class="ui red label">${item.memo}</div></c:if></td>
 						<td class="">${item.date_time}</td>
-						<td class="number" data-sort-value="${item.sec_diff}">${item.diff}</td>
+						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
 						<td class=""><img class="ui avatar image"
 							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
 						<td class="">${item.description}</td>
@@ -123,13 +126,14 @@
 		<div class="content" style="padding-top: 0px; padding-bottom: 0px;"
 			id="czsGetConsumerInfo-content">
 			<form id="join-form">
-				<table class="ui sortable table segment" style="display: table;">
+				<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 					<thead>
 						<tr>
 							<th class="">菜名</th>
-							<th class="">份数</th>
+							<th class="number">份数</th>
+							<th class="">备注</th>
 							<th class="">时间</th>
-							<th class="">距今</th>
+							<th class="number">距今</th>
 							<th class="">顾客</th>
 							<th class="">位置</th>
 							<th class="">操作</th>

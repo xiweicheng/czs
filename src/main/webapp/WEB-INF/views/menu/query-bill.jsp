@@ -106,7 +106,8 @@
 									</div>
 
 									<div>
-										<span class="name" style="margin-left: 8px;" onclick="imageHandler('${item.id}')">${item.name}</span>
+										<span class="name" style="margin-left: 8px;"
+											onclick="imageHandler('${item.id}')">${item.name}</span>
 										<div class="circular ui green label">￥${item.price}</div>
 
 										<c:if test="${! empty item.introduce}">
@@ -115,13 +116,17 @@
 												<i class="comment icon"></i>
 											</div>
 										</c:if>
-											<div class="ui divider czsSimpleMode"
-												style="margin-top: 8px; margin-bottom: 8px; margin-left:88px;"></div>
+										<div class="ui divider czsSimpleMode"
+											style="margin-top: 8px; margin-bottom: 8px; margin-left: 88px;"></div>
 										<div class="czsSimpleMode"
 											style="display: inline-block; margin-left: 8px;">
 											<div class="ui label">${item.category}</div>
 											<div class="ui label">${item.taste}</div>
+											<c:if test="${! empty item.memo}">
+												<div class="ui red label">${item.memo}</div>
+											</c:if>
 										</div>
+
 										<p class="description" style="display: none;"
 											id="introduce-p-${item.id}"
 											onclick="introduceHandler('${item.id}')">${item.introduce}</p>
@@ -235,7 +240,7 @@
 
 	<!-- 菜品图片展示 -->
 	<div class="ui small modal czsBigImage">
-		<div class="content" style="padding: 0px; min-height:640px;">
+		<div class="content" style="padding: 0px; min-height: 640px;">
 			<div class="ui image"
 				onclick="$('.ui.modal.czsBigImage').modal('hide');">
 				<img alt="" src="">

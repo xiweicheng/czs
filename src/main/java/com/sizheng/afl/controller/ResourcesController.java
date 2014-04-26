@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -81,17 +82,16 @@ public class ResourcesController extends BaseController {
 	 */
 	@RequestMapping("delete")
 	@ResponseBody
-	public ResultMsg delete(@RequestBody ReqBody reqBody, Locale locale) {
+	public ResultMsg delete(HttpServletRequest request, Locale locale, @ModelAttribute Resources resources) {
 
 		logger.debug("删除【资源】");
 
-		Resources resources = getParam(reqBody, Resources.class);
 		// 参数验证
 		Assert.notNull(resources.getId());
 
 		boolean deleted = resourcesService.delete(locale, resources);
 
-		return new ResultMsg(deleted, reqBody.getId());
+		return new ResultMsg(deleted);
 	}
 
 	/**
@@ -128,22 +128,19 @@ public class ResourcesController extends BaseController {
 	 * @modification 2014年03月29日 05:00:05
 	 * @return
 	 */
-	// @RequestMapping("update")
+	@RequestMapping("update")
 	@ResponseBody
-	public ResultMsg update(@RequestBody ReqBody reqBody, Locale locale) {
+	public ResultMsg update(HttpServletRequest request, Locale locale, @ModelAttribute Resources resources) {
 
 		logger.debug("更新【资源】");
 
-		// TODO
-
-		Resources resources = getParam(reqBody, Resources.class);
-
 		// 参数验证
-		// Assert.notNull(resources.get);
+		Assert.notNull(resources.getId());
+		Assert.notNull(resources.getName());
 
 		boolean updated = resourcesService.update(locale, resources);
 
-		return new ResultMsg(updated, reqBody.getId());
+		return new ResultMsg(updated);
 	}
 
 	/**

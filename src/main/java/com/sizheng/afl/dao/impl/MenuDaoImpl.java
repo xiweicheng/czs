@@ -55,6 +55,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	favorites.is_delete AS fav_status,\n");
 		sqlSb.append("	subscriber.nickname\n");
 		sqlSb.append("FROM\n");
@@ -153,6 +154,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.menu_id,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
 		sqlSb.append("	TIMESTAMPDIFF(SECOND,menu_bill.date_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	menu_bill.scene_id,\n");
@@ -186,6 +188,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.menu_id,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
 		sqlSb.append("	TIMESTAMPDIFF(SECOND,menu_bill.date_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	menu_bill.scene_id,\n");
@@ -239,6 +242,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.menu_id,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
 		sqlSb.append("	TIMESTAMPDIFF(SECOND,menu_bill.date_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	menu_bill.`status`,\n");
@@ -248,11 +252,15 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	subscriber.nickname,\n");
 		sqlSb.append("	subscriber.headimgurl,\n");
 		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
+		sqlSb.append("	subscriber2.nickname AS accept_nickname,\n");
+		sqlSb.append("	subscriber2.headimgurl AS accept_headimgurl,\n");
+		sqlSb.append("	IF(subscriber2.sex = 1, '男', IF(subscriber2.sex = 2, '女', '未知')) as accept_sex,\n");
 		sqlSb.append("	qrcode.description\n");
 		sqlSb.append("FROM\n");
 		sqlSb.append("	menu_bill\n");
 		sqlSb.append("INNER JOIN menu ON menu_bill.menu_id = menu.id\n");
 		sqlSb.append("LEFT JOIN subscriber ON menu_bill.consumer_id = subscriber.user_name\n");
+		sqlSb.append("LEFT JOIN subscriber AS subscriber2 ON menu_bill.accepter_id = subscriber2.user_name\n");
 		sqlSb.append("INNER JOIN qrcode ON menu_bill.scene_id = qrcode.scene_id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("    menu.`owner` = ?\n");
@@ -278,6 +286,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.menu_id,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
 		sqlSb.append("	menu_bill.consume_code,\n");
+		sqlSb.append("	menu_bill.memo,\n");
 		sqlSb.append("	DATE_FORMAT(\n");
 		sqlSb.append("		menu_bill.date_time,\n");
 		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");

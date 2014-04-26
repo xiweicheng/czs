@@ -77,12 +77,18 @@ public class ResourcesServiceImpl extends BaseServiceImpl implements IResourcesS
 	}
 
 	@Override
-	public boolean update(Locale locale, Resources resources) {
+	public boolean update(Locale locale, final Resources resources) {
 
 		logger.debug("[业务逻辑层]更新【资源】");
 
-		// TODO
-		return true;
+		return hibernateTemplate.execute(new HibernateCallback<Integer>() {
+
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException, SQLException {
+				return session.createQuery("update Resources set name=? where id=?").setString(0, resources.getName())
+						.setLong(1, resources.getId()).executeUpdate();
+			}
+		}) > 0;
 	}
 
 	@Override

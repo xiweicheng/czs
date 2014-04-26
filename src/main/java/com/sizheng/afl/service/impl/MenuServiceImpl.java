@@ -31,6 +31,7 @@ import com.sizheng.afl.pojo.entity.User;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.IMenuService;
 import com.sizheng.afl.util.DateUtil;
+import com.sizheng.afl.util.FileUtil;
 import com.sizheng.afl.util.ImageUtil;
 import com.sizheng.afl.util.StringUtil;
 
@@ -172,7 +173,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements IMenuService {
 			Resources resources = new Resources();
 			resources.setDateTime(DateUtil.now());
 			resources.setIsDelete((short) 0);
-			resources.setName(originalFilename);
+			resources.setName(FileUtil.getName(originalFilename));
 			resources.setOwner(openId);
 			resources.setPath(propUtil.getMenuStorePath());
 			resources.setFileName(fileName);
