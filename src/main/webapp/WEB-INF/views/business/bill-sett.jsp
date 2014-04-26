@@ -280,7 +280,7 @@
 					$('#sett-count-span2').text(msg.total);
 					$('#sett-amount-span2').text(msg.value);
 
-					$('.ui.modal.czsBillByDate > .header').text('结算详情(' + date_time+")");
+					$('.ui.modal.czsBillByDate > .header').text('结算详情(' + date_time + ")");
 					$('.ui.modal.czsBillByDate').modal('show');
 					return true;
 				} else {

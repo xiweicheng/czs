@@ -16,25 +16,21 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+<script type="text/javascript">
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.call('hideToolbar');
+	});
+</script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>餐助手-商家服务</title>
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>餐助手-顾客服务</title>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
-	<!-- header -->
-	<div class="ui fixed transparent inverted main menu" style="top: 0px;">
-		<div class="container">
-			<!-- <a class="launch item"><i class="icon list layout"></i></a> -->
-			<div class="title item">
-				<b>餐助手</b> 商家自助管理后台
-			</div>
-		</div>
-	</div>
-
-	<h4 class="ui top attached header" style="margin-top: 45px;">商家信息</h4>
+	<h4 class="ui top attached header" style="margin-top: 0px;">商家信息</h4>
 	<div class="ui segment attached">
 
 		<div class="ui segment">

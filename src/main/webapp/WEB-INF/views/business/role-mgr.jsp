@@ -25,6 +25,9 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+<link href="../../../resources/tinybox2/css/tinybox.min.css"
+	rel="stylesheet" type="text/css">
+<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -64,8 +67,8 @@
 				class="ui label" id="roleType-2" onclick="filterHandler('2')"
 				style="margin-top: 5px; margin-bottom: 5px;"> 后厨角色 ${cook} 人</a> <a
 				class="ui label" id="roleType-3" onclick="filterHandler('3')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 服务员角色 ${waiter} 人 </a>
-			<a class="ui label" onclick="filterHandler('4')" id="roleType-4"
+				style="margin-top: 5px; margin-bottom: 5px;"> 服务员角色 ${waiter} 人
+			</a> <a class="ui label" onclick="filterHandler('4')" id="roleType-4"
 				style="margin-top: 5px; margin-bottom: 5px;"> 前台角色 ${proscenium}
 				人</a> </a><a class="ui label" onclick="filterHandler('')" id="roleType-"
 				style="margin-top: 5px; margin-bottom: 5px;"> 总计 ${total} 人 </a>
@@ -188,18 +191,33 @@
 						type : value.split('-')[0],
 					}, function(msg) {
 						if (msg.succeed) {
-							$('.ui.dimmer.czsMsg .center span').text('设置成功!');
-							$('.ui.dimmer.czsMsg > .content').show();
-							$('.ui.dimmer.czsMsg').dimmer('show');
+							TINY.box.show({
+								html : '设置成功!',
+								animate : true,
+								mask : false,
+								close : false,
+								boxid : 'success',
+								autohide : 2,
+								top : 48
+							})
 						} else {
 							if (!!msg.msg && !!msg.msg.detail) {
-								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+								TINY.box.show({
+									html : '操作失败!<br/>失败信息:' + msg.msg.detail,
+									animate : false,
+									close : false,
+									boxid : 'error',
+									topsplit : 3
+								})
 							} else {
-								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+								TINY.box.show({
+									html : '操作失败!',
+									animate : false,
+									close : false,
+									boxid : 'error',
+									topsplit : 3
+								})
 							}
-							$('.ui.dimmer.czsMsg > .content').show();
-							$('.ui.dimmer.czsMsg').dimmer('show');
-
 						}
 					});
 				}

@@ -356,11 +356,16 @@ public class BusinessController extends BaseController {
 
 		if (list.size() > 0) {
 			for (Favorites favorites2 : list) {
+
+				String limitCode = favorites2.getLimitCode();
+
 				if (SysConstant.FAVORITES_TYPE_BUSINESS.equals(favorites2.getType())) {
 					storeStatus = "1";
-				} else if (SysConstant.FAVORITES_TYPE_BUSINESS_LIKE.equals(favorites2.getType())) {
+				} else if (SysConstant.FAVORITES_TYPE_BUSINESS_LIKE.equals(favorites2.getType())
+						&& DateUtil.getTodayLimitCode().equals(limitCode)) {
 					likeStatus = "1";
-				} else if (SysConstant.FAVORITES_TYPE_BUSINESS_DISLIKE.equals(favorites2.getType())) {
+				} else if (SysConstant.FAVORITES_TYPE_BUSINESS_DISLIKE.equals(favorites2.getType())
+						&& DateUtil.getTodayLimitCode().equals(limitCode)) {
 					dislikeStatus = "1";
 				}
 			}

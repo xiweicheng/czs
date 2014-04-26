@@ -651,7 +651,10 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		message.setPrecision(bean.getPrecision() == null ? BigDecimal.ZERO : new BigDecimal(bean.getPrecision()));
 		message.setTicket(bean.getTicket());
 
-		message.setToOpenId(userService.getBusinessId(null, bean.getFromUserName()));
+		Map<String, Object> businessConsumer = userService.getBusinessConsumer(null, bean.getFromUserName());
+
+		message.setToOpenId(StringUtil.getString(businessConsumer, "business_id"));
+		message.setSceneId(NumberUtil.getLong(businessConsumer, "scene_id"));
 		message.setDateTime(DateUtil.now());
 		message.setStatus(SysConstant.MESSAGE_STATUS_NEW);
 

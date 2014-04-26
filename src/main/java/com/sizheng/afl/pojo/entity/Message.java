@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-24 14:11:05 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-26 0:07:03 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -47,6 +47,7 @@ public class Message implements java.io.Serializable {
 	private Date dateTime;
 	private Short status;
 	private Short isDelete;
+	private Long sceneId;
 
 	public Message() {
 	}
@@ -55,7 +56,7 @@ public class Message implements java.io.Serializable {
 			String mediaId, String format, String thumbMediaId, BigDecimal locationX, BigDecimal locationY,
 			BigDecimal scale, String label, String title, String description, String url, String eventKey,
 			BigDecimal latitude, BigDecimal longitude, BigDecimal precision, String ticket, String event,
-			String toOpenId, Date dateTime, Short status, Short isDelete) {
+			String toOpenId, Date dateTime, Short status, Short isDelete, Long sceneId) {
 		this.fromUserName = fromUserName;
 		this.createTime = createTime;
 		this.msgType = msgType;
@@ -82,6 +83,7 @@ public class Message implements java.io.Serializable {
 		this.dateTime = dateTime;
 		this.status = status;
 		this.isDelete = isDelete;
+		this.sceneId = sceneId;
 	}
 
 	@Id
@@ -328,6 +330,15 @@ public class Message implements java.io.Serializable {
 
 	public void setIsDelete(Short isDelete) {
 		this.isDelete = isDelete;
+	}
+
+	@Column(name = "scene_id")
+	public Long getSceneId() {
+		return this.sceneId;
+	}
+
+	public void setSceneId(Long sceneId) {
+		this.sceneId = sceneId;
 	}
 
 }

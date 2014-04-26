@@ -65,4 +65,6 @@ public interface IUserDao {
 
 	String getBusinessId(Locale locale, String openId);
 
+	Map<String, Object> getBusinessConsumer(Locale locale, String openId);
+
 }

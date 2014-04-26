@@ -64,7 +64,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	business_consumer.consume_code,\n");
 		sqlSb.append("	business_consumer.`status`,\n");
 		sqlSb.append("	subscriber.nickname,\n");
-		sqlSb.append("	subscriber.sex,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
 		sqlSb.append("	subscriber.headimgurl,\n");
 		sqlSb.append("	subscriber.city,\n");
 		sqlSb.append("	subscriber.country,\n");
@@ -427,12 +427,14 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	DATE_FORMAT(message.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
 		sqlSb.append("	TIMESTAMPDIFF(SECOND,message.date_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	message.`status`,\n");
+		sqlSb.append("	qrcode.description,\n");
 		sqlSb.append("	subscriber.nickname,\n");
 		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
 		sqlSb.append("	subscriber.headimgurl\n");
 		sqlSb.append("FROM\n");
 		sqlSb.append("	message\n");
 		sqlSb.append("INNER JOIN subscriber ON message.from_user_name = subscriber.user_name\n");
+		sqlSb.append("LEFT JOIN qrcode ON message.scene_id = qrcode.scene_id\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	message.to_open_id = ?\n");
 

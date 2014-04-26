@@ -172,4 +172,6 @@ public final class SysConstant {
 	public static final Short BILL_TYPE_OWN = 0;
 	public static final Short BILL_TYPE_GROUP = 1;
 
+	public static final Short BUSINESS_CONSUMER_RECORD_NEW = 0;
+
 }

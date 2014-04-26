@@ -31,6 +31,7 @@ import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Bill;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.BusinessConsumer;
+import com.sizheng.afl.pojo.entity.BusinessConsumerRecord;
 import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.pojo.entity.Qrcode;
 import com.sizheng.afl.pojo.entity.Request;
@@ -744,36 +745,44 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		BusinessConsumer businessConsumer = new BusinessConsumer();
 		businessConsumer.setConsumeCode(consumeCode);
 
-		List list = hibernateTemplate.findByExample(businessConsumer);
+		BusinessConsumer businessConsumer2 = findOneByExample(businessConsumer, BusinessConsumer.class);
 
-		if (list.size() > 0) {
-			BusinessConsumer businessConsumer2 = (BusinessConsumer) list.get(0);
-			businessConsumer2
-					.setStatus(agree ? SysConstant.CONSUME_STATUS_ONGOING : SysConstant.CONSUME_STATUS_DISABLE);
+		if (businessConsumer2 != null) {
 
-			if (!agree) {
+			if (!agree) { // 禁止顾客进入时,清除扫描时生成的信息.
 				businessConsumer2.setConsumeCode(null);
 				businessConsumer2.setSceneId(null);
-			}
-
-			hibernateTemplate.update(businessConsumer2);
-
-			if (!agree) {
+				businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_DISABLE);
 
 				User user = new User();
 				user.setUserName(businessConsumer2.getConsumerId());
 
-				List list2 = hibernateTemplate.findByExample(user);
+				User user2 = findOneByExample(user, User.class);
 
-				if (list2.size() > 0) {
-					User user2 = (User) list2.get(0);
+				if (user2 != null) {
 					user2.setConsumeCode(null);
-
 					hibernateTemplate.update(user2);
 				} else {
 					logger.error("用户信息不存在!");
 				}
+
+			} else {
+				businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_ONGOING);
+
+				// 保存用户的消费记录,以便统计分析.
+				BusinessConsumerRecord businessConsumerRecord = new BusinessConsumerRecord();
+				businessConsumerRecord.setBusinessId(businessConsumer2.getBusinessId());
+				businessConsumerRecord.setConsumeCode(businessConsumer2.getConsumeCode());
+				businessConsumerRecord.setConsumerId(businessConsumer2.getConsumerId());
+				businessConsumerRecord.setConsumeTime(businessConsumer2.getLastConsumeTime());
+				businessConsumerRecord.setIsDelete(SysConstant.SHORT_FALSE);
+				businessConsumerRecord.setSceneId(businessConsumer2.getSceneId());
+				businessConsumerRecord.setStatus(SysConstant.BUSINESS_CONSUMER_RECORD_NEW);
+
+				hibernateTemplate.save(businessConsumerRecord);
 			}
+
+			hibernateTemplate.update(businessConsumer2);
 
 			return true;
 		} else {

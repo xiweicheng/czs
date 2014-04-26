@@ -19,6 +19,8 @@
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
+<link href="../../../resources/tinybox2/css/tinybox.min.css"
+	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tablesort.min.js"
@@ -27,6 +29,7 @@
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tmpl.min.js"
 	charset="utf-8"></script>
+<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -96,7 +99,8 @@
 						<td class="number">${item.copies}</td>
 						<td class="">${item.date_time}</td>
 						<td class="number" data-sort-value="${item.sec_diff}">${item.diff}</td>
-						<td class="">${item.nickname}</td>
+						<td class=""><img class="ui avatar image"
+							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
 						<td class="">${item.description}</td>
 						<td class=""><a class="ui purple label czsRequest"
 							onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
@@ -242,13 +246,23 @@
 							return true;
 						} else {
 							if (!!msg.msg && !!msg.msg.detail) {
-								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+								$('.ui.dimmer.czsMsg .center span').html();
+								TINY.box.show({
+									html : '操作失败!<br/>失败信息:' + msg.msg.detail,
+									animate : false,
+									close : false,
+									boxid : 'error',
+									topsplit : 3
+								})
 							} else {
-								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+								TINY.box.show({
+									html : '操作失败,请刷新页面再试!',
+									animate : false,
+									close : false,
+									boxid : 'error',
+									topsplit : 3
+								})
 							}
-							$('.ui.dimmer.czsMsg > .content').show();
-							$('.ui.dimmer.czsMsg').dimmer('show');
-
 						}
 					});
 				}
@@ -263,13 +277,23 @@
 							return true;
 						} else {
 							if (!!msg.msg && !!msg.msg.detail) {
-								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+								$('.ui.dimmer.czsMsg .center span').html();
+								TINY.box.show({
+									html : '操作失败!<br/>失败信息:' + msg.msg.detail,
+									animate : false,
+									close : false,
+									boxid : 'error',
+									topsplit : 3
+								})
 							} else {
-								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+								TINY.box.show({
+									html : '操作失败,请刷新页面再试!',
+									animate : false,
+									close : false,
+									boxid : 'error',
+									topsplit : 3
+								})
 							}
-							$('.ui.dimmer.czsMsg > .content').show();
-							$('.ui.dimmer.czsMsg').dimmer('show');
-
 						}
 					});
 				}

@@ -28,6 +28,9 @@
 	<table-filter match-name="business_role" match-catalog="afl"></table-filter>
 	<table-filter match-name="service" match-catalog="afl"></table-filter>
 	<table-filter match-name="czs-user" match-catalog="afl"></table-filter>
+	<table-filter match-name="business_consumer_record"
+		match-catalog="afl">
+	</table-filter>
 	<table catalog="afl" name="subscriber">
 		<column name="id"></column>
 		<column name="user_name"></column>

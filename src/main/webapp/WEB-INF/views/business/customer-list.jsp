@@ -129,15 +129,8 @@
 	<div class="item">
 		<i class="user icon"></i>
 		<div class="content">
-			<div class="header">名称</div>
-			{{html nickname}}
-		</div>
-	</div>
-	<div class="item">
-		<i class="{{if sex == '男'}}male{{else}}female{{/if}} icon"></i>
-		<div class="content">
-			<div class="header">性别</div>
-			{{html sex}}
+			<div class="header">顾客</div>
+			{{html nickname}}({{html sex}})
 		</div>
 	</div>
 	<div class="item">
@@ -262,8 +255,7 @@
 			<thead>
 				<tr>
 					<th class="number">序号</th>
-					<th class="">头像</th>
-					<th class="">名称</th>
+					<th class="">顾客</th>
 					<th class="">状态</th>
 					<th class="sorted descending">开始时间</th>
 					<th class="">距今</th>
@@ -274,16 +266,14 @@
 				<c:forEach items="${customerList}" var="item" varStatus="sts">
 					<tr id="item-tr-${item.consumer_id}">
 						<td>${sts.index + 1}</td>
-						<td><img class="ui avatar image" src="${item.headimgurl}/64"></td>
-						<td class=""><a href="javascript:void(0);"
-							onclick="getConsumerInfoHandler('${item.consumer_id}')">${item.nickname}</a>
+						<td class=""><img class="ui avatar image"
+							src="${item.headimgurl}/64"><a href="javascript:void(0);"
+							onclick="getConsumerInfoHandler('${item.consumer_id}')">${item.nickname}(${item.sex})</a>
 							<c:if
 								test="${item.status=='1' || item.status=='3' || item.status=='4'}">
 								<a class="ui teal label"
 									onclick="billDetailHandler('${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">消费详情</a>
 							</c:if></td>
-						<%-- <td class=""><c:if test="${item.sex=='2'}">女</c:if> <c:if
-								test="${item.sex=='1'}">男</c:if> <c:if test="${item.sex=='0'}">未知</c:if></td> --%>
 						<td class=""><c:if test="${item.status=='5'}">
 								<i class="sign in icon"></i>进入请求中<a class="ui teal label"
 									onclick="agreeOrDisagreeHandler('1', '${item.consume_code}', '${item.consumer_id}')">同意</a>
@@ -305,7 +295,6 @@
 								<i class="ban loading icon"></i>集体结账申请中<a class="ui red label"
 									onclick="checkoutHandler('4', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">确认</a>
 							</c:if></td>
-						<%-- <td class="">${item.consume_times}</td> --%>
 						<td class="">${item.last_consume_time}</td>
 						<td class="">${item.sec_diff}</td>
 						<td class=""><a

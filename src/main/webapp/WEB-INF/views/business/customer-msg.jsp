@@ -103,14 +103,13 @@
 			<thead>
 				<tr>
 					<th class="number">序号</th>
-					<th class="">头像</th>
-					<th class="">姓名</th>
-					<th class="">性别</th>
+					<th class="">顾客</th>
+					<th class="">位置</th>
 					<th class="">类型</th>
 					<th class="">消息</th>
 					<th class="">状态</th>
-					<th class="number">时间</th>
-					<th class="">距今</th>
+					<th class="">时间</th>
+					<th class="number">距今</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -118,9 +117,8 @@
 					<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
 						<td class="">${sts.index + 1}</td>
 						<td class=""><img class="ui avatar image"
-							src="${item.headimgurl}/64"></td>
-						<td class="">${item.nickname}</td>
-						<td class="">${item.sex}</td>
+							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+						<td class="">${item.description}</td>
 						<td class=""><c:if test="${item.msg_type=='text'}">文本消息</c:if>
 							<c:if test="${item.msg_type=='image'}">图片消息</c:if></td>
 						<td class=""><c:if test="${item.msg_type=='text'}">

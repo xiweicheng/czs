@@ -196,6 +196,11 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 	}
 
 	@Override
+	public Map<String, Object> getBusinessConsumer(Locale locale, String openId) {
+		return userDao.getBusinessConsumer(locale, openId);
+	}
+
+	@Override
 	public String getBusiness(Locale locale, String openId) {
 
 		User user = new User();

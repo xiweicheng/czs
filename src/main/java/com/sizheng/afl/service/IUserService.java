@@ -217,4 +217,6 @@ public interface IUserService extends IBaseService {
 	List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId);
 
 	String getBusinessId(Locale locale, String openId);
+
+	Map<String, Object> getBusinessConsumer(Locale locale, String openId);
 }

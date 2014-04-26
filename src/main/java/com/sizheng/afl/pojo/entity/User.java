@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-24 14:11:05 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-26 0:07:03 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import javax.persistence.Column;

@@ -101,7 +101,7 @@
 			<thead>
 				<tr>
 					<th class="number">序号</th>
-					<th class="">呼叫者</th>
+					<th class="">顾客</th>
 					<th class="">位置</th>
 					<th class="">类型</th>
 					<th class="">状态</th>
@@ -125,8 +125,9 @@
 							</c:if></td>
 						<td class="">${item.date_time}</td>
 						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
-						<td class="" data-sort-value="${item.handler_name}"><img
-							class="ui avatar image" src="${item.handler_headimgurl}/64">${item.handler_name}(${item.handler_sex})</td>
+						<td class="" data-sort-value="${item.handler_name}"><c:if
+								test="${! empty item.handler_name}">
+								<img class="ui avatar image" src="${item.handler_headimgurl}/64">${item.handler_name}(${item.handler_sex})</c:if></td>
 					</tr>
 				</c:forEach>
 			</tbody>
