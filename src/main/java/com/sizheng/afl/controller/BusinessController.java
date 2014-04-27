@@ -882,6 +882,27 @@ public class BusinessController extends BaseController {
 	}
 
 	/**
+	 * 顾客统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("consumerGraph")
+	@ResponseBody
+	public ResultMsg consumerGraph(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("顾客统计【商家】");
+
+		Map<String, List<Object>> map = businessService.consumerGraph(locale, WebUtil.getSessionBusinessId(request));
+
+		return new ResultMsg(true, map);
+
+	}
+
+	/**
 	 * 服务统计。
 	 * 
 	 * @param request
@@ -905,6 +926,33 @@ public class BusinessController extends BaseController {
 	}
 
 	/**
+	 * 顾客统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("consumerDayGraph")
+	@ResponseBody
+	public ResultMsg consumerDayGraph(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("date") String date) {
+
+		logger.debug("顾客统计【商家】");
+
+		List<Map<String, Object>> list = businessService.consumerDayGraph(locale,
+				WebUtil.getSessionBusinessId(request), date);
+
+		for (Map<String, Object> map : list) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+		}
+
+		return new ResultMsg(true, list);
+
+	}
+
+	/**
 	 * 服务统计。
 	 * 
 	 * @param request
@@ -921,6 +969,24 @@ public class BusinessController extends BaseController {
 		// model.addAttribute("message", "[服务统计]页面建设中...");
 
 		return "business/service-graph";
+
+	}
+
+	/**
+	 * 顾客统计。
+	 * 
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param openId
+	 * @return
+	 */
+	@RequestMapping("consumerStat")
+	public String consumerStat(HttpServletRequest request, Locale locale, Model model) {
+
+		logger.debug("顾客统计【商家】");
+
+		return "business/consumer-graph";
 
 	}
 

@@ -33,6 +33,7 @@ import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IMenuBillService;
 import com.sizheng.afl.service.IUserService;
+import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
 
@@ -524,6 +525,8 @@ public class UserController extends BaseController {
 
 		for (Map<String, Object> map : list) {
 
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+
 			Double price = NumberUtil.getDouble(map, "price");
 
 			int copies = 0;
@@ -533,6 +536,7 @@ public class UserController extends BaseController {
 			} else if (SysConstant.NUMBER_1.equals(type)) {
 				List<Map<String, Object>> maps = (List<Map<String, Object>>) map.get("menuBill");
 				for (Map<String, Object> map2 : maps) {
+					map2.put("diff", DateUtil.convert(NumberUtil.getLong(map2, "sec_diff")));
 					copies += (NumberUtil.getInteger(map2, "copies"));
 				}
 			}

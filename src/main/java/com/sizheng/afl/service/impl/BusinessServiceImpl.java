@@ -1017,6 +1017,25 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
+	public Map<String, List<Object>> consumerGraph(Locale locale, String openId) {
+		List<Map<String, Object>> consumerGraph = businessDao.consumerGraph(openId);
+
+		List<Object> names = new ArrayList<>();
+		List<Object> values = new ArrayList<>();
+
+		for (Map<String, Object> map : consumerGraph) {
+			names.add(map.get("date"));
+			values.add(map.get("cnt"));
+		}
+
+		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		map.put("date", names);
+		map.put("cnt", values);
+
+		return map;
+	}
+
+	@Override
 	public List<List<Object>> serviceDayGraph(Locale locale, String openId, String date) {
 		List<List<Object>> list = new ArrayList<>();
 		List<Map<String, Object>> mapList = businessDao.serviceDayGraph(openId, date);
@@ -1058,6 +1077,11 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	@Override
 	public List<Map<String, Object>> queryBillSettByDate(Locale locale, String sessionBusinessId, Long times) {
 		return businessDao.queryBillSettByDate(locale, sessionBusinessId, times);
+	}
+
+	@Override
+	public List<Map<String, Object>> consumerDayGraph(Locale locale, String sessionBusinessId, String date) {
+		return businessDao.consumerDayGraph(sessionBusinessId, date);
 	}
 
 }

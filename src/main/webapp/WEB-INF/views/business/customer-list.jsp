@@ -46,6 +46,55 @@
 	<td class="">{{html sec_diff}}</td>
 </tr>
 </script>
+<script id="billTrTpl" type="text/x-jquery-tmpl">
+<tr>
+	<td class="">{{html name}}</td>
+	<td class="">{{html price}}</td>
+	<td class="">{{html category}}</td>
+	<td class="">{{html taste}}</td>
+	<td class="">
+			{{if menuBill}}
+				<table class="ui table segment">
+					<tbody>
+						{{each menuBill}}
+							<tr>
+							<td class=""><img class="ui avatar image" src="{{html $value.headimgurl}}/64">{{html $value.nickname}}({{html $value.sex}})</td>
+							<td class="">{{html $value.date_time}}</td>
+							<td class="">{{html $value.diff}}</td>
+							<td class="">{{html $value.copies}}</td>
+							<td class="">
+								{{if $value.status == '3'}}
+									<div class="ui green label">已接单</div>
+								{{else}}
+									<div class="ui red label">未接单</div>
+								{{/if}}
+							</td>
+							</tr>
+						{{/each}}
+					</tbody>
+				</table>
+			{{else}}
+				<table class="ui table segment">
+					<tbody>
+						<tr>
+							<td class=""><img class="ui avatar image" src="{{html headimgurl}}/64">{{html nickname}}({{html sex}})</td>
+							<td class="">{{html date_time}}</td>
+							<td class="">{{html diff}}</td>
+							<td class="">{{html copies}}</td>
+							<td class="">
+								{{if status == '3'}}
+									<div class="ui green label">已接单</div>
+								{{else}}
+									<div class="ui red label">未接单</div>
+								{{/if}}
+							</td>
+						</tr>
+					</tbody>
+				</table>	
+			{{/if}}
+	</td>
+</tr>
+</script>
 <script id="menuItemPrintTpl" type="text/x-jquery-tmpl">
 <div class="item">
 	<div class="content">
@@ -71,65 +120,12 @@
 	</div>
 </div>
 </script>
-<script id="billDetailTpl" type="text/x-jquery-tmpl">
-<div class="item" id="bill-detail-{{html menu_id}}"
-	style="min-height: 0px; margin-bottom:20px;">
-	<div class="image" style="display: none;">
-		<img src="" czz-src="../../../{{html path}}640/{{html file_name}}">
-		<!-- <a
-		class="like ui corner label"> <i class="like icon"></i> -->
-		</a>
-	</div>
-	<div class="content">
-		<div class="name">{{html name}}<div class="circular ui green label">￥{{html price}}</div></div>
-		<p class="description" style="display: none;">{{html introduce}}</p>
-		<div class="ui divider czsSimpleMode" style="display: none;"></div>
-		<div style="margin-top:10px; display:none;" class="czsSimpleMode">
-			<div class="ui label">{{html category}}</div>
-			<div class="ui label">{{html taste}}</div>
-		</div>
-		<div class="ui divider"></div>
-		<div>
-			{{if menuBill}}
-				{{each menuBill}}
-					<div class="ui label" style="margin-top:5px; margin-bottom:5px;">{{html $value.nickname}}({{html $value.copies}})
-					<div class="detail">
-					{{if $value.status == '3'}}
-						已接单
-					{{else}}
-						未接单
-					{{/if}}
-					</div>
-					</div>
-				{{/each}}
-			{{else}}
-				<div class="ui label" style="margin-top:5px; margin-bottom:5px;">{{html nickname}}({{html copies}})
-					<div class="detail">
-					{{if status == '3'}}
-						已接单
-					{{else}}
-						未接单
-					{{/if}}
-					</div>
-				</div>
-			{{/if}}
-		</div>
-	</div>
-</div>
-</script>
 <script id="consumerInfoTpl" type="text/x-jquery-tmpl">
 <div class="ui relaxed celled list">
 	<div class="item">
-		<i class="meh icon"></i>
-		<div class="content">
-			<div class="header">头像</div>
-			<img class="ui avatar image" src="{{html headimgurl}}/64">
-		</div>
-	</div>
-	<div class="item">
 		<i class="user icon"></i>
 		<div class="content">
-			<div class="header">顾客</div>
+			<div class="header"><img class="ui avatar image" src="{{html headimgurl}}/64"></div>
 			{{html nickname}}({{html sex}})
 		</div>
 	</div>
@@ -185,137 +181,192 @@
 		</div>
 	</div>
 
-	<!-- 侧边栏 -->
-	<%@ include file="../menu.jsp"%>
+	<div>
+		<!-- 侧边栏 -->
+		<%@ include file="../menu.jsp"%>
 
-	<div class="ui right vertical sidebar">
-		<h4 class="ui top attached header">顾客实时请求</h4>
+		<div class="ui right vertical sidebar">
+			<h4 class="ui top attached header">顾客实时请求</h4>
 
-		<div class="ui attached selection divided animated list czzRequest"
-			style="margin-top: 5px;"></div>
-	</div>
-
-	<!-- header -->
-	<%@ include file="../header.jsp"%>
-
-	<h4 class="ui top attached header" style="margin-top: 45px;">
-		顾客一览
-		<div class="circular ui red label">${fn:length(customerList)}人</div>
-		<div class="ui toggle checkbox czsRefresh" style="margin-left: 20px;">
-			<input type="checkbox" name="pet"> <label>定时刷新</label>
-		</div>
-		<div class="ui radio checkbox">
-			<input type="radio" name="refresh" checked="checked"> <label>5s</label>
-			<input type="hidden" value="5">
-		</div>
-		<div class="ui radio checkbox">
-			<input type="radio" name="refresh"> <label>15s</label> <input
-				type="hidden" value="15">
-		</div>
-		<div class="ui radio checkbox">
-			<input type="radio" name="refresh"> <label>30s</label> <input
-				type="hidden" value="30">
-		</div>
-		<div class="ui radio checkbox">
-			<input type="radio" name="refresh"> <label>60s</label> <input
-				type="hidden" value="60">
+			<div class="ui attached selection divided animated list czzRequest"
+				style="margin-top: 5px;"></div>
 		</div>
 
-		<div class="ui toggle checkbox czsFilterOver"
-			style="margin-left: 20px;">
-			<input type="checkbox" name="filterOver"> <label>过滤终止状态</label>
-		</div>
-	</h4>
-	<div class="ui segment attached">
-		<div>
-			<a class="ui label czsRequest czsStatus" id="czsStatus-5"
-				onclick="filterHandler('5')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中
-				${requesting} 人 </a> <a class="ui label czsRequestOwn czsStatus"
-				id="czsStatus-3" onclick="filterHandler('3')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 个人结账申请
-				${requestOwn} 人 </a><a class="ui label czsRequestGroup czsStatus"
-				id="czsStatus-4" onclick="filterHandler('4')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 集体结账申请
-				${requestGroup} 人</a> <a class="ui label czsStatus" id="czsStatus-1"
-				onclick="filterHandler('1')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人 </a>
-			<a class="ui label czsStatus" id="czsStatus-0"
-				onclick="filterHandler('0')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a
-				class="ui label czsStatus" id="czsStatus-2"
-				onclick="filterHandler('2')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled} 人
-			</a><a class="ui label total czsStatus" id="czsStatus-"
-				onclick="filterHandler('')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a>
-		</div>
-		<table class="ui sortable table segment"
-			style="display: table; font-size: 15px;">
-			<thead>
-				<tr>
-					<th class="number">序号</th>
-					<th class="">顾客</th>
-					<th class="">状态</th>
-					<th class="sorted descending">开始时间</th>
-					<th class="">距今</th>
-					<th class="">位置描述</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${customerList}" var="item" varStatus="sts">
-					<tr id="item-tr-${item.consumer_id}">
-						<td>${sts.index + 1}</td>
-						<td class=""><img class="ui avatar image"
-							src="${item.headimgurl}/64"><a href="javascript:void(0);"
-							onclick="getConsumerInfoHandler('${item.consumer_id}')">${item.nickname}(${item.sex})</a>
-							<c:if
-								test="${item.status=='1' || item.status=='3' || item.status=='4'}">
-								<a class="ui teal label"
-									onclick="billDetailHandler('${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">消费详情</a>
-							</c:if></td>
-						<td class=""><c:if test="${item.status=='5'}">
-								<i class="sign in icon"></i>进入请求中<a class="ui teal label"
-									onclick="agreeOrDisagreeHandler('1', '${item.consume_code}', '${item.consumer_id}')">同意</a>
-								<a class="ui orange label"
-									onclick="agreeOrDisagreeHandler('2', '${item.consume_code}', '${item.consumer_id}')">禁止</a>
-							</c:if> <c:if test="${item.status=='0'}">
-								<i class="stop icon"></i>消费终止</c:if> <c:if test="${item.status=='1'}">
-								<i class="play icon"></i>消费中<a class="ui teal label"
-									onclick="checkoutHandler('3', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">个人结账</a>
-								<a class="ui orange label"
-									onclick="checkoutHandler('4', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">集体结账</a>
-							</c:if> <c:if test="${item.status=='2'}">
-								<i class="ban circle icon"></i>消费禁止<a class="ui teal label"
-									onclick="agreeOrDisagreeHandler('0', '${item.consume_code}', '${item.consumer_id}')">解禁</a>
-							</c:if> <c:if test="${item.status=='3'}">
-								<i class="ban loading icon"></i>个人结账申请中<a class="ui red label"
-									onclick="checkoutHandler('3', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">确认</a>
-							</c:if> <c:if test="${item.status=='4'}">
-								<i class="ban loading icon"></i>集体结账申请中<a class="ui red label"
-									onclick="checkoutHandler('4', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">确认</a>
-							</c:if></td>
-						<td class="">${item.last_consume_time}</td>
-						<td class="">${item.sec_diff}</td>
-						<td class=""><a
-							<c:if test="${item.status == 1 || item.status == 3 || item.status == 4}">href="javascript:void(0);" onclick="groupInfoHander('${item.scene_id}', '${item.consume_code}', '${item.consumer_id}')"</c:if>>${item.description}</a></td>
+		<!-- header -->
+		<%@ include file="../header.jsp"%>
+
+		<h4 class="ui top attached header" style="margin-top: 45px;">
+			顾客一览
+			<div class="circular ui red label">${fn:length(customerList)}人</div>
+			<div class="ui toggle checkbox czsRefresh" style="margin-left: 20px;">
+				<input type="checkbox" name="pet"> <label>定时刷新</label>
+			</div>
+			<div class="ui radio checkbox">
+				<input type="radio" name="refresh" checked="checked"> <label>5s</label>
+				<input type="hidden" value="5">
+			</div>
+			<div class="ui radio checkbox">
+				<input type="radio" name="refresh"> <label>15s</label> <input
+					type="hidden" value="15">
+			</div>
+			<div class="ui radio checkbox">
+				<input type="radio" name="refresh"> <label>30s</label> <input
+					type="hidden" value="30">
+			</div>
+			<div class="ui radio checkbox">
+				<input type="radio" name="refresh"> <label>60s</label> <input
+					type="hidden" value="60">
+			</div>
+
+			<div class="ui toggle checkbox czsFilterOver"
+				style="margin-left: 20px;">
+				<input type="checkbox" name="filterOver"> <label>过滤终止状态</label>
+			</div>
+		</h4>
+		<div class="ui segment attached" style="min-height:490px;">
+			<div>
+				<a class="ui label czsRequest czsStatus" id="czsStatus-5"
+					onclick="filterHandler('5')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中
+					${requesting} 人 </a> <a class="ui label czsRequestOwn czsStatus"
+					id="czsStatus-3" onclick="filterHandler('3')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 个人结账申请
+					${requestOwn} 人 </a><a class="ui label czsRequestGroup czsStatus"
+					id="czsStatus-4" onclick="filterHandler('4')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 集体结账申请
+					${requestGroup} 人</a> <a class="ui label czsStatus" id="czsStatus-1"
+					onclick="filterHandler('1')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人
+				</a> <a class="ui label czsStatus" id="czsStatus-0"
+					onclick="filterHandler('0')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a
+					class="ui label czsStatus" id="czsStatus-2"
+					onclick="filterHandler('2')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled}
+					人 </a><a class="ui label total czsStatus" id="czsStatus-"
+					onclick="filterHandler('')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a>
+			</div>
+			<table class="ui sortable table segment" id="customer-table"
+				style="display: table; font-size: 15px;">
+				<thead>
+					<tr>
+						<th class="number">序号</th>
+						<th class="">顾客</th>
+						<th class="">状态</th>
+						<th class="sorted descending">开始时间</th>
+						<th class="">距今</th>
+						<th class="">位置描述</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<c:forEach items="${customerList}" var="item" varStatus="sts">
+						<tr id="item-tr-${item.consumer_id}">
+							<td>${sts.index + 1}</td>
+							<td class=""><img class="ui avatar image"
+								src="${item.headimgurl}/64"><a href="javascript:void(0);"
+								onclick="getConsumerInfoHandler('${item.consumer_id}')">${item.nickname}(${item.sex})</a>
+								<c:if
+									test="${item.status=='1' || item.status=='3' || item.status=='4'}">
+									<a class="ui teal label"
+										onclick="billDetailHandler('${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">消费详情</a>
+								</c:if></td>
+							<td class=""><c:if test="${item.status=='5'}">
+									<i class="sign in icon"></i>进入请求中<a class="ui teal label"
+										onclick="agreeOrDisagreeHandler('1', '${item.consume_code}', '${item.consumer_id}')">同意</a>
+									<a class="ui orange label"
+										onclick="agreeOrDisagreeHandler('2', '${item.consume_code}', '${item.consumer_id}')">禁止</a>
+								</c:if> <c:if test="${item.status=='0'}">
+									<i class="stop icon"></i>消费终止</c:if> <c:if test="${item.status=='1'}">
+									<i class="play icon"></i>消费中<a class="ui teal label"
+										onclick="checkoutHandler('3', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">个人结账</a>
+									<a class="ui orange label"
+										onclick="checkoutHandler('4', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">集体结账</a>
+								</c:if> <c:if test="${item.status=='2'}">
+									<i class="ban circle icon"></i>消费禁止<a class="ui teal label"
+										onclick="agreeOrDisagreeHandler('0', '${item.consume_code}', '${item.consumer_id}')">解禁</a>
+								</c:if> <c:if test="${item.status=='3'}">
+									<i class="ban loading icon"></i>个人结账申请中<a class="ui red label"
+										onclick="checkoutHandler('3', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">确认</a>
+								</c:if> <c:if test="${item.status=='4'}">
+									<i class="ban loading icon"></i>集体结账申请中<a class="ui red label"
+										onclick="checkoutHandler('4', '${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">确认</a>
+								</c:if></td>
+							<td class="">${item.last_consume_time}</td>
+							<td class="">${item.sec_diff}</td>
+							<td class=""><a
+								<c:if test="${item.status == 1 || item.status == 3 || item.status == 4}">href="javascript:void(0);" onclick="groupInfoHander('${item.scene_id}', '${item.consume_code}', '${item.consumer_id}')"</c:if>>${item.description}</a></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
 
+		</div>
+
+		<!-- footer -->
+		<%@ include file="../footer.jsp"%>
+
+		<div class="ui dimmer czsBillDetail"
+			style="overflow: auto; padding: 16px;">
+			<div class="content">
+				<div class="center" style="color: black; vertical-align: top;">
+					<div class="ui segment" style="text-align: left;">
+						<div class="">
+							<div class="ui buttons">
+								<div class="ui active green button czsOwn">个人消费</div>
+								<div class="ui button czsGroup">集体消费</div>
+							</div>
+
+							<div class="ui green vertical animated button czsPrint"
+								style="float: right; margin-left: 20px;">
+								<div class="hidden content">打印个人账单</div>
+								<div class="visible content">
+									<i class="print icon"></i>账单打印
+								</div>
+							</div>
+
+							<div class="ui red animated fade button czsTakeBill"
+								style="float: right;" czs-status="3">
+								<div class="visible content">￥12.99</div>
+								<div class="hidden content">个人结账</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="" style="padding-top: 10px;">
+							<table class="ui table segment" style="font-size: 15px;">
+								<thead>
+									<tr>
+										<th class="">名称</th>
+										<th class="">价格</th>
+										<th class="">分类</th>
+										<th class="">口味</th>
+										<th class="">顾客/时间/距今/份数/状态</th>
+									</tr>
+								</thead>
+
+								<tbody id="bill-detail-tbody">
+								</tbody>
+							</table>
+						</div>
+						<div class="" style="margin-top: 20px;">
+							<div class="one fluid ui buttons">
+								<div class="ui button"
+									onclick="$(this).closest('.ui.dimmer').dimmer('hide');">确定</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-
-	<!-- footer -->
-	<%@ include file="../footer.jsp"%>
-
-
+	</div>
 	<!-- 集体信息展示modal -->
 	<div class="ui modal" id="group-info-show-modal">
 		<i class="close icon"></i>
 		<div class="header">该桌信息</div>
 		<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
-			<table class="ui sortable table segment" style="display: table;">
+			<table class="ui sortable table segment" id="group-table"
+				style="display: table;">
 				<thead>
 					<tr>
 						<th class="">消费</th>
@@ -348,58 +399,13 @@
 		</div>
 	</div>
 
-	<!-- 消费信息展示modal -->
-	<div class="ui modal" id="bill-detail-modal">
-		<i class="close icon"></i>
-		<div class="header">
-			<div class="ui buttons">
-				<div class="ui active green button czsOwn">个人消费</div>
-				<div class="ui button czsGroup">集体消费</div>
-			</div>
-
-			<div class="ui small buttons" style="">
-				<div class="ui green button czsSimple" czs-status="1">简单</div>
-				<div class="or"></div>
-				<div class="ui button czsImage" czs-status="0">图文</div>
-			</div>
-
-			<div class="ui green vertical animated button czsPrint"
-				style="float: right; margin-left: 20px;">
-				<div class="hidden content">打印个人账单</div>
-				<div class="visible content">
-					<i class="print icon"></i>账单打印
-				</div>
-			</div>
-
-			<div class="ui red animated fade button czsTakeBill"
-				style="float: right;" czs-status="3">
-				<div class="visible content">￥12.99</div>
-				<div class="hidden content">个人结账</div>
-			</div>
-		</div>
-		<div class="content" style="padding-top: 10px;">
-			<div class="ui three items" id="bill-detail-ui-stackable-items"
-				style="height: 350px; overflow: auto;"></div>
-		</div>
-		<div class="actions">
-			<div class="two fluid ui buttons">
-				<div class="ui deny labeled icon button">
-					<i class="remove icon"></i> 取消
-				</div>
-				<div class="ui approve right labeled icon button">
-					确定 <i class="checkmark icon"></i>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<div class="ui small modal" id="confirm-ui-modal">
 		<div class="header">确认提示</div>
 		<div class="content">
 			<div class="left">
 				<i class="warning icon"></i>
 			</div>
-			<div class="right" style="font-size: 30px;">
+			<div class="right" style="font-size: 25px;">
 				<p id="bill-total-p"></p>
 				<p>确认要结账吗?</p>
 			</div>
@@ -481,11 +487,14 @@
 				consumerId : consumer_id
 			}, function(msg) {
 				if (msg.succeed) {
-					$('#billDetailTpl').tmpl(msg.values).appendTo($('#bill-detail-ui-stackable-items').empty());
+					$('#billTrTpl').tmpl(msg.values).appendTo($('#bill-detail-tbody').empty());
 					$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
 					$('#print-total-div').text('总价: ￥' + msg.value);
 					$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
-					$('#bill-detail-modal').modal('show');
+					$('.ui.dimmer.czsBillDetail .czsOwn').addClass('active green');
+					$('.ui.dimmer.czsBillDetail .czsGroup').removeClass('active green');
+					$('.ui.dimmer.czsBillDetail').dimmer('show');
+					$('body').scrollTop(0);
 				} else {
 					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
@@ -629,7 +638,8 @@
 				$('.ui.dimmer.czsMsg > .content').hide();
 			});
 
-			$('table').tablesort().data('tablesort');
+			$('#customer-table,#group-table').tablesort();
+
 			$('thead th.number').data('sortBy', function(th, td, sorter) {
 				if (!!$(td).attr('data-sort-value')) {
 					return parseInt($(td).attr('data-sort-value'), 10);
@@ -698,7 +708,15 @@
 					});
 					_refreshInterval = setInterval(function() {
 
-						if (!($('.ui.dimmer.czsMsg').dimmer('is active'))) {
+						var flag = false;
+						$('.ui.dimmer').each(function() {
+							if ($(this).dimmer('is active')) {
+								flag = true;
+								return false;
+							}
+						});
+
+						if (!flag) {
 							filterHandler('${status}');
 						}
 					}, _interval * 1000);
@@ -760,8 +778,7 @@
 							consumerId : _consumer_id
 						}, function(msg) {
 							if (msg.succeed) {
-								$('#billDetailTpl').tmpl(msg.values).appendTo(
-										$('#bill-detail-ui-stackable-items').empty());
+								$('#billTrTpl').tmpl(msg.values).appendTo($('#bill-detail-tbody').empty());
 
 								$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
 								$('#print-total-div').text('总价: ￥' + msg.value);
@@ -800,8 +817,7 @@
 							consumerId : _consumer_id
 						}, function(msg) {
 							if (msg.succeed) {
-								$('#billDetailTpl').tmpl(msg.values).appendTo(
-										$('#bill-detail-ui-stackable-items').empty());
+								$('#billTrTpl').tmpl(msg.values).appendTo($('#bill-detail-tbody').empty());
 
 								$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
 								$('#print-total-div').text('总价: ￥' + msg.value);
@@ -895,36 +911,9 @@
 				$('#bill-print-div').jqprint();
 			});
 			$('.ui.button.czsTakeBill').click(function() {
+				$('.ui.dimmer.czsBillDetail').dimmer('hide');
 				checkoutHandler($(this).attr('czs-status'), _consume_code, _scene_id, _consumer_id);
 			});
-
-			$('.ui.button.czsSimple').click(function() {
-				if ($(this).attr('czs-status') == '0') {
-					$(this).attr('czs-status', '1');
-					$(this).addClass('green');
-					$('.czsSimpleMode').hide();
-				} else {
-					$(this).attr('czs-status', '0');
-					$(this).removeClass('green');
-					$('.czsSimpleMode').show();
-				}
-			});
-			$('.ui.button.czsImage').click(
-					function() {
-						if ($(this).attr('czs-status') == '0') {
-							$(this).attr('czs-status', '1');
-							$(this).addClass('green');
-							$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find('img')
-									.each(function() {
-										$(this).attr("src", $(this).attr('czz-src'));
-									});
-						} else {
-							$(this).attr('czs-status', '0');
-							$(this).removeClass('green');
-							$('#bill-detail-ui-stackable-items').find('div[class="image"]').hide();
-						}
-					});
-
 		});
 	</script>
 </body>

@@ -392,6 +392,26 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 	}
 
 	@Override
+	public List<Map<String, Object>> consumerGraph(String businessId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	count(*) as cnt,\n");
+		sqlSb.append("	DATE(\n");
+		sqlSb.append("		business_consumer_record.consume_time\n");
+		sqlSb.append("	) AS date\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	`business_consumer_record`\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	business_consumer_record.is_delete = 0\n");
+		sqlSb.append("AND business_consumer_record.business_id = ?\n");
+		sqlSb.append("GROUP BY\n");
+		sqlSb.append("	date\n");
+
+		return getMapList(sqlSb, businessId);
+	}
+
+	@Override
 	public List<Map<String, Object>> serviceDayGraph(String openId, String date) {
 
 		StringBuffer sqlSb = new StringBuffer();
@@ -623,5 +643,61 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 
 		return getMapList(sqlSb, sessionBusinessId, times);
 
+	}
+
+	@Override
+	public List<Map<String, Object>> consumerDayGraph(String sessionBusinessId, String date) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	business_consumer_record.id,\n");
+		sqlSb.append("	business_consumer_record.business_id,\n");
+		sqlSb.append("	business_consumer_record.consumer_id,\n");
+		sqlSb.append("	DATE_FORMAT(\n");
+		sqlSb.append("		business_consumer_record.consume_time,\n");
+		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+		sqlSb.append("	) AS consume_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(\n");
+		sqlSb.append("		SECOND,\n");
+		sqlSb.append("		business_consumer_record.consume_time,\n");
+		sqlSb.append("		NOW()\n");
+		sqlSb.append("	) AS sec_diff,\n");
+		sqlSb.append("	UNIX_TIMESTAMP(\n");
+		sqlSb.append("		business_consumer_record.consume_time\n");
+		sqlSb.append("	) AS times,\n");
+		sqlSb.append("	business_consumer_record.scene_id,\n");
+		sqlSb.append("	business_consumer_record.consume_code,\n");
+		sqlSb.append("	business_consumer_record.`status`,\n");
+		sqlSb.append("	business_consumer_record.is_delete,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("\n");
+		sqlSb.append("IF (\n");
+		sqlSb.append("	subscriber.sex = 1,\n");
+		sqlSb.append("	'男',\n");
+		sqlSb.append("\n");
+		sqlSb.append("IF (\n");
+		sqlSb.append("	subscriber.sex = 2,\n");
+		sqlSb.append("	'女',\n");
+		sqlSb.append("	'未知'\n");
+		sqlSb.append(")\n");
+		sqlSb.append(") AS sex,\n");
+		sqlSb.append(" subscriber.city,\n");
+		sqlSb.append(" subscriber.country,\n");
+		sqlSb.append(" subscriber.province,\n");
+		sqlSb.append(" subscriber.headimgurl,\n");
+		sqlSb.append(" qrcode.description\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	business_consumer_record\n");
+		sqlSb.append("LEFT JOIN subscriber ON business_consumer_record.consumer_id = subscriber.user_name\n");
+		sqlSb.append("INNER JOIN qrcode ON business_consumer_record.scene_id = qrcode.scene_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	business_consumer_record.is_delete = 0\n");
+		sqlSb.append("AND business_consumer_record.business_id = ?\n");
+		sqlSb.append("AND DATE(\n");
+		sqlSb.append("	business_consumer_record.consume_time\n");
+		sqlSb.append(") = ?\n");
+		sqlSb.append("ORDER BY business_consumer_record.consume_time DESC\n");
+
+		return getMapList(sqlSb, sessionBusinessId, date);
 	}
 }

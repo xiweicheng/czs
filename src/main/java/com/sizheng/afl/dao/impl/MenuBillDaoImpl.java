@@ -35,7 +35,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	menu_bill.id,\n");
 		sqlSb.append("	menu_bill.menu_id,\n");
-		sqlSb.append("	menu_bill.date_time,\n");
+		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
 		sqlSb.append("	menu_bill.status,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu_bill.memo,\n");
@@ -58,6 +58,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu_bill.`status` IN (0,1,3)\n");
 		sqlSb.append("AND menu_bill.consume_code = ?\n");
+		sqlSb.append("ORDER BY menu_bill.date_time DESC\n");
 
 		return getMapList(sqlSb, menuBill.getConsumeCode());
 	}
@@ -69,7 +70,8 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	menu_bill.id,\n");
 		sqlSb.append("	menu_bill.menu_id,\n");
-		sqlSb.append("	menu_bill.date_time,\n");
+		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,menu_bill.date_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	menu_bill.status,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu_bill.memo,\n");
@@ -80,6 +82,8 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	resources.path,\n");
 		sqlSb.append("	resources.file_name,\n");
 		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	subscriber.headimgurl,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
 		sqlSb.append("	menu.price,\n");
 		sqlSb.append("	menu.privilege\n");
 		sqlSb.append("FROM\n");
@@ -92,6 +96,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	menu_bill.`status` IN (1,3)\n");
 		sqlSb.append("AND menu_bill.consume_code = ?\n");
+		sqlSb.append("ORDER BY menu_bill.date_time DESC\n");
 
 		return getMapList(sqlSb, menuBill.getConsumeCode());
 	}
@@ -111,7 +116,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	menu_bill.id,\n");
 		sqlSb.append("	menu_bill.menu_id,\n");
-		sqlSb.append("	menu_bill.date_time,\n");
+		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
 		sqlSb.append("	menu_bill.`status`,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
@@ -152,6 +157,7 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	AND business_consumer.consume_code IS NOT NULL\n");
 		sqlSb.append("	AND business_consumer.`status` = 1\n");
 		sqlSb.append(")\n");
+		sqlSb.append("ORDER BY menu_bill.date_time DESC\n");
 
 		return getMapList(sqlSb, menuBill.getConsumeCode());
 	}
@@ -163,7 +169,8 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	menu_bill.id,\n");
 		sqlSb.append("	menu_bill.menu_id,\n");
-		sqlSb.append("	menu_bill.date_time,\n");
+		sqlSb.append("	DATE_FORMAT(menu_bill.date_time,  '%Y/%m/%d %H:%i:%s') as date_time,\n");
+		sqlSb.append("	TIMESTAMPDIFF(SECOND,menu_bill.date_time,NOW()) as sec_diff,\n");
 		sqlSb.append("	menu_bill.`status`,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	menu_bill.consumer_id,\n");
@@ -177,6 +184,8 @@ public class MenuBillDaoImpl extends BaseDaoImpl implements IMenuBillDao {
 		sqlSb.append("	resources.file_name,\n");
 		sqlSb.append("	menu.price,\n");
 		sqlSb.append("	menu.privilege,\n");
+		sqlSb.append("	subscriber.headimgurl,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
 		sqlSb.append("	subscriber.nickname\n");
 		sqlSb.append("FROM\n");
 		sqlSb.append("	menu_bill\n");

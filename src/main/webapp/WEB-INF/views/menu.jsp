@@ -20,7 +20,8 @@
 			id="menu-item-business-listMsg">顾客消息 </a><a class="item"
 			href="business/listService.do?status=1"
 			id="menu-item-business-listService">服务请求 </a> <a class="item"
-			href="business/billSett.do?status=0" id="menu-item-bill-sett"> 账目结算 </a>
+			href="business/billSett.do?status=0" id="menu-item-bill-sett">
+			账目结算 </a>
 		<div class="header item">
 			<i class="cart icon"></i> 订单管理
 		</div>
@@ -45,9 +46,11 @@
 		</div>
 		<a class="item" href="business/menuStat.do"
 			id="menu-item-business-menu-stat"> 菜品统计 </a><a class="item"
-			href="business/serviceStat.do" id="menu-item-business-service-stat">
-			服务统计 </a> <a class="item" href="business/volumeStat.do"
-			id="menu-item-business-volume-stat"> 营业额统计 </a>
+			href="business/consumerStat.do" id="menu-item-business-consumer-stat">
+			顾客统计 </a><a class="item" href="business/serviceStat.do"
+			id="menu-item-business-service-stat"> 服务统计 </a> <a class="item"
+			href="business/volumeStat.do" id="menu-item-business-volume-stat">
+			营业额统计 </a>
 	</div>
 	<script type="text/javascript">
 		jQuery(function($) {

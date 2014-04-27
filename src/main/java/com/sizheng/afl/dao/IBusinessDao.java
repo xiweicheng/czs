@@ -139,5 +139,9 @@ public interface IBusinessDao {
 	boolean billSettConfirm(Locale locale, String bussinessId, String settHandler, String... ids);
 
 	List<Map<String, Object>> queryBillSettByDate(Locale locale, String sessionBusinessId, Long times);
+
+	List<Map<String, Object>> consumerGraph(String businessId);
+
+	List<Map<String, Object>> consumerDayGraph(String sessionBusinessId, String date);
 	
 }

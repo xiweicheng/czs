@@ -358,4 +358,8 @@ public interface IBusinessService extends IBaseService {
 	boolean billSettConfirm(Locale locale, String businessId, String settHandler, String... ids);
 
 	List<Map<String, Object>> queryBillSettByDate(Locale locale, String sessionBusinessId, Long times);
+
+	Map<String, List<Object>> consumerGraph(Locale locale, String openId);
+
+	List<Map<String, Object>> consumerDayGraph(Locale locale, String sessionBusinessId, String date);
 }

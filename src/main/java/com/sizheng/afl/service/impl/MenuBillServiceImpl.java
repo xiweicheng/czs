@@ -197,6 +197,8 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 	@Override
 	public List<Map<String, Object>> query4GroupMapList2(Locale locale, MenuBill menuBill) {
 
+		// return menuBillDao.queryGroup2(locale, menuBill, null, null);
+
 		List<Map<String, Object>> list = menuBillDao.queryGroup2(locale, menuBill, null, null);
 
 		Map<String, Map<String, Object>> mapMap = new HashMap<String, Map<String, Object>>();
@@ -212,9 +214,13 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 				mapList.add(map2);
 				map2.put("id", map.get("id"));
 				map2.put("date_time", map.get("date_time"));
+				map2.put("sec_diff", map.get("sec_diff"));
 				map2.put("status", map.get("status"));
 				map2.put("copies", map.get("copies"));
 				map2.put("consumer_id", map.get("consumer_id"));
+				map2.put("nickname", map.get("nickname"));
+				map2.put("headimgurl", map.get("headimgurl"));
+				map2.put("sex", map.get("sex"));
 				map2.put("nickname", map.get("nickname"));
 				map2.put("consume_code", map.get("consume_code"));
 
@@ -222,10 +228,11 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 					map.remove("id");
 					map.remove("date_time");
 					map.remove("status");
-					map.remove("copies");
 					map.remove("consumer_id");
 					map.remove("nickname");
 					map.remove("consume_code");
+					map.remove("headimgurl");
+					map.remove("sex");
 				}
 
 			} else {
@@ -235,21 +242,27 @@ public class MenuBillServiceImpl extends BaseServiceImpl implements IMenuBillSer
 				Map<String, Object> map3 = new HashMap<>();
 				map3.put("id", map.get("id"));
 				map3.put("date_time", map.get("date_time"));
+				map3.put("sec_diff", map.get("sec_diff"));
 				map3.put("status", map.get("status"));
 				map3.put("copies", map.get("copies"));
 				map3.put("consumer_id", map.get("consumer_id"));
 				map3.put("nickname", map.get("nickname"));
+				map3.put("headimgurl", map.get("headimgurl"));
+				map3.put("sex", map.get("sex"));
 				map3.put("consume_code", map.get("consume_code"));
 				mapList.add(map3);
 
 				if (menuBill.getConsumeCode().equals(map.get("consume_code"))) {
 					map2.put("id", map.get("id"));
 					map2.put("date_time", map.get("date_time"));
+					map2.put("sec_diff", map.get("sec_diff"));
 					map2.put("status", map.get("status"));
 					map2.put("copies", map.get("copies"));
 					map2.put("consumer_id", map.get("consumer_id"));
 					map2.put("nickname", map.get("nickname"));
 					map2.put("consume_code", map.get("consume_code"));
+					map2.put("headimgurl", map.get("headimgurl"));
+					map2.put("sex", map.get("sex"));
 				}
 			}
 		}
