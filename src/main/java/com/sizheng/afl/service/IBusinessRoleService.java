@@ -121,4 +121,8 @@ public interface IBusinessRoleService extends IBaseService {
 	 * @return
 	 */
 	boolean exists(Locale locale, BusinessRole businessRole);
+
+	boolean requestHandle(Locale locale, String[] ids, String status, String accepterId);
+
+	boolean serviceHandle(Locale locale, String[] ids, String status, String accepterId);
 }

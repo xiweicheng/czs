@@ -662,7 +662,8 @@ public class BusinessController extends BaseController {
 	 */
 	@RequestMapping("free/acceptServiceReq")
 	public String acceptServiceReq(HttpServletRequest request, Locale locale, Model model,
-			@RequestParam("id") String id, @RequestParam("openId") String openId) {
+			@RequestParam("id") String id, @RequestParam("openId") String openId,
+			@RequestParam("consumerId") final String consumerId) {
 
 		logger.debug("处理服务员接受呼叫服务【商家】");
 
@@ -670,6 +671,12 @@ public class BusinessController extends BaseController {
 
 		if (val) {
 			model.addAttribute("message", "接受呼叫请求成功!");
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(consumerId, "您的呼叫服务请求已被接受,请稍后....");
+				}
+			});
+
 		} else {
 			model.addAttribute("message", "该请求已经被接受!");
 		}
@@ -1201,7 +1208,8 @@ public class BusinessController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("free/joining")
-	public String joining(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+	public String joining(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId, @RequestParam("businessId") String businessId) {
 
 		logger.debug("顾客进入店铺请求处理【商家】");
 
@@ -1254,16 +1262,21 @@ public class BusinessController extends BaseController {
 	@RequestMapping("free/reqHandle")
 	public String reqHandle(HttpServletRequest request, Locale locale, Model model,
 			@RequestParam("consumeCode") String consumeCode, @RequestParam("agree") String agree,
-			@RequestParam("openId") String openId) {
+			@RequestParam("openId") final String openId, @RequestParam("businessId") String businessId) {
 
 		logger.debug("对顾客进入请求进行同意或者否定【商家】");
 
-		Boolean val = businessService.agreeOrDisagree(locale, consumeCode, agree.equals("1"));
+		Boolean val = businessService.agreeOrDisagree(locale, consumeCode, agree.equals("1"), businessId);
 
 		if (val && agree.equals("1")) {
-			weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
-					"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
-					propUtil.getRedirectUrl(), openId));
+
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
+							"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
+							propUtil.getRedirectUrl(), openId));
+				}
+			});
 		}
 
 		model.addAttribute("message", val ? "处理成功!" : "处理失败!");
@@ -1286,7 +1299,7 @@ public class BusinessController extends BaseController {
 	@ResponseBody
 	public ResultMsg agreeAccess(HttpServletRequest request, Locale locale, Model model,
 			@RequestParam("consumeCode") String consumeCode, @RequestParam("status") String status,
-			@RequestParam("openId") String openId) {
+			@RequestParam("openId") final String openId) {
 
 		logger.debug("对顾客进入请求进行同意或者否定【商家】");
 
@@ -1295,13 +1308,18 @@ public class BusinessController extends BaseController {
 		if (status.equals("0")) {// 解禁处理
 			val = businessService.enableConsumer(locale, openId, WebUtil.getSessionBusiness(request).getOpenId());
 		} else {// 同意进入或者禁止
-			val = businessService.agreeOrDisagree(locale, consumeCode, status.equals("1"));
+			val = businessService.agreeOrDisagree(locale, consumeCode, status.equals("1"),
+					WebUtil.getSessionBusinessId(request));
 		}
 
 		if (val && status.equals("1")) {
-			weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
-					"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
-					propUtil.getRedirectUrl(), openId));
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
+							"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
+							propUtil.getRedirectUrl(), openId));
+				}
+			});
 		}
 
 		return new ResultMsg(val.booleanValue());

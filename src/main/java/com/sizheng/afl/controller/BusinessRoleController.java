@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.component.PropUtil;
+import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.BusinessRole;
 import com.sizheng.afl.pojo.entity.Menu;
@@ -29,9 +31,12 @@ import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.IBusinessRoleService;
+import com.sizheng.afl.service.IBusinessService;
 import com.sizheng.afl.service.IMenuService;
 import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.NumberUtil;
+import com.sizheng.afl.util.StringUtil;
+import com.sizheng.afl.util.ThreadUtil;
 
 /**
  * 【商家角色管理】请求控制层.
@@ -54,6 +59,15 @@ public class BusinessRoleController extends BaseController {
 
 	@Autowired
 	IMenuService menuService;
+
+	@Autowired
+	IBusinessService businessService;
+
+	@Autowired
+	WeiXinApiInvoker weiXinApiInvoker;
+
+	@Autowired
+	PropUtil propUtil;
 
 	/**
 	 * 添加【商家角色管理】.
@@ -266,9 +280,115 @@ public class BusinessRoleController extends BaseController {
 
 		logger.debug("服务员登录【商家】");
 
-		model.addAttribute("message", "服务员登录");
+		BusinessRole businessRole = new BusinessRole();
+		businessRole.setBusinessId(businessId);
+		businessRole.setOpenId(openId);
+		businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+		businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+
+		List<BusinessRole> list = businessRoleService.query(locale, businessRole);
+
+		if (list.size() == 0) {
+			model.addAttribute("message", "您没有角色权限!");
+			return "message";
+		}
+
+		List<Map<String, Object>> list2 = businessService.queryBusinessConsumer(locale, businessId, "5");
+
+		for (Map<String, Object> map : list2) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+		}
+
+		model.addAttribute("list", list2);
 
 		return "business/waiter-login";
+	}
+
+	/**
+	 * 服务员顾客请求.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("free/waiterRequest")
+	public String waiterRequest(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId, @RequestParam("businessId") String businessId) {
+
+		logger.debug("服务员顾客请求【商家】");
+
+		BusinessRole businessRole = new BusinessRole();
+		businessRole.setBusinessId(businessId);
+		businessRole.setOpenId(openId);
+		businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+		businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+
+		List<BusinessRole> list = businessRoleService.query(locale, businessRole);
+
+		if (list.size() == 0) {
+			model.addAttribute("message", "您没有角色权限!");
+			return "message";
+		}
+
+		List<Map<String, Object>> list2 = businessService.queryConsumerRequest(locale, businessId, "1");
+
+		for (Map<String, Object> map : list2) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+		}
+
+		model.addAttribute("list", list2);
+
+		return "business/waiter-request";
+	}
+
+	/**
+	 * 服务员检查顾客进入请求.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("free/checkRequest")
+	@ResponseBody
+	public ResultMsg checkRequest(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("businessId") String businessId) {
+
+		logger.debug("服务员检查顾客进入请求【商家】");
+
+		List<Map<String, Object>> list2 = businessService.queryBusinessConsumer(locale, businessId, "5");
+
+		return new ResultMsg(true, list2.size());
+	}
+
+	/**
+	 * 服务员检查顾客呼叫请求.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("free/checkService")
+	@ResponseBody
+	public ResultMsg checkService(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("businessId") String businessId) {
+
+		logger.debug("服务员检查顾客呼叫请求【商家】");
+
+		List<Map<String, Object>> list2 = businessService.queryConsumerRequest(locale, businessId, "1");
+
+		return new ResultMsg(true, list2.size());
 	}
 
 	/**
@@ -434,6 +554,68 @@ public class BusinessRoleController extends BaseController {
 		logger.debug("顾客订单处理【菜单】");
 
 		boolean value = menuService.acceptBillJoin(locale, ids, copies, accepterId);
+
+		return new ResultMsg(value);
+	}
+
+	/**
+	 * 顾客进入请求处理【角色】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月29日 08:37:31
+	 * @modification 2014年03月29日 08:37:31
+	 * @return
+	 */
+	@RequestMapping("free/requestHandle")
+	@ResponseBody
+	public ResultMsg requestHandle(HttpServletRequest request, Locale locale, @RequestParam("id") String[] ids,
+			@RequestParam("status") String status, @RequestParam("accepterId") String accepterId,
+			@RequestParam("consumerId") final String consumerId) {
+
+		logger.debug("顾客进入请求处理【角色】");
+
+		boolean value = businessRoleService.requestHandle(locale, ids, status, accepterId);
+
+		if (value && SysConstant.CONSUME_STATUS_ONGOING.equals(Short.valueOf(status))) {// 发送菜单链接.
+
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(consumerId, StringUtil.replace(
+							"请求确认通过!\n\n<a href='{?1}/menu/free/list4bill.do?openId={?2}'>[点击此]开始点菜</a>",
+							propUtil.getRedirectUrl(), consumerId));
+				}
+			});
+		}
+
+		return new ResultMsg(value);
+	}
+
+	/**
+	 * 顾客呼叫请求处理【角色】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月29日 08:37:31
+	 * @modification 2014年03月29日 08:37:31
+	 * @return
+	 */
+	@RequestMapping("free/serviceHandle")
+	@ResponseBody
+	public ResultMsg serviceHandle(HttpServletRequest request, Locale locale, @RequestParam("id") String[] ids,
+			@RequestParam("status") String status, @RequestParam("accepterId") String accepterId,
+			@RequestParam("consumerId") final String consumerId) {
+
+		logger.debug("顾客呼叫请求处理【角色】");
+
+		boolean value = businessRoleService.serviceHandle(locale, ids, status, accepterId);
+
+		if (value && SysConstant.SERVICE_STATUS_ACCEPT.equals(Short.valueOf(status))) {
+
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(consumerId, StringUtil.replace("您的呼叫服务已经被接受,请稍后..."));
+				}
+			});
+		}
 
 		return new ResultMsg(value);
 	}

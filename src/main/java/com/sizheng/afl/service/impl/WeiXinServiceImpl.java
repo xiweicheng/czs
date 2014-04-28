@@ -616,8 +616,9 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 								String openId = ((BusinessRole) object).getOpenId();
 								String sendMsg = StringUtil
 										.replace(
-												"顾客[{?1}]呼叫服务\n位置:{?2}\n\n<a href='{?3}/business/free/acceptServiceReq.do?id={?4}&openId={?5}'>[点击此]接受该服务请求</a>",
-												userName, location, propUtil.getRedirectUrl(), id, openId);
+												"顾客[{?1}]呼叫服务\n位置:{?2}\n\n<a href='{?3}/business/free/acceptServiceReq.do?id={?4}&openId={?5}&consumerId={?6}'>[点击此]接受该服务请求</a>",
+												userName, location, propUtil.getRedirectUrl(), id, openId,
+												bean.getFromUserName());
 								if (!weiXinApiInvoker.sendServiceMsg(openId, sendMsg)) {
 									logger.error("客服消息通知服务人员失败! openId:" + openId);
 								}

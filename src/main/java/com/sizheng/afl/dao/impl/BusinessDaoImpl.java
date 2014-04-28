@@ -700,4 +700,122 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 
 		return getMapList(sqlSb, sessionBusinessId, date);
 	}
+
+	@Override
+	public List<Map<String, Object>> queryBusinessConsumer(Locale locale, String businessId, String... status) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	business_consumer.id,\n");
+		sqlSb.append("	business_consumer.business_id,\n");
+		sqlSb.append("	business_consumer.consumer_id,\n");
+		sqlSb.append("	business_consumer.consume_times,\n");
+		sqlSb.append("	DATE_FORMAT(\n");
+		sqlSb.append("		business_consumer.last_consume_time,\n");
+		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+		sqlSb.append("	) AS last_consume_time,\n");
+		sqlSb.append("	UNIX_TIMESTAMP(\n");
+		sqlSb.append("		business_consumer.last_consume_time\n");
+		sqlSb.append("	) AS times,\n");
+		sqlSb.append("	TIMESTAMPDIFF(\n");
+		sqlSb.append("		SECOND,\n");
+		sqlSb.append("		business_consumer.last_consume_time,\n");
+		sqlSb.append("		NOW()\n");
+		sqlSb.append("	) AS sec_diff,\n");
+		sqlSb.append("	business_consumer.scene_id,\n");
+		sqlSb.append("	business_consumer.consume_code,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("\n");
+		sqlSb.append("IF (\n");
+		sqlSb.append("	subscriber.sex = 1,\n");
+		sqlSb.append("	'男',\n");
+		sqlSb.append("\n");
+		sqlSb.append("IF (\n");
+		sqlSb.append("	subscriber.sex = 2,\n");
+		sqlSb.append("	'女',\n");
+		sqlSb.append("	'未知'\n");
+		sqlSb.append(")\n");
+		sqlSb.append(") AS sex,\n");
+		sqlSb.append(" subscriber.city,\n");
+		sqlSb.append(" subscriber.country,\n");
+		sqlSb.append(" subscriber.province,\n");
+		sqlSb.append(" subscriber.headimgurl,\n");
+		sqlSb.append(" business_consumer.`status`,\n");
+		sqlSb.append(" qrcode.description\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	business_consumer\n");
+		sqlSb.append("LEFT JOIN subscriber ON business_consumer.consumer_id = subscriber.user_name\n");
+		sqlSb.append("INNER JOIN qrcode ON business_consumer.scene_id = qrcode.scene_id\n");
+		sqlSb.append("INNER JOIN `user` ON business_consumer.consume_code = `user`.consume_code\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	business_consumer.business_id = ?\n");
+
+		if (status != null && status.length > 0 && StringUtil.isNotEmpty(status[0])) {
+			sqlSb.append(SqlUtil.replaceIfNotEmpty("AND business_consumer.`status` IN ({?1})\n",
+					SqlUtil.joinAsIntIn2(status)));
+		}
+
+		sqlSb.append("ORDER BY business_consumer.last_consume_time ASC\n");
+
+		return getMapList(sqlSb, businessId);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryConsumerRequest(Locale locale, String businessId, String... status) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	service.id,\n");
+		sqlSb.append("	service.consumer_id,\n");
+		sqlSb.append("	service.business_id,\n");
+		sqlSb.append("	DATE_FORMAT(\n");
+		sqlSb.append("		service.date_time,\n");
+		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+		sqlSb.append("	) AS date_time,\n");
+		sqlSb.append("	UNIX_TIMESTAMP(service.date_time) AS times,\n");
+		sqlSb.append("	TIMESTAMPDIFF(\n");
+		sqlSb.append("		SECOND,\n");
+		sqlSb.append("		service.date_time,\n");
+		sqlSb.append("		NOW()\n");
+		sqlSb.append("	) AS sec_diff,\n");
+		sqlSb.append("	service.type,\n");
+		sqlSb.append("	service.`status`,\n");
+		sqlSb.append("	service.is_delete,\n");
+		sqlSb.append("	service.`handler`,\n");
+		sqlSb.append("	service.appraise,\n");
+		sqlSb.append("	service.scene_id,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("\n");
+		sqlSb.append("IF (\n");
+		sqlSb.append("	subscriber.sex = 1,\n");
+		sqlSb.append("	'男',\n");
+		sqlSb.append("\n");
+		sqlSb.append("IF (\n");
+		sqlSb.append("	subscriber.sex = 2,\n");
+		sqlSb.append("	'女',\n");
+		sqlSb.append("	'未知'\n");
+		sqlSb.append(")\n");
+		sqlSb.append(") AS sex,\n");
+		sqlSb.append(" subscriber.city,\n");
+		sqlSb.append(" subscriber.country,\n");
+		sqlSb.append(" subscriber.province,\n");
+		sqlSb.append(" subscriber.headimgurl,\n");
+		sqlSb.append(" qrcode.description\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	service\n");
+		sqlSb.append("LEFT JOIN subscriber ON service.consumer_id = subscriber.user_name\n");
+		sqlSb.append("INNER JOIN qrcode ON service.scene_id = qrcode.scene_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	service.business_id = ?\n");
+		sqlSb.append("AND service.is_delete = 0\n");
+
+		if (status != null && status.length > 0 && StringUtil.isNotEmpty(status[0])) {
+			sqlSb.append(SqlUtil.replaceIfNotEmpty("AND service.`status` IN ({?1})\n", SqlUtil.joinAsIntIn2(status)));
+		}
+
+		sqlSb.append("ORDER BY\n");
+		sqlSb.append("	service.date_time ASC\n");
+
+		return getMapList(sqlSb, businessId);
+	}
 }

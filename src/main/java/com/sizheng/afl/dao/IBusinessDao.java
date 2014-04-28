@@ -143,5 +143,9 @@ public interface IBusinessDao {
 	List<Map<String, Object>> consumerGraph(String businessId);
 
 	List<Map<String, Object>> consumerDayGraph(String sessionBusinessId, String date);
+
+	List<Map<String, Object>> queryBusinessConsumer(Locale locale, String businessId, String... status);
+
+	List<Map<String, Object>> queryConsumerRequest(Locale locale, String businessId, String... status);
 	
 }

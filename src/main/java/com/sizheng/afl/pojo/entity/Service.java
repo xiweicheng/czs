@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-28 17:49:32 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-28 22:22:32 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -29,12 +29,13 @@ public class Service implements java.io.Serializable {
 	private String handler;
 	private Short appraise;
 	private Long sceneId;
+	private Date handleDateTime;
 
 	public Service() {
 	}
 
 	public Service(String consumerId, String businessId, Date dateTime, Short type, Short status, Short isDelete,
-			String handler, Short appraise, Long sceneId) {
+			String handler, Short appraise, Long sceneId, Date handleDateTime) {
 		this.consumerId = consumerId;
 		this.businessId = businessId;
 		this.dateTime = dateTime;
@@ -44,6 +45,7 @@ public class Service implements java.io.Serializable {
 		this.handler = handler;
 		this.appraise = appraise;
 		this.sceneId = sceneId;
+		this.handleDateTime = handleDateTime;
 	}
 
 	@Id
@@ -137,6 +139,16 @@ public class Service implements java.io.Serializable {
 
 	public void setSceneId(Long sceneId) {
 		this.sceneId = sceneId;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "handle_date_time", length = 19)
+	public Date getHandleDateTime() {
+		return this.handleDateTime;
+	}
+
+	public void setHandleDateTime(Date handleDateTime) {
+		this.handleDateTime = handleDateTime;
 	}
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-28 17:49:33 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-28 22:22:32 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.BusinessConsumer" table="business_consumer" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -39,6 +39,12 @@
                 <comment>
                 &#207;&#251;&#183;&#209;&#215;&#180;&#204;&#172;-&gt;1:&#207;&#251;&#183;&#209;&#189;&#248;&#208;&#208;&#214;&#208;;0:&#207;&#251;&#183;&#209;&#189;&#225;&#202;&#248;;2:&#189;&#251;&#214;&#185;&#207;&#251;&#183;&#209;;3:&#184;&#246;&#200;&#203;&#189;&#225;&#213;&#203;&#201;&#234;&#199;&#235;&#214;&#208;,4:&#188;&#175;&#204;&#229;&#189;&#225;&#213;&#203;&#201;&#234;&#199;&#235;&#214;&#208;,5:&#189;&#248;&#200;&#235;&#214;&#208;</comment>
             </column>
+        </property>
+        <property name="handler" type="string">
+            <column name="handler" />
+        </property>
+        <property name="handleDateTime" type="timestamp">
+            <column name="handle_date_time" length="19" />
         </property>
     </class>
 </hibernate-mapping>

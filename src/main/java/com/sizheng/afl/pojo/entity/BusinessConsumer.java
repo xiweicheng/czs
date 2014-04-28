@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-28 17:49:32 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-28 22:22:32 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -27,12 +27,14 @@ public class BusinessConsumer implements java.io.Serializable {
 	private Long sceneId;
 	private String consumeCode;
 	private Short status;
+	private String handler;
+	private Date handleDateTime;
 
 	public BusinessConsumer() {
 	}
 
 	public BusinessConsumer(String businessId, String consumerId, Long consumeTimes, Date lastConsumeTime,
-			Long sceneId, String consumeCode, Short status) {
+			Long sceneId, String consumeCode, Short status, String handler, Date handleDateTime) {
 		this.businessId = businessId;
 		this.consumerId = consumerId;
 		this.consumeTimes = consumeTimes;
@@ -40,6 +42,8 @@ public class BusinessConsumer implements java.io.Serializable {
 		this.sceneId = sceneId;
 		this.consumeCode = consumeCode;
 		this.status = status;
+		this.handler = handler;
+		this.handleDateTime = handleDateTime;
 	}
 
 	@Id
@@ -115,6 +119,25 @@ public class BusinessConsumer implements java.io.Serializable {
 
 	public void setStatus(Short status) {
 		this.status = status;
+	}
+
+	@Column(name = "handler")
+	public String getHandler() {
+		return this.handler;
+	}
+
+	public void setHandler(String handler) {
+		this.handler = handler;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "handle_date_time", length = 19)
+	public Date getHandleDateTime() {
+		return this.handleDateTime;
+	}
+
+	public void setHandleDateTime(Date handleDateTime) {
+		this.handleDateTime = handleDateTime;
 	}
 
 }

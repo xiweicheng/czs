@@ -372,8 +372,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 					if (isConsumerInConfirm) {
 						String agreeUrl = StringUtil.replace(
-								"<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
-								propUtil.getRedirectUrl(), bean.getFromUserName());
+								"<a href='{?1}/business/free/joining.do?openId={?2}&businessId={?3}'>[点击此]处理请求</a>",
+								propUtil.getRedirectUrl(), bean.getFromUserName(), qrcode2.getOpenId());
 						// 通知商家
 						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
 								"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}\n\n{?5}", nickName,
@@ -459,8 +459,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				public void run() {
 					if (isConsumerInConfirm) {
 						String agreeUrl = StringUtil.replace(
-								"<a href='{?1}/business/free/joining.do?openId={?2}'>[点击此]处理请求</a>",
-								propUtil.getRedirectUrl(), bean.getFromUserName());
+								"<a href='{?1}/business/free/joining.do?openId={?2}&businessId={?3}'>[点击此]处理请求</a>",
+								propUtil.getRedirectUrl(), bean.getFromUserName(), qrcode2.getOpenId());
 						// 通知商家
 						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
 								"顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}\n\n{?4}", nickName, qrsceneId,
@@ -738,7 +738,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public Boolean agreeOrDisagree(Locale locale, String consumeCode, boolean agree) {
+	public Boolean agreeOrDisagree(Locale locale, String consumeCode, boolean agree, String handler) {
 
 		BusinessConsumer businessConsumer = new BusinessConsumer();
 		businessConsumer.setConsumeCode(consumeCode);
@@ -885,7 +885,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public boolean acceptServiceReq(Locale locale, String id, String openId) {
+	public boolean acceptServiceReq(Locale locale, String id, String handler) {
 
 		com.sizheng.afl.pojo.entity.Service service = hibernateTemplate.get(com.sizheng.afl.pojo.entity.Service.class,
 				Long.valueOf(id));
@@ -893,13 +893,13 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		if (service != null) {
 			if (SysConstant.SERVICE_STATUS_ONGOING.equals(service.getStatus())) {
 				service.setStatus(SysConstant.SERVICE_STATUS_ACCEPT);
-				service.setHandler(openId);
+				service.setHandler(handler);
 
 				hibernateTemplate.update(service);
 
 				Request request = new Request();
 				request.setBusinessId(service.getBusinessId());
-				request.setConsumerId(openId);
+				request.setConsumerId(handler);
 				request.setDateTime(DateUtil.now());
 				request.setIsDelete(SysConstant.SHORT_FALSE);
 				request.setName("处理呼叫服务");
@@ -1096,6 +1096,16 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		business.setLoginTimes(null);
 
 		hibernateTemplate.update(business);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryBusinessConsumer(Locale locale, String businessId, String... status) {
+		return businessDao.queryBusinessConsumer(locale, businessId, status);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryConsumerRequest(Locale locale, String businessId, String... status) {
+		return businessDao.queryConsumerRequest(locale, businessId, status);
 	}
 
 }

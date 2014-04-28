@@ -106,12 +106,12 @@
 							<th class="">状态</th>
 							<th class="">入住者</th>
 							<th class="">地址</th>
+							<th class="number">入驻时间</th>
+							<th class="number">入驻距今</th>
 							<th class="number">二维码限制</th>
 							<th class="">邮箱验证</th>
 							<th class="">手机验证</th>
 							<th class="">是否删除</th>
-							<th class="number">入驻时间</th>
-							<th class="number">入驻距今</th>
 							<th class="number">授权天数</th>
 							<th class="">审核者</th>
 							<th class="number">审核时间</th>
@@ -124,7 +124,7 @@
 								<td class="">${sts.index + 1}</td>
 								<td class=""><c:if test="${item.status=='0'}">申请中<a
 											id="pass-btn-${item.id}" class="ui label"
-											onclick="msgHandler('1', '${item.id}')">确认通过</a>
+											onclick="msgHandler('1', '${item.id}', '${item.open_id}')">确认通过</a>
 									</c:if> <c:if test="${item.status=='1'}">已验证</c:if></td>
 								<td data-sort-value="${item.nickname}">
 									<div class="ui basic accordion"
@@ -183,13 +183,12 @@
 									</div>
 								</td>
 								<td class="">${item.country}&nbsp;${item.province}&nbsp;${item.city}</td>
+								<td class="" data-sort-value="${item.times}">${item.date_time}</td>
+								<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
 								<td class="">${item.qrcode_limit}</td>
 								<td class=""><c:if test="${item.is_mail_verify=='1'}">是</c:if></td>
 								<td class=""><c:if test="${item.is_phone_verify=='1'}">是</c:if></td>
 								<td class=""><c:if test="${item.is_deleted=='1'}">是</c:if></td>
-
-								<td class="" data-sort-value="${item.times}">${item.date_time}</td>
-								<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
 
 								<td class="">${item.days}</td>
 								<td class=""><c:if test="${! empty item.audit_nickname}">
@@ -233,6 +232,7 @@
 	<script type="text/javascript">
 		var _status;
 		var _id;
+		var _businessId;
 		function filterHandler(status) {
 			$('<form action="czs/businessMgr.do" method="post"></form>').append(
 					$('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
@@ -243,9 +243,10 @@
 									$('#datetimepickerEnd > input').val())).submit();
 		}
 
-		function msgHandler(status, id) {
+		function msgHandler(status, id, businessId) {
 			_status = status;
 			_id = id;
+			_businessId = businessId;
 			$('#confirm-ui-modal').modal('show');
 		}
 
@@ -320,6 +321,7 @@
 				onApprove : function() {
 					$.post('czs/businessHandle.do', {
 						status : _status,
+						openId : _businessId,
 						id : _id
 					}, function(msg) {
 						if (msg.succeed) {

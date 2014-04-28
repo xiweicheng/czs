@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-28 17:49:33 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-28 22:22:32 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Service" table="service" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -42,6 +42,9 @@
         </property>
         <property name="sceneId" type="java.lang.Long">
             <column name="scene_id" />
+        </property>
+        <property name="handleDateTime" type="timestamp">
+            <column name="handle_date_time" length="19" />
         </property>
     </class>
 </hibernate-mapping>

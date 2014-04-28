@@ -275,9 +275,10 @@ public interface IBusinessService extends IBaseService {
 	 * @param locale
 	 * @param consumeCode
 	 * @param equals
+	 * @param handler TODO
 	 * @return
 	 */
-	Boolean agreeOrDisagree(Locale locale, String consumeCode, boolean equals);
+	Boolean agreeOrDisagree(Locale locale, String consumeCode, boolean equals, String handler);
 
 	/**
 	 * 解禁顾客.
@@ -333,7 +334,7 @@ public interface IBusinessService extends IBaseService {
 
 	boolean deleteRole(Locale locale, BusinessRole businessRole);
 
-	boolean acceptServiceReq(Locale locale, String id, String openId);
+	boolean acceptServiceReq(Locale locale, String id, String handler);
 
 	Map<String, List<Object>> menuGraph(Locale locale, String openId);
 
@@ -364,4 +365,8 @@ public interface IBusinessService extends IBaseService {
 	List<Map<String, Object>> consumerDayGraph(Locale locale, String sessionBusinessId, String date);
 
 	void clearDynamicCodeAndLoginTimes(Locale locale, Business business);
+
+	List<Map<String, Object>> queryBusinessConsumer(Locale locale, String businessId, String... status);
+
+	List<Map<String, Object>> queryConsumerRequest(Locale locale, String businessId, String... status);
 }

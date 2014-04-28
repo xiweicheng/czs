@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
 import com.sizheng.afl.component.PropUtil;
+import com.sizheng.afl.component.WeiXinApiInvoker;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.CzsUser;
@@ -35,6 +36,7 @@ import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.EncoderUtil;
 import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
+import com.sizheng.afl.util.ThreadUtil;
 import com.sizheng.afl.util.WebUtil;
 
 /**
@@ -58,6 +60,9 @@ public class CzsUserController extends BaseController {
 
 	@Autowired
 	PropUtil propUtil;
+
+	@Autowired
+	WeiXinApiInvoker weiXinApiInvoker;
 
 	/**
 	 * 添加【平台用户】.
@@ -427,18 +432,31 @@ public class CzsUserController extends BaseController {
 	 */
 	@RequestMapping("businessHandle")
 	@ResponseBody
-	public ResultMsg checkBusiness(HttpServletRequest request, Locale locale, @ModelAttribute Business business) {
+	public ResultMsg businessHandle(HttpServletRequest request, Locale locale, @ModelAttribute final Business business) {
 
 		logger.debug("商家入驻审核操作【商家】");
 
 		Assert.notNull(business.getId());
 		Assert.notNull(business.getStatus());
+		Assert.notNull(business.getOpenId());
+
 		business.setAuditHandler(WebUtil.getSessionCzsUserId(request));
 		business.setAuditDateTime(DateUtil.now());
 		business.setDays(propUtil.getDaysBusinessMaxDefault());
 		business.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
 
-		return new ResultMsg(czsUserService.businessHandle(locale, business));
+		if (czsUserService.businessHandle(locale, business)) {
+
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(business.getOpenId(), "您的入驻请求已经通过,再次点击[申请入驻]即可获取系统登录链接!");
+				}
+			});
+
+			return new ResultMsg(true);
+		} else {
+			return new ResultMsg(false);
+		}
 	}
 
 }

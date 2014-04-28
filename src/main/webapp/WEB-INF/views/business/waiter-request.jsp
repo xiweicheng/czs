@@ -39,7 +39,7 @@
 	</div>
 
 	<h4 class="ui top attached header" style="margin-top: 0px;">
-		顾客确认
+		顾客请求
 		<div class="circular ui red label">
 			<span id="orderCount-span">${fn:length(list)}</span>位
 		</div>
@@ -50,8 +50,8 @@
 				<tr>
 					<th class="">顾客</th>
 					<th class="">位置</th>
+					<th class="">类型</th>
 					<th class="">状态</th>
-					<th class="number">消费次数</th>
 					<th class="number">时间</th>
 					<th class="number">距今</th>
 				</tr>
@@ -62,14 +62,12 @@
 						<td class=""><img class="ui avatar image"
 							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
 						<td class="">${item.description}</td>
-						<td class=""><c:if test="${item.status == '0'}">禁止进入</c:if> <c:if
-								test="${item.status == '5'}">请求进入中<a class="ui label"
-									onclick="requestHandler('1', '${item.id}', '${item.consumer_id}')">同意</a>
-								<a class="ui label"
-									onclick="requestHandler('2', '${item.id}', '${item.consumer_id}')">禁止</a>
+						<td class=""><c:if test="${item.type == '0'}">呼叫请求</c:if></td>
+						<td class=""><c:if test="${item.status == '0'}">已接受</c:if> <c:if
+								test="${item.status == '1'}">新请求<a class="ui label"
+									onclick="serviceHandler('0', '${item.id}', '${item.consumer_id}')">接受</a>
 							</c:if></td>
-						<td class="">${item.consume_times}</td>
-						<td class="" data-sort-value="${item.times}">${item.last_consume_time}</td>
+						<td class="" data-sort-value="${item.times}">${item.date_time}</td>
 						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
 					</tr>
 				</c:forEach>
@@ -84,8 +82,7 @@
 				<i class="warning icon"></i>
 			</div>
 			<div class="right" style="font-size: 25px;">
-				<p id="p-status-1" style="display: none;">确认同意该顾客进入吗?</p>
-				<p id="p-status-2" style="display: none;">确认禁止该顾客进入吗?</p>
+				<p>确认接受该顾客的呼叫请求吗?</p>
 			</div>
 		</div>
 		<div class="actions">
@@ -114,22 +111,17 @@
 		var _status;
 		var _id;
 		var _consumer_id;
-		function requestHandler(status, id, consumer_id) {
+		function serviceHandler(status, id, consumer_id) {
 			_status = status;
 			_id = id;
 			_consumer_id = consumer_id;
-
-			$('#p-status-0').hide();
-			$('#p-status-2').hide();
-
-			$('#p-status-' + status).show();
 
 			$('#confirm-ui-modal').modal('show');
 		}
 		jQuery(function($) {
 			$('#confirm-ui-modal').modal({
 				onApprove : function() {
-					$.post('businessRole/free/requestHandle.do', {
+					$.post('businessRole/free/serviceHandle.do', {
 						accepterId : '${param.openId}',
 						consumerId : _consumer_id,
 						status : _status,
@@ -145,7 +137,7 @@
 			});
 
 			var _intervalRef = setInterval(function() {
-				$.post('businessRole/free/checkRequest.do', {
+				$.post('businessRole/free/checkService.do', {
 					businessId : '${param.businessId}'
 				}, function(msg) {
 					if (msg.succeed) {
