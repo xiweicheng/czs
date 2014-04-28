@@ -3,8 +3,10 @@
  */
 package com.sizheng.afl.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sizheng.afl.base.BaseController;
+import com.sizheng.afl.component.PropUtil;
 import com.sizheng.afl.pojo.constant.SysConstant;
 import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.CzsUser;
@@ -28,8 +31,11 @@ import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
 import com.sizheng.afl.pojo.vo.ResultMsg;
 import com.sizheng.afl.service.ICzsUserService;
+import com.sizheng.afl.util.DateUtil;
 import com.sizheng.afl.util.EncoderUtil;
+import com.sizheng.afl.util.NumberUtil;
 import com.sizheng.afl.util.StringUtil;
+import com.sizheng.afl.util.WebUtil;
 
 /**
  * 【平台用户】请求控制层.
@@ -49,6 +55,9 @@ public class CzsUserController extends BaseController {
 
 	@Autowired
 	ICzsUserService czsUserService;
+
+	@Autowired
+	PropUtil propUtil;
 
 	/**
 	 * 添加【平台用户】.
@@ -260,6 +269,70 @@ public class CzsUserController extends BaseController {
 	}
 
 	/**
+	 * 商家管理
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月28日 上午10:16:03
+	 * @modification 2014年4月28日 上午10:16:03
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param start
+	 * @param end
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping("businessMgr")
+	public String businessMgr(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end,
+			@RequestParam(value = "status", required = false) String[] status) {
+
+		logger.debug("商家管理【平台用户】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 30L * 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24L * 60 * 60 * 1000);
+
+		model.addAttribute("start", sDate.getTime());
+		model.addAttribute("end", eDate.getTime());
+
+		List<Map<String, Object>> businessList = czsUserService.queryMgrBusiness(locale, sDate, eDate, status);
+		List<Map<String, Object>> businessList2 = czsUserService.queryMgrBusiness(locale, sDate, eDate);
+
+		for (Map<String, Object> map : businessList) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+			if (map.containsKey("sec_audit_diff")) {
+				map.put("audit_diff", DateUtil.convert(NumberUtil.getLong(map, "sec_audit_diff")));
+			}
+			map.put("simple_introduce",
+					StringUtil.html(StringUtil.limitLength(StringUtil.getNotNullString(map, "introduce"),
+							propUtil.getContentLenLimit())));
+		}
+
+		int newCount = 0;
+		int understanding = 0;
+
+		for (Map<String, Object> map : businessList2) {
+			Short status2 = NumberUtil.getShort(map, "status");
+			if (SysConstant.BUSINESS_STATUS_NEW.equals(status2)) {
+				newCount++;
+			} else if (SysConstant.BUSINESS_STATUS_UNDERSTANDING.equals(status2)) {
+				understanding++;
+			}
+		}
+
+		model.addAttribute("businessList", businessList);
+		model.addAttribute("total", businessList2.size());
+		model.addAttribute("newCount", newCount);
+		model.addAttribute("understanding", understanding);
+		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
+
+		return "czs/business-mgr";
+	}
+
+	/**
 	 * 平台登录验证。
 	 * 
 	 * @param request
@@ -319,6 +392,53 @@ public class CzsUserController extends BaseController {
 
 			return "error";
 		}
+	}
+
+	@RequestMapping("checkBusiness")
+	@ResponseBody
+	public ResultMsg checkBusiness(HttpServletRequest request, Locale locale,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end) {
+
+		logger.debug("顾客消息总数检测【商家】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 30L * 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24L * 60 * 60 * 1000);
+
+		String[] stsArr = status != null ? new String[] { status } : new String[0];
+
+		Long cnt = (long) czsUserService.queryMgrBusiness(locale, sDate, eDate, stsArr).size();
+
+		return new ResultMsg(true, cnt);
+	}
+
+	/**
+	 * 商家入驻审核操作
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月28日 下午1:15:05
+	 * @modification 2014年4月28日 下午1:15:05
+	 * @param request
+	 * @param business
+	 * @return
+	 */
+	@RequestMapping("businessHandle")
+	@ResponseBody
+	public ResultMsg checkBusiness(HttpServletRequest request, Locale locale, @ModelAttribute Business business) {
+
+		logger.debug("商家入驻审核操作【商家】");
+
+		Assert.notNull(business.getId());
+		Assert.notNull(business.getStatus());
+		business.setAuditHandler(WebUtil.getSessionCzsUserId(request));
+		business.setAuditDateTime(DateUtil.now());
+		business.setDays(propUtil.getDaysBusinessMaxDefault());
+		business.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
+
+		return new ResultMsg(czsUserService.businessHandle(locale, business));
 	}
 
 }

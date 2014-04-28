@@ -101,9 +101,9 @@
 											onclick="imageHandler('${item.id}')">
 									</div>
 
-									<div class="ui left corner label">
+									<%-- <div class="ui left corner label">
 										<div class="text">${item.order_times}</div>
-									</div>
+									</div> --%>
 
 									<div>
 										<span class="name" style="margin-left: 8px;"

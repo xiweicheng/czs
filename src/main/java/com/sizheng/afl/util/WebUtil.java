@@ -466,4 +466,14 @@ public final class WebUtil {
 
 		return null;
 	}
+
+	public static String getSessionCzsUserId(HttpServletRequest request) {
+		CzsUser user = getSessionCzsUser(request);
+
+		if (user == null) {
+			throw new RuntimeException("[CzsUser Session]不存在!");
+		}
+
+		return user.getUserName();
+	}
 }

@@ -144,7 +144,11 @@ public final class DateUtil {
 	 * @param sec
 	 * @return
 	 */
-	public static String convert(long sec) {
+	public static String convert(Long sec) {
+		
+		if (sec == null) {
+			return EMPTY;
+		}
 
 		if (sec < 60) {
 			return sec + "秒";

@@ -81,6 +81,9 @@ public class PropUtil {
 	@Value("#{systemProperties['qrcode.business.max.default']}")
 	private long qrcodeBusinessMaxDefault;
 
+	@Value("#{systemProperties['days.business.max.default']}")
+	private long daysBusinessMaxDefault;
+
 	@Value("#{systemProperties['upload.image.max']}")
 	private long uploadImageMax;
 
@@ -110,6 +113,9 @@ public class PropUtil {
 
 	@Value("#{systemProperties['image.scale.size.massive']}")
 	private int imgScaleSizeMassive;
+
+	@Value("#{systemProperties['czs.mgr.openid']}")
+	private String czsMgrOpenId;
 
 	public boolean isLogReqbody() {
 		return logReqbody;
@@ -249,6 +255,14 @@ public class PropUtil {
 
 	public int getContentLenLimit() {
 		return contentLenLimit;
+	}
+
+	public String getCzsMgrOpenId() {
+		return czsMgrOpenId;
+	}
+
+	public long getDaysBusinessMaxDefault() {
+		return daysBusinessMaxDefault;
 	}
 
 }

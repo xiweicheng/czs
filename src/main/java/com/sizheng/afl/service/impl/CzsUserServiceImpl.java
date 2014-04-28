@@ -3,18 +3,24 @@
  */
 package com.sizheng.afl.service.impl;
 
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sizheng.afl.base.impl.BaseServiceImpl;
 import com.sizheng.afl.component.ApiInvoker;
 import com.sizheng.afl.dao.ICzsUserDao;
+import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.CzsUser;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.service.ICzsUserService;
@@ -121,6 +127,28 @@ public class CzsUserServiceImpl extends BaseServiceImpl implements ICzsUserServi
 
 		// TODO
 		return true;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryMgrBusiness(Locale locale, Date sDate, Date eDate, String... status) {
+		return czsUserDao.queryMgrBusiness(locale, sDate, eDate, status);
+	}
+
+	@Override
+	public boolean businessHandle(Locale locale, final Business business) {
+
+		return hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+			@Override
+			public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+				return session
+						.createQuery(
+								"update Business set status = ?,auditHandler=?,auditDateTime=?,days=?,qrcode_limit=? where id = ?")
+						.setShort(0, business.getStatus()).setString(1, business.getAuditHandler())
+						.setTimestamp(2, business.getAuditDateTime()).setLong(3, business.getDays())
+						.setLong(4, business.getQrcodeLimit()).setLong(5, business.getId()).executeUpdate() > 0;
+			}
+		});
 	}
 
 }

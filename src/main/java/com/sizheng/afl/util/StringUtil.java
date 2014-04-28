@@ -410,4 +410,26 @@ public final class StringUtil {
 		return objArr;
 	}
 
+	/**
+	 * HTML标签转义方法 —— java代码库
+	 * 
+	 * @param content
+	 * @return
+	 */
+	public static String html(String content) {
+
+		if (content == null) {
+			return "";
+		}
+
+		String html = content;
+		html = html.replace("'", "&apos;");
+		html = html.replace("\"", "&quot;");
+		html = html.replace("\t", "&nbsp;&nbsp;");// 替换跳格
+		html = html.replace("<", "&lt;");
+		html = html.replace(">", "&gt;");
+
+		return html;
+	}
+
 }

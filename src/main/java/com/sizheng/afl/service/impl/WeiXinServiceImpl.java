@@ -233,22 +233,20 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		// 菜单项对应的键值
 		String eventKey = bean.getEventKey();
 
-		if (WeiXinEventKey.CUSTOMER_EVT_KEY_4.getValue().equals(eventKey)) {
+		if (WeiXinEventKey.CUSTOMER_EVT_KEY_4.getValue().equals(eventKey)) {// 我要结账
 			return billHandle(bean, locale);
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_5.getValue().equals(eventKey)) {
 			return StringUtil.replace("暂无其它服务项,敬请期待...");
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_2.getValue().equals(eventKey)) {
 			return StringUtil.replace("功能开发设计中,敬请期待...");
-		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_1.getValue().equals(eventKey)) {
+		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_1.getValue().equals(eventKey)) {// 我的菜单
 			return customerMenu(bean);
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_3.getValue().equals(eventKey)) {
 			return callServiceHandler(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_1.getValue().equals(eventKey)) {// 商家入驻
 			return businessRegister(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_2.getValue().equals(eventKey)) {
-			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]发送登录链接</a>", propUtil.getRedirectUrl()
-					+ "/business/sendLink.do", bean.getFromUserName());
-			return StringUtil.replace("{?1}", url1);
+			return sendLoginLink(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_3.getValue().equals(eventKey)) {
 			return businessRoleLogin(bean, locale);
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_1.getValue().equals(eventKey)) {
@@ -257,9 +255,38 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			return StringUtil.replace("功能开发设计中,敬请期待...");
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_3.getValue().equals(eventKey)) {
 			return StringUtil.replace("功能开发设计中,敬请期待...");
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_4.getValue().equals(eventKey)) {
+			return StringUtil.replace("功能开发设计中,敬请期待...");
 		}
 
 		return null;
+	}
+
+	/**
+	 * 发送登录链接
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月28日 下午5:58:05
+	 * @modification 2014年4月28日 下午5:58:05
+	 * @param bean
+	 * @return
+	 */
+	private String sendLoginLink(final WeiXinBaseMsg bean, Locale locale) {
+
+		Business business = new Business();
+		business.setOpenId(bean.getFromUserName());
+		business.setStatus(SysConstant.BUSINESS_STATUS_UNDERSTANDING);
+
+		// 判断用户已经存在并且确认通过审核
+		Business business2 = businessService.get(locale, business);
+
+		if (business2 != null) {
+			String url1 = StringUtil.replace("<a href='{?1}?openId={?2}'>[点击此]发送登录链接</a>", propUtil.getRedirectUrl()
+					+ "/business/free/sendLink.do", bean.getFromUserName());
+			return StringUtil.replace("{?1}", url1);
+		} else {
+			return StringUtil.replace("您不是入驻商家或者还未审核通过!");
+		}
 	}
 
 	/**
@@ -333,18 +360,36 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 		String dynamicCode = null;
 
+		Business business2 = businessService.get(locale, business);
+
 		// 判断商家是否已经入驻
-		if (!businessService.exists(locale, business)) {
-			dynamicCode = NumberUtil.random(6);
-			business.setDynamicCode(dynamicCode);
+		if (business2 != null) {// 第一次入驻操作,保存基本信息.
+
+			if (SysConstant.BUSINESS_STATUS_UNDERSTANDING.equals(business2.getStatus())) {// 审核通过,发送登录链接
+				dynamicCode = businessService.createDynamicCode(locale, business);
+				return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}&isPhone=1'>[点击此]商家管理登录</a>",
+						propUtil.getRedirectUrl(), "/business/verify.do", bean.getFromUserName(), dynamicCode);
+			} else if (SysConstant.BUSINESS_STATUS_NEW.equals(business2.getStatus())) {// 还未审核通过
+				String link = StringUtil.replace("<a href='{?1}{?2}?openId={?3}'>[点击此]完善商家信息</a>",
+						propUtil.getRedirectUrl(), "/business/free/input.do", bean.getFromUserName());
+				return StringUtil.replace("您入驻请求还在审核中...\n\n请通过下面链接完善自己的商家信息,以便我们的客服联系您快速完成审核!\n\n{?1}", link);
+			} else {
+				logger.error("未知状态,请联系系统管理员!");
+				return "未知状态,请报告该问题给平台管理员!";
+			}
+		} else {
+			business.setDateTime(DateUtil.now());
+			business.setIsDeleted(SysConstant.SHORT_FALSE);
+			business.setIsMailVerify(SysConstant.SHORT_FALSE);
+			business.setIsPhoneVerify(SysConstant.SHORT_FALSE);
+			business.setStatus(SysConstant.BUSINESS_STATUS_NEW);
 
 			businessService.save(locale, business);
-		} else {
-			dynamicCode = businessService.createDynamicCode(locale, business);
-		}
 
-		return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}&isPhone=1'>[点击此]入驻登录</a>",
-				propUtil.getRedirectUrl(), "/business/verify.do", bean.getFromUserName(), dynamicCode);
+			String link = StringUtil.replace("<a href='{?1}{?2}?openId={?3}'>[点击此]完善商家信息</a>",
+					propUtil.getRedirectUrl(), "/business/free/input.do", bean.getFromUserName());
+			return StringUtil.replace("您的入驻请求已经发送,等待审核中...\n\n请通过下面链接完善自己的商家信息,以便我们的客服联系您快速完成审核!\n\n{?1}", link);
+		}
 	}
 
 	/**
@@ -483,11 +528,11 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		User user = new User();
 		user.setUserName(bean.getFromUserName());
 
-		List list = hibernateTemplate.findByExample(user);
+		User user2 = findOneByExample(user, User.class);
 
-		if (list.size() > 0) {
+		if (user2 != null) {
 
-			final String consumeCode = ((User) list.get(0)).getConsumeCode();
+			final String consumeCode = user2.getConsumeCode();
 
 			if (!StringUtil.isEmpty(consumeCode)) {
 
@@ -495,7 +540,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 				businessConsumer.setConsumeCode(consumeCode);
 				businessConsumer.setConsumerId(bean.getFromUserName());
 
-				final BusinessConsumer businessConsumer2 = (BusinessConsumer) findOneByExample(businessConsumer);
+				final BusinessConsumer businessConsumer2 = findOneByExample(businessConsumer, BusinessConsumer.class);
 
 				if (businessConsumer2 != null) {
 

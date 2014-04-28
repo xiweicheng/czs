@@ -35,7 +35,6 @@ import com.sizheng.afl.pojo.entity.Favorites;
 import com.sizheng.afl.pojo.entity.Message;
 import com.sizheng.afl.pojo.entity.Request;
 import com.sizheng.afl.pojo.entity.Service;
-import com.sizheng.afl.pojo.model.WeiXinAccessToken;
 import com.sizheng.afl.pojo.vo.Msg;
 import com.sizheng.afl.pojo.vo.PageResult;
 import com.sizheng.afl.pojo.vo.ReqBody;
@@ -103,32 +102,34 @@ public class BusinessController extends BaseController {
 	 * @modification 2014年03月25日 02:46:32
 	 * @return
 	 */
-	@RequestMapping("add")
-	public String add(HttpServletRequest request, Locale locale, Model model) {
+	// @RequestMapping("add")
+	// public String add(HttpServletRequest request, Locale locale, Model model)
+	// {
+	//
+	// logger.debug("添加【商家】");
+	//
+	// WeiXinAccessToken accessToken =
+	// weiXinApiInvoker.getAccessToken(request.getParameter("code"));
+	// model.addAttribute("accessToken", accessToken);
+	//
+	// Business business = new Business();
+	// business.setOpenId(accessToken.getOpenid());
+	//
+	// if (businessService.exists(locale, business)) {
+	// return "business/exists";
+	// } else {
+	// if (businessService.save(locale, business)) {
+	// model.addAttribute("business", business);
+	// return "business/input";
+	// } else {
+	// model.addAttribute("message", "商家入驻失败!");
+	// return "result";
+	// }
+	// }
+	// }
 
-		logger.debug("添加【商家】");
-
-		WeiXinAccessToken accessToken = weiXinApiInvoker.getAccessToken(request.getParameter("code"));
-		model.addAttribute("accessToken", accessToken);
-
-		Business business = new Business();
-		business.setOpenId(accessToken.getOpenid());
-
-		if (businessService.exists(locale, business)) {
-			return "business/exists";
-		} else {
-			if (businessService.save(locale, business)) {
-				model.addAttribute("business", business);
-				return "business/input";
-			} else {
-				model.addAttribute("message", "商家入驻失败!");
-				return "result";
-			}
-		}
-	}
-
-	@RequestMapping("input")
-	public String input(HttpServletRequest request, Locale locale, Model model, @RequestParam("openid") String openId) {
+	@RequestMapping("free/input")
+	public String input(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
 
 		logger.debug("信息输入【商家】");
 
@@ -136,9 +137,23 @@ public class BusinessController extends BaseController {
 		business.setOpenId(openId);
 		Business business2 = businessService.get(locale, business);
 
+		if (business2 == null) {
+			model.addAttribute("message", "入驻信息不存在,请先申请入驻!");
+			return "message";
+		}
+
 		model.addAttribute("business", business2);
 
 		return "business/input";
+	}
+
+	@RequestMapping("free/update2")
+	@ResponseBody
+	public ResultMsg update2(HttpServletRequest request, Locale locale, @ModelAttribute Business business, Model model) {
+
+		logger.debug("信息完善【商家】");
+
+		return new ResultMsg(businessService.update(locale, business));
 	}
 
 	@RequestMapping("update")
@@ -469,6 +484,8 @@ public class BusinessController extends BaseController {
 			Assert.notNull(password);
 
 			Business business = new Business();
+			business.setStatus(SysConstant.BUSINESS_STATUS_UNDERSTANDING);
+			business.setIsDeleted(SysConstant.SHORT_FALSE);
 			business.setMail(userName);
 			business.setPassword(EncoderUtil.encodeBySHA1(password));
 
@@ -479,6 +496,8 @@ public class BusinessController extends BaseController {
 			Assert.notNull(dynamicCode);
 
 			Business business = new Business();
+			business.setStatus(SysConstant.BUSINESS_STATUS_UNDERSTANDING);
+			business.setIsDeleted(SysConstant.SHORT_FALSE);
 			business.setOpenId(openId);
 			business.setDynamicCode(dynamicCode);
 
@@ -492,11 +511,18 @@ public class BusinessController extends BaseController {
 				businessService.update(business2);
 			}
 
+			// 清楚密码错误次数记录和动态码
+			businessService.clearDynamicCodeAndLoginTimes(locale, business2);
+
 			HttpSession session = request.getSession();
 			session.setAttribute(SysConstant.SESSION_OBJECT, business2);
 
 			return "forward:list.do?filterOver=1";
 		} else {
+
+			// 记录错误次数
+			// TODO
+
 			model.addAttribute("message", "登录失败!");
 
 			return "error";
@@ -604,16 +630,21 @@ public class BusinessController extends BaseController {
 	 * @param openId
 	 * @return
 	 */
-	@RequestMapping("sendLink")
+	@RequestMapping("free/sendLink")
 	public String sendLink(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
 
 		logger.debug("发送登录链接【商家】");
 
 		Business business = new Business();
+		business.setStatus(SysConstant.BUSINESS_STATUS_UNDERSTANDING);
 		business.setOpenId(openId);
 
 		Business business2 = businessService.get(locale, business);
 
+		if (business2 == null) {
+			model.addAttribute("message", "您不是入驻商家或者还未审核通过!");
+			return "message";
+		}
 		model.addAttribute("business", business2);
 
 		return "business/sendLink";
@@ -640,11 +671,10 @@ public class BusinessController extends BaseController {
 		if (val) {
 			model.addAttribute("message", "接受呼叫请求成功!");
 		} else {
-			model.addAttribute("message", "该请求已被他人接受,接受失败!");
+			model.addAttribute("message", "该请求已经被接受!");
 		}
 
 		return "message";
-
 	}
 
 	/**

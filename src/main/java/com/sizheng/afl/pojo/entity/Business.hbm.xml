@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 2014-4-26 23:24:24 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 2014-4-28 17:49:33 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.sizheng.afl.pojo.entity.Business" table="business" catalog="afl">
         <id name="id" type="java.lang.Long">
@@ -56,6 +56,25 @@
             <column name="status">
                 <comment>0:&#201;&#234;&#199;&#235;&#214;&#208;;1:&#201;&#243;&#186;&#203;&#205;&#168;&#185;&#253;</comment>
             </column>
+        </property>
+        <property name="dateTime" type="timestamp">
+            <column name="date_time" length="19" />
+        </property>
+        <property name="auditHandler" type="string">
+            <column name="audit_handler">
+                <comment>&#201;&#243;&#186;&#203;&#213;&#223;</comment>
+            </column>
+        </property>
+        <property name="auditDateTime" type="timestamp">
+            <column name="audit_date_time" length="19" />
+        </property>
+        <property name="days" type="java.lang.Long">
+            <column name="days">
+                <comment>&#202;&#185;&#211;&#195;&#204;&#236;&#202;&#253;</comment>
+            </column>
+        </property>
+        <property name="loginTimes" type="java.lang.Long">
+            <column name="login_times" />
         </property>
     </class>
 </hibernate-mapping>

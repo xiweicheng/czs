@@ -14,7 +14,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
 	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>平台登录</title>
+<title>商家登录</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-1.10.2.min.js"
@@ -43,8 +43,8 @@
 							<div class="field">
 								<label>动态验证码</label>
 								<div class="ui left labeled icon input">
-									<input type="password" name="dynamicCode" value="945283">
-									<i class="lock icon"></i>
+									<input type="password" name="dynamicCode" value=""> <i
+										class="lock icon"></i>
 									<div class="ui corner label">
 										<i class="icon asterisk"></i>
 									</div>

@@ -362,4 +362,6 @@ public interface IBusinessService extends IBaseService {
 	Map<String, List<Object>> consumerGraph(Locale locale, String openId);
 
 	List<Map<String, Object>> consumerDayGraph(Locale locale, String sessionBusinessId, String date);
+
+	void clearDynamicCodeAndLoginTimes(Locale locale, Business business);
 }

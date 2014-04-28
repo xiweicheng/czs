@@ -3,11 +3,13 @@
  */
 package com.sizheng.afl.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import com.sizheng.afl.base.IBaseService;
+import com.sizheng.afl.pojo.entity.Business;
 import com.sizheng.afl.pojo.entity.CzsUser;
 import com.sizheng.afl.pojo.vo.PageResult;
 
@@ -121,4 +123,8 @@ public interface ICzsUserService extends IBaseService {
 	 * @return
 	 */
 	boolean exists(Locale locale, CzsUser czsUser);
+
+	List<Map<String, Object>> queryMgrBusiness(Locale locale, Date sDate, Date eDate, String... status);
+
+	boolean businessHandle(Locale locale, Business business);
 }

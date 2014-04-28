@@ -39,6 +39,7 @@ import com.sizheng.afl.pojo.model.WeiXinMenu;
 import com.sizheng.afl.pojo.model.WeiXinQrcode;
 import com.sizheng.afl.pojo.model.WeiXinQrcodeCreateParam;
 import com.sizheng.afl.pojo.model.WeiXinUserInfo;
+import com.sizheng.afl.pojo.model.WeiXinViewButton;
 import com.sizheng.afl.util.JsonUtil;
 import com.sizheng.afl.util.StringUtil;
 import com.sizheng.afl.util.WebUtil;
@@ -279,6 +280,7 @@ public class WeiXinApiInvoker {
 			weiXinButton = new WeiXinButton("平台服务");
 			sub_button = new ArrayList<>();
 			sub_button.add(new WeiXinClickButton("关于平台", "platform_evt_key_1"));
+			sub_button.add(new WeiXinViewButton("平台管理", propUtil.getRedirectUrl() + "/czs/login.do"));
 			sub_button.add(new WeiXinClickButton("加盟合作", "platform_evt_key_2"));
 			sub_button.add(new WeiXinClickButton("提出建议", "platform_evt_key_3"));
 

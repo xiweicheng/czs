@@ -3,6 +3,7 @@
  */
 package com.sizheng.afl.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -46,5 +47,7 @@ public interface ICzsUserDao {
 	 * @return
 	 */
 	long queryCount(Locale locale, CzsUser czsUser);
+
+	List<Map<String, Object>> queryMgrBusiness(Locale locale, Date sDate, Date eDate, String... status);
 	
 }

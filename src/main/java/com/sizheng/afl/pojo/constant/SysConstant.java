@@ -174,4 +174,7 @@ public final class SysConstant {
 
 	public static final Short BUSINESS_CONSUMER_RECORD_NEW = 0;
 
+	public static final Short BUSINESS_STATUS_NEW = 0;
+	public static final Short BUSINESS_STATUS_UNDERSTANDING = 1;
+
 }

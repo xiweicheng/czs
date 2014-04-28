@@ -90,9 +90,6 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		logger.debug("[业务逻辑层]添加【商家】");
 
-		business.setIsDeleted((short) 0);
-		business.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
-
 		hibernateTemplate.save(business);
 
 		return true;
@@ -112,12 +109,10 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		logger.debug("[业务逻辑层]获取【商家】");
 
-		List list = hibernateTemplate.findByExample(business);
+		Business business2 = findOneByExample(business, Business.class);
 
-		if (list.size() > 0) {
-			com.sizheng.afl.pojo.entity.Business business3 = (com.sizheng.afl.pojo.entity.Business) list.get(0);
-
-			return business3;
+		if (business2 != null) {
+			return business2;
 		} else {
 			logger.debug("没有获取到商家信息:openid[" + business.getOpenId() + "]");
 		}
@@ -126,17 +121,16 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public boolean update(Locale locale, Business business) {
+	public boolean update(Locale locale, final Business business) {
 
 		logger.debug("[业务逻辑层]更新【商家】");
 
 		Business business2 = new Business();
 		business2.setOpenId(business.getOpenId());
 
-		List list = hibernateTemplate.findByExample(business2);
+		Business business3 = get(locale, business2);
 
-		if (list.size() > 0) {
-			Business business3 = (Business) list.get(0);
+		if (business3 != null) {
 			business3.setName(business.getName());
 			business3.setAddress(business.getAddress());
 			business3.setMail(business.getMail());
@@ -144,11 +138,15 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 			business3.setIntroduce(business.getIntroduce());
 
 			hibernateTemplate.update(business3);
-		} else {
-			business.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
-			business.setIsDeleted((short) 0);
 
-			hibernateTemplate.save(business);
+			// 发微信消息通知平台
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(propUtil.getCzsMgrOpenId(), StringUtil.replace(
+							"有新的商家入驻请求!\n店名:{?1}\n电话:{?2}\nE-mail:{?3}\n地址:{?4}", business.getName(),
+							business.getPhoneNumber(), business.getMail(), business.getAddress()));
+				}
+			});
 		}
 
 		return true;
@@ -1082,6 +1080,22 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	@Override
 	public List<Map<String, Object>> consumerDayGraph(Locale locale, String sessionBusinessId, String date) {
 		return businessDao.consumerDayGraph(sessionBusinessId, date);
+	}
+
+	@Override
+	public void clearDynamicCodeAndLoginTimes(Locale locale, Business business) {
+
+		if (StringUtil.isEmpty(business.getId())) {
+			Business business2 = new Business();
+			business2.setOpenId(business.getOpenId());
+
+			business = get(locale, business);
+		}
+
+		business.setDynamicCode(null);
+		business.setLoginTimes(null);
+
+		hibernateTemplate.update(business);
 	}
 
 }
