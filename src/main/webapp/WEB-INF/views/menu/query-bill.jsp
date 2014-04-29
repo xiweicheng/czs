@@ -119,7 +119,7 @@
 										<div class="ui divider czsSimpleMode"
 											style="margin-top: 8px; margin-bottom: 8px; margin-left: 88px;"></div>
 										<div class="czsSimpleMode"
-											style="display: inline-block; margin-left: 8px;">
+											style="display: inline-block; margin-left: 8px; overflow:hidden;">
 											<div class="ui label">${item.category}</div>
 											<div class="ui label">${item.taste}</div>
 											<c:if test="${! empty item.memo}">
