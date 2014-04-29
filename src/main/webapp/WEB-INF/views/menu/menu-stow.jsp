@@ -167,7 +167,7 @@
 			</div>
 			<div class="ui form" style="margin-top:10px;">
 				<div class="field" style="margin-bottom:0px;">
-					<input placeholder="特别备注" id="memo-input" type="text">
+					<input placeholder="特别备注" id="memo-input" type="text" maxlength="20">
 				</div>
 			</div>
 		</div>
@@ -260,7 +260,7 @@
 
 			$('.ui.modal.czsAdd > .header').text(name);
 			$('#czsCountSpan').text(1);
-			$('#czsTotalSpan').text(_price, 2);
+			$('#memo-input').val('');
 			$('.ui.modal.czsAdd').modal('show');
 
 		}
@@ -318,13 +318,10 @@
 				var num = Number($('#czsCountSpan').text());
 				if (num > 1) {
 					$('#czsCountSpan').text(num - 1);
-					$('#czsTotalSpan').text(format_number((num - 1) * _price, 2));
 				}
 			});
 			$('.ui.button.czsAdd').click(function() {
-				var num = Number($('#czsCountSpan').text()) + 1;
-				$('#czsCountSpan').text(num);
-				$('#czsTotalSpan').text(format_number(num * _price, 2));
+				$('#czsCountSpan').text(Number($('#czsCountSpan').text()) + 1);
 			});
 
 			$('.ui.modal.czsAdd').modal(

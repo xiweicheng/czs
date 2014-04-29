@@ -268,7 +268,7 @@
 			</div>
 			<div class="ui form" style="margin-top:10px;">
 				<div class="field" style="margin-bottom:0px;">
-					<input placeholder="特别备注" id="memo-input" type="text">
+					<input placeholder="特别备注" id="memo-input" type="text" maxlength="20">
 				</div>
 			</div>
 		</div>
@@ -367,6 +367,7 @@
 
 			$('.ui.modal.czsAdd > .header').text(name);
 			$('#czsCountSpan').text(1);
+			$('#memo-input').val('');
 			$('.ui.modal.czsAdd').modal('show');
 
 		}
@@ -413,8 +414,7 @@
 				}
 			});
 			$('.ui.button.czsAdd').click(function() {
-				var num = Number($('#czsCountSpan').text()) + 1;
-				$('#czsCountSpan').text(num);
+				$('#czsCountSpan').text(Number($('#czsCountSpan').text()) + 1);
 			});
 			
 
