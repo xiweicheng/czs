@@ -238,7 +238,8 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_5.getValue().equals(eventKey)) {
 			return StringUtil.replace("暂无其它服务项,敬请期待...");
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_2.getValue().equals(eventKey)) {
-			return StringUtil.replace("功能开发设计中,敬请期待...");
+			return StringUtil.replace("<a href='{?1}/user/free/getStowBusiness.do?consumerId={?2}'>[点击此]查看收藏商家</a>",
+					propUtil.getRedirectUrl(), bean.getFromUserName());
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_1.getValue().equals(eventKey)) {// 我的菜单
 			return customerMenu(bean);
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_3.getValue().equals(eventKey)) {
@@ -696,6 +697,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		message.setLongitude(bean.getLongitude() == null ? BigDecimal.ZERO : new BigDecimal(bean.getLongitude()));
 		message.setPrecision(bean.getPrecision() == null ? BigDecimal.ZERO : new BigDecimal(bean.getPrecision()));
 		message.setTicket(bean.getTicket());
+		message.setRecognition(bean.getRecognition());
 
 		Map<String, Object> businessConsumer = userService.getBusinessConsumer(null, bean.getFromUserName());
 
@@ -714,6 +716,35 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		logger.debug(bean.getEventKey());
 
 		return false;
+	}
+
+	@Override
+	public String voice(Locale locale, WeiXinBaseMsg bean) {
+
+		// 判断用户是不是消费中.
+		String businessId = userService.getBusinessId(locale, bean.getFromUserName());
+
+		if (StringUtil.isNotEmpty(businessId)) {
+			// 如果是消费中,发送语音给服务员.
+			BusinessRole businessRole = new BusinessRole();
+			businessRole.setBusinessId(businessId);
+			businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+			businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+
+			List list4 = hibernateTemplate.findByExample(businessRole);
+
+			for (Object object : list4) {
+				String openId = ((BusinessRole) object).getOpenId();
+
+				if (!weiXinApiInvoker.sendServiceVoice(openId, bean.getMediaId())) {
+					logger.error("语音客服消息通知服务人员失败! openId:" + openId);
+				}
+			}
+		} else {
+			return "您不在消费中,发送的语音消息无法被接收处理!";
+		}
+
+		return "我们已经接收到您的语音消息,谢谢!";
 	}
 
 }

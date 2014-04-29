@@ -95,6 +95,43 @@ public class UserDaoImpl extends BaseDaoImpl implements IUserDao {
 	}
 
 	@Override
+	public List<Map<String, Object>> getStowBusiness(Locale locale, String consumerId) {
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	favorites.id,\n");
+		sqlSb.append("	favorites.open_id,\n");
+		sqlSb.append("	favorites.ref_id,\n");
+		sqlSb.append("	favorites.type,\n");
+		sqlSb.append("	DATE_FORMAT(\n");
+		sqlSb.append("		favorites.date_time,\n");
+		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+		sqlSb.append("	) AS date_time,\n");
+		sqlSb.append("	UNIX_TIMESTAMP(favorites.date_time) AS times,\n");
+		sqlSb.append("	TIMESTAMPDIFF(\n");
+		sqlSb.append("		SECOND,\n");
+		sqlSb.append("		favorites.date_time,\n");
+		sqlSb.append("		NOW()\n");
+		sqlSb.append("	) AS sec_diff,\n");
+		sqlSb.append("	business.`name`,\n");
+		sqlSb.append("	business.address,\n");
+		sqlSb.append("	business.mail,\n");
+		sqlSb.append("	business.introduce,\n");
+		sqlSb.append("	business.phone_number\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	favorites\n");
+		sqlSb.append("INNER JOIN business ON favorites.ref_id = business.open_id\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	favorites.type = 0\n");
+		sqlSb.append("AND favorites.open_id = ?\n");
+		sqlSb.append("AND favorites.is_delete = 0\n");
+		sqlSb.append("ORDER BY\n");
+		sqlSb.append("	favorites.date_time DESC\n");
+
+		return getMapList(sqlSb, consumerId);
+	}
+
+	@Override
 	public List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId) {
 
 		StringBuffer sqlSb = new StringBuffer();

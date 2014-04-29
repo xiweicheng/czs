@@ -66,6 +66,8 @@ public class WeiXinBaseMsg extends WeiXin implements Serializable {
 	private String PicUrl;
 	// 二维码的ticket，可用来换取二维码图片
 	private String Ticket;
+	// 语音识别结果，UTF8编码
+	private String Recognition;
 
 	public String getToUserName() {
 		return ToUserName;
@@ -251,6 +253,14 @@ public class WeiXinBaseMsg extends WeiXin implements Serializable {
 		Ticket = ticket;
 	}
 
+	public String getRecognition() {
+		return Recognition;
+	}
+
+	public void setRecognition(String recognition) {
+		Recognition = recognition;
+	}
+
 	@Override
 	public String toString() {
 		return "WeiXinBaseMsg [ToUserName=" + ToUserName + ", FromUserName=" + FromUserName + ", CreateTime="
@@ -259,7 +269,7 @@ public class WeiXinBaseMsg extends WeiXin implements Serializable {
 				+ ", Precision=" + Precision + ", Location_X=" + Location_X + ", Location_Y=" + Location_Y + ", Scale="
 				+ Scale + ", Label=" + Label + ", Title=" + Title + ", Description=" + Description + ", Url=" + Url
 				+ ", MediaId=" + MediaId + ", ThumbMediaId=" + ThumbMediaId + ", Format=" + Format + ", PicUrl="
-				+ PicUrl + ", Ticket=" + Ticket + "]";
+				+ PicUrl + ", Ticket=" + Ticket + ", Recognition=" + Recognition + "]";
 	}
 
 }

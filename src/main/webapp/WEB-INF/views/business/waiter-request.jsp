@@ -43,32 +43,74 @@
 		<div class="circular ui red label">
 			<span id="orderCount-span">${fn:length(list)}</span>位
 		</div>
+		<div class="ui small button czsOpen" czs-status="0"
+			style="position: absolute; top: 2px; right: 2px;">展开</div>
 	</h4>
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="padding: 0px;">
 		<table class="ui sortable table segment" style="display: table;">
 			<thead>
 				<tr>
 					<th class="">顾客</th>
-					<th class="">位置</th>
-					<th class="">类型</th>
-					<th class="">状态</th>
-					<th class="number">时间</th>
-					<th class="number">距今</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${list}" var="item">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
-						<td class=""><img class="ui avatar image"
-							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
-						<td class="">${item.description}</td>
-						<td class=""><c:if test="${item.type == '0'}">呼叫请求</c:if></td>
-						<td class=""><c:if test="${item.status == '0'}">已接受</c:if> <c:if
-								test="${item.status == '1'}">新请求<a class="ui label"
-									onclick="serviceHandler('0', '${item.id}', '${item.consumer_id}')">接受</a>
-							</c:if></td>
-						<td class="" data-sort-value="${item.times}">${item.date_time}</td>
-						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
+						<td class="">
+							<div style="float: right;">
+								<a class="ui label" href="javascript:void(0);"
+									onclick="serviceHandler('0', '${item.id}', '${item.consumer_id}')">接受请求</a>
+							</div>
+							<div class="ui basic accordion"
+								style="width: 100%; margin-bottom: 0px;">
+
+								<div class="title" style="padding: 0px;">
+									<i class="dropdown icon"></i>${item.nickname}(${item.description})
+								</div>
+
+								<div class="content">
+									<div class="ui mini list">
+										<div class="item">
+											<i class="user outline icon"></i>
+											<div class="content"
+												style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="header">头像</div>
+												<img class="ui avatar image" src="${item.headimgurl}/46">
+											</div>
+										</div>
+										<div class="item">
+											<c:if test="${item.sex == '男'}">
+												<i class="male outline icon"></i>
+											</c:if>
+											<c:if test="${item.sex == '女'}">
+												<i class="female outline icon"></i>
+											</c:if>
+											<div class="content"
+												style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="header">性别</div>
+												${item.sex}
+											</div>
+										</div>
+										<div class="item">
+											<i class="bell outline icon"></i>
+											<div class="content"
+												style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="header">类型</div>
+												<c:if test="${item.type == '0'}">呼叫请求</c:if>
+											</div>
+										</div>
+										<div class="item">
+											<i class="time outline icon"></i>
+											<div class="content"
+												style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="header">时间</div>
+												${item.date_time}(${item.diff})
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -119,6 +161,21 @@
 			$('#confirm-ui-modal').modal('show');
 		}
 		jQuery(function($) {
+
+			$('.ui.accordion').accordion();
+
+			$('.ui.button.czsOpen').click(function() {
+				if ($(this).attr('czs-status') == '0') {
+					$(this).attr('czs-status', '1').addClass('green');
+					$('.ui.accordion > .title').addClass('active');
+					$('.ui.accordion > .content').addClass('active');
+				} else {
+					$(this).attr('czs-status', '0').removeClass('green');
+					$('.ui.accordion > .title').removeClass('active');
+					$('.ui.accordion > .content').removeClass('active');
+				}
+			});
+
 			$('#confirm-ui-modal').modal({
 				onApprove : function() {
 					$.post('businessRole/free/serviceHandle.do', {

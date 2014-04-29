@@ -96,13 +96,13 @@
 					${business.phoneNumber}
 				</div>
 			</div>
-			<div class="item">
+			<%-- <div class="item">
 				<i class="mail outline icon"></i>
 				<div class="content">
 					<div class="header">E-mail</div>
 					${business.mail}
 				</div>
-			</div>
+			</div> --%>
 			<div class="item">
 				<i class="comment outline icon"></i>
 				<div class="content">

@@ -125,4 +125,34 @@ public interface IBusinessRoleService extends IBaseService {
 	boolean requestHandle(Locale locale, String[] ids, String status, String accepterId);
 
 	boolean serviceHandle(Locale locale, String[] ids, String status, String accepterId);
+
+	long countAllConsumer(Locale locale, String businessId);
+
+	long countTodayConsumer(Locale locale, String businessId);
+
+	long countTodayOngoingConsumer(Locale locale, String businessId);
+
+	long countAllMenuBill(Locale locale, String businessId);
+
+	long countTodayMenuBill(Locale locale, String businessId);
+
+	long countTodayWaitMenuBill(Locale locale, String businessId);
+
+	double countAllBillBill(Locale locale, String businessId);
+
+	double countTodayBill(Locale locale, String businessId);
+
+	double countYesterdayBill(Locale locale, String businessId);
+
+	long countAllMsg(Locale locale, String businessId);
+
+	long countNewMsg(Locale locale, String businessId);
+
+	long countStowMsg(Locale locale, String businessId);
+
+	long countAllService(Locale locale, String businessId);
+
+	long countNewService(Locale locale, String businessId);
+
+	long countTodayService(Locale locale, String businessId);
 }

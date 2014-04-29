@@ -156,9 +156,6 @@ public class WeixinController extends BaseController {
 					writeText(response, bean, "期待您的再次回来!");
 				} else if (WeiXinEventType.CLICK.getValue().equals(event)) { // 菜单点击事件
 
-					// 菜单项对应的键值
-					String eventKey = bean.getEventKey();
-
 					String result = weiXinService.click(bean, locale);
 
 					// 需要客服消息回复的处理.
@@ -198,8 +195,8 @@ public class WeixinController extends BaseController {
 				writeText(response, bean, "我们已经接收到您的图片消息,谢谢!");
 
 			} else if (WeiXinMsgType.VOICE.getValue().equals(msgType)) {
-				// TODO
-				writeText(response, bean, "我们已经接收到您的语音消息,谢谢!");
+
+				writeText(response, bean, weiXinService.voice(locale, bean));
 
 			} else if (WeiXinMsgType.VIDEO.getValue().equals(msgType)) {
 				// TODO
@@ -279,25 +276,6 @@ public class WeixinController extends BaseController {
 
 		WebUtil.writeString(response, resp);
 	}
-
-	// /**
-	// * 添加商家
-	// *
-	// * @author xiweicheng
-	// * @creation 2014年4月3日 下午2:01:36
-	// * @modification 2014年4月3日 下午2:01:36
-	// * @param request
-	// * @param locale
-	// * @param model
-	// * @return
-	// */
-	// @RequestMapping("businessAdd")
-	// public String businessAdd(HttpServletRequest request, Locale locale,
-	// Model model) {
-	// model.addAttribute("url",
-	// weiXinService.getWebpageCodeUrl("business/add.do", "param-state"));
-	// return "weixin/business-add";
-	// }
 
 	@RequestMapping("test")
 	public String test(HttpServletRequest request, Locale locale, Model model) {

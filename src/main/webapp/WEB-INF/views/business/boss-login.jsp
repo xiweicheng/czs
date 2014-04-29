@@ -22,7 +22,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
 	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>餐助手-顾客服务</title>
+<title>餐助手-商家服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -30,68 +30,139 @@
 	});
 </script>
 </head>
-<body style="margin: 0px; padding: 0px;">
+<body style="margin: 0px; padding: 0px; background-color: black;">
 
-	<div class="ui dimmer czsMsg">
+	<div class="ui dimmer">
 		<div class="content" style="display: none;">
-			<div class="center">
-				<div class="ui huge message">
-					<span></span>
-				</div>
-			</div>
+			<div class="center"></div>
 		</div>
 	</div>
 
-	<h4 class="ui top attached header" style="margin-top: 0px;">
-		店主管理
-		<div class="circular ui red label">个</div>
-	</h4>
-	<div class="ui segment attached" style="padding: 5px;">
-		<div class="ui left aligned one column grid">
-			<div class="row">
-				<div class="column">
-					<div class="ui vertical fluid menu czsMenuList"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- 菜品添加弹出框 -->
-	<div class="ui small modal czsAdd">
-		<i class="close icon"></i>
-		<div class="header">确认提示</div>
-		<div class="content">
-			<div class="ui message" style="text-align: center;">
-				<div class="ui huge green label">
-					<i class="cart icon"></i> <span id="czsCountSpan">1</span>
-					<div class="detail">
-						<i class="yen icon"></i><span id="czsTotalSpan">300.00</span>
+	<div>
+		<div class="two column stackable ui grid">
+			<div class="column">
+				<div style="padding: 8px 0px;">
+					<div class="ui labeled vertical fluid inverted icon menu">
+						<a class="item">
+							<div class="ui three column grid">
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">消费顾客数</div>
+									<div>
+										<i class="icon users"></i>${countTodayOngoingConsumer}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">今日顾客数</div>
+									<div>
+										<i class="icon users"></i>${countTodayConsumer}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">顾客总数</div>
+									<div>
+										<i class="icon users"></i>${countAllConsumer}
+									</div>
+								</div>
+							</div>
+						</a> <a class="item">
+							<div class="ui three column grid">
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">待做菜品数</div>
+									<div>
+										<i class="icon cart"></i>${countTodayWaitMenuBill}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">完成菜品数</div>
+									<div>
+										<i class="icon cart"></i>${countTodayMenuBill}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">菜品总数</div>
+									<div>
+										<i class="icon cart"></i>${countAllMenuBill}
+									</div>
+								</div>
+							</div>
+						</a> <a class="item">
+							<div class="ui three column grid">
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">今日营业额</div>
+									<div>
+										<i class="icon yen"></i>${countTodayBill}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">昨日营业额</div>
+									<div>
+										<i class="icon yen"></i>${countYesterdayBill}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">营业总额</div>
+									<div>
+										<i class="icon yen"></i>${countAllBillBill}
+									</div>
+								</div>
+							</div>
+						</a> <a class="item">
+							<div class="ui three column grid">
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">新消息数</div>
+									<div>
+										<i class="icon comment"></i>${countNewMsg}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">收藏消息数</div>
+									<div>
+										<i class="icon comment"></i>${countStowMsg}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">消息总数</div>
+									<div>
+										<i class="icon comment"></i>${countAllMsg}
+									</div>
+								</div>
+							</div>
+						</a> <a class="item">
+							<div class="ui three column grid">
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">新服务数</div>
+									<div>
+										<i class="icon bell"></i>${countNewService}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">今日服务数</div>
+									<div>
+										<i class="icon bell"></i>${countTodayService}
+									</div>
+								</div>
+								<div class="column" style="text-align: center;">
+									<div style="margin-bottom: 10px;">服务总数</div>
+									<div>
+										<i class="icon bell"></i>${countAllService}
+									</div>
+								</div>
+							</div>
+						</a>
 					</div>
-				</div>
-			</div>
-			<div class="2 fluid ui huge buttons">
-				<div class="fluid ui button czsReduce">减一份</div>
-				<div class="or"></div>
-				<div class="fluid ui button czsAdd">加一份</div>
-			</div>
-		</div>
-		<div class="actions">
-			<div class="two fluid ui buttons">
-				<div class="ui negative labeled icon button">
-					<i class="remove icon"></i> 取消
-				</div>
-				<div class="ui positive right labeled icon button">
-					确认 <i class="checkmark icon"></i>
-				</div>
-			</div>
-		</div>
-	</div>
 
-	<div style="height: 44px;"></div>
-	<!-- bottom header -->
-	<div class="ui fixed bottom inverted fluid three item menu">
-		<a class="item" href=""><i class="icon align justify"></i>营业额统计 </a> <a
-			class="item" href=""><i class="icon heart"></i>菜品统计</a>
+				</div>
+			</div>
+		</div>
+
+		<div style="height: 44px;"></div>
+
+		<!-- bottom header -->
+		<div class="ui fixed bottom inverted fluid three item menu">
+			<a class="item"
+				href="businessRole/free/bossLogin.do?openId=${param.openId}&businessId=${param.businessId}"><i
+				class="icon dashboard"></i>营业状况 </a>
+		</div>
 	</div>
 
 	<script type="text/javascript">

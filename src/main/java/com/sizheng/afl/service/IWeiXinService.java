@@ -131,4 +131,6 @@ public interface IWeiXinService extends IBaseService {
 	Serializable saveMessage(WeiXinBaseMsg bean);
 
 	boolean view(WeiXinBaseMsg bean, Locale locale);
+
+	String voice(Locale locale, WeiXinBaseMsg bean);
 }

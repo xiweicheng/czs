@@ -67,4 +67,6 @@ public interface IUserDao {
 
 	Map<String, Object> getBusinessConsumer(Locale locale, String openId);
 
+	List<Map<String, Object>> getStowBusiness(Locale locale, String consumerId);
+
 }

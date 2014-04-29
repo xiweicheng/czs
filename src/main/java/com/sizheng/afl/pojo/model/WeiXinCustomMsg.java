@@ -20,6 +20,7 @@ public class WeiXinCustomMsg implements Serializable {
 	private String touser;
 	private String msgtype;
 	private WeiXinCustomText text;
+	private WeiXinCustomVoice voice;
 
 	public String getTouser() {
 		return touser;
@@ -43,6 +44,14 @@ public class WeiXinCustomMsg implements Serializable {
 
 	public void setText(WeiXinCustomText text) {
 		this.text = text;
+	}
+
+	public WeiXinCustomVoice getVoice() {
+		return voice;
+	}
+
+	public void setVoice(WeiXinCustomVoice voice) {
+		this.voice = voice;
 	}
 
 }

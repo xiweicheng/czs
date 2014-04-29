@@ -136,7 +136,7 @@
 										<div class="content">
 											<div class="ui mini list">
 												<div class="item">
-													<i class="home outline icon"></i>
+													<i class="user outline icon"></i>
 													<div class="content"
 														style="padding-top: 0px; padding-bottom: 0px;">
 														<div class="header">店名</div>

@@ -35,6 +35,7 @@ import com.sizheng.afl.pojo.model.WeiXinButton;
 import com.sizheng.afl.pojo.model.WeiXinClickButton;
 import com.sizheng.afl.pojo.model.WeiXinCustomMsg;
 import com.sizheng.afl.pojo.model.WeiXinCustomText;
+import com.sizheng.afl.pojo.model.WeiXinCustomVoice;
 import com.sizheng.afl.pojo.model.WeiXinMenu;
 import com.sizheng.afl.pojo.model.WeiXinQrcode;
 import com.sizheng.afl.pojo.model.WeiXinQrcodeCreateParam;
@@ -684,5 +685,53 @@ public class WeiXinApiInvoker {
 		}
 
 		return new WeiXinUserInfo();
+	}
+
+	/**
+	 * 发送语音客服消息.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月29日 下午6:36:14
+	 * @modification 2014年4月29日 下午6:36:14
+	 * @param openId
+	 * @param mediaId
+	 * @return
+	 */
+	public boolean sendServiceVoice(String openId, String mediaId) {
+
+		logger.debug("向关注用户发送客服消息.");
+
+		WeiXinCustomMsg weiXinCustomMsg = new WeiXinCustomMsg();
+		weiXinCustomMsg.setMsgtype("voice");
+		weiXinCustomMsg.setTouser(openId);
+		weiXinCustomMsg.setVoice(new WeiXinCustomVoice(mediaId));
+
+		JSONObject invoke = invoke(
+				StringUtil.replaceByKV(propUtil.getCustomSendUrl(), "accessToken", getAccessToken()),
+				JsonUtil.toJson(weiXinCustomMsg));
+
+		if (invoke.containsKey("errcode")) {
+			logger.info(invoke.getString("errcode"));
+			logger.info(invoke.getString("errmsg"));
+			if (invoke.getLongValue("errcode") == 0) {
+				logger.debug("发送语音客服消息成功!");
+				return true;
+			} else if (invoke.getLongValue("errcode") == 42001) {
+				logger.debug("[access token]过期,重新获取!");
+				if (initAccessToken()) {
+					logger.debug("[access token]过期,重新获取成功!");
+					return sendServiceVoice(openId, mediaId);
+				} else {
+					logger.debug("[access token]过期,重新获取失败!");
+				}
+			} else {
+				logger.error("发送语音客服消息失败! errcode:" + invoke.getString("errcode") + " errmsg:"
+						+ invoke.getString("errmsg"));
+			}
+		} else {
+			logger.debug("发送语音客服消息失败!");
+		}
+
+		return false;
 	}
 }

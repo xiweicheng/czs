@@ -100,6 +100,7 @@
 					<input type="hidden" name="agree" value="1"> <input
 						type="hidden" name="consumeCode" value="${consumer.consume_code}">
 					<input type="hidden" name="openId" value="${consumer.user_name}">
+					<input type="hidden" name="handler" value="${param.handler}">
 					<input type="hidden" name="businessId" value="${param.businessId}">
 				</form>
 				<form id="disagree-form" action="business/free/reqHandle.do"
@@ -107,6 +108,7 @@
 					<input type="hidden" name="agree" value="0"> <input
 						type="hidden" name="consumeCode" value="${consumer.consume_code}">
 					<input type="hidden" name="openId" value="${consumer.user_name}">
+					<input type="hidden" name="handler" value="${param.handler}">
 					<input type="hidden" name="businessId" value="${param.businessId}">
 				</form>
 			</div>

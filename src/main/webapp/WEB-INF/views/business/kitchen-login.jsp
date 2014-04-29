@@ -62,31 +62,61 @@
 		<div class="circular ui red label">
 			<span id="orderCount-span">${fn:length(orderList)}</span>份
 		</div>
+		<div class="ui small button czsOpen" czs-status="0"
+			style="position: absolute; top: 2px; right: 2px;">展开</div>
 	</h4>
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="padding: 0px;">
 		<table class="ui sortable table segment" style="display: table;">
 			<thead>
 				<tr>
 					<th class="">菜名</th>
 					<th class="">备注</th>
-					<th class="">时间</th>
-					<th class="">顾客</th>
-					<th class="">操作</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${orderList}" var="item">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
-						<td class="">${item.name}(${item.copies}份)</td>
-						<td class=""><c:if test="${! empty item.memo}"><div class="ui red label">${item.memo}</div></c:if></td>
-						<td class="number" data-sort-value="${item.sec_diff}">${item.date_time}(${item.diff})</td>
-						<td class="">${item.nickname}(${item.description})</td>
-						<td class=""><a class="ui purple label czsRequest"
-							onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
-							href="javascript:void(0);">接受</a><a
-							class="ui purple label czsRequest"
-							onclick="acceptJoinHandler('${item.id}', '${item.menu_id}')"
-							href="javascript:void(0);">合并接受</a></td>
+						<td class="">
+							<div style="float: right;">
+								<c:if test="${! empty item.memo}">
+									<div class="ui red label">${item.memo}</div>
+								</c:if>
+							</div>
+							<div class="ui basic accordion"
+								style="width: 100%; margin-bottom: 0px;">
+								<div class="title" style="padding: 0px;">
+									<i class="dropdown icon"></i>${item.name}(${item.copies}份)
+								</div>
+								<div class="content">
+									<div class="ui mini list">
+										<div class="item">
+											<i class="user outline icon"></i>
+											<div class="content"
+												style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="header">顾客</div>
+												${item.nickname}(${item.sex})(${item.description})
+											</div>
+										</div>
+										<div class="item">
+											<i class="time outline icon"></i>
+											<div class="content"
+												style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="header">时间</div>
+												${item.date_time}(${item.diff})
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td class=""><div style="margin-top: 10px;">
+								<a class="ui label czsRequest"
+									onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
+									href="javascript:void(0);">接受订单</a><a
+									class="ui label czsRequest"
+									onclick="acceptJoinHandler('${item.id}', '${item.menu_id}')"
+									href="javascript:void(0);">合并接受</a>
+							</div></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -213,6 +243,20 @@
 
 			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
+			});
+
+			$('.ui.accordion').accordion();
+
+			$('.ui.button.czsOpen').click(function() {
+				if ($(this).attr('czs-status') == '0') {
+					$(this).attr('czs-status', '1').addClass('green');
+					$('.ui.accordion > .title').addClass('active');
+					$('.ui.accordion > .content').addClass('active');
+				} else {
+					$(this).attr('czs-status', '0').removeClass('green');
+					$('.ui.accordion > .title').removeClass('active');
+					$('.ui.accordion > .content').removeClass('active');
+				}
 			});
 
 			$('.ui.modal.czsConfirm').modal({

@@ -1,6 +1,6 @@
 package com.sizheng.afl.pojo.entity;
 
-// Generated 2014-4-28 22:22:32 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-4-29 20:37:11 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -48,6 +48,7 @@ public class Message implements java.io.Serializable {
 	private Short status;
 	private Short isDelete;
 	private Long sceneId;
+	private String recognition;
 
 	public Message() {
 	}
@@ -56,7 +57,7 @@ public class Message implements java.io.Serializable {
 			String mediaId, String format, String thumbMediaId, BigDecimal locationX, BigDecimal locationY,
 			BigDecimal scale, String label, String title, String description, String url, String eventKey,
 			BigDecimal latitude, BigDecimal longitude, BigDecimal precision, String ticket, String event,
-			String toOpenId, Date dateTime, Short status, Short isDelete, Long sceneId) {
+			String toOpenId, Date dateTime, Short status, Short isDelete, Long sceneId, String recognition) {
 		this.fromUserName = fromUserName;
 		this.createTime = createTime;
 		this.msgType = msgType;
@@ -84,6 +85,7 @@ public class Message implements java.io.Serializable {
 		this.status = status;
 		this.isDelete = isDelete;
 		this.sceneId = sceneId;
+		this.recognition = recognition;
 	}
 
 	@Id
@@ -339,6 +341,15 @@ public class Message implements java.io.Serializable {
 
 	public void setSceneId(Long sceneId) {
 		this.sceneId = sceneId;
+	}
+
+	@Column(name = "recognition", length = 2000)
+	public String getRecognition() {
+		return this.recognition;
+	}
+
+	public void setRecognition(String recognition) {
+		this.recognition = recognition;
 	}
 
 }

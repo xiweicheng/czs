@@ -3,12 +3,16 @@
  */
 package com.sizheng.afl.service.impl;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -187,6 +191,361 @@ public class BusinessRoleServiceImpl extends BaseServiceImpl implements IBusines
 		}
 
 		return true;
+	}
+
+	@Override
+	public long countAllConsumer(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session.createQuery("select count(*) from BusinessConsumer where businessId=?")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countTodayConsumer(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT COUNT(*) AS cnt FROM `business_consumer` WHERE business_id = ? AND DATE(last_consume_time) = DATE(NOW());")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countTodayOngoingConsumer(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createQuery("select count(*) from BusinessConsumer where status = 1 and businessId=?")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countAllMenuBill(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT SUM(copies) AS total FROM menu_bill INNER JOIN menu ON menu_bill.menu_id = menu.id WHERE menu.`owner` = ? AND menu_bill.`status` = 3")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countTodayMenuBill(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT SUM(copies) AS total FROM menu_bill INNER JOIN menu ON menu_bill.menu_id = menu.id WHERE menu.`owner` = ? AND menu_bill.`status` = 3 AND DATE(menu_bill.date_time) = DATE(NOW())")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countTodayWaitMenuBill(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT SUM(copies) AS total FROM menu_bill INNER JOIN menu ON menu_bill.menu_id = menu.id WHERE menu.`owner` = ? AND menu_bill.`status` = 1 AND DATE(menu_bill.date_time) = DATE(NOW())")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public double countAllBillBill(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Double>() {
+
+			@Override
+			public Double doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery("SELECT SUM(amount) AS total FROM `bill` WHERE bill.business_id = ?")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Double) object;
+				} else {
+					if (object != null) {
+						return Double.parseDouble(String.valueOf(object));
+					} else {
+						return 0D;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public double countTodayBill(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Double>() {
+
+			@Override
+			public Double doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT SUM(amount) AS total FROM `bill` WHERE bill.business_id = ? AND DATE(date_time) = DATE(NOW())")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Double) object;
+				} else {
+					if (object != null) {
+						return Double.parseDouble(String.valueOf(object));
+					} else {
+						return 0D;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public double countYesterdayBill(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Double>() {
+
+			@Override
+			public Double doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT SUM(amount) FROM `bill` WHERE bill.business_id = ? AND DATE(date_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Double) object;
+				} else {
+					if (object != null) {
+						return Double.parseDouble(String.valueOf(object));
+					} else {
+						return 0D;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countAllMsg(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT COUNT(*) AS cnt FROM `message` WHERE message.to_open_id = ? AND message.msg_type IN ('text', 'image')")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countNewMsg(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT COUNT(*) AS cnt FROM `message` WHERE message.to_open_id = ? AND message.msg_type IN ('text', 'image') AND `status` = 0")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countStowMsg(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT COUNT(*) AS cnt FROM `message` WHERE message.to_open_id = ? AND message.msg_type IN ('text', 'image') AND `status` = 2")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countAllService(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery("SELECT COUNT(*) AS cnt FROM `service` WHERE service.business_id = ?")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countNewService(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT COUNT(*) AS cnt FROM `service` WHERE service.business_id = ? AND DATE(date_time) = CURDATE() AND  `status` = 1")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
+	}
+
+	@Override
+	public long countTodayService(Locale locale, final String businessId) {
+		return hibernateTemplate.execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Object object = session
+						.createSQLQuery(
+								"SELECT COUNT(*) AS cnt FROM `service` WHERE service.business_id = ? AND DATE(date_time) = CURDATE()")
+						.setString(0, businessId).uniqueResult();
+
+				if (object instanceof Long) {
+					return (Long) object;
+				} else {
+					if (object != null) {
+						return Long.parseLong(String.valueOf(object));
+					} else {
+						return 0L;
+					}
+				}
+			}
+		});
 	}
 
 }

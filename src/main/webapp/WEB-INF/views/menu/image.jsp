@@ -132,10 +132,10 @@
 	<div class="ui small modal" id="edit-desc-modal">
 		<i class="close icon"></i>
 		<div class="header">编辑描述</div>
-		<div class="content">
+		<div class="content" style="padding: 8px;">
 			<div class="ui form">
 				<div class="field">
-					<label>输入描述</label> <input type="text" id="desc-text">
+					<input type="text" id="desc-text">
 				</div>
 			</div>
 		</div>

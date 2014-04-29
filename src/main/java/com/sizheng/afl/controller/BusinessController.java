@@ -1209,7 +1209,8 @@ public class BusinessController extends BaseController {
 	 */
 	@RequestMapping("free/joining")
 	public String joining(HttpServletRequest request, Locale locale, Model model,
-			@RequestParam("openId") String openId, @RequestParam("businessId") String businessId) {
+			@RequestParam("openId") String openId, @RequestParam("businessId") String businessId,
+			@RequestParam("handler") String handler) {
 
 		logger.debug("顾客进入店铺请求处理【商家】");
 
@@ -1262,11 +1263,12 @@ public class BusinessController extends BaseController {
 	@RequestMapping("free/reqHandle")
 	public String reqHandle(HttpServletRequest request, Locale locale, Model model,
 			@RequestParam("consumeCode") String consumeCode, @RequestParam("agree") String agree,
-			@RequestParam("openId") final String openId, @RequestParam("businessId") String businessId) {
+			@RequestParam("openId") final String openId, @RequestParam("businessId") String businessId,
+			@RequestParam("handler") String handler) {
 
 		logger.debug("对顾客进入请求进行同意或者否定【商家】");
 
-		Boolean val = businessService.agreeOrDisagree(locale, consumeCode, agree.equals("1"), businessId);
+		Boolean val = businessService.agreeOrDisagree(locale, consumeCode, agree.equals("1"), handler);
 
 		if (val && agree.equals("1")) {
 

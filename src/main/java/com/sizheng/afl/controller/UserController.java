@@ -553,4 +553,33 @@ public class UserController extends BaseController {
 		return resultMsg;
 	}
 
+	/**
+	 * 获取收藏商家.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月29日 上午11:53:16
+	 * @modification 2014年4月29日 上午11:53:16
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param consumerId
+	 * @return
+	 */
+	@RequestMapping("free/getStowBusiness")
+	public String getStowBusiness(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("consumerId") String consumerId) {
+
+		logger.debug("获取收藏商家【消费者】");
+
+		List<Map<String, Object>> stowBusiness = userService.getStowBusiness(locale, consumerId);
+
+		for (Map<String, Object> map : stowBusiness) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+		}
+
+		model.addAttribute("list", stowBusiness);
+
+		return "customer/stow-business";
+	}
+
 }

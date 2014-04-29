@@ -299,7 +299,7 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.`status`,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	subscriber.nickname,\n");
-		sqlSb.append("	subscriber.sex,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
 		sqlSb.append("	subscriber.headimgurl,\n");
 		sqlSb.append("	qrcode.description,\n");
 		sqlSb.append("	menu_bill.id,\n");

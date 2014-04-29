@@ -485,4 +485,9 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 	public List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId) {
 		return userDao.stowQuery(locale, openId, businessId);
 	}
+
+	@Override
+	public List<Map<String, Object>> getStowBusiness(Locale locale, String consumerId) {
+		return userDao.getStowBusiness(locale, consumerId);
+	}
 }

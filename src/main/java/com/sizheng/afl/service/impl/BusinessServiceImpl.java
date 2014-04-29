@@ -371,18 +371,49 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				public void run() {
 
 					if (isConsumerInConfirm) {
-						String agreeUrl = StringUtil.replace(
-								"<a href='{?1}/business/free/joining.do?openId={?2}&businessId={?3}'>[点击此]处理请求</a>",
-								propUtil.getRedirectUrl(), bean.getFromUserName(), qrcode2.getOpenId());
-						// 通知商家
-						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
-								"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}\n\n{?5}", nickName,
-								businessConsumer.getConsumeTimes(), qrsceneId, qrcode2.getDescription(), agreeUrl));
+
+						// 通知服务人员.
+						BusinessRole businessRole = new BusinessRole();
+						businessRole.setBusinessId(qrcode2.getOpenId());
+						businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+						businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+
+						List list4 = hibernateTemplate.findByExample(businessRole);
+
+						for (Object object : list4) {
+							String openId = ((BusinessRole) object).getOpenId();
+
+							String agreeUrl = StringUtil
+									.replace(
+											"<a href='{?1}/business/free/joining.do?openId={?2}&businessId={?3}&handler={?4}'>[点击此]处理请求</a>",
+											propUtil.getRedirectUrl(), bean.getFromUserName(), qrcode2.getOpenId(),
+											openId);
+
+							if (!weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
+									"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}\n\n{?5}", nickName,
+									businessConsumer.getConsumeTimes(), qrsceneId, qrcode2.getDescription(), agreeUrl))) {
+								logger.error("客服消息通知服务人员失败! openId:" + openId);
+							}
+						}
 					} else {
-						// 通知商家
-						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
-								"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}", nickName,
-								businessConsumer.getConsumeTimes(), qrsceneId, qrcode2.getDescription()));
+
+						// 通知服务人员.
+						BusinessRole businessRole = new BusinessRole();
+						businessRole.setBusinessId(qrcode2.getOpenId());
+						businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+						businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+
+						List list4 = hibernateTemplate.findByExample(businessRole);
+
+						for (Object object : list4) {
+							String openId = ((BusinessRole) object).getOpenId();
+
+							if (!weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
+									"顾客[{?1}]第[{?2}]次光顾!\n\n结账消费码:{?3}\n\n位置:{?4}", nickName,
+									businessConsumer.getConsumeTimes(), qrsceneId, qrcode2.getDescription()))) {
+								logger.error("客服消息通知服务人员失败! openId:" + openId);
+							}
+						}
 					}
 
 				}
@@ -458,18 +489,48 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				@Override
 				public void run() {
 					if (isConsumerInConfirm) {
-						String agreeUrl = StringUtil.replace(
-								"<a href='{?1}/business/free/joining.do?openId={?2}&businessId={?3}'>[点击此]处理请求</a>",
-								propUtil.getRedirectUrl(), bean.getFromUserName(), qrcode2.getOpenId());
-						// 通知商家
-						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(), StringUtil.replace(
-								"顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}\n\n{?4}", nickName, qrsceneId,
-								qrcode2.getDescription(), agreeUrl));
+
+						// 通知服务人员.
+						BusinessRole businessRole = new BusinessRole();
+						businessRole.setBusinessId(qrcode2.getOpenId());
+						businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+						businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+
+						List list4 = hibernateTemplate.findByExample(businessRole);
+
+						for (Object object : list4) {
+							String openId = ((BusinessRole) object).getOpenId();
+
+							String agreeUrl = StringUtil
+									.replace(
+											"<a href='{?1}/business/free/joining.do?openId={?2}&businessId={?3}&handler={?4}'>[点击此]处理请求</a>",
+											propUtil.getRedirectUrl(), bean.getFromUserName(), qrcode2.getOpenId(),
+											openId);
+							if (!weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
+									"顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}\n\n{?4}", nickName, qrsceneId,
+									qrcode2.getDescription(), agreeUrl))) {
+								logger.error("客服消息通知服务人员失败! openId:" + openId);
+							}
+						}
 					} else {
-						// 通知商家
-						weiXinApiInvoker.sendServiceMsg(qrcode2.getOpenId(),
-								StringUtil.replace("顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}", nickName, qrsceneId,
-										qrcode2.getDescription()));
+
+						// 通知服务人员.
+						BusinessRole businessRole = new BusinessRole();
+						businessRole.setBusinessId(qrcode2.getOpenId());
+						businessRole.setIsDelete(SysConstant.SHORT_FALSE);
+						businessRole.setType(SysConstant.ROLE_TYPE_WAITER);
+
+						List list4 = hibernateTemplate.findByExample(businessRole);
+
+						for (Object object : list4) {
+							String openId = ((BusinessRole) object).getOpenId();
+
+							if (!weiXinApiInvoker.sendServiceMsg(openId, StringUtil.replace(
+									"顾客[{?1}]首次光顾!\n\n结账消费码:{?2}\n\n位置:{?3}", nickName, qrsceneId,
+									qrcode2.getDescription()))) {
+								logger.error("客服消息通知服务人员失败! openId:" + openId);
+							}
+						}
 					}
 
 				}

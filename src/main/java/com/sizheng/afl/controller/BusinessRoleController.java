@@ -510,9 +510,54 @@ public class BusinessRoleController extends BaseController {
 
 		logger.debug("店主登录【商家】");
 
-		model.addAttribute("message", "店主登录");
+		// 顾客数统计
+		// 总计顾客数 今日顾客数 消费中顾客数
+		long countAllConsumer = businessRoleService.countAllConsumer(locale, businessId);
+		long countTodayConsumer = businessRoleService.countTodayConsumer(locale, businessId);
+		long countTodayOngoingConsumer = businessRoleService.countTodayOngoingConsumer(locale, businessId);
+
+		model.addAttribute("countAllConsumer", countAllConsumer);
+		model.addAttribute("countTodayConsumer", countTodayConsumer);
+		model.addAttribute("countTodayOngoingConsumer", countTodayOngoingConsumer);
+
+		// 菜品点击统计
+		long countAllMenuBill = businessRoleService.countAllMenuBill(locale, businessId);
+		long countTodayMenuBill = businessRoleService.countTodayMenuBill(locale, businessId);
+		long countTodayWaitMenuBill = businessRoleService.countTodayWaitMenuBill(locale, businessId);
+
+		model.addAttribute("countAllMenuBill", countAllMenuBill);
+		model.addAttribute("countTodayMenuBill", countTodayMenuBill);
+		model.addAttribute("countTodayWaitMenuBill", countTodayWaitMenuBill);
+
+		// 营业额统计
+		double countAllBillBill = businessRoleService.countAllBillBill(locale, businessId);
+		double countTodayBill = businessRoleService.countTodayBill(locale, businessId);
+		double countYesterdayBill = businessRoleService.countYesterdayBill(locale, businessId);
+
+		model.addAttribute("countAllBillBill", countAllBillBill);
+		model.addAttribute("countTodayBill", countTodayBill);
+		model.addAttribute("countYesterdayBill", countYesterdayBill);
+
+		// 消息数统计
+		long countAllMsg = businessRoleService.countAllMsg(locale, businessId);
+		long countNewMsg = businessRoleService.countNewMsg(locale, businessId);
+		long countStowMsg = businessRoleService.countStowMsg(locale, businessId);
+
+		model.addAttribute("countAllMsg", countAllMsg);
+		model.addAttribute("countNewMsg", countNewMsg);
+		model.addAttribute("countStowMsg", countStowMsg);
+
+		// 服务数统计
+		long countAllService = businessRoleService.countAllService(locale, businessId);
+		long countNewService = businessRoleService.countNewService(locale, businessId);
+		long countTodayService = businessRoleService.countTodayService(locale, businessId);
+
+		model.addAttribute("countAllService", countAllService);
+		model.addAttribute("countNewService", countNewService);
+		model.addAttribute("countTodayService", countTodayService);
 
 		return "business/boss-login";
+
 	}
 
 	/**
