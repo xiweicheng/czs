@@ -134,7 +134,7 @@
 									<div style="clear: both;"></div>
 								</div>
 
-								<div class="ui divider"></div>
+								<div class="ui divider czsSimpleMode"></div>
 
 								<!-- 个人 -->
 								<c:if test="${isOwn == 1}">
