@@ -6,32 +6,32 @@
 		<sql-type jdbc-type="INTEGER" hibernate-type="Integer">
 		</sql-type>
 	</type-mapping>
-	<table-filter match-catalog="afl" match-name="user" />
+	<table-filter match-catalog="czs" match-name="user" />
 
-	<table-filter match-name="subscriber" match-catalog="afl">
+	<table-filter match-name="subscriber" match-catalog="czs">
 	</table-filter>
 
-	<table-filter match-name="message" match-catalog="afl">
+	<table-filter match-name="message" match-catalog="czs">
 	</table-filter>
-	<table-filter match-name="business" match-catalog="afl"></table-filter>
-	<table-filter match-name="qrcode" match-catalog="afl"></table-filter>
-	<table-filter match-name="category" match-catalog="afl"></table-filter>
-	<table-filter match-name="business_consumer" match-catalog="afl"></table-filter>
-	<table-filter match-name="resources" match-catalog="afl"></table-filter>
-	<table-filter match-name="menu_category" match-catalog="afl"></table-filter>
-	<table-filter match-name="menu_taste" match-catalog="afl"></table-filter>
-	<table-filter match-name="menu" match-catalog="afl"></table-filter>
-	<table-filter match-name="menu_bill" match-catalog="afl"></table-filter>
-	<table-filter match-name="bill" match-catalog="afl"></table-filter>
-	<table-filter match-name="favorites" match-catalog="afl"></table-filter>
-	<table-filter match-name="request" match-catalog="afl"></table-filter>
-	<table-filter match-name="business_role" match-catalog="afl"></table-filter>
-	<table-filter match-name="service" match-catalog="afl"></table-filter>
-	<table-filter match-name="czs-user" match-catalog="afl"></table-filter>
+	<table-filter match-name="business" match-catalog="czs"></table-filter>
+	<table-filter match-name="qrcode" match-catalog="czs"></table-filter>
+	<table-filter match-name="category" match-catalog="czs"></table-filter>
+	<table-filter match-name="business_consumer" match-catalog="czs"></table-filter>
+	<table-filter match-name="resources" match-catalog="czs"></table-filter>
+	<table-filter match-name="menu_category" match-catalog="czs"></table-filter>
+	<table-filter match-name="menu_taste" match-catalog="czs"></table-filter>
+	<table-filter match-name="menu" match-catalog="czs"></table-filter>
+	<table-filter match-name="menu_bill" match-catalog="czs"></table-filter>
+	<table-filter match-name="bill" match-catalog="czs"></table-filter>
+	<table-filter match-name="favorites" match-catalog="czs"></table-filter>
+	<table-filter match-name="request" match-catalog="czs"></table-filter>
+	<table-filter match-name="business_role" match-catalog="czs"></table-filter>
+	<table-filter match-name="service" match-catalog="czs"></table-filter>
+	<table-filter match-name="czs-user" match-catalog="czs"></table-filter>
 	<table-filter match-name="business_consumer_record"
-		match-catalog="afl">
+		match-catalog="czs">
 	</table-filter>
-	<table catalog="afl" name="subscriber">
+	<table catalog="czs" name="subscriber">
 		<column name="id"></column>
 		<column name="user_name"></column>
 		<column name="nickname"></column>
@@ -42,7 +42,7 @@
 		<column name="language"></column>
 		<column name="headimgurl"></column>
 	</table>
-	<table catalog="afl" name="message">
+	<table catalog="czs" name="message">
 		<column name="id"></column>
 		<column name="from_user_name"></column>
 		<column name="create_time"></column>
@@ -67,7 +67,7 @@
 		<column name="ticket"></column>
 		<column name="event"></column>
 	</table>
-	<table catalog="afl" name="user">
+	<table catalog="czs" name="user">
 		<column name="id"></column>
 		<column name="user_name"></column>
 		<column name="create_time"></column>

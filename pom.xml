@@ -3,11 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.sizheng</groupId>
-	<artifactId>afl</artifactId>
-	<version>1.0.0</version>
-	<name>ask for leave</name>
-	<url>http://www.sizheng.com</url>
+	<groupId>com.canzs</groupId>
+	<artifactId>czs</artifactId>
+	<name>餐助手</name>
+	<url>http://www.canzs.cn</url>
 	<properties>
 		<spring.framework.version>3.2.6.RELEASE</spring.framework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -253,9 +252,10 @@
 	</repositories>
 
 	<organization>
-		<name>sizheng</name>
-		<url>http://www.sizheng.com</url>
+		<name>canzs</name>
+		<url>http://www.canzs.cn</url>
 	</organization>
 	<packaging>war</packaging>
-	<description>基于微信公众平台的请假系统.</description>
+	<description>基于微信公众平台的餐饮系统.</description>
+	<version>1.0.0</version>
 </project>

@@ -8,7 +8,7 @@
         <property name="hibernate.check_nullability">true</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.password">skycloud</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/afl</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/czs</property>
         <property name="hibernate.connection.username">root</property>
         <!-- <property name="hibernate.current_session_context_class">thread</property> -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>

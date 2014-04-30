@@ -37,7 +37,7 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 
-	<context:component-scan base-package="com.sizheng.afl" />
+	<context:component-scan base-package="com.canzs.czs" />
 
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<beans:property name="driverClassName" value="${jdbc.driverClassName}" />
@@ -58,7 +58,7 @@
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSource" />
 		<beans:property name="configLocation" value="classpath:hibernate.cfg.xml" />
-		<beans:property name="packagesToScan" value="com.sizheng.afl.pojo.entity" />
+		<beans:property name="packagesToScan" value="com.canzs.czs.pojo.entity" />
 	</beans:bean>
 
 	<beans:bean id="hibernateTemplate"
@@ -92,7 +92,7 @@
 		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
 
 	<beans:bean id="sessionInterceptor"
-		class="com.sizheng.afl.interceptor.SessionInterceptor" />
+		class="com.canzs.czs.interceptor.SessionInterceptor" />
 
 	<!-- <beans:bean name="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor"> 
 		<beans:property name="sessionFactory" ref="sessionFactory" /> </beans:bean> -->

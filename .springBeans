@@ -9,12 +9,6 @@
 	<configs>
 		<config>src/main/resources/root-context.xml</config>
 		<config>src/main/resources/servlet-context.xml</config>
-		<config>java:com.sizheng.afl.base.impl.CommonService</config>
-		<config>java:com.sizheng.afl.base.impl.CommonDao</config>
-		<config>java:com.sizheng.afl.component.ApiInvoker</config>
-		<config>java:com.sizheng.afl.component.MessageUtil</config>
-		<config>java:com.sizheng.afl.component.SpringAppContextUtil</config>
-		<config>java:com.sizheng.afl.component.AjaxJsonView</config>
 	</configs>
 	<configSets>
 	</configSets>
