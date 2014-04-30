@@ -1,0 +1,60 @@
+SELECT
+	business_consumer.consumer_id,
+	business_consumer.consume_times,
+	DATE_FORMAT(business_consumer.last_consume_time,  '%Y/%m/%d %H:%i:%s') as last_consume_time,
+	UNIX_TIMESTAMP(bill.date_time) as times,
+	TIMESTAMPDIFF(SECOND,message.date_time,NOW()) as sec_diff,
+	business_consumer.consume_code,
+	subscriber.nickname,
+	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,
+	subscriber.city,
+	subscriber.country,
+	subscriber.province,
+	subscriber.headimgurl
+FROM
+	business_consumer
+INNER JOIN subscriber ON business_consumer.consumer_id = subscriber.user_name
+WHERE
+	business_consumer.scene_id = 6
+AND business_consumer.`status` = 1
+
+
+<link href="../../../resources/tinybox2/css/tinybox.min.css"
+	rel="stylesheet" type="text/css">
+<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
+
+TINY.box.show({
+	html : '设置成功!',
+	animate : true,
+	mask : false,
+	close : false,
+	boxid : 'success',
+	autohide : 2,
+	top : 48
+});
+TINY.box.show({
+	html : '操作失败,请刷新页面再试!',
+	animate : false,
+	close : false,
+	boxid : 'error',
+	topsplit : 3
+});
+TINY.box.show({
+	html : '操作失败!<br/>失败信息:' + msg.msg.detail,
+	animate : false,
+	close : false,
+	boxid : 'error',
+	topsplit : 3
+});
+
+
+
+<tr>
+	<th class="">名称</th>
+	<th class="number">价格</th>
+	<th class="">分类</th>
+	<th class="">口味</th>
+	<th class="">顾客</th>
+	<th class="sorted descending">最后消费时间</th>
+	<th class="">距今</th>
+</tr>
