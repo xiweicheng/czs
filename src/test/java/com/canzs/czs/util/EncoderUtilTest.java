@@ -2,9 +2,6 @@ package com.canzs.czs.util;
 
 import org.junit.Test;
 
-import com.canzs.czs.util.EncoderUtil;
-import com.canzs.czs.util.SHA1;
-
 public class EncoderUtilTest {
 
 	@Test
@@ -16,6 +13,8 @@ public class EncoderUtilTest {
 		String data = "123456";
 		String digest = new SHA1().getDigestOfString(data.getBytes());
 		System.out.println("123456 SHA1 :" + digest);
+
+		System.out.println(EncoderUtil.encode("SHA1", "123"));
 	}
 
 	@Test
