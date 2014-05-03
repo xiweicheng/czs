@@ -16,7 +16,7 @@ import com.canzs.czs.pojo.vo.PageResult;
  * 
  * @creation 2014年04月05日 05:02:44
  * @modification 2014年04月05日 05:02:44
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

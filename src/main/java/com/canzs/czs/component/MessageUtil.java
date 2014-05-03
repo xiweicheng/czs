@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * 
  * @creation 2013年12月31日 下午3:08:27
  * @modification 2013年12月31日 下午3:08:27
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

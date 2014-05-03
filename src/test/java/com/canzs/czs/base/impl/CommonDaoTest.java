@@ -21,7 +21,7 @@ import com.canzs.czs.base.impl.CommonDao;
  * 
  * @creation 2013年12月27日 下午3:51:10
  * @modification 2013年12月27日 下午3:51:10
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

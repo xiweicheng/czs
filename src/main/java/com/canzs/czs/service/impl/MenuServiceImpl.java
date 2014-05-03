@@ -40,7 +40,7 @@ import com.canzs.czs.util.StringUtil;
  * 
  * @creation 2014年03月29日 08:37:32
  * @modification 2014年03月29日 08:37:32
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

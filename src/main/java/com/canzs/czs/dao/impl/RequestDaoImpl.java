@@ -19,7 +19,7 @@ import com.canzs.czs.pojo.entity.Request;
  * 
  * @creation 2014年04月11日 03:18:24
  * @modification 2014年04月11日 03:18:24
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  * 
  * @creation 2014年3月26日 下午12:11:10
  * @modification 2014年3月26日 下午12:11:10
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

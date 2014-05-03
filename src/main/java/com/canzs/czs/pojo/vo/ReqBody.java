@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 
  * @creation 2013年12月28日 下午4:31:59
  * @modification 2013年12月28日 下午4:31:59
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

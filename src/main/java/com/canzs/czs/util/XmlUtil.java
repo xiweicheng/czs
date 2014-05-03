@@ -20,7 +20,7 @@ import org.dom4j.io.XMLWriter;
  * 
  * @creation 2014年3月25日 上午9:55:48
  * @modification 2014年3月25日 上午9:55:48
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

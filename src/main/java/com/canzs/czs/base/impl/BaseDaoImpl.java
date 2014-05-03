@@ -35,7 +35,7 @@ import com.canzs.czs.util.SqlUtil;
  * 
  * @creation 2013年12月24日 上午11:11:50
  * @modification 2013年12月24日 上午11:11:50
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

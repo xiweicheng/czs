@@ -14,7 +14,7 @@ import com.canzs.czs.pojo.entity.Message;
  * 
  * @creation 2014年04月22日 04:15:09
  * @modification 2014年04月22日 04:15:09
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

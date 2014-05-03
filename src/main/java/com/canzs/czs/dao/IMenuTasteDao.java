@@ -14,7 +14,7 @@ import com.canzs.czs.pojo.entity.MenuTaste;
  * 
  * @creation 2014年03月29日 09:50:42
  * @modification 2014年03月29日 09:50:42
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

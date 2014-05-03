@@ -33,7 +33,7 @@ import com.canzs.czs.util.StringUtil;
  * 
  * @creation 2014年3月21日 上午11:27:03
  * @modification 2014年3月21日 上午11:27:03
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

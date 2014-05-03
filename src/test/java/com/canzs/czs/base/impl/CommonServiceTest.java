@@ -14,7 +14,7 @@ import com.canzs.czs.base.impl.CommonService;
  * 
  * @creation 2013年12月27日 下午4:33:37
  * @modification 2013年12月27日 下午4:33:37
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

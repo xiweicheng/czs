@@ -16,7 +16,7 @@ import com.canzs.czs.pojo.constant.SysConstant;
  * 
  * @creation 2013-10-11 上午11:51:59
  * @modification 2013-10-11 上午11:51:59
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

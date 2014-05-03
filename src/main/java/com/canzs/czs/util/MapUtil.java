@@ -11,7 +11,7 @@ import java.util.Map;
  * 
  * @creation 2013-10-10 下午3:05:53
  * @modification 2013-10-10 下午3:05:53
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

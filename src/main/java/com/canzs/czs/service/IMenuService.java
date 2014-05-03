@@ -20,7 +20,7 @@ import com.canzs.czs.pojo.vo.PageResult;
  * 
  * @creation 2014年03月29日 08:37:31
  * @modification 2014年03月29日 08:37:31
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

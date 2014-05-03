@@ -7,7 +7,7 @@ import java.security.MessageDigest;
  * 
  * @creation 2014年3月20日 上午11:24:21
  * @modification 2014年3月20日 上午11:24:21
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

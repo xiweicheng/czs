@@ -49,7 +49,7 @@ import com.canzs.czs.util.ThreadUtil;
  * 
  * @creation 2014年03月22日 01:00:06
  * @modification 2014年03月22日 01:00:06
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

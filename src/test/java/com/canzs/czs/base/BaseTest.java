@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * 
  * @creation 2013年12月24日 下午12:58:53
  * @modification 2013年12月24日 下午12:58:53
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

@@ -17,7 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
  * 
  * @creation 2013年12月26日 下午3:44:55
  * @modification 2013年12月26日 下午3:44:55
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

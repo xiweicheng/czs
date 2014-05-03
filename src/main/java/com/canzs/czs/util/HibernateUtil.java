@@ -8,7 +8,7 @@ import org.hibernate.cfg.*;
  * 
  * @creation 2013-10-13 上午8:04:24
  * @modification
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

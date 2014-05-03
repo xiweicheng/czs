@@ -50,7 +50,7 @@ import com.canzs.czs.util.WebUtil;
  * 
  * @creation 2014年3月21日 上午10:06:16
  * @modification 2014年3月21日 上午10:06:16
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

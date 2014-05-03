@@ -8,7 +8,7 @@ package com.canzs.czs.pojo.constant;
  * 
  * @creation 2013-9-18 上午11:06:26
  * @modification 2013-9-18 上午11:06:26
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 
@@ -18,7 +18,7 @@ package com.canzs.czs.pojo.constant;
  * 
  * @creation 2014年1月3日 上午11:07:58
  * @modification 2014年1月3日 上午11:07:58
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

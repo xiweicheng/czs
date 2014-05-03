@@ -10,7 +10,7 @@ import com.canzs.czs.util.WebUtil;
  * 
  * @creation 2013-9-18 下午1:43:31
  * @modification 2013-9-18 下午1:43:31
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

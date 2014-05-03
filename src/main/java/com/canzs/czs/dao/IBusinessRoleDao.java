@@ -14,7 +14,7 @@ import com.canzs.czs.pojo.entity.BusinessRole;
  * 
  * @creation 2014年04月22日 10:02:47
  * @modification 2014年04月22日 10:02:47
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

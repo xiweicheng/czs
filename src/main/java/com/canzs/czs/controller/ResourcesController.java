@@ -31,7 +31,7 @@ import com.canzs.czs.util.WebUtil;
  * 
  * @creation 2014年03月29日 05:00:05
  * @modification 2014年03月29日 05:00:05
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

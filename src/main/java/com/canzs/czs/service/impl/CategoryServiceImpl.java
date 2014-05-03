@@ -24,7 +24,7 @@ import com.canzs.czs.service.ICategoryService;
  * 
  * @creation 2014年03月26日 01:06:34
  * @modification 2014年03月26日 01:06:34
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

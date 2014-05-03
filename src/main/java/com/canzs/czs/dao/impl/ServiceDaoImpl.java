@@ -19,7 +19,7 @@ import com.canzs.czs.pojo.entity.Service;
  * 
  * @creation 2014年04月23日 08:28:44
  * @modification 2014年04月23日 08:28:44
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

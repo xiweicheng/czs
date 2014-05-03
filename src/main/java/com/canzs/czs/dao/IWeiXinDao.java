@@ -15,7 +15,7 @@ import com.canzs.czs.pojo.model.WeiXinUserInfo;
  * 
  * @creation 2014年03月22日 01:02:21
  * @modification 2014年03月22日 01:02:21
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

@@ -15,7 +15,7 @@ import com.canzs.czs.pojo.entity.CzsUser;
  * 
  * @creation 2014年04月23日 04:32:37
  * @modification 2014年04月23日 04:32:37
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

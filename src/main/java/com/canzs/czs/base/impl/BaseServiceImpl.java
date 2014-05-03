@@ -18,7 +18,7 @@ import com.canzs.czs.component.MessageUtil;
  * 
  * @creation 2013年12月24日 上午11:12:13
  * @modification 2013年12月24日 上午11:12:13
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 

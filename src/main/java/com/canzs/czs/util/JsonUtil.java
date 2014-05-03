@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
  * 
  * @creation 2013-9-17 下午5:14:33
  * @modification 2013-9-17 下午5:14:33
- * @company Skycloud
+ * @company Canzs
  * @author xiweicheng
  * @version 1.0
  * 
