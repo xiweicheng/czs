@@ -17,6 +17,8 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+<script src="../../../resources/headroom/headroom.min.js"
+	charset="utf-8"></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -53,7 +55,7 @@
 	</h4>
 
 	<!-- top header -->
-	<div class="ui fixed top inverted fluid three item menu">
+	<div id="header" class="ui fixed top inverted fluid three item menu">
 		<form action="menu/free/list4bill.do" id="filter-form" method="post">
 			<input type="hidden" name="openId" value="${openId}">
 			<div class="ui dropdown item czsCategory">
@@ -239,7 +241,7 @@
 	<div style="height: 44px;"></div>
 
 	<!-- bottom header -->
-	<div class="ui fixed bottom inverted fluid three item menu">
+	<div class="ui fixed bottom inverted fluid three item menu headroom">
 		<a class="item" style="padding-top: 5px; padding-bottom: 5px;"
 			href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}"><div
 				style="font-size: small;">
@@ -396,6 +398,33 @@
 			});
 		}
 		jQuery(function($) {
+			
+			// 创建 Headroom 对象，将页面元素传递进去
+			var headroom  = new Headroom($('#header')[0], {
+			    offset : 0,
+			    tolerance : 0,
+			    classes : {
+			        initial : "headroom",
+			        pinned : "headroom--pinned",
+			        unpinned : "headroom--unpinned",
+			        top : "headroom--top",
+			        notTop : "headroom--not-top"
+			    },
+			    onPin : function() {
+			    	$(this.elem).show();
+			    },
+			    onUnpin : function() {
+			    	$(this.elem).hide();
+			    },
+			    onTop : function() {
+			    	$(this.elem).show();
+			    },
+			    onNotTop : function() {
+			    	$(this.elem).hide();
+			    }
+			});
+			// 初始化
+			headroom.init(); 
 			
 			$('.ui.dimmer.czsMsg').click(function(){
 				$('.ui.dimmer.czsMsg > .content').hide();
