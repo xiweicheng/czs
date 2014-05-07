@@ -142,6 +142,7 @@ public final class SysConstant {
 	public static final Short REQUEST_TYPE_BILL_GROUP = 2;
 	public static final Short REQUEST_TYPE_QRCODE_USE_LIMIT = 3;
 	public static final Short REQUEST_TYPE_SERVICE_CALL = 4;
+	public static final Short REQUEST_TYPE_SERVICE_CALL_HANDLE = 5;
 
 	public static final Long CATEGORY_ID_TZ = 1L;
 	public static final Long CATEGORY_ID_JS = 2L;

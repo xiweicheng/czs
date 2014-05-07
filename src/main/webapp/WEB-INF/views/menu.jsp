@@ -38,9 +38,10 @@
 		<div class="header item">
 			<i class="qr code icon"></i> 二维码
 		</div>
-		<a class="item" href="qrcode/download.do" id="menu-item-qrcode-main">
-			二维码生成</a> <a class="item" href="qrcode/list.do"
-			id="menu-item-qrcode-list"> 二维码一览</a>
+		<a class="item" href="qrcode/buy.do" id="menu-item-qrcode-buy">
+			二维码购买</a> <a class="item" href="qrcode/download.do"
+			id="menu-item-qrcode-main"> 二维码生成</a> <a class="item"
+			href="qrcode/list.do" id="menu-item-qrcode-list"> 二维码一览</a>
 		<div class="header item">
 			<i class="dashboard icon"></i> 统计分析
 		</div>

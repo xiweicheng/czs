@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -29,6 +28,9 @@
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.jqprint-0.3.js"
 	charset="utf-8"></script>
+<link href="../../../resources/tinybox2/css/tinybox.min.css"
+	rel="stylesheet" type="text/css">
+<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -110,11 +112,16 @@
 </div>
 </script>
 <script id="requestItemTpl" type="text/x-jquery-tmpl">
-<div class="item" id="request-item-{{html id}}">
-	<div class="right floated tiny teal ui button" onclick="requestHandler('{{html id}}')">知悉</div>
+<div class="item" id="request-item-{{html id}}" style="font-size: .8125rem;" >
+	<div class="right floated mini ui animated fade button"  onclick="requestHandler('{{html id}}')">
+	  <div class="visible content">{{html nice_time}}</div>
+	  <div class="hidden content">
+	        	知悉
+	  </div>
+	</div>
 	<img class="ui avatar image"
-		src="{{html headimgurl}}/64">
-	<div class="content" onclick="refreshHandler('{{html id}}', '{{html type}}');">
+		src="{{html headimgurl}}/46">
+	<div class="content" onclick="refreshHandler('{{html id}}', '{{html type}}', '{{html consumer_id}}');">
 		<div class="header">{{html nickname}}</div>
 		{{html name}}
 	</div>
@@ -188,7 +195,7 @@
 		<div class="ui right vertical sidebar">
 			<h4 class="ui top attached header">顾客实时请求</h4>
 
-			<div class="ui attached selection divided animated list czzRequest"
+			<div class="ui attached selection divided list czzRequest"
 				style="margin-top: 5px;"></div>
 		</div>
 
@@ -218,12 +225,11 @@
 					type="hidden" value="60">
 			</div>
 
-			<div class="ui toggle checkbox czsFilterOver"
-				style="margin-left: 20px;">
+			<div class="ui checkbox czsFilterOver" style="margin-left: 20px;">
 				<input type="checkbox" name="filterOver"> <label>过滤终止状态</label>
 			</div>
 		</h4>
-		<div class="ui segment attached" style="min-height:490px;">
+		<div class="ui segment attached" style="min-height: 490px;">
 			<div>
 				<a class="ui label czsRequest czsStatus" id="czsStatus-5"
 					onclick="filterHandler('5')"
@@ -330,7 +336,7 @@
 								<div class="visible content">￥12.99</div>
 								<div class="hidden content">个人结账</div>
 							</div>
-							<div style="clear:both;"></div>
+							<div style="clear: both;"></div>
 						</div>
 						<div class="" style="padding-top: 10px;">
 							<table class="ui table segment" style="font-size: 15px;">
@@ -602,13 +608,15 @@
 			});
 		}
 
-		function refreshHandler(id, type) {
+		function refreshHandler(id, type, consumer_id) {
 			if (type == '0') {
 				filterHandler('5')
 			} else if (type == '1') {
 				filterHandler('3')
 			} else if (type == '2') {
 				filterHandler('4')
+			} else if (type == '4') {
+				getConsumerInfoHandler(consumer_id);
 			}
 		}
 
@@ -846,16 +854,17 @@
 				$.post('business/request.do', {}, function(msg) {
 					if (msg.succeed) {
 						$('#requestItemTpl').tmpl(msg.value).appendTo($('.ui.list.czzRequest').empty());
+						$('#request-count-span').text(msg.total);
 					} else {
 						if (msg.msg.id == '1000') {
 							clearInterval(intervalRef);
-							if (!!msg.msg && !!msg.msg.detail) {
-								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-							} else {
-								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-							}
-							$('.ui.dimmer.czsMsg > .content').show();
-							$('.ui.dimmer.czsMsg').dimmer('show');
+							TINY.box.show({
+								html : '操作失败!<br/>失败信息:' + msg.msg.detail,
+								animate : false,
+								close : false,
+								boxid : 'error',
+								topsplit : 3
+							});
 						}
 					}
 				}, 'json');
@@ -881,7 +890,8 @@
 				$('.ui.right.sidebar').sidebar('show');
 			}
 
-			$('<a class="launch item czzRequest" style="float:right;"><i class="icon list layout"></i> 实时请求栏</a>')
+			$(
+					'<a class="launch item czzRequest" style="float:right;"> 实时请求栏(<span id="request-count-span">0</span>)<i class="icon list layout"></i></a>')
 					.appendTo('.container.czzTopMenu');
 
 			$('.launch.item.czzRequest').click(function() {

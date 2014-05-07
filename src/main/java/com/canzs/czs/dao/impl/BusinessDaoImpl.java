@@ -252,6 +252,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	request.scene_id,\n");
 		sqlSb.append("	request.type,\n");
 		sqlSb.append("	DATE_FORMAT(request.date_time,'%Y/%m/%d %H:%i:%s') AS date_time,\n");
+		sqlSb.append("	UNIX_TIMESTAMP(request.date_time) as times,\n");
 		sqlSb.append("	subscriber.nickname,\n");
 		sqlSb.append("	IF (subscriber.sex = 1,'男',IF (subscriber.sex = 2,'女','未知')) AS sex,\n");
 		sqlSb.append(" subscriber.headimgurl,\n");

@@ -200,38 +200,38 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 		return userDao.getBusinessConsumer(locale, openId);
 	}
 
-	@Override
-	public String getBusiness(Locale locale, String openId) {
-
-		User user = new User();
-		user.setUserName(openId);
-
-		List list = hibernateTemplate.findByExample(user);
-
-		if (list.size() > 0) {
-			String consumeCode = ((User) list.get(0)).getConsumeCode();
-
-			if (consumeCode != null) {
-				BusinessConsumer businessConsumer = new BusinessConsumer();
-				businessConsumer.setConsumeCode(consumeCode);
-
-				List list2 = hibernateTemplate.findByExample(businessConsumer);
-
-				if (list2.size() > 0) {
-					return ((BusinessConsumer) list2.get(0)).getBusinessId();
-				} else {
-					logger.error("用户消费信息不存在! consumeCode:" + consumeCode);
-					return null;
-				}
-			} else {
-				return null;
-			}
-		} else {
-			logger.error("用户不存在! openId:" + openId);
-			return null;
-		}
-
-	}
+	// @Override
+	// public String getBusiness(Locale locale, String openId) {
+	//
+	// User user = new User();
+	// user.setUserName(openId);
+	//
+	// List list = hibernateTemplate.findByExample(user);
+	//
+	// if (list.size() > 0) {
+	// String consumeCode = ((User) list.get(0)).getConsumeCode();
+	//
+	// if (consumeCode != null) {
+	// BusinessConsumer businessConsumer = new BusinessConsumer();
+	// businessConsumer.setConsumeCode(consumeCode);
+	//
+	// List list2 = hibernateTemplate.findByExample(businessConsumer);
+	//
+	// if (list2.size() > 0) {
+	// return ((BusinessConsumer) list2.get(0)).getBusinessId();
+	// } else {
+	// logger.error("用户消费信息不存在! consumeCode:" + consumeCode);
+	// return null;
+	// }
+	// } else {
+	// return null;
+	// }
+	// } else {
+	// logger.error("用户不存在! openId:" + openId);
+	// return null;
+	// }
+	//
+	// }
 
 	@Override
 	public Boolean billReq(Locale locale, String openId, String consumeCode, String type) {

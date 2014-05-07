@@ -678,7 +678,7 @@ public class BusinessController extends BaseController {
 			});
 
 		} else {
-			model.addAttribute("message", "该请求已经被接受!");
+			model.addAttribute("message", "该请求已经被接受处理过,接受失败!");
 		}
 
 		return "message";
@@ -1347,7 +1347,7 @@ public class BusinessController extends BaseController {
 		List<Map<String, Object>> list = businessService.queryRequest(locale, WebUtil.getSessionBusiness(request)
 				.getOpenId());
 
-		return new ResultMsg(true, list);
+		return new ResultMsg(true, list, list.size());
 	}
 
 	/**

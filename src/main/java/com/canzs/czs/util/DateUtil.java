@@ -4,6 +4,9 @@ package com.canzs.czs.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+
 /**
  * @author XiWeiCheng
  * 
@@ -145,7 +148,7 @@ public final class DateUtil {
 	 * @return
 	 */
 	public static String convert(Long sec) {
-		
+
 		if (sec == null) {
 			return EMPTY;
 		}
@@ -161,5 +164,76 @@ public final class DateUtil {
 		} else {
 			return ">" + sec / (3600 * 24) + "天";
 		}
+	}
+
+	/**
+	 * 将日期转换为 今天 昨天 ...
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月7日 下午12:06:42
+	 * @modification 2014年5月7日 下午12:06:42
+	 * @param times
+	 * @return
+	 */
+	public static String toNiceTime(long times) {
+
+		DateTime dateTime = new DateTime(times);
+		DateTime now = DateTime.now();
+
+		if (dateTime.get(DateTimeFieldType.year()) == now.get(DateTimeFieldType.year())) {
+
+			if (dateTime.get(DateTimeFieldType.monthOfYear()) == now.get(DateTimeFieldType.monthOfYear())) {
+
+				if (dateTime.get(DateTimeFieldType.dayOfMonth()) == now.getDayOfMonth()) {
+					return dateTime.toString("H:m");
+				} else if (dateTime.plusDays(1).get(DateTimeFieldType.dayOfMonth()) == now.getDayOfMonth()) {
+					return "昨天";
+				} else if (dateTime.plusDays(2).get(DateTimeFieldType.dayOfMonth()) == now.getDayOfMonth()) {
+					return "前天";
+				} else {
+					return dateTime.toString("M-d");
+				}
+			} else if (dateTime.plusMonths(1).get(DateTimeFieldType.monthOfYear()) == now.get(DateTimeFieldType
+					.monthOfYear())) {
+				return "上个月";
+			} else if (dateTime.plusMonths(2).get(DateTimeFieldType.monthOfYear()) == now.get(DateTimeFieldType
+					.monthOfYear())) {
+				return "上上个月";
+			} else {
+				return dateTime.toString("yy-M");
+			}
+		} else if (dateTime.plusYears(1).get(DateTimeFieldType.year()) == now.get(DateTimeFieldType.year())) {
+			return "去年";
+		} else if (dateTime.plusYears(2).get(DateTimeFieldType.year()) == now.get(DateTimeFieldType.year())) {
+			return "前年";
+		} else {
+			return dateTime.toString("yyyy");
+		}
+	}
+
+	/**
+	 * 将日期转换为 今天 昨天 ...
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月7日 下午12:48:51
+	 * @modification 2014年5月7日 下午12:48:51
+	 * @param date
+	 * @return
+	 */
+	public static String toNiceTime(Date date) {
+		return toNiceTime(date.getTime());
+	}
+
+	/**
+	 * 将日期转换为 今天 昨天 ...
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月7日 下午12:48:51
+	 * @modification 2014年5月7日 下午12:48:51
+	 * @param date
+	 * @return
+	 */
+	public static String toNiceTime(String date) {
+		return toNiceTime(parse(date, FORMAT1, FORMAT2));
 	}
 }

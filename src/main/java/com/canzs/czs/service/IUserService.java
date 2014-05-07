@@ -126,17 +126,17 @@ public interface IUserService extends IBaseService {
 	 */
 	Double bill(Locale locale, String openId, String consumeCode);
 
-	/**
-	 * 获取顾客所在商家的ID.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年4月3日 下午9:47:41
-	 * @modification 2014年4月3日 下午9:47:41
-	 * @param locale
-	 * @param openId
-	 * @return
-	 */
-	String getBusiness(Locale locale, String openId);
+	// /**
+	// * 获取顾客所在商家的ID.
+	// *
+	// * @author xiweicheng
+	// * @creation 2014年4月3日 下午9:47:41
+	// * @modification 2014年4月3日 下午9:47:41
+	// * @param locale
+	// * @param openId
+	// * @return
+	// */
+	// String getBusiness(Locale locale, String openId);
 
 	/**
 	 * 申请结账.
@@ -216,6 +216,16 @@ public interface IUserService extends IBaseService {
 
 	List<Map<String, Object>> stowQuery(Locale locale, String openId, String businessId);
 
+	/**
+	 * 获取顾客当前消费所在的商家ID.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月6日 下午6:17:19
+	 * @modification 2014年5月6日 下午6:17:19
+	 * @param locale
+	 * @param openId
+	 * @return
+	 */
 	String getBusinessId(Locale locale, String openId);
 
 	Map<String, Object> getBusinessConsumer(Locale locale, String openId);

@@ -207,6 +207,7 @@ public class UserDaoImpl extends BaseDaoImpl implements IUserDao {
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	business_consumer.business_id,\n");
 		sqlSb.append("	business_consumer.consume_code,\n");
+		sqlSb.append("	business_consumer.`status`,\n");
 		sqlSb.append("	business_consumer.scene_id\n");
 		sqlSb.append("FROM\n");
 		sqlSb.append("	`user`\n");

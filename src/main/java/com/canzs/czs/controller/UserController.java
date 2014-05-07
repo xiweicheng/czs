@@ -471,7 +471,7 @@ public class UserController extends BaseController {
 
 		logger.debug("美食收藏查询【消费者】");
 
-		String businessId = userService.getBusiness(locale, openId);
+		String businessId = userService.getBusinessId(locale, openId);
 
 		List<Map<String, Object>> stowList = userService.stowQuery(locale, openId, businessId);
 

@@ -242,7 +242,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 					propUtil.getRedirectUrl(), bean.getFromUserName());
 		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_1.getValue().equals(eventKey)) {// 我的菜单
 			return customerMenu(bean);
-		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_3.getValue().equals(eventKey)) {
+		} else if (WeiXinEventKey.CUSTOMER_EVT_KEY_3.getValue().equals(eventKey)) {// 呼叫服务请求
 			return callServiceHandler(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_1.getValue().equals(eventKey)) {// 商家入驻
 			return businessRegister(bean, locale);

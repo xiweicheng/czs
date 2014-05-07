@@ -97,6 +97,13 @@ public class ResultMsg implements Serializable {
 		this.total = total;
 	}
 
+	public ResultMsg(boolean succeed, Object value, long total) {
+		super();
+		this.succeed = succeed;
+		this.value = value;
+		this.total = total;
+	}
+
 	public ResultMsg(boolean succeed, Msg msg) {
 		super();
 		this.succeed = succeed;

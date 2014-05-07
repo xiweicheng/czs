@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.canzs.czs.base.BaseController;
 import com.canzs.czs.pojo.constant.SysConstant;
-import com.canzs.czs.pojo.entity.BusinessConsumer;
 import com.canzs.czs.pojo.entity.Menu;
 import com.canzs.czs.pojo.entity.MenuBill;
 import com.canzs.czs.pojo.entity.MenuCategory;
@@ -434,20 +433,18 @@ public class MenuController extends BaseController {
 
 		logger.debug("顾客点菜列举【菜单】");
 
-		String businessOpenId = userService.getBusiness(locale, openId);
+		Map<String, Object> businessConsumer3 = userService.getBusinessConsumer(locale, openId);
 
-		if (StringUtil.isEmpty(businessOpenId)) {
+		if (businessConsumer3.isEmpty()) {
 			model.addAttribute("message", "您不在扫描消费中...");
 			return "message";
 		}
 
-		BusinessConsumer businessConsumer = new BusinessConsumer();
-		businessConsumer.setBusinessId(businessOpenId);
-		businessConsumer.setConsumerId(openId);
+		String businessOpenId = StringUtil.getNotNullString(businessConsumer3, "business_id");
+		Short status = NumberUtil.getShort(businessConsumer3, "status");
+		String consumeCode = StringUtil.getNotNullString(businessConsumer3, "consume_code");
 
-		BusinessConsumer businessConsumer2 = userService.getBusinessConsumer(locale, businessConsumer);
-
-		if (businessConsumer2 == null || !SysConstant.CONSUME_STATUS_ONGOING.equals(businessConsumer2.getStatus())) {
+		if (!SysConstant.CONSUME_STATUS_ONGOING.equals(status)) {
 			model.addAttribute("message", "您不在消费中...");
 			return "message";
 		}
@@ -465,40 +462,17 @@ public class MenuController extends BaseController {
 			menu.setTasteId(null);
 		}
 
-		User user = new User();
-		user.setUserName(openId);
-
-		User user2 = userService.get(locale, user);
-
-		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu, user2.getConsumeCode(), order,
-				openId);
-
-		double total = 0;
-		int count = 0;
-
-		for (Map<String, Object> map : mapList) {
-			double price = NumberUtil.getDouble(map, "price");
-			Integer copies = NumberUtil.getInteger(map, "copies");
-
-			if (copies != null) {
-
-				if (SysConstant.MENU_BILL_STATUS_CONFIRM.equals(NumberUtil.getShort(map, "status"))) {
-					total += (price * copies);
-					count += copies;
-				} else if (SysConstant.MENU_BILL_STATUS_ACCEPT.equals(NumberUtil.getShort(map, "status"))) {
-					total += (price * copies);
-					count += copies;
-				} else if (SysConstant.MENU_BILL_STATUS_STOW.equals(NumberUtil.getShort(map, "status"))) {
-					total += (price * copies);
-					count += copies;
-				}
-			}
-		}
-
+		// 查询商家菜单数据.
+		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu, consumeCode, order, openId);
 		model.addAttribute("menuList", mapList);
-		model.addAttribute("total", NumberUtil.format2Money(total));
-		model.addAttribute("count", count);
 
+		// 获取个人消费总额和点菜数目.
+		double[] valArr = menuBillService.getOwnTotalAndCopies(locale, openId);
+
+		model.addAttribute("total", NumberUtil.format2Money(valArr[0]));
+		model.addAttribute("count", (int) valArr[1]);
+
+		// 菜单分类列表查询.
 		MenuCategory menuCategory = new MenuCategory();
 		menuCategory.setOwner(businessOpenId);
 
@@ -506,6 +480,7 @@ public class MenuController extends BaseController {
 
 		model.addAttribute("categoryList", categoryList);
 
+		// 菜单口味列表查询.
 		MenuTaste menuTaste = new MenuTaste();
 		menuTaste.setOwner(businessOpenId);
 
@@ -513,9 +488,9 @@ public class MenuController extends BaseController {
 
 		model.addAttribute("tasteList", tasteList);
 
-		model.addAttribute("openId", openId);
-		model.addAttribute("mode", mode == null ? "off" : mode);
-		model.addAttribute("order", order == null ? "-1" : order);
+		// model.addAttribute("openId", openId);
+		// model.addAttribute("mode", mode == null ? "off" : mode);
+		// model.addAttribute("order", order == null ? "-1" : order);
 
 		return "menu/list-bill";
 	}

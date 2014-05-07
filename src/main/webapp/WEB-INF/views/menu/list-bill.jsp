@@ -57,7 +57,7 @@
 	<!-- top header -->
 	<div id="header" class="ui fixed top inverted fluid three item menu">
 		<form action="menu/free/list4bill.do" id="filter-form" method="post">
-			<input type="hidden" name="openId" value="${openId}">
+			<input type="hidden" name="openId" value="${param.openId}">
 			<div class="ui dropdown item czsCategory">
 				<input type="hidden" name="categoryId"
 					value="${selectedCategoryId }">
@@ -82,7 +82,8 @@
 				</div>
 			</div>
 			<div class="ui dropdown item czsOrder">
-				<input type="hidden" name="order" value="${order}">
+				<input type="hidden" name="order"
+					value='<c:if test="${! empty param.order}">${param.order}</c:if><c:if test="${empty param.order}">-1</c:if>'>
 				<div class="default text">排序</div>
 				<i class="dropdown icon"></i>
 				<div class="menu">
@@ -156,7 +157,7 @@
 										<c:if
 											test="${item.status != 0 && item.status != 1 && item.status != 3}">
 											<div class="ui small button" id="confirm-ui-btn-${item.id}"
-												onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')">
+												onclick="billAddDealHandler(this, '${item.id}', '${param.openId}', ${item.price}, '${item.name}')">
 												<i class="cart icon"></i>下单
 											</div>
 										</c:if>
@@ -166,7 +167,7 @@
 										<c:if
 											test="${(empty item.fav_status) || item.fav_status == 1}">
 											<div class="ui small button" id="hold-ui-btn-${item.id}"
-												onclick="menuStowHandler(this, '${item.id}', '${openId}')">
+												onclick="menuStowHandler(this, '${item.id}', '${param.openId}')">
 												<i class="heart empty icon"></i>收藏
 											</div>
 										</c:if>
@@ -189,15 +190,15 @@
 												<div class="detail">
 													<c:if test="${item.status == 0}">
 														<a
-															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a>
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${param.openId}">待提交</a>
 													</c:if>
 													<c:if test="${item.status == 1}">
 														<a
-															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已下单</a>
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${param.openId}">已下单</a>
 													</c:if>
 													<c:if test="${item.status == 3}">
 														<a
-															href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已接单</a>
+															href="menu/free/billQuery.do?isOwn=1&consumerId=${param.openId}">已接单</a>
 													</c:if>
 												</div>
 											</div>
@@ -212,15 +213,15 @@
 														<div class="detail">
 															<c:if test="${item2.status == 0}">
 																<a
-																	href="menu/free/billQuery.do?isOwn=0&consumerId=${openId}">待提交</a>
+																	href="menu/free/billQuery.do?isOwn=0&consumerId=${param.openId}">待提交</a>
 															</c:if>
 															<c:if test="${item2.status == 1}">
 																<a
-																	href="menu/free/billQuery.do?isOwn=0&consumerId=${openId}">已下单</a>
+																	href="menu/free/billQuery.do?isOwn=0&consumerId=${param.openId}">已下单</a>
 															</c:if>
 															<c:if test="${item2.status == 3}">
 																<a
-																	href="menu/free/billQuery.do?isOwn=0&consumerId=${openId}">已接单</a>
+																	href="menu/free/billQuery.do?isOwn=0&consumerId=${param.openId}">已接单</a>
 															</c:if>
 														</div>
 													</div>
@@ -243,15 +244,15 @@
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu headroom">
 		<a class="item" style="padding-top: 5px; padding-bottom: 5px;"
-			href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}"><div
+			href="menu/free/billQuery.do?isOwn=1&consumerId=${param.openId}"><div
 				style="font-size: small;">
 				<i class="cart icon"></i><span id="bill-count-span">${count}</span>份
 			</div>
 			<div style="font-size: small;">
 				<i class="icon yen"></i><span id="bill-total-span">${total}</span>
-			</div></a> <a class="item" href="menu/free/list4bill.do?openId=${openId}"><i
+			</div></a> <a class="item" href="menu/free/list4bill.do?openId=${param.openId}"><i
 			class="icon align justify"></i>商家菜单 </a> <a class="item"
-			href="user/free/stowQuery.do?openId=${openId}"><i
+			href="user/free/stowQuery.do?openId=${param.openId}"><i
 			class="icon heart"></i>收藏美食</a>
 	</div>
 
@@ -259,7 +260,7 @@
 	<div class="ui small modal czsAdd">
 		<i class="close icon"></i>
 		<div class="header">确认提示</div>
-		<div class="content" style="padding:8px;">
+		<div class="content" style="padding: 8px;">
 			<div class="3 fluid ui buttons">
 				<div class="ui button czsReduce">减</div>
 				<div class="ui button black"
@@ -268,9 +269,10 @@
 				</div>
 				<div class="ui button czsAdd">加</div>
 			</div>
-			<div class="ui form" style="margin-top:10px;">
-				<div class="field" style="margin-bottom:0px;">
-					<input placeholder="特别备注" id="memo-input" type="text" maxlength="20">
+			<div class="ui form" style="margin-top: 10px;">
+				<div class="field" style="margin-bottom: 0px;">
+					<input placeholder="特别备注" id="memo-input" type="text"
+						maxlength="20">
 				</div>
 			</div>
 		</div>
@@ -465,7 +467,7 @@
 								if (msg.succeed) {
 									$('#confirm-ui-btn-' + _menuId).addClass('disabled');
 									$('#confirm-ui-btn-' + _menuId).parent().next().prepend(
-											'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己(' + copies + ')<div class="detail"><a href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a></div></div>');
+											'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己(' + copies + ')<div class="detail"><a href="menu/free/billQuery.do?isOwn=1&consumerId=${param.openId}">待提交</a></div></div>');
 
 									$('#bill-total-span').text(
 											format_number(Number($('#bill-total-span').text()) + Number(_price)

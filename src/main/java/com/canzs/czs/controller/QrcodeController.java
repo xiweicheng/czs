@@ -366,8 +366,6 @@ public class QrcodeController extends BaseController {
 	@RequestMapping("buy")
 	public String buy(HttpServletRequest request, Locale locale, Model model) {
 
-		model.addAttribute("message", "页面建设中...");
-
 		return "qrcode/buy";
 	}
 

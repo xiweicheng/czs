@@ -874,7 +874,16 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 	@Override
 	public List<Map<String, Object>> queryRequest(Locale locale, String openId) {
-		return businessDao.queryRequest(locale, openId);
+		List<Map<String, Object>> queryRequest = businessDao.queryRequest(locale, openId);
+
+		for (Map<String, Object> map : queryRequest) {
+			long times = NumberUtil.getLong(map, "times");
+
+			String niceTime = DateUtil.toNiceTime(times * 1000);
+			map.put("nice_time", niceTime);
+		}
+
+		return queryRequest;
 	}
 
 	@Override
@@ -964,7 +973,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				request.setDateTime(DateUtil.now());
 				request.setIsDelete(SysConstant.SHORT_FALSE);
 				request.setName("处理呼叫服务");
-				request.setType(SysConstant.REQUEST_TYPE_SERVICE_CALL);
+				request.setType(SysConstant.REQUEST_TYPE_SERVICE_CALL_HANDLE);
 				request.setStatus(SysConstant.REQUEST_STATUS_ONGOING);
 
 				hibernateTemplate.save(request);

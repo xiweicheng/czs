@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
@@ -12,36 +13,49 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>二维码购买</title>
-<link rel="stylesheet"
-	href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
-<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-<script
-	src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>餐助手-二维码购买</title>
+<link href="../../../resources/semantic/css/semantic.min.css"
+	rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
+	charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js"
+	charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tmpl.min.js"
+	charset="utf-8"></script>
+<link href="../../../resources/tinybox2/css/tinybox.min.css"
+	rel="stylesheet" type="text/css">
+<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
 		WeixinJSBridge.call('hideOptionMenu');
 	});
 </script>
-<script type="text/javascript">
-	jQuery(function($) {
-
-	});
-</script>
 </head>
 <body>
-	<!-- Home -->
-	<div data-role="page" id="v_business_exists">
-		<div id="v001_pageHeader" data-theme="a" data-role="header"
-			data-position="fixed">
-			<h1 id="v001_heading">餐助手</h1>
-		</div>
-		<div data-role="content">${message }</div>
-		<div data-theme="a" data-role="footer" data-position="fixed">
-			<h3>餐助手-版权所有</h3>
-		</div>
+
+	<div>
+		<!-- 侧边栏 -->
+		<%@ include file="../menu.jsp"%>
+
+		<!-- header -->
+		<%@ include file="../header.jsp"%>
+
+		<h4 class="ui top attached header" style="margin-top: 45px;">二维码购买</h4>
+
+
+		<!-- footer -->
+		<%@ include file="../footer.jsp"%>
 	</div>
+
+	<script type="text/javascript">
+		jQuery(function($) {
+			$('#menu-item-qrcode-buy').addClass('active');
+			
+			
+		});
+	</script>
 </body>
 </html>
