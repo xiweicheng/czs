@@ -27,7 +27,6 @@
 	<!-- header -->
 	<div class="ui fixed transparent inverted main menu" style="top: 0px;">
 		<div class="container">
-			<!-- <a class="launch item"><i class="icon list layout"></i></a> -->
 			<div class="title item">
 				<b>餐助手</b> 商家自助管理后台
 			</div>
@@ -36,7 +35,7 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">登录链接发送</h4>
 	<div class="ui segment attached">
-		<form action="business/sendMail.do" id="send-mail-form" method="post">
+		<form action="business/free/sendMail.do" id="send-mail-form" method="post">
 			<input type="hidden" name="openId" value="${business.openId}">
 			<div class="ui warning form segment" id='send-link-ui-form'>
 				<div class="ui error message" id="add-menu-ui-message"></div>

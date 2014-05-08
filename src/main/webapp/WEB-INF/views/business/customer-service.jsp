@@ -88,6 +88,8 @@
 				</a>
 			</div>
 			<div style="margin-top: 10px;">
+				<form action="business/listService.do" method="post"
+					id="filter-form"></form>
 				<a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
 					style="margin-top: 5px; margin-bottom: 5px;"> 新请求 ${newCount} 个
 				</a> <a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
@@ -139,8 +141,7 @@
 
 	<script type="text/javascript">
 		function filterHandler(status) {
-			$('<form action="business/listService.do" method="post"></form>').append(
-					$('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
+			$('#filter-form').append($('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
 					$('<input type="hidden">').attr('name', 'start').attr('value',
 							$('#datetimepickerStart > input').val()))
 					.append(

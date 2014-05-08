@@ -90,6 +90,7 @@
 				</a>
 			</div>
 			<div style="margin-top: 10px;">
+				<form action="menu/orderHistory.do" method="post" id="filter-form"></form>
 				<a class="ui label czsRequest czsStatus" id="czsStatus-3"
 					onclick="filterHandler('3')"
 					style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 份 </a>
@@ -127,7 +128,9 @@
 						<td class="">${sts.index + 1}</td>
 						<td class="">${item.name}</td>
 						<td class="">${item.copies}</td>
-						<td class=""><c:if test="${! empty item.memo}"><div class="ui red label">${item.memo}</div></c:if></td>
+						<td class=""><c:if test="${! empty item.memo}">
+								<div class="ui red label">${item.memo}</div>
+							</c:if></td>
 						<td class=""><c:if test="${item.status==0}">待提交</c:if> <c:if
 								test="${item.status==1}">已提交</c:if> <c:if
 								test="${item.status==2}">已退订</c:if> <c:if
@@ -150,8 +153,7 @@
 
 	<script type="text/javascript">
 		function filterHandler(status) {
-			$('<form action="menu/orderHistory.do" method="post"></form>').append(
-					$('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
+			$('#filter-form').append($('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
 					$('<input type="hidden">').attr('name', 'start').attr('value',
 							$('#datetimepickerStart > input').val()))
 					.append(

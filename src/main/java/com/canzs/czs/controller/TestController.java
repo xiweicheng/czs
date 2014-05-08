@@ -271,4 +271,12 @@ public class TestController extends BaseController {
 		return "";
 	}
 
+	@RequestMapping("free/message")
+	public String message(HttpServletRequest request, Locale locale, Model model) {
+
+		model.addAttribute("message", "测试消息...");
+
+		return "message";
+	}
+
 }

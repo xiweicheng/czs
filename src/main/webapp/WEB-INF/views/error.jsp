@@ -12,10 +12,6 @@
 <base href="<%=basePath%>">
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -52,8 +48,6 @@
 	<%@ include file="footer.jsp"%>
 
 	<script type="text/javascript">
-		jQuery(function($) {
-		});
 	</script>
 </body>
 </html>

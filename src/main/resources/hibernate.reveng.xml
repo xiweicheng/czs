@@ -27,10 +27,11 @@
 	<table-filter match-name="request" match-catalog="czs"></table-filter>
 	<table-filter match-name="business_role" match-catalog="czs"></table-filter>
 	<table-filter match-name="service" match-catalog="czs"></table-filter>
-	<table-filter match-name="czs-user" match-catalog="czs"></table-filter>
 	<table-filter match-name="business_consumer_record"
 		match-catalog="czs">
 	</table-filter>
+	<table-filter match-name="czs_user" match-catalog="czs"></table-filter>
+	<table-filter match-name="log" match-catalog="czs"></table-filter>
 	<table catalog="czs" name="subscriber">
 		<column name="id"></column>
 		<column name="user_name"></column>

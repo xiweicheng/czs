@@ -1055,7 +1055,7 @@ public class BusinessController extends BaseController {
 	 * @param mail
 	 * @return
 	 */
-	@RequestMapping("sendMail")
+	@RequestMapping("free/sendMail")
 	public String sendMail(HttpServletRequest request, Locale locale, Model model,
 			@RequestParam("openId") String openId, @RequestParam("mail") String mail) {
 

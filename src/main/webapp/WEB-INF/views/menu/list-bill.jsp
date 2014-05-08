@@ -17,8 +17,8 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
-<script src="../../../resources/headroom/headroom.min.js"
-	charset="utf-8"></script>
+<!-- <script src="../../../resources/headroom/headroom.min.js"
+	charset="utf-8"></script> -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -401,7 +401,7 @@
 		}
 		jQuery(function($) {
 			
-			// 创建 Headroom 对象，将页面元素传递进去
+			/* // 创建 Headroom 对象，将页面元素传递进去
 			var headroom  = new Headroom($('#header')[0], {
 			    offset : 0,
 			    tolerance : 0,
@@ -426,7 +426,7 @@
 			    }
 			});
 			// 初始化
-			headroom.init(); 
+			headroom.init();  */
 			
 			$('.ui.dimmer.czsMsg').click(function(){
 				$('.ui.dimmer.czsMsg > .content').hide();

@@ -231,4 +231,6 @@ public interface IUserService extends IBaseService {
 	Map<String, Object> getBusinessConsumer(Locale locale, String openId);
 
 	List<Map<String, Object>> getStowBusiness(Locale locale, String consumerId);
+
+	boolean refreshWeixinUserInfo(Locale locale, String openId);
 }

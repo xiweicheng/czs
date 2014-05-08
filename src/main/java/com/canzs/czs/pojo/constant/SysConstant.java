@@ -178,4 +178,9 @@ public final class SysConstant {
 	public static final Short BUSINESS_STATUS_NEW = 0;
 	public static final Short BUSINESS_STATUS_UNDERSTANDING = 1;
 
+	public static final Short LOG_STATUS_SUCCEED = 1;
+	public static final Short LOG_STATUS_FAIL = 0;
+
+	public static final Short LOG_TYPE_UPDATE_BUSINESS = 0;
+
 }

@@ -299,7 +299,16 @@ public class BusinessRoleController extends BaseController {
 			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
 		}
 
-		model.addAttribute("list", list2);
+		model.addAttribute("listBusinessConsumer", list2);
+
+		List<Map<String, Object>> list3 = businessService.queryConsumerRequest(locale, businessId, "1");
+
+		for (Map<String, Object> map : list3) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+		}
+
+		model.addAttribute("listConsumerRequest", list3);
+
 
 		return "business/waiter-login";
 	}
@@ -364,8 +373,9 @@ public class BusinessRoleController extends BaseController {
 		logger.debug("服务员检查顾客进入请求【商家】");
 
 		List<Map<String, Object>> list2 = businessService.queryBusinessConsumer(locale, businessId, "5");
+		List<Map<String, Object>> list3 = businessService.queryConsumerRequest(locale, businessId, "1");
 
-		return new ResultMsg(true, list2.size());
+		return new ResultMsg(true, list2.size() + list3.size());
 	}
 
 	/**

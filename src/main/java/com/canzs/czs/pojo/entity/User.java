@@ -1,6 +1,6 @@
 package com.canzs.czs.pojo.entity;
 
-// Generated 2014-4-30 11:35:37 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-5-8 12:24:58 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import javax.persistence.Column;
@@ -26,6 +26,7 @@ public class User implements java.io.Serializable {
 	private BigDecimal longitude;
 	private BigDecimal precision;
 	private String consumeCode;
+	private Short status;
 
 	public User() {
 	}
@@ -35,7 +36,7 @@ public class User implements java.io.Serializable {
 	}
 
 	public User(String userName, Long createTime, Short isDeleted, Integer times, BigDecimal latitude,
-			BigDecimal longitude, BigDecimal precision, String consumeCode) {
+			BigDecimal longitude, BigDecimal precision, String consumeCode, Short status) {
 		this.userName = userName;
 		this.createTime = createTime;
 		this.isDeleted = isDeleted;
@@ -44,6 +45,7 @@ public class User implements java.io.Serializable {
 		this.longitude = longitude;
 		this.precision = precision;
 		this.consumeCode = consumeCode;
+		this.status = status;
 	}
 
 	@Id
@@ -127,6 +129,15 @@ public class User implements java.io.Serializable {
 
 	public void setConsumeCode(String consumeCode) {
 		this.consumeCode = consumeCode;
+	}
+
+	@Column(name = "status")
+	public Short getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
 	}
 
 }

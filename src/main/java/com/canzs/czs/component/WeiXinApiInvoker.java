@@ -661,31 +661,25 @@ public class WeiXinApiInvoker {
 	 * @param openId
 	 * @return
 	 */
-	public WeiXinUserInfo getUserInfo(String accessToken, String openId) {
-		logger.debug("[微信API调用]获取用户信息");
-
-		JSONObject invoke = invoke(
-				StringUtil.replaceByKV(propUtil.getWebUserInfoGetUrl(), "access_token", accessToken, "openid", openId),
-				StringUtil.EMPTY);
-
-		if (invoke.containsKey("errcode")) {
-			logger.info(invoke.getString("errcode"));
-			logger.info(invoke.getString("errmsg"));
-			if (invoke.getLongValue("errcode") == 42001) {
-				logger.debug("[access token]过期,重新获取!");
-				if (initAccessToken()) {
-					logger.debug("[access token]过期,重新获取成功!");
-					return getUserInfo(accessToken, openId);
-				} else {
-					logger.debug("[access token]过期,重新获取失败!");
-				}
-			}
-		} else {
-			return JsonUtil.jsonObj2Object(invoke, WeiXinUserInfo.class);
-		}
-
-		return new WeiXinUserInfo();
-	}
+	/*
+	 * private WeiXinUserInfo getUserInfo(String accessToken, String openId) {
+	 * logger.debug("[微信API调用]获取用户信息");
+	 * 
+	 * JSONObject invoke = invoke(
+	 * StringUtil.replaceByKV(propUtil.getWebUserInfoGetUrl(), "access_token",
+	 * accessToken, "openid", openId), StringUtil.EMPTY);
+	 * 
+	 * if (invoke.containsKey("errcode")) {
+	 * logger.info(invoke.getString("errcode"));
+	 * logger.info(invoke.getString("errmsg")); if
+	 * (invoke.getLongValue("errcode") == 42001) {
+	 * logger.debug("[access token]过期,重新获取!"); if (initAccessToken()) {
+	 * logger.debug("[access token]过期,重新获取成功!"); return getUserInfo(accessToken,
+	 * openId); } else { logger.debug("[access token]过期,重新获取失败!"); } } } else {
+	 * return JsonUtil.jsonObj2Object(invoke, WeiXinUserInfo.class); }
+	 * 
+	 * return new WeiXinUserInfo(); }
+	 */
 
 	/**
 	 * 发送语音客服消息.

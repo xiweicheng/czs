@@ -59,6 +59,7 @@
 	</h4>
 	<div class="ui segment attached">
 		<div>
+			<form action="business/roleMgr.do" method="post" id="filter-form"></form>
 			<a class="ui label" id="roleType-0" onclick="filterHandler('0')"
 				style="margin-top: 5px; margin-bottom: 5px;">等待分配
 				${undetermined} 人 </a> <a class="ui label" id="roleType-1"
@@ -168,8 +169,7 @@
 		}
 
 		function filterHandler(type) {
-			$('<form action="business/roleMgr.do" method="post"></form>').append(
-					$('<input type="hidden">').attr('name', 'type').attr('value', type)).submit();
+			$('#filter-form').append($('<input type="hidden">').attr('name', 'type').attr('value', type)).submit();
 		}
 
 		jQuery(function($) {

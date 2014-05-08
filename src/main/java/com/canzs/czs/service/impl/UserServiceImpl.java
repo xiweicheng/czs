@@ -13,16 +13,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.canzs.czs.base.impl.BaseServiceImpl;
-import com.canzs.czs.component.ApiInvoker;
+import com.canzs.czs.component.WeiXinApiInvoker;
 import com.canzs.czs.dao.IUserDao;
 import com.canzs.czs.pojo.constant.SysConstant;
 import com.canzs.czs.pojo.entity.BusinessConsumer;
 import com.canzs.czs.pojo.entity.Favorites;
 import com.canzs.czs.pojo.entity.Request;
+import com.canzs.czs.pojo.entity.Subscriber;
 import com.canzs.czs.pojo.entity.User;
+import com.canzs.czs.pojo.model.WeiXinUserInfo;
 import com.canzs.czs.pojo.vo.PageResult;
 import com.canzs.czs.service.IRequestService;
 import com.canzs.czs.service.IUserService;
+import com.canzs.czs.util.BeanUtil;
 import com.canzs.czs.util.DateUtil;
 import com.canzs.czs.util.NumberUtil;
 import com.canzs.czs.util.StringUtil;
@@ -47,10 +50,10 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 	IUserDao userDao;
 
 	@Autowired
-	ApiInvoker apiInvoker;
+	IRequestService requestService;
 
 	@Autowired
-	IRequestService requestService;
+	WeiXinApiInvoker weiXinApiInvoker;
 
 	@Override
 	public boolean save(Locale locale, User user) {
@@ -489,5 +492,34 @@ public class UserServiceImpl extends BaseServiceImpl implements IUserService {
 	@Override
 	public List<Map<String, Object>> getStowBusiness(Locale locale, String consumerId) {
 		return userDao.getStowBusiness(locale, consumerId);
+	}
+
+	@Override
+	public boolean refreshWeixinUserInfo(Locale locale, String openId) {
+		WeiXinUserInfo userInfo = weiXinApiInvoker.getUserInfo(openId);
+
+		if (userInfo != null) {
+			Subscriber subscriber = new Subscriber();
+			subscriber.setUserName(openId);
+
+			Subscriber subscriber2 = findOneByExample(subscriber, Subscriber.class);
+
+			if (subscriber2 != null) {
+
+				BeanUtil.copyNotEmptyFields(userInfo, subscriber2);
+
+				if (StringUtil.isNotEmpty(userInfo.getHeadimgurl())) {
+					// 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
+					subscriber2.setHeadimgurl(userInfo.getHeadimgurl().substring(0,
+							userInfo.getHeadimgurl().length() - 2));
+				}
+
+				hibernateTemplate.update(subscriber2);
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

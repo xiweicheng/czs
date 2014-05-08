@@ -5,21 +5,19 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 
-import com.canzs.czs.pojo.entity.Menu;
-
 public class BeanUtil {
 
 	private static final Logger logger = Logger.getLogger(BeanUtil.class);
 
-	public static void copyNotEmptyFields(Menu menu, Menu menu3) {
+	public static void copyNotEmptyFields(Object src, Object dest) {
 
 		try {
-			Map<String, String> describe = BeanUtils.describe(menu);
+			Map<String, String> describe = BeanUtils.describe(src);
 
 			for (String name : describe.keySet()) {
 				try {
 					if (describe.get(name) != null) {
-						BeanUtils.setProperty(menu3, name, describe.get(name));
+						BeanUtils.setProperty(dest, name, describe.get(name));
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -113,7 +113,7 @@
 </script>
 <script id="requestItemTpl" type="text/x-jquery-tmpl">
 <div class="item" id="request-item-{{html id}}" style="font-size: .8125rem;" >
-	<div class="right floated mini ui animated fade button"  onclick="requestHandler('{{html id}}')">
+	<div class="right floated mini basic ui animated fade button"  onclick="requestHandler('{{html id}}')">
 	  <div class="visible content">{{html nice_time}}</div>
 	  <div class="hidden content">
 	        	知悉
@@ -231,6 +231,7 @@
 		</h4>
 		<div class="ui segment attached" style="min-height: 490px;">
 			<div>
+				<form action="business/list.do" method="post" id="filter-form"></form>
 				<a class="ui label czsRequest czsStatus" id="czsStatus-5"
 					onclick="filterHandler('5')"
 					style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中
@@ -473,8 +474,7 @@
 				}
 			});
 
-			$('<form action="business/list.do" method="post"></form>').append(
-					$('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
+			$('#filter-form').append($('<input type="hidden">').attr('name', 'status').attr('value', status)).append(
 					$('<input type="hidden">').attr('name', 'filterOver').attr('value', _filterOver)).append(
 					$('<input type="hidden">').attr('name', 'refresh').attr('value', _refresh)).append(
 					$('<input type="hidden">').attr('name', 'request').attr('value', _request)).append(

@@ -19,11 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.canzs.czs.base.impl.BaseServiceImpl;
 import com.canzs.czs.component.ApiInvoker;
+import com.canzs.czs.component.PropUtil;
 import com.canzs.czs.dao.ICzsUserDao;
+import com.canzs.czs.pojo.constant.SysConstant;
 import com.canzs.czs.pojo.entity.Business;
 import com.canzs.czs.pojo.entity.CzsUser;
+import com.canzs.czs.pojo.entity.Log;
 import com.canzs.czs.pojo.vo.PageResult;
 import com.canzs.czs.service.ICzsUserService;
+import com.canzs.czs.util.DateUtil;
+import com.canzs.czs.util.NumberUtil;
+import com.canzs.czs.util.StringUtil;
 
 /**
  * 【平台用户】业务逻辑实现.
@@ -46,6 +52,9 @@ public class CzsUserServiceImpl extends BaseServiceImpl implements ICzsUserServi
 
 	@Autowired
 	ApiInvoker apiInvoker;
+
+	@Autowired
+	PropUtil propUtil;
 
 	@Override
 	public boolean save(Locale locale, CzsUser czsUser) {
@@ -131,7 +140,20 @@ public class CzsUserServiceImpl extends BaseServiceImpl implements ICzsUserServi
 
 	@Override
 	public List<Map<String, Object>> queryMgrBusiness(Locale locale, Date sDate, Date eDate, String... status) {
-		return czsUserDao.queryMgrBusiness(locale, sDate, eDate, status);
+		List<Map<String, Object>> queryMgrBusiness = czsUserDao.queryMgrBusiness(locale, sDate, eDate, status);
+
+		for (Map<String, Object> map : queryMgrBusiness) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+
+			if (map.containsKey("sec_audit_diff")) {
+				map.put("audit_diff", DateUtil.convert(NumberUtil.getLong(map, "sec_audit_diff")));
+			}
+			map.put("simple_introduce",
+					StringUtil.html(StringUtil.limitLength(StringUtil.getNotNullString(map, "introduce"),
+							propUtil.getContentLenLimit())));
+		}
+
+		return queryMgrBusiness;
 	}
 
 	@Override
@@ -151,4 +173,66 @@ public class CzsUserServiceImpl extends BaseServiceImpl implements ICzsUserServi
 		});
 	}
 
+	@Override
+	public List<Map<String, Object>> queryMgrUser(Locale locale, Date sDate, Date eDate, String... status) {
+		List<Map<String, Object>> queryMgrUser = czsUserDao.queryMgrUser(locale, sDate, eDate, status);
+
+		for (Map<String, Object> map : queryMgrUser) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+		}
+
+		return queryMgrUser;
+	}
+
+	@Override
+	public boolean updateLife(Locale locale, String type, final String oldValue, final String newValue,
+			final String id, String businessId, String handler) {
+
+		boolean val = false;
+
+		if (SysConstant.NUMBER_0.equals(type)) {// [life_value] update.
+			val = hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+				@Override
+				public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+					return session.createQuery("update Business set lifeValue=? where id=? and lifeValue=?")
+							.setLong(0, Long.valueOf(newValue)).setLong(1, Long.valueOf(id))
+							.setLong(2, Long.valueOf(oldValue)).executeUpdate() > 0;
+				}
+			});
+		} else if (SysConstant.NUMBER_1.equals(type)) {// [qrcode_limit] update.
+			val = hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+				@Override
+				public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+					return session.createQuery("update Business set qrcodeLimit=? where id=? and qrcodeLimit=?")
+							.setLong(0, Long.valueOf(newValue)).setLong(1, Long.valueOf(id))
+							.setLong(2, Long.valueOf(oldValue)).executeUpdate() > 0;
+				}
+			});
+		} else if (SysConstant.NUMBER_2.equals(type)) {// [days] update.
+			val = hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+				@Override
+				public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+					return session.createQuery("update Business set days=? where id=? and days=?")
+							.setLong(0, Long.valueOf(newValue)).setLong(1, Long.valueOf(id))
+							.setLong(2, Long.valueOf(oldValue)).executeUpdate() > 0;
+				}
+			});
+		}
+
+		Log log = new Log();
+		log.setDateTime(DateUtil.now());
+		log.setDetail(StringUtil.replace("[商家充值]-类型:[{?1}]-oldValue:[{?2}]-newValue:[{?3}]", type, oldValue, newValue));
+		log.setHandler(handler);
+		log.setIsDelete(SysConstant.SHORT_FALSE);
+		log.setObjectId(businessId);
+		log.setStatus(val ? SysConstant.LOG_STATUS_SUCCEED : SysConstant.LOG_STATUS_FAIL);
+		log.setType(SysConstant.LOG_TYPE_UPDATE_BUSINESS);
+
+		hibernateTemplate.save(log);
+
+		return val;
+	}
 }

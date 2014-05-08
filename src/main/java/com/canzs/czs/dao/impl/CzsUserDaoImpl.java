@@ -66,6 +66,7 @@ public class CzsUserDaoImpl extends BaseDaoImpl implements ICzsUserDao {
 		sqlSb.append("	business.is_phone_verify,\n");
 		sqlSb.append("	business.`status`,\n");
 		sqlSb.append("	business.days,\n");
+		sqlSb.append("	business.life_value,\n");
 		sqlSb.append("	DATE_FORMAT(\n");
 		sqlSb.append("		business.date_time,\n");
 		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
@@ -136,4 +137,116 @@ public class CzsUserDaoImpl extends BaseDaoImpl implements ICzsUserDao {
 		return getMapList(sqlSb);
 	}
 
+	@Override
+	public List<Map<String, Object>> queryMgrUser(Locale locale, Date sDate, Date eDate, String[] status) {
+
+		// @formatter:off
+		/**
+		SELECT
+			`user`.id,
+			`user`.user_name,
+			FROM_UNIXTIME(
+				`user`.create_time,
+				'%Y/%m/%d %H:%i:%s'
+			) AS create_time,
+			`user`.create_time AS _times,
+			TIMESTAMPDIFF(
+				SECOND,
+				FROM_UNIXTIME(
+					`user`.create_time,
+					'%Y/%m/%d %H:%i:%s'
+				),
+				NOW()
+			) AS sec_diff,
+			`user`.is_deleted,
+			`user`.times,
+			`user`.latitude,
+			`user`.longitude,
+			`user`.precision_,
+			`user`.consume_code,
+			`user`.`status`,
+			subscriber.nickname,
+
+		IF (
+			subscriber.sex = 1,
+			'男',
+
+		IF (
+			subscriber.sex = 2,
+			'女',
+			'未知'
+		)
+		) AS sex,
+		 subscriber.city,
+		 subscriber.country,
+		 subscriber.province,
+		 subscriber.`language`,
+		 subscriber.headimgurl
+		FROM
+			`user`
+		LEFT JOIN subscriber ON `user`.user_name = subscriber.user_name
+		ORDER BY
+			create_time DESC**/
+		// @formatter:on
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	`user`.id,\n");
+		sqlSb.append("	`user`.user_name,\n");
+		sqlSb.append("	FROM_UNIXTIME(\n");
+		sqlSb.append("		`user`.create_time,\n");
+		sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+		sqlSb.append("	) AS create_time,\n");
+		sqlSb.append("	`user`.create_time AS _times,\n");
+		sqlSb.append("	TIMESTAMPDIFF(\n");
+		sqlSb.append("		SECOND,\n");
+		sqlSb.append("		FROM_UNIXTIME(\n");
+		sqlSb.append("			`user`.create_time,\n");
+		sqlSb.append("			'%Y/%m/%d %H:%i:%s'\n");
+		sqlSb.append("		),\n");
+		sqlSb.append("		NOW()\n");
+		sqlSb.append("	) AS sec_diff,\n");
+		sqlSb.append("	`user`.is_deleted,\n");
+		sqlSb.append("	`user`.times,\n");
+		sqlSb.append("	`user`.latitude,\n");
+		sqlSb.append("	`user`.longitude,\n");
+		sqlSb.append("	`user`.precision_,\n");
+		sqlSb.append("	`user`.consume_code,\n");
+		sqlSb.append("	`user`.`status`,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("\n");
+		sqlSb.append("IF (\n");
+		sqlSb.append("	subscriber.sex = 1,\n");
+		sqlSb.append("	'男',\n");
+		sqlSb.append("\n");
+		sqlSb.append("IF (\n");
+		sqlSb.append("	subscriber.sex = 2,\n");
+		sqlSb.append("	'女',\n");
+		sqlSb.append("	'未知'\n");
+		sqlSb.append(")\n");
+		sqlSb.append(") AS sex,\n");
+		sqlSb.append(" subscriber.city,\n");
+		sqlSb.append(" subscriber.country,\n");
+		sqlSb.append(" subscriber.province,\n");
+		sqlSb.append(" subscriber.`language`,\n");
+		sqlSb.append(" subscriber.headimgurl\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	`user`\n");
+		sqlSb.append("LEFT JOIN subscriber ON `user`.user_name = subscriber.user_name\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	1 = 1\n");
+
+		if (status != null && status.length > 0 && StringUtil.isNotEmpty(status[0])) {
+			sqlSb.append(SqlUtil.replaceIfNotEmpty("AND `user`.`status` IN ({?1})\n", SqlUtil.joinAsIntIn2(status)));
+		}
+
+		if (sDate != null && eDate != null) {
+			sqlSb.append(StringUtil.replace("AND (`user`.create_time between '{?1}' and '{?2}')\n",
+					sDate.getTime() / 1000, eDate.getTime() / 1000));
+		}
+		sqlSb.append("ORDER BY\n");
+		sqlSb.append("	create_time DESC\n");
+
+		return getMapList(sqlSb);
+	}
 }

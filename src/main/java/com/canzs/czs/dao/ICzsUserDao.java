@@ -49,5 +49,7 @@ public interface ICzsUserDao {
 	long queryCount(Locale locale, CzsUser czsUser);
 
 	List<Map<String, Object>> queryMgrBusiness(Locale locale, Date sDate, Date eDate, String... status);
+
+	List<Map<String, Object>> queryMgrUser(Locale locale, Date sDate, Date eDate, String[] status);
 	
 }

@@ -127,4 +127,8 @@ public interface ICzsUserService extends IBaseService {
 	List<Map<String, Object>> queryMgrBusiness(Locale locale, Date sDate, Date eDate, String... status);
 
 	boolean businessHandle(Locale locale, Business business);
+
+	List<Map<String, Object>> queryMgrUser(Locale locale, Date sDate, Date eDate, String... status);
+
+	boolean updateLife(Locale locale, String type, String oldValue, String newValue, String id, String businessId, String handler);
 }

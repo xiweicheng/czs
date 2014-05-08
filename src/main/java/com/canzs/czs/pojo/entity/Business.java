@@ -1,6 +1,6 @@
 package com.canzs.czs.pojo.entity;
 
-// Generated 2014-4-30 11:35:37 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-5-8 12:24:58 by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -38,6 +38,7 @@ public class Business implements java.io.Serializable {
 	private Date auditDateTime;
 	private Long days;
 	private Long loginTimes;
+	private Long lifeValue;
 
 	public Business() {
 	}
@@ -45,7 +46,7 @@ public class Business implements java.io.Serializable {
 	public Business(String openId, Short isDeleted, String name, String address, String mail, String introduce,
 			String phoneNumber, Long qrcodeLimit, String dynamicCode, Short isMailVerify, Short isPhoneVerify,
 			String password, Short status, Date dateTime, String auditHandler, Date auditDateTime, Long days,
-			Long loginTimes) {
+			Long loginTimes, Long lifeValue) {
 		this.openId = openId;
 		this.isDeleted = isDeleted;
 		this.name = name;
@@ -64,6 +65,7 @@ public class Business implements java.io.Serializable {
 		this.auditDateTime = auditDateTime;
 		this.days = days;
 		this.loginTimes = loginTimes;
+		this.lifeValue = lifeValue;
 	}
 
 	@Id
@@ -239,6 +241,15 @@ public class Business implements java.io.Serializable {
 
 	public void setLoginTimes(Long loginTimes) {
 		this.loginTimes = loginTimes;
+	}
+
+	@Column(name = "life_value")
+	public Long getLifeValue() {
+		return this.lifeValue;
+	}
+
+	public void setLifeValue(Long lifeValue) {
+		this.lifeValue = lifeValue;
 	}
 
 }

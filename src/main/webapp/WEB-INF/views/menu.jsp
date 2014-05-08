@@ -15,7 +15,7 @@
 		<a class="item" href="business/main.do" id="menu-item-business-main">
 			基本信息 </a><a class="item" href="business/roleMgr.do"
 			id="menu-item-business-role-mgr"> 角色分配 </a><a class="item"
-			href="business/list.do?filterOver=1" id="menu-item-business-list">顾客一览
+			href="business/list.do?filterOver=1&request=1" id="menu-item-business-list">顾客一览
 		</a><a class="item" href="business/listMsg.do?status=0"
 			id="menu-item-business-listMsg">顾客消息 </a><a class="item"
 			href="business/listService.do?status=1"

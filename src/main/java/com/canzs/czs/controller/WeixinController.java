@@ -166,10 +166,10 @@ public class WeixinController extends BaseController {
 					}
 				} else if (WeiXinEventType.VIEW.getValue().equals(event)) { // 菜单点击事件
 					weiXinService.view(bean, locale);
-					writeText(response, bean, "点击菜单跳转链接时的事件推送!");
+					WebUtil.writeString(response, StringUtil.EMPTY);
 				} else if (WeiXinEventType.LOCATION.getValue().equals(event)) {// 上报地理位置事件
 					weiXinService.location(bean, locale);
-					writeText(response, bean, "获取到您的地理位置!");
+					writeText(response, bean, "收到地理位置,谢谢!");
 				} else if (WeiXinEventType.SCAN.getValue().equals(event)) {// 扫描带参数二维码事件
 
 					String type = qrcodeService.getQrCodeType(locale, bean.getEventKey());
@@ -188,11 +188,11 @@ public class WeixinController extends BaseController {
 
 			} else if (WeiXinMsgType.TEXT.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "我们已经接收到您的文本消息,谢谢!");
+				writeText(response, bean, "收到文本消息,谢谢!");
 
 			} else if (WeiXinMsgType.IMAGE.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "我们已经接收到您的图片消息,谢谢!");
+				writeText(response, bean, "收到图片消息,谢谢!");
 
 			} else if (WeiXinMsgType.VOICE.getValue().equals(msgType)) {
 
@@ -200,11 +200,11 @@ public class WeixinController extends BaseController {
 
 			} else if (WeiXinMsgType.VIDEO.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "我们已经接收到您的视频消息,谢谢!");
+				writeText(response, bean, "收到视频消息,谢谢!");
 
 			} else if (WeiXinMsgType.LOCATION.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "我们已经接收到您的地理为位置消息,谢谢!");
+				writeText(response, bean, "接收地理位置,谢谢!");
 
 				bean.setLatitude(bean.getLocation_X());
 				bean.setLongitude(bean.getLocation_Y());
@@ -214,7 +214,7 @@ public class WeixinController extends BaseController {
 
 			} else if (WeiXinMsgType.LINK.getValue().equals(msgType)) {
 				// TODO
-				writeText(response, bean, "我们已经接收到您的链接消息,谢谢!");
+				writeText(response, bean, "收到链接消息,谢谢!");
 
 			} else {
 				weiXinService.handleMsgTypeFail(bean, locale);

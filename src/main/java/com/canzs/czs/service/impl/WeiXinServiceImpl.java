@@ -246,7 +246,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			return callServiceHandler(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_1.getValue().equals(eventKey)) {// 商家入驻
 			return businessRegister(bean, locale);
-		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_2.getValue().equals(eventKey)) {
+		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_2.getValue().equals(eventKey)) {// 发送登录链接
 			return sendLoginLink(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_3.getValue().equals(eventKey)) {
 			return businessRoleLogin(bean, locale);

@@ -32,6 +32,7 @@ import com.canzs.czs.pojo.vo.PageResult;
 import com.canzs.czs.pojo.vo.ReqBody;
 import com.canzs.czs.pojo.vo.ResultMsg;
 import com.canzs.czs.service.ICzsUserService;
+import com.canzs.czs.service.IUserService;
 import com.canzs.czs.util.DateUtil;
 import com.canzs.czs.util.EncoderUtil;
 import com.canzs.czs.util.NumberUtil;
@@ -63,6 +64,9 @@ public class CzsUserController extends BaseController {
 
 	@Autowired
 	WeiXinApiInvoker weiXinApiInvoker;
+
+	@Autowired
+	IUserService userService;
 
 	/**
 	 * 添加【平台用户】.
@@ -306,16 +310,6 @@ public class CzsUserController extends BaseController {
 		List<Map<String, Object>> businessList = czsUserService.queryMgrBusiness(locale, sDate, eDate, status);
 		List<Map<String, Object>> businessList2 = czsUserService.queryMgrBusiness(locale, sDate, eDate);
 
-		for (Map<String, Object> map : businessList) {
-			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
-			if (map.containsKey("sec_audit_diff")) {
-				map.put("audit_diff", DateUtil.convert(NumberUtil.getLong(map, "sec_audit_diff")));
-			}
-			map.put("simple_introduce",
-					StringUtil.html(StringUtil.limitLength(StringUtil.getNotNullString(map, "introduce"),
-							propUtil.getContentLenLimit())));
-		}
-
 		int newCount = 0;
 		int understanding = 0;
 
@@ -335,6 +329,60 @@ public class CzsUserController extends BaseController {
 		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
 
 		return "czs/business-mgr";
+	}
+
+	/**
+	 * 用户管理
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月28日 上午10:16:03
+	 * @modification 2014年4月28日 上午10:16:03
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param start
+	 * @param end
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping("userMgr")
+	public String userMgr(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end,
+			@RequestParam(value = "status", required = false) String[] status) {
+
+		logger.debug("用户管理【平台用户】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 30L * 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24L * 60 * 60 * 1000);
+
+		model.addAttribute("start", sDate.getTime());
+		model.addAttribute("end", eDate.getTime());
+
+		List<Map<String, Object>> list = czsUserService.queryMgrUser(locale, sDate, eDate, status);
+		List<Map<String, Object>> list2 = czsUserService.queryMgrUser(locale, sDate, eDate);
+
+		int newCount = 0;
+		int understanding = 0;
+
+		for (Map<String, Object> map : list2) {
+			Short status2 = NumberUtil.getShort(map, "status");
+			if (SysConstant.BUSINESS_STATUS_NEW.equals(status2)) {
+				newCount++;
+			} else if (SysConstant.BUSINESS_STATUS_UNDERSTANDING.equals(status2)) {
+				understanding++;
+			}
+		}
+
+		model.addAttribute("userList", list);
+		model.addAttribute("total", list2.size());
+		model.addAttribute("newCount", newCount);
+		model.addAttribute("understanding", understanding);
+		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
+
+		return "czs/user-mgr";
 	}
 
 	/**
@@ -406,7 +454,7 @@ public class CzsUserController extends BaseController {
 			@RequestParam(value = "start", required = false) String start,
 			@RequestParam(value = "end", required = false) String end) {
 
-		logger.debug("顾客消息总数检测【商家】");
+		logger.debug("顾客消息总数检测【平台用户】");
 
 		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
 				.getTime() - 30L * 24 * 60 * 60 * 1000);
@@ -418,6 +466,55 @@ public class CzsUserController extends BaseController {
 		Long cnt = (long) czsUserService.queryMgrBusiness(locale, sDate, eDate, stsArr).size();
 
 		return new ResultMsg(true, cnt);
+	}
+
+	/**
+	 * 刷新微信个人信息
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月7日 下午8:28:42
+	 * @modification 2014年5月7日 下午8:28:42
+	 * @param request
+	 * @param locale
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping("refreshUserInfo")
+	@ResponseBody
+	public ResultMsg refreshUserInfo(HttpServletRequest request, Locale locale, @RequestParam("openId") String openId) {
+
+		logger.debug("刷新微信个人信息【平台用户】");
+
+		boolean val = userService.refreshWeixinUserInfo(locale, openId);
+
+		return new ResultMsg(val);
+	}
+
+	/**
+	 * 商家充值管理.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月8日 下午12:16:40
+	 * @modification 2014年5月8日 下午12:16:40
+	 * @param request
+	 * @param locale
+	 * @param type
+	 * @param oldValue
+	 * @param newValue
+	 * @return
+	 */
+	@RequestMapping("updateLife")
+	@ResponseBody
+	public ResultMsg updateLife(HttpServletRequest request, Locale locale, @RequestParam("type") String type,
+			@RequestParam("oldValue") String oldValue, @RequestParam("newValue") String newValue,
+			@RequestParam("id") String id, @RequestParam("businessId") String businessId) {
+
+		logger.debug("商家充值管理【平台用户】");
+
+		boolean val = czsUserService.updateLife(locale, type, oldValue, newValue, id, businessId,
+				WebUtil.getSessionCzsUserId(request));
+
+		return new ResultMsg(val);
 	}
 
 	/**
@@ -434,7 +531,7 @@ public class CzsUserController extends BaseController {
 	@ResponseBody
 	public ResultMsg businessHandle(HttpServletRequest request, Locale locale, @ModelAttribute final Business business) {
 
-		logger.debug("商家入驻审核操作【商家】");
+		logger.debug("商家入驻审核操作【平台用户】");
 
 		Assert.notNull(business.getId());
 		Assert.notNull(business.getStatus());
