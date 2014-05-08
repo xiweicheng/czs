@@ -119,14 +119,13 @@
 										<div class="ui divider czsSimpleMode"
 											style="margin-top: 8px; margin-bottom: 8px; margin-left: 88px;"></div>
 										<div class="czsSimpleMode"
-											style="display: inline-block; margin-left: 8px; overflow:hidden;">
+											style="display: inline-block; margin-left: 8px;">
 											<div class="ui label">${item.category}</div>
 											<div class="ui label">${item.taste}</div>
 											<c:if test="${! empty item.memo}">
 												<div class="ui red label">${item.memo}</div>
 											</c:if>
 										</div>
-
 										<p class="description" style="display: none;"
 											id="introduce-p-${item.id}"
 											onclick="introduceHandler('${item.id}')">${item.introduce}</p>
@@ -138,7 +137,8 @@
 
 								<!-- 个人 -->
 								<c:if test="${isOwn == 1}">
-									<div class="2 fluid ui buttons">
+									<div class="2 fluid ui buttons"
+										style="margin-top: 5px; margin-bottom: 5px;">
 										<c:if test="${item.status == 0 || item.status == 1}">
 											<div class="ui small button"
 												onclick="billReduceHandler('${item.menu_id}', '${openId}', ${item.price}, '${item.status}')">

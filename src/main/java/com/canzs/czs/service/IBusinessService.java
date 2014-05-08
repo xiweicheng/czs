@@ -369,4 +369,8 @@ public interface IBusinessService extends IBaseService {
 	List<Map<String, Object>> queryBusinessConsumer(Locale locale, String businessId, String... status);
 
 	List<Map<String, Object>> queryConsumerRequest(Locale locale, String businessId, String... status);
+
+	List<Map<String, Object>> queryBusinessConsumerHistory(Locale locale, String businessId, String openId);
+
+	List<Map<String, Object>> queryConsumerRequestHistory(Locale locale, String businessId, String openId);
 }

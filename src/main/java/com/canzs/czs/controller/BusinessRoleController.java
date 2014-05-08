@@ -309,7 +309,6 @@ public class BusinessRoleController extends BaseController {
 
 		model.addAttribute("listConsumerRequest", list3);
 
-
 		return "business/waiter-login";
 	}
 
@@ -479,6 +478,32 @@ public class BusinessRoleController extends BaseController {
 		model.addAttribute("interval", interval);
 
 		return "business/kitchen-history";
+	}
+
+	/**
+	 * 服务员处理历史订单.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月7日 下午1:38:51
+	 * @modification 2014年4月7日 下午1:38:51
+	 * @param request
+	 * @param locale
+	 * @param businessConsumer
+	 * @return
+	 */
+	@RequestMapping("free/waiterHistory")
+	public String waiterHistory(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId, @RequestParam("businessId") String businessId) {
+
+		logger.debug("服务员处理历史订单【商家】");
+
+		List<Map<String, Object>> mapList = businessService.queryBusinessConsumerHistory(locale, businessId, openId);
+		List<Map<String, Object>> mapList2 = businessService.queryConsumerRequestHistory(locale, businessId, openId);
+
+		model.addAttribute("businessConsumerList", mapList);
+		model.addAttribute("consumerRequestList", mapList2);
+
+		return "business/waiter-history";
 	}
 
 	/**

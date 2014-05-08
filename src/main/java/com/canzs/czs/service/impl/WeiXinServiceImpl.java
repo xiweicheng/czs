@@ -744,7 +744,7 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			return "您不在消费中,发送的语音消息无法被接收处理!";
 		}
 
-		return "我们已经接收到您的语音消息,谢谢!";
+		return "收到语音消息,谢谢!";
 	}
 
 }

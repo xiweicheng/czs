@@ -44,8 +44,9 @@
 
 	<h4 class="ui top attached header" style="margin-top: 0px;">
 		历史订单
-		<div class="circular ui red label">${fn:length(orderList)}份</div>
-		<div class="ui small button czsOpen" czs-status="0" style="position:absolute; top:2px; right:2px;">展开</div>
+		<div class="circular ui red label">${fn:length(orderList)}单</div>
+		<div class="ui small button czsOpen" czs-status="0"
+			style="position: absolute; top: 2px; right: 2px;">展开</div>
 	</h4>
 	<div class="ui segment attached" style="padding: 0px;">
 		<table class="ui sortable table segment" style="display: table;">
@@ -75,14 +76,22 @@
 											<div class="content"
 												style="padding-top: 0px; padding-bottom: 0px;">
 												<div class="header">顾客</div>
-												${item.nickname}(${item.sex})(${item.description})
+												<img class="ui avatar image" src="${item.headimgurl}/46">${item.nickname}(${item.sex})
+											</div>
+										</div>
+										<div class="item">
+											<i class="map marker outline icon"></i>
+											<div class="content"
+												style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="header">位置</div>
+												${item.description}
 											</div>
 										</div>
 										<div class="item">
 											<i class="time outline icon"></i>
 											<div class="content"
 												style="padding-top: 0px; padding-bottom: 0px;">
-												<div class="header">时间</div>
+												<div class="header">下单时间</div>
 												${item.date_time}(${item.diff})
 											</div>
 										</div>
@@ -115,13 +124,13 @@
 			});
 
 			$('.ui.accordion').accordion();
-			
-			$('.ui.button.czsOpen').click(function(){
-				if($(this).attr('czs-status') == '0'){
+
+			$('.ui.button.czsOpen').click(function() {
+				if ($(this).attr('czs-status') == '0') {
 					$(this).attr('czs-status', '1').addClass('green');
 					$('.ui.accordion > .title').addClass('active');
 					$('.ui.accordion > .content').addClass('active');
-				}else{
+				} else {
 					$(this).attr('czs-status', '0').removeClass('green');
 					$('.ui.accordion > .title').removeClass('active');
 					$('.ui.accordion > .content').removeClass('active');

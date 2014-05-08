@@ -54,6 +54,7 @@
 				</tr>
 			</thead>
 			<tbody>
+				<!-- 顾客进入请求 -->
 				<c:forEach items="${listBusinessConsumer}" var="item">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
 						<td class="">
@@ -125,6 +126,7 @@
 						</td>
 					</tr>
 				</c:forEach>
+				<!-- 顾客服务请求 -->
 				<c:forEach items="${listConsumerRequest}" var="item">
 					<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
 						<td class="">
@@ -239,8 +241,8 @@
 		<a class="item"
 			href="businessRole/free/waiterLogin.do?openId=${param.openId}&businessId=${param.businessId}"><i
 			class="icon align justify"></i>请求确认 </a> <a class="item"
-			href="businessRole/free/waiterRequest.do?openId=${param.openId}&businessId=${param.businessId}"><i
-			class="icon heart"></i>顾客请求</a>
+			href="businessRole/free/waiterHistory.do?openId=${param.openId}&businessId=${param.businessId}"><i
+			class="icon heart"></i>确认历史</a>
 	</div>
 
 	<script type="text/javascript">

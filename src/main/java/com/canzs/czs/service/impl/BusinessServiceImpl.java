@@ -808,6 +808,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		if (businessConsumer2 != null) {
 
+			businessConsumer2.setHandleDateTime(DateUtil.now());
+			businessConsumer2.setHandler(handler);
+
 			if (!agree) { // 禁止顾客进入时,清除扫描时生成的信息.
 				businessConsumer2.setConsumeCode(null);
 				businessConsumer2.setSceneId(null);
@@ -857,11 +860,12 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		businessConsumer.setConsumerId(consumerId);
 		businessConsumer.setBusinessId(businessId);
 
-		List list = hibernateTemplate.findByExample(businessConsumer);
+		BusinessConsumer businessConsumer2 = findOneByExample(businessConsumer, BusinessConsumer.class);
 
-		if (list.size() > 0) {
-			BusinessConsumer businessConsumer2 = (BusinessConsumer) list.get(0);
+		if (businessConsumer2 != null) {
 			businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_STOP);
+			businessConsumer2.setHandleDateTime(DateUtil.now());
+			businessConsumer2.setHandler(businessId);
 
 			hibernateTemplate.update(businessConsumer2);
 
@@ -1176,6 +1180,32 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	@Override
 	public List<Map<String, Object>> queryConsumerRequest(Locale locale, String businessId, String... status) {
 		return businessDao.queryConsumerRequest(locale, businessId, status);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryBusinessConsumerHistory(Locale locale, String businessId, String openId) {
+		List<Map<String, Object>> queryBusinessConsumerHistory = businessDao.queryBusinessConsumerHistory(locale,
+				businessId, openId);
+
+		for (Map<String, Object> map : queryBusinessConsumerHistory) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+			map.put("handle_diff", DateUtil.convert(NumberUtil.getLong(map, "sec_handle_diff")));
+		}
+
+		return queryBusinessConsumerHistory;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryConsumerRequestHistory(Locale locale, String businessId, String openId) {
+		List<Map<String, Object>> queryConsumerRequestHistory = businessDao.queryConsumerRequestHistory(locale,
+				businessId, openId);
+
+		for (Map<String, Object> map : queryConsumerRequestHistory) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+			map.put("handle_diff", DateUtil.convert(NumberUtil.getLong(map, "sec_handle_diff")));
+		}
+
+		return queryConsumerRequestHistory;
 	}
 
 }

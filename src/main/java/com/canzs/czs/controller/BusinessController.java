@@ -1308,7 +1308,7 @@ public class BusinessController extends BaseController {
 		Boolean val = false;
 
 		if (status.equals("0")) {// 解禁处理
-			val = businessService.enableConsumer(locale, openId, WebUtil.getSessionBusiness(request).getOpenId());
+			val = businessService.enableConsumer(locale, openId, WebUtil.getSessionBusinessId(request));
 		} else {// 同意进入或者禁止
 			val = businessService.agreeOrDisagree(locale, consumeCode, status.equals("1"),
 					WebUtil.getSessionBusinessId(request));
