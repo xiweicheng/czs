@@ -6,9 +6,9 @@
 <body style="margin: 0px; padding: 0px;">
 	<!-- sidebar -->
 	<div class="ui left vertical menu thin sidebar">
-		<div class="header item">
+		<!-- <div class="header item">
 			<i class="icon list layout"></i>侧边测单
-		</div>
+		</div> -->
 		<div class="header item">
 			<i class="user icon"></i> 平台管理
 		</div>
@@ -21,14 +21,14 @@
 		jQuery(function($) {
 
 			$('.ui.left.sidebar').sidebar({
-				overlay : true
+				//overlay : true
 			});
 
 			try {
 				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 					$('.ui.left.sidebar').sidebar("hide");
 				} else {
-					$('.ui.left.sidebar').sidebar('hide');
+					$('.ui.left.sidebar').sidebar('show');
 				}
 			} catch (e) {
 				$('.ui.left.sidebar').sidebar('hide');

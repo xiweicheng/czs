@@ -22,6 +22,8 @@
 	rel="stylesheet" type="text/css">
 <link href="../../../resources/tinybox2/css/tinybox.min.css"
 	rel="stylesheet" type="text/css">
+<link href="../../../resources/css/common.css" rel="stylesheet"
+	type="text/css">
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
@@ -48,8 +50,10 @@
 
 		<!-- header -->
 		<%@ include file="header.jsp"%>
+		<!-- top spacer -->
+		<div class="czs top spacer"></div>
 
-		<h4 class="ui top attached header" style="margin-top: 45px;">
+		<h4 class="ui top bottom attached header" style="">
 			用户管理
 			<div class="circular ui red label">
 				<span id="msgCount-span">${fn:length(userList)}</span>个

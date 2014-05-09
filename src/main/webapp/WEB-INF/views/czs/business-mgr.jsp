@@ -20,6 +20,8 @@
 	rel="stylesheet" type="text/css">
 <link href="../../../resources/tinybox2/css/tinybox.min.css"
 	rel="stylesheet" type="text/css">
+<link href="../../../resources/css/common.css" rel="stylesheet"
+	type="text/css">
 <link href="../../../resources/datepicker/css/glDatePicker.default.css"
 	rel="stylesheet" type="text/css">
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
@@ -28,12 +30,6 @@
 <script src="../../../resources/js/lib/jquery.tablesort.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script
-	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.min.js"
-	charset="utf-8"></script>
-<script
-	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.zh-CN.js"
 	charset="utf-8"></script>
 <script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript"
@@ -61,7 +57,10 @@
 		<!-- header -->
 		<%@ include file="header.jsp"%>
 
-		<h4 class="ui top attached header" style="margin-top: 45px;">
+		<!-- top spacer -->
+		<div class="czs top spacer"></div>
+
+		<h4 class="ui top bottom attached header">
 			商家管理
 			<div class="circular ui red label">
 				<span id="msgCount-span">${fn:length(businessList)}</span>个
@@ -200,10 +199,9 @@
 				</tbody>
 			</table>
 		</div>
-	</div>
 
-	<!-- footer -->
-	<%@ include file="footer.jsp"%>
+		<!-- footer -->
+		<%@ include file="footer.jsp"%>
 	</div>
 
 	<div class="ui small modal" id="confirm-ui-modal">

@@ -19,8 +19,11 @@
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<link href="../../../resources/bootstrap/css/bootstrap.min.css"
+<link href="../../../resources/css/common.css" rel="stylesheet"
+	type="text/css">
+<link href="../../../resources/datepicker/css/glDatePicker.default.css"
 	rel="stylesheet" type="text/css">
+
 <link
 	href="../../../resources/datetimepicker/css/bootstrap-datetimepicker.min.css"
 	rel="stylesheet" type="text/css">
@@ -30,14 +33,11 @@
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
-<script
-	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.min.js"
+<script type="text/javascript"
+	src="../../../resources/datepicker/js/glDatePicker.min.js"
 	charset="utf-8"></script>
-<script
-	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.zh-CN.js"
-	charset="utf-8"></script>
-<script src="../../../resources/bootstrap/js/bootstrap.min.js"
-	charset="utf-8"></script>
+<script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -59,97 +59,115 @@
 		</div>
 	</div>
 
-	<!-- 侧边栏 -->
-	<%@ include file="../menu.jsp"%>
+	<div>
+		<!-- 侧边栏 -->
+		<%@ include file="../menu.jsp"%>
 
-	<!-- header -->
-	<%@ include file="../header.jsp"%>
+		<!-- header -->
+		<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">
-		历史订单
-		<div class="circular ui red label">${fn:length(historyMenuBillList)}份</div>
-	</h4>
-	<div class="ui segment attached">
+		<!-- top spacer -->
+		<div class="czs top spacer"></div>
 
-		<div class="ui segment">
-			<div class="">
-				<a class="ui label">
-					<div id="datetimepickerStart" class="input-append date"
-						style="display: inline;">
-						<input type="text"></input> <span class="add-on"> <i
-							data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-						</span>
+		<h4 class="ui top bottom attached header">
+			历史订单
+			<div class="circular ui red label">${fn:length(historyMenuBillList)}份</div>
+		</h4>
+		<div class="ui segment attached">
+
+			<div class="ui segment">
+				<div class="">
+					<div class="ui input" id="datetimepickerStart">
+						<input type="text" name="start" placeholder="开始日期">
 					</div>
-				</a><a class="ui label">～</a><a class="ui label">
-					<div id="datetimepickerEnd" class="input-append date"
-						style="display: inline;">
-						<input type="text"></input> <span class="add-on"> <i
-							data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-						</span>
+					<div class="ui input" id="datetimepickerEnd">
+						<input type="text" name="end" placeholder="结束日期">
 					</div>
-				</a>
+				</div>
+				<div style="margin-top: 10px;">
+					<form action="menu/orderHistory.do" method="post" id="filter-form"></form>
+					<a class="ui label czsRequest czsStatus" id="czsStatus-3"
+						onclick="filterHandler('3')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 份
+					</a> <a class="ui label czsRequestOwn czsStatus" id="czsStatus-1"
+						onclick="filterHandler('1')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 已提交 ${submited}
+						份 </a><a class="ui label czsRequestGroup czsStatus" id="czsStatus-0"
+						onclick="filterHandler('0')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 待提交 ${submiting}
+						份</a> <a class="ui label czsStatus" onclick="filterHandler('2')"
+						id="czsStatus-2" style="margin-top: 5px; margin-bottom: 5px;">
+						已退订 ${debook} 份 </a> <a class="ui label czsStatus"
+						onclick="filterHandler('')" id="czsStatus-"
+						style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 份 </a>
+				</div>
 			</div>
-			<div style="margin-top: 10px;">
-				<form action="menu/orderHistory.do" method="post" id="filter-form"></form>
-				<a class="ui label czsRequest czsStatus" id="czsStatus-3"
-					onclick="filterHandler('3')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 份 </a>
-				<a class="ui label czsRequestOwn czsStatus" id="czsStatus-1"
-					onclick="filterHandler('1')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 已提交 ${submited} 份
-				</a><a class="ui label czsRequestGroup czsStatus" id="czsStatus-0"
-					onclick="filterHandler('0')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 待提交 ${submiting}
-					份</a> <a class="ui label czsStatus" onclick="filterHandler('2')"
-					id="czsStatus-2" style="margin-top: 5px; margin-bottom: 5px;">
-					已退订 ${debook} 份 </a> <a class="ui label czsStatus"
-					onclick="filterHandler('')" id="czsStatus-"
-					style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 份 </a>
-			</div>
-		</div>
-		<table class="ui sortable table segment" style="display: table;">
-			<thead>
-				<tr>
-					<th class="number">序号</th>
-					<th class="">菜名</th>
-					<th class="number">份数</th>
-					<th class="">备注</th>
-					<th class="">状态</th>
-					<th class="">时间</th>
-					<th class="number">距今</th>
-					<th class="">顾客</th>
-					<th class="">位置</th>
-					<th class="">接受者</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${historyMenuBillList}" var="item" varStatus="sts">
-					<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
-						<td class="">${sts.index + 1}</td>
-						<td class="">${item.name}</td>
-						<td class="">${item.copies}</td>
-						<td class=""><c:if test="${! empty item.memo}">
-								<div class="ui red label">${item.memo}</div>
-							</c:if></td>
-						<td class=""><c:if test="${item.status==0}">待提交</c:if> <c:if
-								test="${item.status==1}">已提交</c:if> <c:if
-								test="${item.status==2}">已退订</c:if> <c:if
-								test="${item.status==3}">已接受</c:if></td>
-						<td class="">${item.date_time}</td>
-						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
-						<td class=""><img class="ui avatar image"
-							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
-						<td class="">${item.description}</td>
-						<td class=""><c:if test="${! empty item.accept_nickname}">
-								<img class="ui avatar image" src="${item.accept_headimgurl}/64">${item.accept_nickname}(${item.accept_sex})</c:if></td>
+			<table class="ui sortable table segment"
+				style="display: table; font-size: 15px;">
+				<thead>
+					<tr>
+						<th class="number">序号</th>
+						<th class="">菜名</th>
+						<th class="number">份数</th>
+						<th class="">备注</th>
+						<th class="">状态</th>
+						<th class="">时间</th>
+						<th class="number">距今</th>
+						<th class="">顾客</th>
+						<th class="">位置</th>
+						<th class="">接受者</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<c:forEach items="${historyMenuBillList}" var="item"
+						varStatus="sts">
+						<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
+							<td class="">${sts.index + 1}</td>
+							<td class="">${item.name}</td>
+							<td class="">${item.copies}</td>
+							<td class=""><c:if test="${! empty item.memo}">
+									<div class="ui red label">${item.memo}</div>
+								</c:if></td>
+							<td class=""><c:if test="${item.status==0}">待提交</c:if> <c:if
+									test="${item.status==1}">已提交</c:if> <c:if
+									test="${item.status==2}">已退订</c:if> <c:if
+									test="${item.status==3}">已接受</c:if></td>
+							<td class="">${item.date_time}</td>
+							<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
+							<td class=""><img class="ui avatar image"
+								src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+							<td class="">${item.description}</td>
+							<td class=""><c:if test="${! empty item.accept_nickname}">
+									<img class="ui avatar image" src="${item.accept_headimgurl}/64">${item.accept_nickname}(${item.accept_sex})</c:if></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- footer -->
+		<%@ include file="../footer.jsp"%>
 	</div>
 
-	<!-- footer -->
-	<%@ include file="../footer.jsp"%>
+	<div class="ui small modal czsConfirm">
+		<div class="header">确认提示</div>
+		<div class="content">
+			<div class="left">
+				<i class="warning icon"></i>
+			</div>
+			<div class="right" style="font-size: 30px;"></div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui negative labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui positive right labeled icon button">
+					确认 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script type="text/javascript">
 		function filterHandler(status) {
@@ -163,7 +181,10 @@
 
 		jQuery(function($) {
 
+			$('.ui.modal').modal();
+
 			$('table').tablesort().data('tablesort');
+
 			$('thead th.number').data('sortBy', function(th, td, sorter) {
 				if (!!$(td).attr('data-sort-value')) {
 					return parseInt($(td).attr('data-sort-value'), 10);
@@ -175,26 +196,23 @@
 
 			$('#czsStatus-' + '${status}').addClass('green');
 
-			$('#datetimepickerStart').datetimepicker({
-				format : 'yyyy-MM-dd hh:mm:ss',
-				language : 'zh-CN'
-			});
-
-			$('#datetimepickerEnd').datetimepicker({
-				format : 'yyyy-MM-dd hh:mm:ss',
-				language : 'zh-CN'
-			});
-
-			var pickerStart = $('#datetimepickerStart').data('datetimepicker');
-			var pickerEnd = $('#datetimepickerEnd').data('datetimepicker');
-
 			var startDate = new Date();
 			startDate.setTime(Number('${start}'));
 			var endDate = new Date();
 			endDate.setTime(Number('${end}'));
 
-			pickerStart.setLocalDate(startDate);
-			pickerEnd.setLocalDate(endDate);
+			$('#datetimepickerStart > input').val(startDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
+				selectedDate : startDate,
+				onClick : function(target, cell, date, data) {
+					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
+				}
+			});
+			$('#datetimepickerEnd > input').val(endDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
+				selectedDate : endDate,
+				onClick : function(target, cell, date, data) {
+					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
+				}
+			});
 		});
 	</script>
 </body>

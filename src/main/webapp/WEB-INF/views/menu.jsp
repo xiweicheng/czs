@@ -6,19 +6,19 @@
 <body style="margin: 0px; padding: 0px;">
 	<!-- sidebar -->
 	<div class="ui left vertical menu thin sidebar">
-		<div class="header item">
+		<!-- <div class="header item">
 			<i class="icon list layout"></i>侧边测单
-		</div>
+		</div> -->
 		<div class="header item">
 			<i class="user icon"></i> 商家管理
 		</div>
 		<a class="item" href="business/main.do" id="menu-item-business-main">
 			基本信息 </a><a class="item" href="business/roleMgr.do"
 			id="menu-item-business-role-mgr"> 角色分配 </a><a class="item"
-			href="business/list.do?filterOver=1&request=1" id="menu-item-business-list">顾客一览
-		</a><a class="item" href="business/listMsg.do?status=0"
-			id="menu-item-business-listMsg">顾客消息 </a><a class="item"
-			href="business/listService.do?status=1"
+			href="business/list.do?filterOver=1&request=0"
+			id="menu-item-business-list">顾客一览 </a><a class="item"
+			href="business/listMsg.do?status=0" id="menu-item-business-listMsg">顾客消息
+		</a><a class="item" href="business/listService.do?status=1"
 			id="menu-item-business-listService">服务请求 </a> <a class="item"
 			href="business/billSett.do?status=0" id="menu-item-bill-sett">
 			账目结算 </a>
@@ -31,40 +31,46 @@
 		<div class="header item">
 			<i class="book icon"></i> 菜品管理
 		</div>
-		<a class="item" href="menu/list.do" id="menu-item-menu-list"> 菜品一览
-		</a> <a class="item" href="menu/input.do" id="menu-item-menu-input">
-			菜品添加 </a> <a class="item" href="menu/image.do" id="menu-item-menu-image">
-			菜品图片 </a>
+		<a class="item" href="menu/list.do#menu-item-menu-list"
+			id="menu-item-menu-list"> 菜品一览 </a> <a class="item"
+			href="menu/input.do#menu-item-menu-input" id="menu-item-menu-input">
+			菜品添加 </a> <a class="item" href="menu/image.do#menu-item-menu-image"
+			id="menu-item-menu-image"> 菜品图片 </a>
 		<div class="header item">
 			<i class="qr code icon"></i> 二维码
 		</div>
-		<a class="item" href="qrcode/buy.do" id="menu-item-qrcode-buy">
-			二维码购买</a> <a class="item" href="qrcode/download.do"
+		<a class="item" href="qrcode/buy.do#menu-item-qrcode-buy"
+			id="menu-item-qrcode-buy"> 二维码购买</a> <a class="item"
+			href="qrcode/download.do#menu-item-qrcode-main"
 			id="menu-item-qrcode-main"> 二维码生成</a> <a class="item"
-			href="qrcode/list.do" id="menu-item-qrcode-list"> 二维码一览</a>
+			href="qrcode/list.do#menu-item-qrcode-list"
+			id="menu-item-qrcode-list"> 二维码一览</a>
 		<div class="header item">
 			<i class="dashboard icon"></i> 统计分析
 		</div>
-		<a class="item" href="business/menuStat.do"
+		<a class="item"
+			href="business/menuStat.do#menu-item-business-menu-stat"
 			id="menu-item-business-menu-stat"> 菜品统计 </a><a class="item"
-			href="business/consumerStat.do" id="menu-item-business-consumer-stat">
-			顾客统计 </a><a class="item" href="business/serviceStat.do"
+			href="business/consumerStat.do#menu-item-business-consumer-stat"
+			id="menu-item-business-consumer-stat"> 顾客统计 </a><a class="item"
+			href="business/serviceStat.do#menu-item-business-service-stat"
 			id="menu-item-business-service-stat"> 服务统计 </a> <a class="item"
-			href="business/volumeStat.do" id="menu-item-business-volume-stat">
-			营业额统计 </a>
+			href="business/volumeStat.do#menu-item-business-volume-stat"
+			id="menu-item-business-volume-stat"> 营业额统计 </a>
 	</div>
 	<script type="text/javascript">
 		jQuery(function($) {
 
 			$('.ui.left.sidebar').sidebar({
-				overlay : true
+			//overlay : true,
+			//exclusive : false
 			});
 
 			try {
 				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 					$('.ui.left.sidebar').sidebar("hide");
 				} else {
-					$('.ui.left.sidebar').sidebar('hide');
+					$('.ui.left.sidebar').sidebar('show');
 				}
 			} catch (e) {
 				$('.ui.left.sidebar').sidebar('hide');

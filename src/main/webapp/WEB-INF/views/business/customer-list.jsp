@@ -872,6 +872,10 @@
 
 			var intervalRef;
 
+			/* $('.ui.right.sidebar').sidebar({
+				exclusive : false
+			}); */
+
 			try {
 				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 					$('.ui.right.sidebar').sidebar('hide');

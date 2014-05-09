@@ -19,23 +19,22 @@
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
-<link href="../../../resources/bootstrap/css/bootstrap.min.css"
+<link href="../../../resources/css/common.css" rel="stylesheet"
+	type="text/css">
+<link href="../../../resources/datepicker/css/glDatePicker.default.css"
 	rel="stylesheet" type="text/css">
-<link
-	href="../../../resources/datetimepicker/css/bootstrap-datetimepicker.min.css"
-	rel="stylesheet" type="text/css">
+
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/js/lib/jquery.tablesort.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
-<script
-	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.min.js"
+<script type="text/javascript"
+	src="../../../resources/datepicker/js/glDatePicker.min.js"
 	charset="utf-8"></script>
-<script
-	src="../../../resources/datetimepicker/js/bootstrap-datetimepicker.zh-CN.js"
-	charset="utf-8"></script>
+<script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -55,101 +54,120 @@
 		</div>
 	</div>
 
-	<!-- 侧边栏 -->
-	<%@ include file="../menu.jsp"%>
+	<div>
+		<!-- 侧边栏 -->
+		<%@ include file="../menu.jsp"%>
 
-	<!-- header -->
-	<%@ include file="../header.jsp"%>
+		<!-- header -->
+		<%@ include file="../header.jsp"%>
 
-	<h4 class="ui top attached header" style="margin-top: 45px;">
-		顾客消息
-		<div class="circular ui red label">
-			<span id="msgCount-span">${fn:length(msgList)}</span>个
-		</div>
-	</h4>
-	<div class="ui segment attached">
+		<!-- top spacer -->
+		<div class="czs top spacer"></div>
 
-		<div class="ui segment">
-			<div class="">
-				<a class="ui label">
-					<div id="datetimepickerStart" class="input-append date"
-						style="display: inline;">
-						<input type="text"></input> <span class="add-on"> <i
-							data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-						</span>
-					</div>
-				</a><a class="ui label">～</a><a class="ui label">
-					<div id="datetimepickerEnd" class="input-append date"
-						style="display: inline;">
-						<input type="text"></input> <span class="add-on"> <i
-							data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-						</span>
-					</div>
-				</a>
+		<h4 class="ui top bottom attached header">
+			顾客消息
+			<div class="circular ui red label">
+				<span id="msgCount-span">${fn:length(msgList)}</span>个
 			</div>
-			<div style="margin-top: 10px;">
-				<form action="business/listMsg.do" method="post" id="filter-form"></form>
-				<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 新消息 ${newCount} 个
-				</a> <a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 已了解
-					${understanding} 个 </a><a class="ui label" id="czsStatus-2"
-					onclick="filterHandler('2')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 收藏消息 ${stow} 个 </a><a
-					class="ui label" onclick="filterHandler('')" id="czsStatus-"
-					style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
+		</h4>
+
+		<div class="ui segment attached">
+
+			<div class="ui segment">
+				<div class="">
+					<div class="ui input" id="datetimepickerStart">
+						<input type="text" placeholder="开始日期">
+					</div>
+					<div class="ui input" id="datetimepickerEnd">
+						<input type="text" placeholder="结束日期">
+					</div>
+				</div>
+				<div style="margin-top: 10px;">
+					<form action="business/listMsg.do" method="post" id="filter-form"></form>
+					<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 新消息 ${newCount}
+						个 </a> <a class="ui label" id="czsStatus-1"
+						onclick="filterHandler('1')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 已了解
+						${understanding} 个 </a><a class="ui label" id="czsStatus-2"
+						onclick="filterHandler('2')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 收藏消息 ${stow} 个 </a><a
+						class="ui label" onclick="filterHandler('')" id="czsStatus-"
+						style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
+				</div>
 			</div>
-		</div>
-		<table class="ui sortable table segment" style="display: table;">
-			<thead>
-				<tr>
-					<th class="number">序号</th>
-					<th class="">顾客</th>
-					<th class="">位置</th>
-					<th class="">类型</th>
-					<th class="">消息</th>
-					<th class="">状态</th>
-					<th class="">时间</th>
-					<th class="number">距今</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${msgList}" var="item" varStatus="sts">
-					<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
-						<td class="">${sts.index + 1}</td>
-						<td class=""><img class="ui avatar image"
-							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
-						<td class="">${item.description}</td>
-						<td class=""><c:if test="${item.msg_type=='text'}">文本消息</c:if>
-							<c:if test="${item.msg_type=='image'}">图片消息</c:if></td>
-						<td class=""><c:if test="${item.msg_type=='text'}">
-								<a class="ui label czsMsgText"
-									data-html="<p>${item.content}</p>">${item.simple_content}</a>
-							</c:if> <c:if test="${item.msg_type=='image'}">
-								<a class="ui label czsMsgImage"
-									data-html="<img style='max-width:200px;max-height:200px;' src='${item.pic_url}'>"
-									style="text-decoration: underline;" target="_blank"
-									href="${item.pic_url}">图片链接</a>
-							</c:if></td>
-						<td class=""><c:if test="${item.status==0}">新消息<a
-									class="ui label" onclick="msgHandler(this, '1', '${item.id}')">已读</a>
-								<a class="ui label"
-									onclick="msgHandler(this, '2', '${item.id}')">收藏</a>
-							</c:if> <c:if test="${item.status==1}">已了解<a class="ui label"
-									onclick="msgHandler(this, '2', '${item.id}')">收藏</a>
-							</c:if> <c:if test="${item.status==2}">已收藏<a class="ui label"
-									onclick="msgHandler(this, '1', '${item.id}')">移除</a>
-							</c:if></td>
-						<td class="">${item.date_time}</td>
-						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
+
+			<table class="ui sortable table segment" style="display: table;">
+				<thead>
+					<tr>
+						<th class="number">序号</th>
+						<th class="">顾客</th>
+						<th class="">位置</th>
+						<th class="">类型</th>
+						<th class="">消息</th>
+						<th class="">状态</th>
+						<th class="">时间</th>
+						<th class="number">距今</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<c:forEach items="${msgList}" var="item" varStatus="sts">
+						<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
+							<td class="">${sts.index + 1}</td>
+							<td class=""><img class="ui avatar image"
+								src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+							<td class="">${item.description}</td>
+							<td class=""><c:if test="${item.msg_type=='text'}">文本消息</c:if>
+								<c:if test="${item.msg_type=='image'}">图片消息</c:if></td>
+							<td class=""><c:if test="${item.msg_type=='text'}">
+									<a class="ui label czsMsgText"
+										data-html="<p>${item.content}</p>">${item.simple_content}</a>
+								</c:if> <c:if test="${item.msg_type=='image'}">
+									<a class="ui label czsMsgImage"
+										data-html="<img style='max-width:200px;max-height:200px;' src='${item.pic_url}'>"
+										style="text-decoration: underline;" target="_blank"
+										href="${item.pic_url}">图片链接</a>
+								</c:if></td>
+							<td class=""><c:if test="${item.status==0}">新消息<a
+										class="ui label" onclick="msgHandler(this, '1', '${item.id}')">已读</a>
+									<a class="ui label"
+										onclick="msgHandler(this, '2', '${item.id}')">收藏</a>
+								</c:if> <c:if test="${item.status==1}">已了解<a class="ui label"
+										onclick="msgHandler(this, '2', '${item.id}')">收藏</a>
+								</c:if> <c:if test="${item.status==2}">已收藏<a class="ui label"
+										onclick="msgHandler(this, '1', '${item.id}')">移除</a>
+								</c:if></td>
+							<td class="">${item.date_time}</td>
+							<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- footer -->
+		<%@ include file="../footer.jsp"%>
 	</div>
 
-	<!-- footer -->
-	<%@ include file="../footer.jsp"%>
+	<div class="ui small modal czsConfirm">
+		<div class="header">确认提示</div>
+		<div class="content">
+			<div class="left">
+				<i class="warning icon"></i>
+			</div>
+			<div class="right" style="font-size: 30px;"></div>
+		</div>
+		<div class="actions">
+			<div class="two fluid ui buttons">
+				<div class="ui negative labeled icon button">
+					<i class="remove icon"></i> 取消
+				</div>
+				<div class="ui positive right labeled icon button">
+					确认 <i class="checkmark icon"></i>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script type="text/javascript">
 		function filterHandler(status) {
@@ -182,6 +200,8 @@
 
 		jQuery(function($) {
 
+			$('.ui.modal').modal();
+
 			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
 			});
@@ -202,26 +222,23 @@
 
 			$('#czsStatus-' + '${status}').addClass('green');
 
-			$('#datetimepickerStart').datetimepicker({
-				format : 'yyyy-MM-dd hh:mm:ss',
-				language : 'zh-CN'
-			});
-
-			$('#datetimepickerEnd').datetimepicker({
-				format : 'yyyy-MM-dd hh:mm:ss',
-				language : 'zh-CN'
-			});
-
-			var pickerStart = $('#datetimepickerStart').data('datetimepicker');
-			var pickerEnd = $('#datetimepickerEnd').data('datetimepicker');
-
 			var startDate = new Date();
 			startDate.setTime(Number('${start}'));
 			var endDate = new Date();
 			endDate.setTime(Number('${end}'));
 
-			pickerStart.setLocalDate(startDate);
-			pickerEnd.setLocalDate(endDate);
+			$('#datetimepickerStart > input').val(startDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
+				selectedDate : startDate,
+				onClick : function(target, cell, date, data) {
+					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
+				}
+			});
+			$('#datetimepickerEnd > input').val(endDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
+				selectedDate : endDate,
+				onClick : function(target, cell, date, data) {
+					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
+				}
+			});
 
 			setInterval(function() {
 				$.post('business/checkMsg.do', {
