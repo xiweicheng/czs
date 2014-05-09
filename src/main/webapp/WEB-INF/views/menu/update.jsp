@@ -234,7 +234,7 @@
 	</div>
 
 	<!-- 图片选择modal -->
-	<div class="ui basic modal" id="select-image-modal">
+	<div class="ui modal" id="select-image-modal">
 		<i class="close icon"></i>
 		<div class="header">选择图片</div>
 		<div class="content">

@@ -15,7 +15,7 @@
 		<a class="item" href="business/main.do" id="menu-item-business-main">
 			基本信息 </a><a class="item" href="business/roleMgr.do"
 			id="menu-item-business-role-mgr"> 角色分配 </a><a class="item"
-			href="business/list.do?filterOver=1&request=0"
+			href="business/list.do?filterOver=1&request=1"
 			id="menu-item-business-list">顾客一览 </a><a class="item"
 			href="business/listMsg.do?status=0" id="menu-item-business-listMsg">顾客消息
 		</a><a class="item" href="business/listService.do?status=1"
@@ -39,9 +39,9 @@
 		<div class="header item">
 			<i class="qr code icon"></i> 二维码
 		</div>
-		<a class="item" href="qrcode/buy.do#menu-item-qrcode-buy"
-			id="menu-item-qrcode-buy"> 二维码购买</a> <a class="item"
-			href="qrcode/download.do#menu-item-qrcode-main"
+		<!-- <a class="item" href="qrcode/buy.do#menu-item-qrcode-buy"
+			id="menu-item-qrcode-buy"> 二维码购买</a -->
+		> <a class="item" href="qrcode/download.do#menu-item-qrcode-main"
 			id="menu-item-qrcode-main"> 二维码生成</a> <a class="item"
 			href="qrcode/list.do#menu-item-qrcode-list"
 			id="menu-item-qrcode-list"> 二维码一览</a>
@@ -62,15 +62,14 @@
 		jQuery(function($) {
 
 			$('.ui.left.sidebar').sidebar({
-			//overlay : true,
-			//exclusive : false
+				overlay : true
 			});
 
 			try {
 				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 					$('.ui.left.sidebar').sidebar("hide");
 				} else {
-					$('.ui.left.sidebar').sidebar('show');
+					$('.ui.left.sidebar').sidebar('hide');
 				}
 			} catch (e) {
 				$('.ui.left.sidebar').sidebar('hide');
