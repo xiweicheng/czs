@@ -6,9 +6,9 @@
 <body style="margin: 0px; padding: 0px;">
 	<!-- sidebar -->
 	<div class="ui left vertical menu thin sidebar">
-		<!-- <div class="header item">
+		<div class="header item">
 			<i class="icon list layout"></i>侧边测单
-		</div> -->
+		</div>
 		<div class="header item">
 			<i class="user icon"></i> 商家管理
 		</div>

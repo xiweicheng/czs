@@ -15,13 +15,14 @@
 		<a class="item" href="czs/main.do" id="menu-item-czs-main">基本信息</a> <a
 			class="item" href="czs/businessMgr.do?status=0"
 			id="menu-item-czs-business-mgr">商家一览</a> <a class="item"
-			href="czs/userMgr.do" id="menu-item-czs-user-mgr">用户一览</a>
+			href="czs/userMgr.do" id="menu-item-czs-user-mgr">用户一览</a><a
+			class="item" href="czs/qrcodeMgr.do" id="menu-item-czs-qrcode-mgr">二维码一览</a>
 	</div>
 	<script type="text/javascript">
 		jQuery(function($) {
 
 			$('.ui.left.sidebar').sidebar({
-				//overlay : true
+			//overlay : true
 			});
 
 			try {

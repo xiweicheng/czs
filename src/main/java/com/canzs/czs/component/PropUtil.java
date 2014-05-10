@@ -81,6 +81,9 @@ public class PropUtil {
 	@Value("#{systemProperties['qrcode.business.max.default']}")
 	private long qrcodeBusinessMaxDefault;
 
+	@Value("#{systemProperties['qrcode.one.life.value']}")
+	private long qrcodeOneLifeValue;
+
 	@Value("#{systemProperties['days.business.max.default']}")
 	private long daysBusinessMaxDefault;
 
@@ -263,6 +266,10 @@ public class PropUtil {
 
 	public long getDaysBusinessMaxDefault() {
 		return daysBusinessMaxDefault;
+	}
+
+	public long getQrcodeOneLifeValue() {
+		return qrcodeOneLifeValue;
 	}
 
 }

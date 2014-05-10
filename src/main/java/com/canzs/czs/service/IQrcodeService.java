@@ -133,4 +133,8 @@ public interface IQrcodeService extends IBaseService {
 	boolean sendMail(String filePath, String toAddr);
 
 	boolean isExistsJSQrcode(Locale locale, Qrcode qrcode);
+
+	List<Map<String, Object>> listByOpenId(Locale locale, String sessionBusinessId);
+
+	boolean addUseLimit(Locale locale, String businessId, long val, Long id);
 }

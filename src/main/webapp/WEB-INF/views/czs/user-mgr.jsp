@@ -108,11 +108,18 @@
 									class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})
 								</td>
 								<td class="">${item.country}&nbsp;${item.province}&nbsp;${item.city}</td>
-								<td class=""><c:if test="${! empty item.consume_code}">消费中</c:if></td>
+								<td class=""><c:if test="${! empty item.consume_code}">
+										<div class="ui label czsPopup"
+											data-content="消费码:${item.consume_code}">消费中</div>
+									</c:if></td>
 								<td class="" data-sort-value="${item._times}">${item.create_time}</td>
 								<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
 								<td class="">${item.times}</td>
-								<td class="">${item.latitude}&nbsp;${item.longitude}&nbsp;${item.precision_}</td>
+								<td class=""><c:if test="${! empty item.latitude}">
+										<a class="ui label czsPopup"
+											data-content="${item.latitude}&nbsp;${item.longitude}&nbsp;${item.precision_}"><i
+											class="location icon"></i></a>
+									</c:if></td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -174,6 +181,10 @@
 		}
 
 		jQuery(function($) {
+
+			$('.czsPopup').popup({
+				inline : true
+			});
 
 			$('table').tablesort().data('tablesort');
 

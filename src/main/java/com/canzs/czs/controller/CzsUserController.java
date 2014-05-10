@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,8 +27,6 @@ import com.canzs.czs.component.WeiXinApiInvoker;
 import com.canzs.czs.pojo.constant.SysConstant;
 import com.canzs.czs.pojo.entity.Business;
 import com.canzs.czs.pojo.entity.CzsUser;
-import com.canzs.czs.pojo.vo.PageResult;
-import com.canzs.czs.pojo.vo.ReqBody;
 import com.canzs.czs.pojo.vo.ResultMsg;
 import com.canzs.czs.service.ICzsUserService;
 import com.canzs.czs.service.IUserService;
@@ -67,199 +64,6 @@ public class CzsUserController extends BaseController {
 
 	@Autowired
 	IUserService userService;
-
-	/**
-	 * 添加【平台用户】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年04月23日 04:32:37
-	 * @modification 2014年04月23日 04:32:37
-	 * @return
-	 */
-	// @RequestMapping("add")
-	@ResponseBody
-	public ResultMsg add(HttpServletRequest request, @RequestBody(required = false) ReqBody reqBody,
-			@ModelAttribute CzsUser czsUser, Locale locale, Model model) {
-
-		logger.debug("添加【平台用户】");
-
-		// TODO
-
-		// CzsUser czsUser = getParam(reqBody, CzsUser.class);
-
-		// 参数验证
-		// Assert.notNull(czsUser.get);
-
-		boolean saved = czsUserService.save(locale, czsUser);
-
-		// TODO null->ID
-		return new ResultMsg(saved, reqBody.getId(), null);
-	}
-
-	/**
-	 * 删除【平台用户】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年04月23日 04:32:37
-	 * @modification 2014年04月23日 04:32:37
-	 * @return
-	 */
-	// @RequestMapping("delete")
-	@ResponseBody
-	public ResultMsg delete(HttpServletRequest request, @RequestBody(required = false) ReqBody reqBody,
-			@ModelAttribute CzsUser czsUser, Locale locale, Model model) {
-
-		logger.debug("删除【平台用户】");
-
-		// TODO
-
-		// CzsUser czsUser = getParam(reqBody, CzsUser.class);
-
-		// 参数验证
-		// Assert.notNull(czsUser.get);
-
-		boolean deleted = czsUserService.delete(locale, czsUser);
-
-		return new ResultMsg(deleted, reqBody.getId());
-	}
-
-	/**
-	 * 获取【平台用户】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年04月23日 04:32:37
-	 * @modification 2014年04月23日 04:32:37
-	 * @return
-	 */
-	// @RequestMapping("get")
-	@ResponseBody
-	public ResultMsg get(HttpServletRequest request, @RequestBody(required = false) ReqBody reqBody,
-			@ModelAttribute CzsUser czsUser, Locale locale, Model model) {
-
-		logger.debug("获取【平台用户】");
-
-		// TODO
-
-		// CzsUser czsUser = getParam(reqBody, CzsUser.class);
-
-		// 参数验证
-		// Assert.notNull(czsUser.get);
-
-		CzsUser CzsUserResult = czsUserService.get(locale, czsUser);
-
-		return new ResultMsg(true, reqBody.getId(), CzsUserResult);
-	}
-
-	/**
-	 * 更新【平台用户】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年04月23日 04:32:37
-	 * @modification 2014年04月23日 04:32:37
-	 * @return
-	 */
-	// @RequestMapping("update")
-	@ResponseBody
-	public ResultMsg update(HttpServletRequest request, @RequestBody(required = false) ReqBody reqBody,
-			@ModelAttribute CzsUser czsUser, Locale locale, Model model) {
-
-		logger.debug("更新【平台用户】");
-
-		// TODO
-
-		// CzsUser czsUser = getParam(reqBody, CzsUser.class);
-
-		// 参数验证
-		// Assert.notNull(czsUser.get);
-
-		boolean updated = czsUserService.update(locale, czsUser);
-
-		return new ResultMsg(updated, reqBody.getId());
-	}
-
-	/**
-	 * 列举【平台用户】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年04月23日 04:32:37
-	 * @modification 2014年04月23日 04:32:37
-	 * @return
-	 */
-	// @RequestMapping("list")
-	@ResponseBody
-	public ResultMsg list(HttpServletRequest request, @RequestBody(required = false) ReqBody reqBody,
-			@ModelAttribute CzsUser czsUser, Locale locale, Model model) {
-
-		logger.debug("列举【平台用户】");
-
-		// TODO
-
-		// CzsUser czsUser = getParam(reqBody, CzsUser.class);
-
-		// 参数验证
-		// Assert.notNull(czsUser.get);
-
-		List<CzsUser> czsUserList = czsUserService.list(locale);
-
-		return new ResultMsg(reqBody.getId(), czsUserList);
-	}
-
-	/**
-	 * 查询【平台用户】(不分页).
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年04月23日 04:32:37
-	 * @modification 2014年04月23日 04:32:37
-	 * @return
-	 */
-	// @RequestMapping("query")
-	@ResponseBody
-	public ResultMsg query(HttpServletRequest request, @RequestBody(required = false) ReqBody reqBody,
-			@ModelAttribute CzsUser czsUser, Locale locale, Model model) {
-
-		logger.debug("查询【平台用户】");
-
-		// TODO
-
-		// CzsUser czsUser = getParam(reqBody, CzsUser.class);
-
-		// 参数验证
-		// Assert.notNull(czsUser.get);
-
-		List<CzsUser> czsUserList = czsUserService.query(locale, czsUser);
-
-		return new ResultMsg(reqBody.getId(), czsUserList);
-	}
-
-	/**
-	 * 查询【平台用户】(分页).
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年04月23日 04:32:37
-	 * @modification 2014年04月23日 04:32:37
-	 * @return
-	 */
-	// @RequestMapping("paging")
-	@ResponseBody
-	public ResultMsg paging(HttpServletRequest request, @RequestBody(required = false) ReqBody reqBody,
-			@ModelAttribute CzsUser czsUser, Locale locale, Model model) {
-
-		logger.debug("查询【平台用户】");
-
-		// TODO
-
-		// CzsUser czsUser = getParam(reqBody, CzsUser.class);
-
-		// 参数验证
-		Assert.notNull(reqBody.getStart());
-		Assert.notNull(reqBody.getLimit());
-
-		// Assert.notNull(czsUser.get);
-
-		PageResult pageResult = czsUserService.paging(locale, czsUser, reqBody.getStart(), reqBody.getLimit());
-
-		return new ResultMsg(reqBody.getId(), pageResult.getList(), pageResult.getTotal());
-	}
 
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, Locale locale, Model model) {
@@ -367,15 +171,6 @@ public class CzsUserController extends BaseController {
 		int newCount = 0;
 		int understanding = 0;
 
-		for (Map<String, Object> map : list2) {
-			Short status2 = NumberUtil.getShort(map, "status");
-			if (SysConstant.BUSINESS_STATUS_NEW.equals(status2)) {
-				newCount++;
-			} else if (SysConstant.BUSINESS_STATUS_UNDERSTANDING.equals(status2)) {
-				understanding++;
-			}
-		}
-
 		model.addAttribute("userList", list);
 		model.addAttribute("total", list2.size());
 		model.addAttribute("newCount", newCount);
@@ -383,6 +178,51 @@ public class CzsUserController extends BaseController {
 		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
 
 		return "czs/user-mgr";
+	}
+
+	/**
+	 * 二维码管理
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年4月28日 上午10:16:03
+	 * @modification 2014年4月28日 上午10:16:03
+	 * @param request
+	 * @param locale
+	 * @param model
+	 * @param start
+	 * @param end
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping("qrcodeMgr")
+	public String qrcodeMgr(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "start", required = false) String start,
+			@RequestParam(value = "end", required = false) String end,
+			@RequestParam(value = "status", required = false) String[] status) {
+
+		logger.debug("二维码管理【平台用户】");
+
+		Date sDate = StringUtil.isNotEmpty(start) ? DateUtil.parse(start, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() - 30L * 24 * 60 * 60 * 1000);
+		Date eDate = StringUtil.isNotEmpty(end) ? DateUtil.parse(end, DateUtil.FORMAT1) : new Date(DateUtil.now()
+				.getTime() + 24L * 60 * 60 * 1000);
+
+		model.addAttribute("start", sDate.getTime());
+		model.addAttribute("end", eDate.getTime());
+
+		List<Map<String, Object>> list = czsUserService.queryMgrQrcode(locale, sDate, eDate, status);
+		List<Map<String, Object>> list2 = czsUserService.queryMgrQrcode(locale, sDate, eDate);
+
+		int newCount = 0;
+		int understanding = 0;
+
+		model.addAttribute("list", list);
+		model.addAttribute("total", list2.size());
+		model.addAttribute("newCount", newCount);
+		model.addAttribute("understanding", understanding);
+		model.addAttribute("status", (status != null && status.length > 0) ? status[0] : "");
+
+		return "czs/qrcode-mgr";
 	}
 
 	/**
@@ -541,6 +381,7 @@ public class CzsUserController extends BaseController {
 		business.setAuditDateTime(DateUtil.now());
 		business.setDays(propUtil.getDaysBusinessMaxDefault());
 		business.setQrcodeLimit(propUtil.getQrcodeBusinessMaxDefault());
+		business.setLifeValue(Long.valueOf(0L));
 
 		if (czsUserService.businessHandle(locale, business)) {
 

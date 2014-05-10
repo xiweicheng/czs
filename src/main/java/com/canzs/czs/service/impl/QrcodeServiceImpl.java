@@ -3,6 +3,7 @@
  */
 package com.canzs.czs.service.impl;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -11,7 +12,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +36,8 @@ import com.canzs.czs.pojo.vo.PageResult;
 import com.canzs.czs.service.IBusinessService;
 import com.canzs.czs.service.ICategoryService;
 import com.canzs.czs.service.IQrcodeService;
+import com.canzs.czs.util.DateUtil;
+import com.canzs.czs.util.NumberUtil;
 import com.canzs.czs.util.StringUtil;
 
 /**
@@ -191,7 +197,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 	}
 
 	@Override
-	public WeiXinQrcode create(Qrcode qrcode, String realPath, String serverBaseUrl) {
+	public WeiXinQrcode create(final Qrcode qrcode, String realPath, String serverBaseUrl) {
 
 		logger.debug("[业务逻辑层]创建【二维码】");
 
@@ -238,7 +244,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 				if (SysConstant.CATEGORY_ID_JS.equals(qrcode.getCategoryId())) {
 					qrcode2.setUseLimit(Long.valueOf(100000));
 				} else {
-					qrcode2.setUseLimit(Long.valueOf(propUtil.getQrcodeUseLimitTime()));
+					qrcode2.setUseLimit(qrcode.getUseLimit());
 				}
 				qrcode2.setUseTimes(Long.valueOf(0));
 				qrcode2.setTicket(weiXinQrcode.getTicket());
@@ -247,8 +253,25 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 				qrcode2.setType(SysConstant.QR_LIMIT_SCENE);
 				qrcode2.setMyUrl(weiXinQrcode.getMyUrl());
 				qrcode2.setDescription(qrcode.getDescription());
+				qrcode2.setStatus(SysConstant.QRCODE_STATUS_NEW);
+				qrcode2.setDateTime(DateUtil.now());
+				qrcode2.setIsDelete(SysConstant.SHORT_FALSE);
 
 				hibernateTemplate.save(qrcode2);
+
+				// 扣除消费的餐豆值
+				final long lv = qrcode.getUseLimit() * propUtil.getQrcodeOneLifeValue();
+
+				hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+					@Override
+					public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+						return session
+								.createSQLQuery("update business set life_value = life_value - ? where open_id = ?")
+								.setLong(0, lv).setString(1, qrcode.getOpenId()).executeUpdate() > 0;
+					}
+				});
+
 				logger.error("二维码创建成功!");
 			}
 
@@ -319,6 +342,42 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 		qrcode2.setCategoryId(qrcode.getCategoryId());
 
 		return hibernateTemplate.findByExample(qrcode2).size() > 0;
+	}
+
+	@Override
+	public List<Map<String, Object>> listByOpenId(Locale locale, String sessionBusinessId) {
+		List<Map<String, Object>> listByOpenId = qrcodeDao.listByOpenId(locale, sessionBusinessId);
+
+		for (Map<String, Object> map : listByOpenId) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+		}
+		return listByOpenId;
+	}
+
+	@Override
+	public boolean addUseLimit(Locale locale, final String businessId, final long val, final Long id) {
+
+		final long lv = val * propUtil.getQrcodeOneLifeValue();
+
+		hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+			@Override
+			public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+				return session.createSQLQuery("update qrcode set use_limit = use_limit + ? where id = ?")
+						.setLong(0, val).setLong(1, id).executeUpdate() > 0;
+			}
+		});
+
+		hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+			@Override
+			public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+				return session.createSQLQuery("update business set life_value = life_value - ? where open_id = ?")
+						.setLong(0, lv).setString(1, businessId).executeUpdate() > 0;
+			}
+		});
+
+		return true;
 	}
 
 }

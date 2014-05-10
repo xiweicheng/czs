@@ -165,10 +165,11 @@ public class CzsUserServiceImpl extends BaseServiceImpl implements ICzsUserServi
 			public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
 				return session
 						.createQuery(
-								"update Business set status = ?,auditHandler=?,auditDateTime=?,days=?,qrcode_limit=? where id = ?")
+								"update Business set status = ?,auditHandler=?,auditDateTime=?,days=?,qrcode_limit=?,life_value=? where id = ?")
 						.setShort(0, business.getStatus()).setString(1, business.getAuditHandler())
 						.setTimestamp(2, business.getAuditDateTime()).setLong(3, business.getDays())
-						.setLong(4, business.getQrcodeLimit()).setLong(5, business.getId()).executeUpdate() > 0;
+						.setLong(4, business.getQrcodeLimit()).setLong(5, business.getLifeValue())
+						.setLong(6, business.getId()).executeUpdate() > 0;
 			}
 		});
 	}
@@ -234,5 +235,16 @@ public class CzsUserServiceImpl extends BaseServiceImpl implements ICzsUserServi
 		hibernateTemplate.save(log);
 
 		return val;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryMgrQrcode(Locale locale, Date sDate, Date eDate, String... status) {
+		List<Map<String, Object>> mapList = czsUserDao.queryMgrQrcode(locale, sDate, eDate, status);
+
+		for (Map<String, Object> map : mapList) {
+			map.put("diff", DateUtil.convert(NumberUtil.getLong(map, "sec_diff")));
+		}
+
+		return mapList;
 	}
 }

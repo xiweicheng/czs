@@ -26,11 +26,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.canzs.czs.base.BaseController;
+import com.canzs.czs.component.PropUtil;
 import com.canzs.czs.pojo.constant.SysConstant;
 import com.canzs.czs.pojo.entity.Business;
 import com.canzs.czs.pojo.entity.Category;
 import com.canzs.czs.pojo.entity.Qrcode;
 import com.canzs.czs.pojo.model.WeiXinQrcode;
+import com.canzs.czs.pojo.vo.Msg;
 import com.canzs.czs.pojo.vo.PageResult;
 import com.canzs.czs.pojo.vo.ReqBody;
 import com.canzs.czs.pojo.vo.ResultMsg;
@@ -65,6 +67,9 @@ public class QrcodeController extends BaseController {
 
 	@Autowired
 	IBusinessService businessService;
+
+	@Autowired
+	PropUtil propUtil;
 
 	/**
 	 * 添加【二维码】.
@@ -171,6 +176,43 @@ public class QrcodeController extends BaseController {
 	}
 
 	/**
+	 * 增加二维码使用次数限制【二维码】.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年03月25日 05:57:01
+	 * @modification 2014年03月25日 05:57:01
+	 * @return
+	 */
+	@RequestMapping("addUseLimit")
+	@ResponseBody
+	public ResultMsg addUseLimit(HttpServletRequest request, Locale locale, @RequestParam("id") long id,
+			@RequestParam("addVal") Long val) {
+
+		logger.debug("增加二维码使用次数限制【二维码】");
+
+		// 生产二维码餐豆值计算判断
+		Business business = new Business();
+		business.setOpenId(WebUtil.getSessionBusinessId(request));
+
+		Business business2 = businessService.get((Locale) null, business);
+
+		if (business2 == null) {
+			return new ResultMsg(false, new Msg(false, "商家信息不存在!"));
+		}
+
+		long needLv = val * propUtil.getQrcodeOneLifeValue();
+
+		if (needLv > business2.getLifeValue()) {
+			return new ResultMsg(false, new Msg(false, StringUtil.replace("餐豆值不足,差[{?1}]餐豆值,请充值!",
+					needLv - business2.getLifeValue())));
+		}
+
+		boolean result = qrcodeService.addUseLimit(locale, WebUtil.getSessionBusinessId(request), val, id);
+
+		return new ResultMsg(result);
+	}
+
+	/**
 	 * 列举【二维码】.
 	 * 
 	 * @author xiweicheng
@@ -183,10 +225,10 @@ public class QrcodeController extends BaseController {
 
 		logger.debug("列举【二维码】");
 
-		List<Qrcode> qrcodeList = qrcodeService.list(locale, WebUtil.getSessionBusiness(request).getOpenId());
+		List<Map<String, Object>> qrcodeList = qrcodeService
+				.listByOpenId(locale, WebUtil.getSessionBusinessId(request));
 
 		model.addAttribute("qrcodeList", qrcodeList);
-		model.addAttribute("total", qrcodeList != null ? qrcodeList.size() : 0);
 
 		return "qrcode/list";
 	}
@@ -252,26 +294,43 @@ public class QrcodeController extends BaseController {
 		List<Category> list = categoryService.listByType("qrcode");
 		model.addAttribute("categoryList", list);
 
+		Business business = new Business();
+		business.setOpenId(WebUtil.getSessionBusinessId(request));
+
+		Business business2 = businessService.get(locale, business);
+
+		if (business2 == null) {
+			model.addAttribute("message", "商家信息不存在!");
+			return "message";
+		}
+
+		model.addAttribute("business", business2);
+
 		return "qrcode/input";
 	}
 
 	@RequestMapping("create")
 	public String create(HttpServletRequest request, Locale locale, Model model, @ModelAttribute Qrcode qrcode,
-			@RequestParam("description") String[] descriptions) {
+			@RequestParam("description") String[] descriptions, @RequestParam("useTimes") Long[] useTimes) {
 
 		if (StringUtil.isEmpty(qrcode.getOpenId())) {
-			qrcode.setOpenId(WebUtil.getSessionBusiness(request).getOpenId());
+			qrcode.setOpenId(WebUtil.getSessionBusinessId(request));
 		}
 
 		if (descriptions == null || descriptions.length == 0) {
 			model.addAttribute("message", "二维码描述不能为空!");
-			return "result";
+			return "message";
+		}
+
+		if (useTimes == null || useTimes.length == 0) {
+			model.addAttribute("message", "二维码授权使用次数不能为空!");
+			return "message";
 		}
 
 		if (SysConstant.CATEGORY_ID_JS.equals(qrcode.getCategoryId())) {
 			if (qrcodeService.isExistsJSQrcode(locale, qrcode)) {
-				model.addAttribute("message", "[角色]类型二维码已经生成过了,请通过[二维码一览]查看!");
-				return "result";
+				model.addAttribute("message", "[角色]类型二维码已经生成过了,请通过侧边菜单[二维码一览]查看!");
+				return "message";
 			}
 		} else {
 
@@ -281,8 +340,31 @@ public class QrcodeController extends BaseController {
 
 			if (size > remain) {
 				model.addAttribute("message", "您的二维码生成数量不足,还剩下" + remain + "个!");
-				return "result";
+				return "message";
 			}
+		}
+
+		// 生产二维码餐豆值计算判断
+		Business business = new Business();
+		business.setOpenId(qrcode.getOpenId());
+
+		Business business2 = businessService.get((Locale) null, business);
+
+		if (business2 == null) {
+			model.addAttribute("message", "商家信息不存在!");
+			return "message";
+		}
+
+		long needLv = 0;
+
+		for (int j = 0; j < useTimes.length; j++) {
+			needLv += (useTimes[j] * propUtil.getQrcodeOneLifeValue());
+		}
+
+		if (needLv > business2.getLifeValue()) {
+			model.addAttribute("message",
+					StringUtil.replace("餐豆值不足,差[{?1}]餐豆值,请充值!", needLv - business2.getLifeValue()));
+			return "message";
 		}
 
 		String realPath = request.getSession().getServletContext().getRealPath("/");
@@ -291,11 +373,12 @@ public class QrcodeController extends BaseController {
 
 		List<WeiXinQrcode> list = new ArrayList<>();
 
-		for (String description : descriptions) {
+		for (int j = 0; j < descriptions.length; j++) {
 			Qrcode qrcode2 = new Qrcode();
 			qrcode2.setOpenId(qrcode.getOpenId());
 			qrcode2.setCategoryId(qrcode.getCategoryId());
-			qrcode2.setDescription(description);
+			qrcode2.setDescription(descriptions[j]);
+			qrcode2.setUseLimit(useTimes[j]);
 
 			list.add(qrcodeService.create(qrcode2, realPath, WebUtil.calcServerBaseUrl(request)));
 		}
@@ -303,10 +386,6 @@ public class QrcodeController extends BaseController {
 		model.addAttribute("qrcodeList", list);
 		model.addAttribute("openId", qrcode.getOpenId());
 
-		Business business = new Business();
-		business.setOpenId(qrcode.getOpenId());
-
-		Business business2 = businessService.get(locale, business);
 		model.addAttribute("business", business2);
 
 		return "qrcode/create";
@@ -326,7 +405,7 @@ public class QrcodeController extends BaseController {
 			model.addAttribute("message", "发送失败!");
 		}
 
-		return "result";
+		return "message";
 	}
 
 	@RequestMapping("sendMailZip")
@@ -360,7 +439,7 @@ public class QrcodeController extends BaseController {
 
 		FileUtils.deleteQuietly(new File(zipFilePath));
 
-		return "result";
+		return "message";
 	}
 
 	@RequestMapping("buy")

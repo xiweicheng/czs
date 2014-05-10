@@ -13,14 +13,17 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <link href="../../../resources/semantic/css/semantic.min.css"
 	rel="stylesheet" type="text/css">
+
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js"
 	charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js"
 	charset="utf-8"></script>
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -39,13 +42,33 @@
 	<a id="error-msg-anchor"></a>
 
 	<div class="ui segment attached">
+		<h5 class="ui top attached header">您的账户信息</h5>
+		<div class="ui bottom attached segment">
+			<div class="ui huge label">
+				餐豆值
+				<div class="detail">${business.lifeValue}</div>
+			</div>
+			<div class="ui huge label">
+				二维码限制数
+				<div class="detail">${business.qrcodeLimit}</div>
+			</div>
+			<div class="ui huge label">
+				授权天数
+				<div class="detail">${business.days}</div>
+			</div>
+		</div>
 		<form action="qrcode/create.do" id="add-qrcode-form" method="post">
 			<div class="ui warning form segment" id='add-menu-ui-form'>
 				<div class="ui error message" id="add-menu-ui-message"></div>
 				<div class="two fields">
 					<div class="field">
-						<label>描述</label> <input placeholder="输入说明" type="text"
+						<label>二维码信息</label> <input placeholder="输入说明" type="text"
 							name="description">
+						<div style="margin-top: 10px;">
+							<input placeholder="授权使用次数" type="text" name="useTimes"
+								maxlength="10" style="width: 200px;">
+							<div class="ui red label">兑换率:一次/10餐豆值</div>
+						</div>
 					</div>
 					<div class="field">
 						<div class="ui blue button czsAdd" onclick="addHandler(this);"
@@ -67,6 +90,9 @@
 									<div class="item" data-value="${item.id}">${item.name }</div>
 								</c:forEach>
 							</div>
+						</div>
+						<div style="margin-top: 10px;">
+							<div class="ui red label">提示:角色分类的二维码只能生成一张</div>
 						</div>
 					</div>
 					<div class="field"></div>
@@ -99,6 +125,13 @@
 					rules : [ {
 						type : 'empty',
 						prompt : '请输入说明!'
+					} ]
+				},
+				useTimes : {
+					identifier : 'useTimes',
+					rules : [ {
+						type : 'empty',
+						prompt : '请输入授权使用次数!'
 					} ]
 				},
 				category : {

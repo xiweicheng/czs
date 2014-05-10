@@ -46,5 +46,7 @@ public interface IQrcodeDao {
 	 * @return
 	 */
 	long queryCount(Locale locale, Qrcode qrcode);
+
+	List<Map<String, Object>> listByOpenId(Locale locale, String openId);
 	
 }

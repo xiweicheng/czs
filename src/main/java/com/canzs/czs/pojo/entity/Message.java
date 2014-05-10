@@ -1,6 +1,6 @@
 package com.canzs.czs.pojo.entity;
 
-// Generated 2014-5-8 12:24:58 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-5-9 22:47:38 by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
 import java.util.Date;

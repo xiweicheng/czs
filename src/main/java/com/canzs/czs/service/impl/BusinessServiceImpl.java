@@ -39,10 +39,12 @@ import com.canzs.czs.pojo.entity.Subscriber;
 import com.canzs.czs.pojo.entity.User;
 import com.canzs.czs.pojo.model.WeiXinBaseMsg;
 import com.canzs.czs.pojo.model.WeiXinEventType;
+import com.canzs.czs.pojo.model.WeiXinUserInfo;
 import com.canzs.czs.pojo.vo.PageResult;
 import com.canzs.czs.service.IBusinessService;
 import com.canzs.czs.service.IQrcodeService;
 import com.canzs.czs.service.IRequestService;
+import com.canzs.czs.service.IUserService;
 import com.canzs.czs.util.DateUtil;
 import com.canzs.czs.util.NumberUtil;
 import com.canzs.czs.util.StringUtil;
@@ -84,6 +86,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 	@Autowired
 	IRequestService requestService;
+
+	@Autowired
+	IUserService userService;
 
 	@Override
 	public boolean save(Locale locale, Business business) {
@@ -263,7 +268,16 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 
 		Subscriber subscriber2 = (Subscriber) findOneByExample(subscriber);
 
-		final String nickName = subscriber2 != null ? subscriber2.getNickname() : bean.getFromUserName();
+		String userNickName = null;
+
+		if (subscriber2 == null) {
+			WeiXinUserInfo userInfo = weiXinApiInvoker.getUserInfo(bean.getFromUserName());
+			userNickName = (userInfo != null) ? userInfo.getNickname() : null;
+		} else {
+			userNickName = subscriber2.getNickname();
+		}
+
+		final String nickName = userNickName != null ? userNickName : bean.getFromUserName();
 
 		// 获取商家名称信息.
 		Business business = new Business();
@@ -920,6 +934,10 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		businessRole.setIsDelete(SysConstant.SHORT_FALSE);
 		businessRole.setOpenId(bean.getFromUserName());
 		businessRole.setType(SysConstant.ROLE_TYPE_UNDETERMINED);
+
+		// 扫描次数累加
+		qrcode2.setUseTimes(StringUtil.isEmpty(qrcode2.getUseTimes()) ? 1L : qrcode2.getUseTimes() + 1);
+		hibernateTemplate.update(qrcode2);
 
 		hibernateTemplate.save(businessRole);
 

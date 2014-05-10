@@ -51,5 +51,7 @@ public interface ICzsUserDao {
 	List<Map<String, Object>> queryMgrBusiness(Locale locale, Date sDate, Date eDate, String... status);
 
 	List<Map<String, Object>> queryMgrUser(Locale locale, Date sDate, Date eDate, String[] status);
+
+	List<Map<String, Object>> queryMgrQrcode(Locale locale, Date sDate, Date eDate, String... status);
 	
 }

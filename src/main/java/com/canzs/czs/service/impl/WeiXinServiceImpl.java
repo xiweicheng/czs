@@ -384,6 +384,10 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			business.setIsMailVerify(SysConstant.SHORT_FALSE);
 			business.setIsPhoneVerify(SysConstant.SHORT_FALSE);
 			business.setStatus(SysConstant.BUSINESS_STATUS_NEW);
+			business.setDays(0L);
+			business.setQrcodeLimit(0L);
+			business.setLifeValue(0L);
+			business.setLoginTimes(0L);
 
 			businessService.save(locale, business);
 
