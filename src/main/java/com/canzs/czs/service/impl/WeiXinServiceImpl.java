@@ -368,7 +368,8 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 			if (SysConstant.BUSINESS_STATUS_UNDERSTANDING.equals(business2.getStatus())) {// 审核通过,发送登录链接
 				dynamicCode = businessService.createDynamicCode(locale, business);
-				return StringUtil.replace("<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}&isPhone=1'>[点击此]商家管理登录</a>",
+				return StringUtil.replace(
+						"<a href='{?1}{?2}?openId={?3}&dynamicCode={?4}&isPhone=1'>[点击此]商家管理登录</a>\n该链接只能使用一次",
 						propUtil.getRedirectUrl(), "/business/verify.do", bean.getFromUserName(), dynamicCode);
 			} else if (SysConstant.BUSINESS_STATUS_NEW.equals(business2.getStatus())) {// 还未审核通过
 				String link = StringUtil.replace("<a href='{?1}{?2}?openId={?3}'>[点击此]完善商家信息</a>",
