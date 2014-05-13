@@ -6,7 +6,7 @@
 <body style="margin: 0px; padding: 0px;">
 	<!-- footer -->
 	<div style="text-align: center;">
-		<h4 class="ui bottom attached header">版权所有</h4>
+		<h4 class="ui bottom attached header"><span>copyright © 2014餐助手</span></h4>
 	</div>
 </body>
 </html>

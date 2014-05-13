@@ -119,13 +119,13 @@ public interface IBusinessDao {
 
 	List<Map<String, Object>> menuGraph(Locale locale, String openId);
 
-	List<Map<String, Object>> billDayGraph(Locale locale, String openId);
+	List<Map<String, Object>> billDayGraph(Locale locale, String openId, Date start, Date end);
 
-	List<Map<String, Object>> menuDayGraph(Locale locale, String openId, String menuId);
+	List<Map<String, Object>> menuDayGraph(Locale locale, String openId, String menuId, Date start, Date end);
 
 	List<Map<String, Object>> volumeDayGraph(String openId, String date);
 
-	List<Map<String, Object>> serviceGraph(String openId);
+	List<Map<String, Object>> serviceGraph(String openId, Date start, Date end);
 
 	List<Map<String, Object>> serviceDayGraph(String openId, String date);
 
@@ -140,7 +140,7 @@ public interface IBusinessDao {
 
 	List<Map<String, Object>> queryBillSettByDate(Locale locale, String sessionBusinessId, Long times);
 
-	List<Map<String, Object>> consumerGraph(String businessId);
+	List<Map<String, Object>> consumerGraph(String businessId, Date start, Date end);
 
 	List<Map<String, Object>> consumerDayGraph(String sessionBusinessId, String date);
 

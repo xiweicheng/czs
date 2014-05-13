@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -10,23 +9,22 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/highcharts.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
-<head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
+
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/datepicker/css/datepicker.min.css" rel="stylesheet" type="text/css">
+
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/highcharts.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/exporting.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
+<script src="../../../resources/datepicker/js/datepicker.min.js" charset="utf-8"></script>
+<script src="../../../resources/datepicker/i18n/datepicker.zh-CN.js" charset="utf-8"></script>
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -45,16 +43,6 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 
-	<div class="ui dimmer czsMsg">
-		<div class="content" style="display: none;">
-			<div class="center">
-				<div class="ui huge message">
-					<span></span>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<div>
 		<!-- 侧边栏 -->
 		<%@ include file="../menu.jsp"%>
@@ -63,13 +51,26 @@
 		<%@ include file="../header.jsp"%>
 
 		<h4 class="ui top attached header" style="margin-top: 45px;">顾客统计</h4>
+
+		<div class="ui segment attached">
+			<div class="ui icon input">
+				<input type="text" placeholder="开始日期" id="datepicker-start"> <i class="calendar icon"
+					onclick="$('#datepicker-start').datepicker('show');"></i>
+			</div>
+			<div class="ui label">～</div>
+			<div class="ui icon input">
+				<input type="text" placeholder="截止日期" id="datepicker-end"> <i class="calendar icon"
+					onclick="$('#datepicker-end').datepicker('show');"></i>
+			</div>
+			<div class="ui button czsConfirm">确定</div>
+		</div>
+
 		<div class="ui segment attached czsService"></div>
 
 		<!-- footer -->
 		<%@ include file="../footer.jsp"%>
 
-		<div class="ui dimmer czsConsumerDetail"
-			style="overflow: auto; padding: 16px;">
+		<div class="ui dimmer czsConsumerDetail" style="overflow: auto; padding: 16px;">
 			<div class="content">
 				<div class="center" style="color: black; vertical-align: top;">
 					<div class="ui segment" style="text-align: left;">
@@ -91,8 +92,7 @@
 						</div>
 						<div class="" style="margin-top: 20px;">
 							<div class="one fluid ui buttons">
-								<div class="ui button"
-									onclick="$(this).closest('.ui.dimmer').dimmer('hide');">确定</div>
+								<div class="ui button" onclick="$(this).closest('.ui.dimmer').dimmer('hide');">确定</div>
 							</div>
 						</div>
 					</div>
@@ -102,28 +102,11 @@
 	</div>
 
 	<script type="text/javascript">
-		jQuery(function($) {
-			
-			$('#customer-table').tablesort();
-
-			$('.ui.dimmer.czsMsg').click(function() {
-				$('.ui.dimmer.czsMsg > .content').hide();
-			});
-
-			$('#menu-item-business-consumer-stat').addClass('active');
-
-			Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
-				return {
-					radialGradient : {
-						cx : 0.5,
-						cy : 0.3,
-						r : 0.7
-					},
-					stops : [ [ 0, color ], [ 1, Highcharts.Color(color).brighten(-0.3).get('rgb') ] ]
-				};
-			});
-
-			$.post("business/consumerGraph.do", {}, function(msg) {
+		function showGraph() {
+			$.post("business/consumerGraph.do", {
+				start : $("#datepicker-start").val(),
+				end : $("#datepicker-end").val()
+			}, function(msg) {
 
 				if (msg.succeed) {
 
@@ -192,6 +175,45 @@
 					alert('获取数据失败!');
 				}
 			}, 'json');
+		}
+		jQuery(function($) {
+
+			$('#customer-table').tablesort();
+
+			$('#menu-item-business-consumer-stat').addClass('active');
+
+			$("#datepicker-start").val('${start}').datepicker();
+			$("#datepicker-end").val('${end}').datepicker();
+
+			$('.ui.button.czsConfirm').click(function() {
+				showGraph();
+			});
+
+			Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+				return {
+					radialGradient : {
+						cx : 0.5,
+						cy : 0.3,
+						r : 0.7
+					},
+					stops : [ [ 0, color ], [ 1, Highcharts.Color(color).brighten(-0.3).get('rgb') ] ]
+				};
+			});
+			Highcharts.setOptions({
+				lang : {
+					downloadJPEG : '下载为JPEG图像',
+					downloadPDF : '下载为PDF文档',
+					downloadPNG : '下载为PNG图像',
+					downloadSVG : '下载为SVG矢量图像',
+					loading : '加载中...',
+					printChart : '打印图表',
+					rangeSelectorFrom : '从',
+					rangeSelectorTo : '到'
+				}
+			});
+
+			showGraph();
+
 		});
 	</script>
 </body>

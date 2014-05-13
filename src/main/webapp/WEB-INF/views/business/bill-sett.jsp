@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -14,28 +13,18 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/css/common.css" rel="stylesheet"
-	type="text/css">
-<link href="../../../resources/datepicker/css/glDatePicker.default.css"
-	rel="stylesheet" type="text/css">
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">
 
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script type="text/javascript"
-	src="../../../resources/datepicker/js/glDatePicker.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/datetimepicker/js/jquery.simple-dtpicker.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -87,33 +76,29 @@
 		</h4>
 		<div class="ui segment attached">
 			<form action="business/billSett.do" method="post" id="filter-form"></form>
-			<form action="business/billSettConfirm.do?status=${status}"
-				method="post" id="bill-form">
+			<form action="business/billSettConfirm.do?status=${status}" method="post" id="bill-form">
 				<div class="ui segment">
 					<div class="">
-						<div class="ui input" id="datetimepickerStart">
-							<input type="text" name="start" placeholder="开始日期">
+						<div class="ui icon input" id="datetimepickerStart">
+							<input type="text" name="start" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
+								onclick="$('#datepicker-start').handleDtpicker('show');"></i>
 						</div>
-						<div class="ui input" id="datetimepickerEnd">
-							<input type="text" name="end" placeholder="结束日期">
+						<div class="ui icon input" id="datetimepickerEnd">
+							<input type="text" name="end" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
+								onclick="$('#datepicker-end').handleDtpicker('show');"></i>
 						</div>
 					</div>
 					<div style="margin-top: 10px;">
 
-						<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
-							style="margin-top: 5px; margin-bottom: 5px;"> 未结算 ${newCount}
-							个 </a> <a class="ui label" id="czsStatus-1"
-							onclick="filterHandler('1')"
-							style="margin-top: 5px; margin-bottom: 5px;"> 已结算
-							${understanding} 个 </a><a class="ui label"
-							onclick="filterHandler('')" id="czsStatus-"
-							style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
+						<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')" style="margin-top: 5px; margin-bottom: 5px;">
+							未结算 ${newCount} 个 </a> <a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
+							style="margin-top: 5px; margin-bottom: 5px;"> 已结算 ${understanding} 个 </a><a class="ui label"
+							onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
 
 						<div class="ui label">
-							<a class="ui huge label">选择<span id="sett-count-span"
-								style="font-weight: bold; color: red;">${count}</span>份
-							</a> <a class="ui huge label"> <i class="yen icon"></i><span
-								id="sett-amount-span" style="font-weight: bold; color: red;">${amount}</span>
+							<a class="ui huge label">选择<span id="sett-count-span" style="font-weight: bold; color: red;">${count}</span>份
+							</a> <a class="ui huge label"> <i class="yen icon"></i><span id="sett-amount-span"
+								style="font-weight: bold; color: red;">${amount}</span>
 							</a>
 							<c:if test="${count == 0}">
 								<div class="ui green button czsConfirm" style="display: none;">结算</div>
@@ -124,15 +109,12 @@
 						</div>
 					</div>
 				</div>
-				<table class="ui sortable table segment"
-					style="display: table; font-size: 15px;">
+				<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 					<thead>
 						<tr>
 							<th class="number">序号</th>
-							<th class="" width="35px" style="width: 35px;"><div
-									class="ui checkbox czsSelectAll">
-									<input type="checkbox" checked="checked"><label
-										style="width: 0px; padding-left: 0px;"></label>
+							<th class="" width="35px" style="width: 35px;"><div class="ui checkbox czsSelectAll">
+									<input type="checkbox" checked="checked"><label style="width: 0px; padding-left: 0px;"></label>
 								</div></th>
 							<th class="">消费者</th>
 							<th class="number">消费金额</th>
@@ -149,33 +131,24 @@
 						<c:forEach items="${billList}" var="item" varStatus="sts">
 							<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
 								<td class="">${sts.index + 1}</td>
-								<td class="" data-sort-value="1" width="35px"
-									style="width: 35px;"><c:if test="${item.status==0}">
+								<td class="" data-sort-value="1" width="35px" style="width: 35px;"><c:if test="${item.status==0}">
 										<div class="ui checkbox czsItem" czs-value="${item.amount}">
-											<input type="checkbox" name="id" value="${item.id}"
-												checked="checked"><label
+											<input type="checkbox" name="id" value="${item.id}" checked="checked"><label
 												style="width: 0px; padding-left: 0px;"></label>
 										</div>
 									</c:if></td>
-								<td class="" data-sort-value="${item.nickname}"><img
-									class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+								<td class="" data-sort-value="${item.nickname}"><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
 								<td class="">${item.amount}</td>
 								<td class="">${item.description}</td>
-								<td class=""><c:if test="${item.type=='0'}">个人结账</c:if> <c:if
-										test="${item.type=='1'}">集体结账</c:if></td>
-								<td class=""><c:if test="${item.status==0}">未结算</c:if> <c:if
-										test="${item.status==1}">已结算
+								<td class=""><c:if test="${item.type=='0'}">个人结账</c:if> <c:if test="${item.type=='1'}">集体结账</c:if></td>
+								<td class=""><c:if test="${item.status==0}">未结算</c:if> <c:if test="${item.status==1}">已结算
 							</c:if></td>
-								<td class="" data-sort-value="${item.bill_nickname}"><c:if
-										test="${! empty item.bill_nickname}">
+								<td class="" data-sort-value="${item.bill_nickname}"><c:if test="${! empty item.bill_nickname}">
 										<img class="ui avatar image" src="${item.bill_headimgurl}/64">${item.bill_nickname}(${item.bill_sex})</c:if></td>
-								<td class="spec-diff" data-sort-value="${item.sec_diff}"
-									data-html="距今:${item.diff}">${item.date_time}</td>
-								<td class="" data-sort-value="${item.sett_name}"><c:if
-										test="${! empty item.sett_nickname}">
+								<td class="spec-diff" data-sort-value="${item.sec_diff}" data-html="距今:${item.diff}">${item.date_time}</td>
+								<td class="" data-sort-value="${item.sett_name}"><c:if test="${! empty item.sett_nickname}">
 										<img class="ui avatar image" src="${item.sett_headimgurl}/64">${item.sett_nickname}(${item.sett_sex})</c:if></td>
-								<td class="spec-diff" data-sort-value="${item.sec_sett_diff}"
-									data-html="距今:${item.sett_diff}"><c:if
+								<td class="spec-diff" data-sort-value="${item.sec_sett_diff}" data-html="距今:${item.sett_diff}"><c:if
 										test="${! empty item.sett_date_time}">
 										<a class="ui label" style="text-decoration: underline;"
 											onclick="queryByDateHandler('${item.sett_times}', '${item.sett_date_time}')">${item.sett_date_time}</a>
@@ -218,8 +191,7 @@
 		<i class="close icon"></i>
 		<div class="header">结算详情</div>
 		<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
-			<table class="ui sortable table segment"
-				style="display: table; font-size: 15px;">
+			<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 				<thead>
 					<tr>
 						<th class="">消费者</th>
@@ -236,10 +208,9 @@
 			</table>
 			<div class="ui segment">
 				<div class="ui label">
-					<a class="ui huge label"><span id="sett-count-span2"
-						style="font-weight: bold; color: red;">${count}</span>份 </a> <a
-						class="ui huge label"> <i class="yen icon"></i><span
-						id="sett-amount-span2" style="font-weight: bold; color: red;">${amount}</span>
+					<a class="ui huge label"><span id="sett-count-span2" style="font-weight: bold; color: red;">${count}</span>份 </a> <a
+						class="ui huge label"> <i class="yen icon"></i><span id="sett-amount-span2"
+						style="font-weight: bold; color: red;">${amount}</span>
 					</a>
 				</div>
 			</div>
@@ -324,17 +295,17 @@
 			var endDate = new Date();
 			endDate.setTime(Number('${end}'));
 
-			$('#datetimepickerStart > input').val(startDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
-				selectedDate : startDate,
-				onClick : function(target, cell, date, data) {
-					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
-				}
+			$('#datepicker-start').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD hh:mm:00',
+				locale : 'cn',
+				closeOnSelected : true,
+				current : startDate.format('yyyy-MM-dd hh:mm')
 			});
-			$('#datetimepickerEnd > input').val(endDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
-				selectedDate : endDate,
-				onClick : function(target, cell, date, data) {
-					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
-				}
+			$('#datepicker-end').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD hh:mm:00',
+				locale : 'cn',
+				closeOnSelected : true,
+				current : endDate.format('yyyy-MM-dd hh:mm')
 			});
 
 			$('.ui.button.czsConfirm').click(function() {

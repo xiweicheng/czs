@@ -1028,9 +1028,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public Map<String, List<Object>> volumeGraph(Locale locale, String openId) {
+	public Map<String, List<Object>> volumeGraph(Locale locale, String openId, Date start, Date end) {
 
-		List<Map<String, Object>> menuGraph = businessDao.billDayGraph(locale, openId);
+		List<Map<String, Object>> menuGraph = businessDao.billDayGraph(locale, openId, start, end);
 
 		List<Object> names = new ArrayList<>();
 		List<Object> values = new ArrayList<>();
@@ -1048,9 +1048,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public Map<String, List<Object>> menuDayGraph(Locale locale, String openId, String id) {
+	public Map<String, List<Object>> menuDayGraph(Locale locale, String openId, String id, Date start, Date end) {
 
-		List<Map<String, Object>> menuGraph = businessDao.menuDayGraph(locale, openId, id);
+		List<Map<String, Object>> menuGraph = businessDao.menuDayGraph(locale, openId, id, start, end);
 
 		List<Object> names = new ArrayList<>();
 		List<Object> copies = new ArrayList<>();
@@ -1085,8 +1085,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public Map<String, List<Object>> serviceGraph(Locale locale, String openId) {
-		List<Map<String, Object>> menuGraph = businessDao.serviceGraph(openId);
+	public Map<String, List<Object>> serviceGraph(Locale locale, String openId, Date start, Date end) {
+		List<Map<String, Object>> menuGraph = businessDao.serviceGraph(openId, start, end);
 
 		List<Object> names = new ArrayList<>();
 		List<Object> values = new ArrayList<>();
@@ -1104,8 +1104,8 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 	}
 
 	@Override
-	public Map<String, List<Object>> consumerGraph(Locale locale, String openId) {
-		List<Map<String, Object>> consumerGraph = businessDao.consumerGraph(openId);
+	public Map<String, List<Object>> consumerGraph(Locale locale, String openId, Date start, Date end) {
+		List<Map<String, Object>> consumerGraph = businessDao.consumerGraph(openId, start, end);
 
 		List<Object> names = new ArrayList<>();
 		List<Object> values = new ArrayList<>();

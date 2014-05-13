@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -10,18 +9,18 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/highcharts.js" charset="utf-8"></script>
-<head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/datepicker/css/datepicker.min.css" rel="stylesheet" type="text/css">
+
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/highcharts.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/exporting.js" charset="utf-8"></script>
+<script src="../../../resources/datepicker/js/datepicker.min.js" charset="utf-8"></script>
+<script src="../../../resources/datepicker/i18n/datepicker.zh-CN.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -37,6 +36,19 @@
 	<%@ include file="../header.jsp"%>
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">营业额统计</h4>
+
+	<div class="ui segment attached">
+		<div class="ui icon input">
+			<input type="text" placeholder="开始日期" id="datepicker-start"> <i class="calendar icon"
+				onclick="$('#datepicker-start').datepicker('show');"></i>
+		</div>
+		<div class="ui label">～</div>
+		<div class="ui icon input">
+			<input type="text" placeholder="截止日期" id="datepicker-end"> <i class="calendar icon"
+				onclick="$('#datepicker-end').datepicker('show');"></i>
+		</div>
+		<div class="ui button czsConfirm">确定</div>
+	</div>
 	<div class="ui segment attached czsMenu"></div>
 
 	<!-- footer -->
@@ -47,7 +59,7 @@
 		<i class="close icon"></i>
 		<div class="header">日营业额统计</div>
 		<div class="content" style="padding: 5px; height: 400px;"></div>
-		<div class="actions">
+		<!-- <div class="actions">
 			<div class="two fluid ui buttons">
 				<div class="ui deny labeled icon button">
 					<i class="remove icon"></i> 取消
@@ -56,60 +68,50 @@
 					确定 <i class="checkmark icon"></i>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</div>
 
 	<script type="text/javascript">
-		jQuery(function($) {
-			$('#menu-item-business-volume-stat').addClass('active');
-
-			Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
-				return {
-					radialGradient : {
-						cx : 0.5,
-						cy : 0.3,
-						r : 0.7
-					},
-					stops : [ [ 0, color ], [ 1, Highcharts.Color(color).brighten(-0.3).get('rgb') ] ]
-				};
+		function volumeDayGraph(value, title) {
+			$('.ui.modal.czsVolumeDay > .content').highcharts({
+				chart : {
+					plotBackgroundColor : null,
+					plotBorderWidth : null,
+					plotShadow : false
+				},
+				title : {
+					text : title
+				},
+				tooltip : {
+					pointFormat : '{series.name}: <b>{point.percentage:.1f}%</b>'
+				},
+				credits : {
+					enabled : false
+				},
+				plotOptions : {
+					pie : {
+						allowPointSelect : true,
+						cursor : 'pointer',
+						dataLabels : {
+							enabled : false
+						},
+						showInLegend : true
+					}
+				},
+				series : [ {
+					type : 'pie',
+					name : '日营业额',
+					data : value
+				} ]
 			});
+		}
 
-			var volumeDayGraphFunction = function(value, title) {
-				// Build the chart
-				$('.ui.modal.czsVolumeDay > .content').highcharts({
-					chart : {
-						plotBackgroundColor : null,
-						plotBorderWidth : null,
-						plotShadow : false
-					},
-					title : {
-						text : title
-					},
-					tooltip : {
-						pointFormat : '{series.name}: <b>{point.percentage:.1f}%</b>'
-					},
-					credits : {
-						enabled : false
-					},
-					plotOptions : {
-						pie : {
-							allowPointSelect : true,
-							cursor : 'pointer',
-							dataLabels : {
-								enabled : false
-							},
-							showInLegend : true
-						}
-					},
-					series : [ {
-						type : 'pie',
-						name : '日营业额',
-						data : value
-					} ]
-				});
-			}
+		function showGraph() {
 
-			$.post("business/volumeGraph.do", {}, function(msg) {
+			$.post("business/volumeGraph.do", {
+				start : $("#datepicker-start").val(),
+				end : $("#datepicker-end").val()
+			}, function(msg) {
 
 				if (msg.succeed) {
 
@@ -161,12 +163,13 @@
 
 														$('.ui.modal.czsVolumeDay').modal('show');
 
-														volumeDayGraphFunction(msg.value, e.point.category);
+														volumeDayGraph(msg.value, e.point.category);
 
 													} else {
-														if(!!msg.msg && !!msg.msg.detail){
-															$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-														}else{
+														if (!!msg.msg && !!msg.msg.detail) {
+															$('.ui.dimmer.czsMsg .center span').html(
+																	'操作失败!<br/>失败信息:' + msg.msg.detail);
+														} else {
 															$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 														}
 														$('.ui.dimmer.czsMsg > .content').show();
@@ -187,15 +190,51 @@
 								} ]
 							});
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
 					$('.ui.dimmer.czsMsg').dimmer('show');
 				}
 			}, 'json');
+		}
+
+		jQuery(function($) {
+			$('#menu-item-business-volume-stat').addClass('active');
+
+			$("#datepicker-start").val('${start}').datepicker();
+			$("#datepicker-end").val('${end}').datepicker();
+
+			$('.ui.button.czsConfirm').click(function() {
+				showGraph();
+			});
+
+			Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+				return {
+					radialGradient : {
+						cx : 0.5,
+						cy : 0.3,
+						r : 0.7
+					},
+					stops : [ [ 0, color ], [ 1, Highcharts.Color(color).brighten(-0.3).get('rgb') ] ]
+				};
+			});
+			Highcharts.setOptions({
+				lang : {
+					downloadJPEG : '下载为JPEG图像',
+					downloadPDF : '下载为PDF文档',
+					downloadPNG : '下载为PNG图像',
+					downloadSVG : '下载为SVG矢量图像',
+					loading : '加载中...',
+					printChart : '打印图表',
+					rangeSelectorFrom : '从',
+					rangeSelectorTo : '到'
+				}
+			});
+
+			showGraph();
 		});
 	</script>
 </body>

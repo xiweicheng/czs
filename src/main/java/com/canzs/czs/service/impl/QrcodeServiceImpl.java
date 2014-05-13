@@ -242,7 +242,7 @@ public class QrcodeServiceImpl extends BaseServiceImpl implements IQrcodeService
 				qrcode2.setOpenId(qrcode.getOpenId());
 				qrcode2.setSceneId(Long.valueOf(qrcode.getSceneId()));
 				if (SysConstant.CATEGORY_ID_JS.equals(qrcode.getCategoryId())) {
-					qrcode2.setUseLimit(Long.valueOf(100000));
+					qrcode2.setUseLimit(qrcode.getUseLimit());
 				} else {
 					qrcode2.setUseLimit(qrcode.getUseLimit());
 				}

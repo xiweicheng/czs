@@ -315,7 +315,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 	}
 
 	@Override
-	public List<Map<String, Object>> menuDayGraph(Locale locale, String openId, String menuId) {
+	public List<Map<String, Object>> menuDayGraph(Locale locale, String openId, String menuId, Date start, Date end) {
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
 		sqlSb.append("	menu.`name`,\n");
@@ -328,14 +328,15 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	menu.`owner` = ?\n");
 		sqlSb.append("AND menu_bill.`status` = 3\n");
 		sqlSb.append("AND menu.id = ?\n");
+		sqlSb.append("AND menu_bill.date_time BETWEEN ? AND ?\n");
 		sqlSb.append("GROUP BY\n");
 		sqlSb.append("	date\n");
 
-		return getMapList(sqlSb, openId, menuId);
+		return getMapList(sqlSb, openId, menuId, start, end);
 	}
 
 	@Override
-	public List<Map<String, Object>> billDayGraph(Locale locale, String openId) {
+	public List<Map<String, Object>> billDayGraph(Locale locale, String openId, Date start, Date end) {
 
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
@@ -345,10 +346,11 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	bill\n");
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	bill.business_id = ?\n");
+		sqlSb.append("AND date_time BETWEEN ? AND ?\n");
 		sqlSb.append("GROUP BY\n");
 		sqlSb.append("	date(date_time)\n");
 
-		return getMapList(sqlSb, openId);
+		return getMapList(sqlSb, openId, start, end);
 	}
 
 	@Override
@@ -374,7 +376,7 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 	}
 
 	@Override
-	public List<Map<String, Object>> serviceGraph(String openId) {
+	public List<Map<String, Object>> serviceGraph(String openId, Date start, Date end) {
 
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
@@ -386,14 +388,15 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("	service.business_id = ?\n");
 		sqlSb.append("AND service.`status` = 0\n");
 		sqlSb.append("AND service.is_delete = 0\n");
+		sqlSb.append("AND service.date_time BETWEEN ? AND ?\n");
 		sqlSb.append("GROUP BY\n");
 		sqlSb.append("	date\n");
 
-		return getMapList(sqlSb, openId);
+		return getMapList(sqlSb, openId, start, end);
 	}
 
 	@Override
-	public List<Map<String, Object>> consumerGraph(String businessId) {
+	public List<Map<String, Object>> consumerGraph(String businessId, Date start, Date end) {
 
 		StringBuffer sqlSb = new StringBuffer();
 		sqlSb.append("SELECT\n");
@@ -406,10 +409,11 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		sqlSb.append("WHERE\n");
 		sqlSb.append("	business_consumer_record.is_delete = 0\n");
 		sqlSb.append("AND business_consumer_record.business_id = ?\n");
+		sqlSb.append("AND business_consumer_record.consume_time BETWEEN ? AND ?\n");
 		sqlSb.append("GROUP BY\n");
 		sqlSb.append("	date\n");
 
-		return getMapList(sqlSb, businessId);
+		return getMapList(sqlSb, businessId, start, end);
 	}
 
 	@Override

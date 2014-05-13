@@ -338,13 +338,13 @@ public interface IBusinessService extends IBaseService {
 
 	Map<String, List<Object>> menuGraph(Locale locale, String openId);
 
-	Map<String, List<Object>> volumeGraph(Locale locale, String openId);
+	Map<String, List<Object>> volumeGraph(Locale locale, String openId, Date start, Date end);
 
-	Map<String, List<Object>> menuDayGraph(Locale locale, String openId, String id);
+	Map<String, List<Object>> menuDayGraph(Locale locale, String openId, String id, Date start, Date end);
 
 	List<List<Object>> volumeDayGraph(Locale locale, String openId, String date);
 
-	Map<String, List<Object>> serviceGraph(Locale locale, String openId);
+	Map<String, List<Object>> serviceGraph(Locale locale, String openId, Date start, Date end);
 
 	List<List<Object>> serviceDayGraph(Locale locale, String openId, String date);
 
@@ -360,7 +360,7 @@ public interface IBusinessService extends IBaseService {
 
 	List<Map<String, Object>> queryBillSettByDate(Locale locale, String sessionBusinessId, Long times);
 
-	Map<String, List<Object>> consumerGraph(Locale locale, String openId);
+	Map<String, List<Object>> consumerGraph(Locale locale, String openId, Date start, Date end);
 
 	List<Map<String, Object>> consumerDayGraph(Locale locale, String sessionBusinessId, String date);
 

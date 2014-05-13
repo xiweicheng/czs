@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,30 +12,18 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/css/common.css" rel="stylesheet"
-	type="text/css">
-<link href="../../../resources/datepicker/css/glDatePicker.default.css"
-	rel="stylesheet" type="text/css">
 
-<link
-	href="../../../resources/datetimepicker/css/bootstrap-datetimepicker.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script type="text/javascript"
-	src="../../../resources/datepicker/js/glDatePicker.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/datetimepicker/js/jquery.simple-dtpicker.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -77,33 +64,28 @@
 
 			<div class="ui segment">
 				<div class="">
-					<div class="ui input" id="datetimepickerStart">
-						<input type="text" name="start" placeholder="开始日期">
+					<div class="ui icon input" id="datetimepickerStart">
+						<input type="text" name="start" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
+							onclick="$('#datepicker-start').handleDtpicker('show');"></i>
 					</div>
-					<div class="ui input" id="datetimepickerEnd">
-						<input type="text" name="end" placeholder="结束日期">
+					<div class="ui icon input" id="datetimepickerEnd">
+						<input type="text" name="end" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
+							onclick="$('#datepicker-end').handleDtpicker('show');"></i>
 					</div>
 				</div>
 				<div style="margin-top: 10px;">
 					<form action="menu/orderHistory.do" method="post" id="filter-form"></form>
-					<a class="ui label czsRequest czsStatus" id="czsStatus-3"
-						onclick="filterHandler('3')"
-						style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 份
-					</a> <a class="ui label czsRequestOwn czsStatus" id="czsStatus-1"
-						onclick="filterHandler('1')"
-						style="margin-top: 5px; margin-bottom: 5px;"> 已提交 ${submited}
-						份 </a><a class="ui label czsRequestGroup czsStatus" id="czsStatus-0"
-						onclick="filterHandler('0')"
-						style="margin-top: 5px; margin-bottom: 5px;"> 待提交 ${submiting}
-						份</a> <a class="ui label czsStatus" onclick="filterHandler('2')"
-						id="czsStatus-2" style="margin-top: 5px; margin-bottom: 5px;">
-						已退订 ${debook} 份 </a> <a class="ui label czsStatus"
-						onclick="filterHandler('')" id="czsStatus-"
+					<a class="ui label czsRequest czsStatus" id="czsStatus-3" onclick="filterHandler('3')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${accept} 份 </a> <a class="ui label czsRequestOwn czsStatus"
+						id="czsStatus-1" onclick="filterHandler('1')" style="margin-top: 5px; margin-bottom: 5px;"> 已提交 ${submited} 份
+					</a><a class="ui label czsRequestGroup czsStatus" id="czsStatus-0" onclick="filterHandler('0')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 待提交 ${submiting} 份</a> <a class="ui label czsStatus"
+						onclick="filterHandler('2')" id="czsStatus-2" style="margin-top: 5px; margin-bottom: 5px;"> 已退订 ${debook} 份 </a> <a
+						class="ui label czsStatus" onclick="filterHandler('')" id="czsStatus-"
 						style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 份 </a>
 				</div>
 			</div>
-			<table class="ui sortable table segment"
-				style="display: table; font-size: 15px;">
+			<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 				<thead>
 					<tr>
 						<th class="number">序号</th>
@@ -119,8 +101,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${historyMenuBillList}" var="item"
-						varStatus="sts">
+					<c:forEach items="${historyMenuBillList}" var="item" varStatus="sts">
 						<tr id="item-tr-${item.id}" class="item-tr-${item.menu_id}">
 							<td class="">${sts.index + 1}</td>
 							<td class="">${item.name}</td>
@@ -128,14 +109,11 @@
 							<td class=""><c:if test="${! empty item.memo}">
 									<div class="ui red label">${item.memo}</div>
 								</c:if></td>
-							<td class=""><c:if test="${item.status==0}">待提交</c:if> <c:if
-									test="${item.status==1}">已提交</c:if> <c:if
-									test="${item.status==2}">已退订</c:if> <c:if
-									test="${item.status==3}">已接受</c:if></td>
+							<td class=""><c:if test="${item.status==0}">待提交</c:if> <c:if test="${item.status==1}">已提交</c:if> <c:if
+									test="${item.status==2}">已退订</c:if> <c:if test="${item.status==3}">已接受</c:if></td>
 							<td class="">${item.date_time}</td>
 							<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
-							<td class=""><img class="ui avatar image"
-								src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+							<td class=""><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
 							<td class="">${item.description}</td>
 							<td class=""><c:if test="${! empty item.accept_nickname}">
 									<img class="ui avatar image" src="${item.accept_headimgurl}/64">${item.accept_nickname}(${item.accept_sex})</c:if></td>
@@ -201,18 +179,19 @@
 			var endDate = new Date();
 			endDate.setTime(Number('${end}'));
 
-			$('#datetimepickerStart > input').val(startDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
-				selectedDate : startDate,
-				onClick : function(target, cell, date, data) {
-					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
-				}
+			$('#datepicker-start').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD hh:mm:00',
+				locale : 'cn',
+				closeOnSelected : true,
+				current : startDate.format('yyyy-MM-dd hh:mm')
 			});
-			$('#datetimepickerEnd > input').val(endDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
-				selectedDate : endDate,
-				onClick : function(target, cell, date, data) {
-					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
-				}
+			$('#datepicker-end').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD hh:mm:00',
+				locale : 'cn',
+				closeOnSelected : true,
+				current : endDate.format('yyyy-MM-dd hh:mm')
 			});
+
 		});
 	</script>
 </body>

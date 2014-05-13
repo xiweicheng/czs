@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,8 +36,6 @@ import com.canzs.czs.pojo.entity.Message;
 import com.canzs.czs.pojo.entity.Request;
 import com.canzs.czs.pojo.entity.Service;
 import com.canzs.czs.pojo.vo.Msg;
-import com.canzs.czs.pojo.vo.PageResult;
-import com.canzs.czs.pojo.vo.ReqBody;
 import com.canzs.czs.pojo.vo.ResultMsg;
 import com.canzs.czs.service.IBusinessService;
 import com.canzs.czs.service.IMenuService;
@@ -94,40 +92,6 @@ public class BusinessController extends BaseController {
 	@Autowired
 	IServiceService serviceService;
 
-	/**
-	 * 添加【商家】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年03月25日 02:46:32
-	 * @modification 2014年03月25日 02:46:32
-	 * @return
-	 */
-	// @RequestMapping("add")
-	// public String add(HttpServletRequest request, Locale locale, Model model)
-	// {
-	//
-	// logger.debug("添加【商家】");
-	//
-	// WeiXinAccessToken accessToken =
-	// weiXinApiInvoker.getAccessToken(request.getParameter("code"));
-	// model.addAttribute("accessToken", accessToken);
-	//
-	// Business business = new Business();
-	// business.setOpenId(accessToken.getOpenid());
-	//
-	// if (businessService.exists(locale, business)) {
-	// return "business/exists";
-	// } else {
-	// if (businessService.save(locale, business)) {
-	// model.addAttribute("business", business);
-	// return "business/input";
-	// } else {
-	// model.addAttribute("message", "商家入驻失败!");
-	// return "result";
-	// }
-	// }
-	// }
-
 	@RequestMapping("free/input")
 	public String input(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
 
@@ -167,58 +131,6 @@ public class BusinessController extends BaseController {
 			model.addAttribute("message", "商家信息更新失败!");
 			return "result";
 		}
-	}
-
-	/**
-	 * 删除【商家】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年03月25日 02:46:32
-	 * @modification 2014年03月25日 02:46:32
-	 * @return
-	 */
-	// @RequestMapping("delete")
-	@ResponseBody
-	public ResultMsg delete(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("删除【商家】");
-
-		// TODO
-
-		Business business = getParam(reqBody, Business.class);
-
-		// 参数验证
-		// Assert.notNull(business.get);
-
-		boolean deleted = businessService.delete(locale, business);
-
-		return new ResultMsg(deleted, reqBody.getId());
-	}
-
-	/**
-	 * 获取【商家】.
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年03月25日 02:46:32
-	 * @modification 2014年03月25日 02:46:32
-	 * @return
-	 */
-	// @RequestMapping("get")
-	@ResponseBody
-	public ResultMsg get(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("获取【商家】");
-
-		// TODO
-
-		Business business = getParam(reqBody, Business.class);
-
-		// 参数验证
-		// Assert.notNull(business.get);
-
-		Business getBusiness = businessService.get(locale, business);
-
-		return new ResultMsg(true, reqBody.getId(), getBusiness);
 	}
 
 	/**
@@ -288,61 +200,6 @@ public class BusinessController extends BaseController {
 		model.addAttribute("request", (_request == null || !_request) ? "0" : "1");
 
 		return "business/customer-list";
-	}
-
-	/**
-	 * 查询【商家】(不分页).
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年03月25日 02:46:32
-	 * @modification 2014年03月25日 02:46:32
-	 * @return
-	 */
-	// @RequestMapping("query")
-	@ResponseBody
-	public ResultMsg query(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("查询【商家】");
-
-		// TODO
-
-		Business business = getParam(reqBody, Business.class);
-
-		// 参数验证
-		// Assert.notNull(business.get);
-
-		List<Map<String, Object>> businessList = businessService.query(locale, business);
-
-		return new ResultMsg(reqBody.getId(), businessList);
-	}
-
-	/**
-	 * 查询【商家】(分页).
-	 * 
-	 * @author xiweicheng
-	 * @creation 2014年03月25日 02:46:32
-	 * @modification 2014年03月25日 02:46:32
-	 * @return
-	 */
-	// @RequestMapping("paging")
-	@ResponseBody
-	public ResultMsg paging(@RequestBody ReqBody reqBody, Locale locale) {
-
-		logger.debug("查询【商家】");
-
-		// TODO
-
-		Business business = getParam(reqBody, Business.class);
-
-		// 参数验证
-		Assert.notNull(reqBody.getStart());
-		Assert.notNull(reqBody.getLimit());
-
-		// Assert.notNull(business.get);
-
-		PageResult pageResult = businessService.paging(locale, business, reqBody.getStart(), reqBody.getLimit());
-
-		return new ResultMsg(reqBody.getId(), pageResult.getList(), pageResult.getTotal());
 	}
 
 	@RequestMapping("free/info")
@@ -800,7 +657,8 @@ public class BusinessController extends BaseController {
 
 		logger.debug("菜品统计【商家】");
 
-		// model.addAttribute("message", "[菜品统计]页面建设中...");
+		model.addAttribute("start", DateTime.now().minusMonths(1).toString(DateUtil.FORMAT3));
+		model.addAttribute("end", DateTime.now().toString(DateUtil.FORMAT3));
 
 		return "business/menu-graph";
 
@@ -839,12 +697,13 @@ public class BusinessController extends BaseController {
 	 */
 	@RequestMapping("menuDayGraph")
 	@ResponseBody
-	public ResultMsg menuDayGraph(HttpServletRequest request, Locale locale, Model model, @RequestParam("id") String id) {
+	public ResultMsg menuDayGraph(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("id") String id, @RequestParam("start") String start, @RequestParam("end") String end) {
 
 		logger.debug("菜品统计【商家】");
 
 		Map<String, List<Object>> map = businessService.menuDayGraph(locale, WebUtil.getSessionBusiness(request)
-				.getOpenId(), id);
+				.getOpenId(), id, DateUtil.parse(start, DateUtil.FORMAT3), DateUtil.parse(end, DateUtil.FORMAT3));
 
 		return new ResultMsg(true, map);
 
@@ -861,12 +720,13 @@ public class BusinessController extends BaseController {
 	 */
 	@RequestMapping("volumeGraph")
 	@ResponseBody
-	public ResultMsg volumeGraph(HttpServletRequest request, Locale locale, Model model) {
+	public ResultMsg volumeGraph(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("start") String start, @RequestParam("end") String end) {
 
 		logger.debug("营业额统计【商家】");
 
 		Map<String, List<Object>> map = businessService.volumeGraph(locale, WebUtil.getSessionBusiness(request)
-				.getOpenId());
+				.getOpenId(), DateUtil.parse(start, DateUtil.FORMAT3), DateUtil.parse(end, DateUtil.FORMAT3));
 
 		return new ResultMsg(true, map);
 
@@ -906,12 +766,13 @@ public class BusinessController extends BaseController {
 	 */
 	@RequestMapping("serviceGraph")
 	@ResponseBody
-	public ResultMsg serviceGraph(HttpServletRequest request, Locale locale, Model model) {
+	public ResultMsg serviceGraph(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("start") String start, @RequestParam("end") String end) {
 
 		logger.debug("服务统计【商家】");
 
 		Map<String, List<Object>> map = businessService.serviceGraph(locale, WebUtil.getSessionBusiness(request)
-				.getOpenId());
+				.getOpenId(), DateUtil.parse(start, DateUtil.FORMAT3), DateUtil.parse(end, DateUtil.FORMAT3));
 
 		return new ResultMsg(true, map);
 
@@ -928,11 +789,13 @@ public class BusinessController extends BaseController {
 	 */
 	@RequestMapping("consumerGraph")
 	@ResponseBody
-	public ResultMsg consumerGraph(HttpServletRequest request, Locale locale, Model model) {
+	public ResultMsg consumerGraph(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("start") String start, @RequestParam("end") String end) {
 
 		logger.debug("顾客统计【商家】");
 
-		Map<String, List<Object>> map = businessService.consumerGraph(locale, WebUtil.getSessionBusinessId(request));
+		Map<String, List<Object>> map = businessService.consumerGraph(locale, WebUtil.getSessionBusinessId(request),
+				DateUtil.parse(start, DateUtil.FORMAT3), DateUtil.parse(end, DateUtil.FORMAT3));
 
 		return new ResultMsg(true, map);
 
@@ -1002,7 +865,8 @@ public class BusinessController extends BaseController {
 
 		logger.debug("服务统计【商家】");
 
-		// model.addAttribute("message", "[服务统计]页面建设中...");
+		model.addAttribute("start", DateTime.now().minusMonths(1).toString(DateUtil.FORMAT3));
+		model.addAttribute("end", DateTime.now().toString(DateUtil.FORMAT3));
 
 		return "business/service-graph";
 
@@ -1022,6 +886,9 @@ public class BusinessController extends BaseController {
 
 		logger.debug("顾客统计【商家】");
 
+		model.addAttribute("start", DateTime.now().minusMonths(1).toString(DateUtil.FORMAT3));
+		model.addAttribute("end", DateTime.now().toString(DateUtil.FORMAT3));
+
 		return "business/consumer-graph";
 
 	}
@@ -1039,6 +906,9 @@ public class BusinessController extends BaseController {
 	public String volumeStat(HttpServletRequest request, Locale locale, Model model) {
 
 		logger.debug("营业额统计【商家】");
+
+		model.addAttribute("start", DateTime.now().minusMonths(1).toString(DateUtil.FORMAT3));
+		model.addAttribute("end", DateTime.now().toString(DateUtil.FORMAT3));
 
 		return "business/volume-graph";
 
