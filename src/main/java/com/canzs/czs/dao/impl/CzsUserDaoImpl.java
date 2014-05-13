@@ -3,6 +3,7 @@
  */
 package com.canzs.czs.dao.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +16,7 @@ import com.canzs.czs.base.impl.BaseDaoImpl;
 import com.canzs.czs.dao.ICzsUserDao;
 import com.canzs.czs.pojo.entity.CzsUser;
 import com.canzs.czs.util.DateUtil;
+import com.canzs.czs.util.NumberUtil;
 import com.canzs.czs.util.SqlUtil;
 import com.canzs.czs.util.StringUtil;
 
@@ -358,5 +360,168 @@ public class CzsUserDaoImpl extends BaseDaoImpl implements ICzsUserDao {
 		sqlSb.append("	qrcode.date_time DESC\n");
 
 		return getMapList(sqlSb);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryCommentByOpenId(Locale locale, String openId) {
+
+		// @formatter:off
+		/**
+		SELECT
+			`comment`.id
+		FROM
+			`comment`
+		WHERE
+			`comment`.is_delete = 0
+		AND `comment`.type = 0
+		AND `comment`.openId = 'okPUDtzjrogWsWdsI_Fz39VNbgBc'
+		AND `comment`.p_id IS NULL
+		ORDER BY
+			`comment`.date_time DESC**/
+		// @formatter:on
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	`comment`.id\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	`comment`\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	`comment`.is_delete = 0\n");
+		sqlSb.append("AND `comment`.type = 0\n");
+		sqlSb.append("AND `comment`.openId = ?\n");
+		sqlSb.append("AND `comment`.p_id IS NULL\n");
+		sqlSb.append("ORDER BY\n");
+		sqlSb.append("	`comment`.date_time DESC\n");
+
+		List<Map<String, Object>> mapList = getMapList(sqlSb, openId);
+
+		List<Map<String, Object>> retMaps = new ArrayList<>();
+
+		for (Map<String, Object> map : mapList) {
+
+			// @formatter:off
+			/**
+			SELECT
+				`comment`.id,
+				`comment`.openId,
+				`comment`.content,
+				DATE_FORMAT(
+					`comment`.date_time,
+					'%Y/%m/%d %H:%i:%s'
+				) AS date_time,
+				UNIX_TIMESTAMP(`comment`.date_time) AS times,
+				TIMESTAMPDIFF(
+					SECOND,
+					`comment`.date_time,
+					NOW()
+				) AS sec_diff,
+				`comment`.`status`,
+				`comment`.is_delete,
+				`comment`.type,
+				`comment`.p_id,
+				`comment`.`handler`,
+				DATE_FORMAT(
+					`comment`.handle_date_time,
+					'%Y/%m/%d %H:%i:%s'
+				) AS handle_date_time,
+				UNIX_TIMESTAMP(`comment`.handle_date_time) AS handle_times,
+				TIMESTAMPDIFF(
+					SECOND,
+					`comment`.handle_date_time,
+					NOW()
+				) AS sec_handle_diff,
+				subscriber.nickname,
+	
+			IF (
+				subscriber.sex = 1,
+				'男',
+	
+			IF (
+				subscriber.sex = 2,
+				'女',
+				'未知'
+			)
+			) AS sex,
+			 subscriber.city,
+			 subscriber.country,
+			 subscriber.province,
+			 subscriber.headimgurl
+			FROM
+				`comment`
+			LEFT JOIN subscriber ON `comment`.openId = subscriber.user_name
+			WHERE
+				`comment`.is_delete = 0
+			AND `comment`.type = 0
+			AND FIND_IN_SET(
+				`comment`.id,
+				queryChildrenComment (3)
+			)
+			ORDER BY
+				`comment`.date_time DESC**/
+			// @formatter:on
+
+			sqlSb = new StringBuffer();
+			sqlSb.append("SELECT\n");
+			sqlSb.append("	`comment`.id,\n");
+			sqlSb.append("	`comment`.openId,\n");
+			sqlSb.append("	`comment`.content,\n");
+			sqlSb.append("	DATE_FORMAT(\n");
+			sqlSb.append("		`comment`.date_time,\n");
+			sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+			sqlSb.append("	) AS date_time,\n");
+			sqlSb.append("	UNIX_TIMESTAMP(`comment`.date_time) AS times,\n");
+			sqlSb.append("	TIMESTAMPDIFF(\n");
+			sqlSb.append("		SECOND,\n");
+			sqlSb.append("		`comment`.date_time,\n");
+			sqlSb.append("		NOW()\n");
+			sqlSb.append("	) AS sec_diff,\n");
+			sqlSb.append("	`comment`.`status`,\n");
+			sqlSb.append("	`comment`.is_delete,\n");
+			sqlSb.append("	`comment`.type,\n");
+			sqlSb.append("	`comment`.p_id,\n");
+			sqlSb.append("	`comment`.`handler`,\n");
+			sqlSb.append("	DATE_FORMAT(\n");
+			sqlSb.append("		`comment`.handle_date_time,\n");
+			sqlSb.append("		'%Y/%m/%d %H:%i:%s'\n");
+			sqlSb.append("	) AS handle_date_time,\n");
+			sqlSb.append("	UNIX_TIMESTAMP(`comment`.handle_date_time) AS handle_times,\n");
+			sqlSb.append("	TIMESTAMPDIFF(\n");
+			sqlSb.append("		SECOND,\n");
+			sqlSb.append("		`comment`.handle_date_time,\n");
+			sqlSb.append("		NOW()\n");
+			sqlSb.append("	) AS sec_handle_diff,\n");
+			sqlSb.append("	subscriber.nickname,\n");
+			sqlSb.append("\n");
+			sqlSb.append("IF (\n");
+			sqlSb.append("	subscriber.sex = 1,\n");
+			sqlSb.append("	'男',\n");
+			sqlSb.append("\n");
+			sqlSb.append("IF (\n");
+			sqlSb.append("	subscriber.sex = 2,\n");
+			sqlSb.append("	'女',\n");
+			sqlSb.append("	'未知'\n");
+			sqlSb.append(")\n");
+			sqlSb.append(") AS sex,\n");
+			sqlSb.append(" subscriber.city,\n");
+			sqlSb.append(" subscriber.country,\n");
+			sqlSb.append(" subscriber.province,\n");
+			sqlSb.append(" subscriber.headimgurl\n");
+			sqlSb.append("FROM\n");
+			sqlSb.append("	`comment`\n");
+			sqlSb.append("LEFT JOIN subscriber ON `comment`.openId = subscriber.user_name\n");
+			sqlSb.append("WHERE\n");
+			sqlSb.append("	`comment`.is_delete = 0\n");
+			sqlSb.append("AND `comment`.type = 0\n");
+			sqlSb.append("AND FIND_IN_SET(\n");
+			sqlSb.append("	`comment`.id,\n");
+			sqlSb.append("	queryChildrenComment (?)\n");
+			sqlSb.append(")\n");
+			sqlSb.append("ORDER BY\n");
+			sqlSb.append("	`comment`.date_time DESC\n");
+
+			retMaps.addAll(getMapList(sqlSb, NumberUtil.getLong(map, "id")));
+		}
+
+		return retMaps;
 	}
 }

@@ -133,4 +133,8 @@ public interface ICzsUserService extends IBaseService {
 	boolean updateLife(Locale locale, String type, String oldValue, String newValue, String id, String businessId, String handler);
 
 	List<Map<String, Object>> queryMgrQrcode(Locale locale, Date sDate, Date eDate, String... status);
+
+	boolean submitComment(Locale locale, String openId, String content);
+
+	List<Map<String, Object>> queryCommentByOpenId(Locale locale, String openId);
 }

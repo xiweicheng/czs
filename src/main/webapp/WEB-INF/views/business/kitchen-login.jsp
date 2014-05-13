@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
@@ -11,19 +10,14 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-后厨服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -32,16 +26,49 @@
 	});
 </script>
 <script id="joinTrTpl" type="text/x-jquery-tmpl">
-<tr id="item-tr-join-{{html id}}" class="item-tr-{{html menu_id}}">
-<input type="hidden" name="id" value="{{html id}}">
-<input type="hidden" name="copies" value="{{html copies}}">
-	<td class="">{{html name}}({{html copies}}份)</td>
-	<td class="">{{if memo}}<div class="ui red label">{{html memo}}</div>{{/if}}</td>
-	<td class="">{{html date_time}}({{html diff}})</td>
-	<td class="">{{html nickname}}({{html description}})</td>
-	<td class=""><a class="ui purple label"
+<tr id="item-tr-join-{{html id}}" class="item-tr-join-{{html menu_id}}">
+	<input type="hidden" name="id" value="{{html id}}">
+	<input type="hidden" name="copies" value="{{html copies}}">
+	<td class="">
+		<div style="float: right;">
+			{{if memo}}
+				<div class="ui red label">{{html memo}}</div>
+			{{/if}}
+		</div>
+		<div class="ui basic accordion" style="width: 100%; margin-bottom: 0px;">
+			<div class="title" style="padding: 0px;">
+				<i class="dropdown icon"></i>{{html name}}({{html copies}}份)
+			</div>
+			<div class="content">
+				<div class="ui mini list">
+					<div class="item">
+						<i class="user outline icon"></i>
+						<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
+							<div class="header">顾客</div>
+							<img class="ui avatar image" src="{{html headimgurl}}/46">{{html nickname}}({{html sex}})
+						</div>
+					</div>
+					<div class="item">
+						<i class="map marker outline icon"></i>
+						<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
+							<div class="header">位置</div>
+							{{html description}}
+						</div>
+					</div>
+					<div class="item">
+						<i class="time outline icon"></i>
+						<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
+							<div class="header">下单时间</div>
+							{{html date_time}}({{html diff}})
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</td>
+	<td class=""><a class="ui label" style="margin-top: 10px;"
 		onclick="acceptHandler('{{html id}}', '{{html menu_id}}', '1', '{{html copies}}')"
-		href="javascript:void(0);">接受</a></td>
+		href="javascript:void(0);">接受订单</a></td>
 </tr>
 </script>
 </head>
@@ -62,8 +89,7 @@
 		<div class="circular ui red label">
 			<span id="orderCount-span">${fn:length(orderList)}</span>单
 		</div>
-		<div class="ui small button czsOpen" czs-status="0"
-			style="position: absolute; top: 2px; right: 2px;">展开</div>
+		<div class="ui small button czsOpen" czs-status="0" style="position: absolute; top: 2px; right: 2px;">展开</div>
 	</h4>
 	<div class="ui segment attached" style="padding: 0px;">
 		<table class="ui sortable table segment" style="display: table;">
@@ -82,8 +108,7 @@
 									<div class="ui red label">${item.memo}</div>
 								</c:if>
 							</div>
-							<div class="ui basic accordion"
-								style="width: 100%; margin-bottom: 0px;">
+							<div class="ui basic accordion" style="width: 100%; margin-bottom: 0px;">
 								<div class="title" style="padding: 0px;">
 									<i class="dropdown icon"></i>${item.name}(${item.copies}份)
 								</div>
@@ -91,24 +116,21 @@
 									<div class="ui mini list">
 										<div class="item">
 											<i class="user outline icon"></i>
-											<div class="content"
-												style="padding-top: 0px; padding-bottom: 0px;">
+											<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 												<div class="header">顾客</div>
 												<img class="ui avatar image" src="${item.headimgurl}/46">${item.nickname}(${item.sex})
 											</div>
 										</div>
 										<div class="item">
 											<i class="map marker outline icon"></i>
-											<div class="content"
-												style="padding-top: 0px; padding-bottom: 0px;">
+											<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 												<div class="header">位置</div>
 												${item.description}
 											</div>
 										</div>
 										<div class="item">
 											<i class="time outline icon"></i>
-											<div class="content"
-												style="padding-top: 0px; padding-bottom: 0px;">
+											<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 												<div class="header">下单时间</div>
 												${item.date_time}(${item.diff})
 											</div>
@@ -118,12 +140,9 @@
 							</div>
 						</td>
 						<td class=""><div style="margin-top: 10px;">
-								<a class="ui label czsRequest"
-									onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
-									href="javascript:void(0);">接受订单</a><a
-									class="ui label czsRequest"
-									onclick="acceptJoinHandler('${item.id}', '${item.menu_id}')"
-									href="javascript:void(0);">合并接受</a>
+								<a class="ui label czsRequest" onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
+									href="javascript:void(0);">接受订单</a><a class="ui label czsRequest"
+									onclick="acceptJoinHandler('${item.id}', '${item.menu_id}')" href="javascript:void(0);">合并接受</a>
 							</div></td>
 					</tr>
 				</c:forEach>
@@ -157,10 +176,8 @@
 
 
 	<div class="ui modal czsBillJoin">
-		<i class="close icon"></i>
-		<div class="header">合并订单信息</div>
-		<div class="content" style="padding: 1px;"
-			id="czsGetConsumerInfo-content">
+		<div class="header">合并订单</div>
+		<div class="content" style="padding: 1px;" id="czsGetConsumerInfo-content">
 			<form id="join-form">
 				<input type="hidden" name="accepterId" value="${param.openId}">
 				<table class="ui sortable table segment" style="display: table;">
@@ -194,8 +211,7 @@
 
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu">
-		<a class="item"
-			href="businessRole/free/kitchenLogin.do?openId=${param.openId}&businessId=${param.businessId}"><i
+		<a class="item" href="businessRole/free/kitchenLogin.do?openId=${param.openId}&businessId=${param.businessId}"><i
 			class="icon align justify"></i>订单一览 </a> <a class="item"
 			href="businessRole/free/kitchenHistory.do?openId=${param.openId}&businessId=${param.businessId}"><i
 			class="ok sign icon"></i>历史订单</a>
@@ -227,6 +243,7 @@
 
 				if (msg.succeed) {
 					$('#joinTrTpl').tmpl(msg.value).appendTo($('#join-tbody').empty());
+					$('.ui.accordion').accordion();
 					var total = 0;
 					$.each(msg.value, function(i, item) {
 						total += item.copies;
@@ -268,7 +285,6 @@
 			});
 
 			$('.ui.modal.czsConfirm').modal({
-				closable : false,
 				onApprove : function() {
 					$.post('businessRole/free/accept.do', {
 						id : _id,
@@ -276,6 +292,7 @@
 						accepterId : '${param.openId}'
 					}, function(msg) {
 						if (msg.succeed) {
+							$('#orderCount-span').text(Number($('#orderCount-span').text()) - 1);
 							if (_type == '0') {
 								$('#item-tr-' + _id).remove();
 							} else if (_type == '1') {
@@ -297,26 +314,29 @@
 				}
 			});
 
-			$('.ui.modal.czsBillJoin').modal({
-				closable : false,
-				onApprove : function() {
-					$.post('businessRole/free/acceptJoin.do', $('#join-form').serialize(), function(msg) {
-						if (msg.succeed) {
-							$('.item-tr-' + _menu_id).remove();
-							return true;
-						} else {
-							if (!!msg.msg && !!msg.msg.detail) {
-								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-							} else {
-								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-							}
-							$('.ui.dimmer.czsMsg > .content').show();
-							$('.ui.dimmer.czsMsg').dimmer('show');
+			$('.ui.modal.czsBillJoin').modal(
+					{
+						onApprove : function() {
+							$.post('businessRole/free/acceptJoin.do', $('#join-form').serialize(), function(msg) {
+								if (msg.succeed) {
+									$('#orderCount-span').text(
+											Number($('#orderCount-span').text()) - $('.item-tr-' + _menu_id).size());
+									$('.item-tr-' + _menu_id).remove();
+									$('.item-tr-join-' + _menu_id).remove();
+									return true;
+								} else {
+									if (!!msg.msg && !!msg.msg.detail) {
+										$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
+									} else {
+										$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+									}
+									$('.ui.dimmer.czsMsg > .content').show();
+									$('.ui.dimmer.czsMsg').dimmer('show');
 
+								}
+							});
 						}
 					});
-				}
-			});
 
 			setInterval(function() {
 				$.post('businessRole/free/checkBill.do', {

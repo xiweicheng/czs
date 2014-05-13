@@ -24,23 +24,6 @@
 	type="text/css">
 <link href="../../../resources/datepicker/css/glDatePicker.default.css"
 	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
-<script type="text/javascript"
-	src="../../../resources/datepicker/js/glDatePicker.min.js"
-	charset="utf-8"></script>
-<script type="text/javascript">
-	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-		WeixinJSBridge.call('hideToolbar');
-		WeixinJSBridge.call('hideOptionMenu');
-	});
-</script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -318,6 +301,26 @@
 			</div>
 		</div>
 	</div>
+
+
+	<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
+		charset="utf-8"></script>
+	<script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
+	<script src="../../../resources/js/lib/jquery.tablesort.min.js"
+		charset="utf-8"></script>
+	<script src="../../../resources/semantic/javascript/semantic.min.js"
+		charset="utf-8"></script>
+	<script src="../../../resources/tinybox2/tinybox.min.js"
+		charset="utf-8"></script>
+	<script type="text/javascript"
+		src="../../../resources/datepicker/js/glDatePicker.min.js"
+		charset="utf-8"></script>
+	<script type="text/javascript">
+		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+			WeixinJSBridge.call('hideToolbar');
+			WeixinJSBridge.call('hideOptionMenu');
+		});
+	</script>
 
 	<script type="text/javascript">
 		var _status;

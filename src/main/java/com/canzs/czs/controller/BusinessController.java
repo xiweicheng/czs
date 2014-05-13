@@ -391,7 +391,6 @@ public class BusinessController extends BaseController {
 		model.addAttribute("dislikeStatus", dislikeStatus);
 
 		Favorites favorites2 = new Favorites();
-		favorites2.setOpenId(consumerId);
 		favorites2.setRefId(openId);
 		favorites2.setIsDelete(SysConstant.SHORT_FALSE);
 		favorites2.setType(SysConstant.FAVORITES_TYPE_BUSINESS);

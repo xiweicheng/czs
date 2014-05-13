@@ -248,16 +248,19 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 			return businessRegister(bean, locale);
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_2.getValue().equals(eventKey)) {// 发送登录链接
 			return sendLoginLink(bean, locale);
-		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_3.getValue().equals(eventKey)) {
+		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_3.getValue().equals(eventKey)) {// 店员入口
 			return businessRoleLogin(bean, locale);
-		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_1.getValue().equals(eventKey)) {
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_1.getValue().equals(eventKey)) {// 关于平台
+			return StringUtil.replace("<a href='{?1}/czs/free/about.d0?openId={?2}'>[点击此]进入【关于平台】</a>",
+					propUtil.getRedirectUrl(), bean.getFromUserName());
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_2.getValue().equals(eventKey)) {//
 			return StringUtil.replace("功能开发设计中,敬请期待...");
-		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_2.getValue().equals(eventKey)) {
-			return StringUtil.replace("功能开发设计中,敬请期待...");
-		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_3.getValue().equals(eventKey)) {
-			return StringUtil.replace("功能开发设计中,敬请期待...");
-		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_4.getValue().equals(eventKey)) {
-			return StringUtil.replace("功能开发设计中,敬请期待...");
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_3.getValue().equals(eventKey)) {// 加盟合作
+			return StringUtil.replace("<a href='{?1}/czs/free/join.do?openId={?2}'>[点击此]进入【加盟合作】</a>",
+					propUtil.getRedirectUrl(), bean.getFromUserName());
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_4.getValue().equals(eventKey)) {// 建议留言
+			return StringUtil.replace("<a href='{?1}/czs/free/comment.do?openId={?2}'>[点击此]进入【建议留言】</a>",
+					propUtil.getRedirectUrl(), bean.getFromUserName());
 		}
 
 		return null;

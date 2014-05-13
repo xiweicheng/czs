@@ -4,7 +4,9 @@
 package com.canzs.czs.service.impl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -23,6 +25,7 @@ import com.canzs.czs.component.PropUtil;
 import com.canzs.czs.dao.ICzsUserDao;
 import com.canzs.czs.pojo.constant.SysConstant;
 import com.canzs.czs.pojo.entity.Business;
+import com.canzs.czs.pojo.entity.Comment;
 import com.canzs.czs.pojo.entity.CzsUser;
 import com.canzs.czs.pojo.entity.Log;
 import com.canzs.czs.pojo.vo.PageResult;
@@ -246,5 +249,57 @@ public class CzsUserServiceImpl extends BaseServiceImpl implements ICzsUserServi
 		}
 
 		return mapList;
+	}
+
+	@Override
+	public boolean submitComment(Locale locale, String openId, String content) {
+
+		Comment comment = new Comment();
+		comment.setContent(content);
+		comment.setDateTime(DateUtil.now());
+		comment.setIsDelete(SysConstant.SHORT_FALSE);
+		comment.setOpenId(openId);
+		comment.setStatus(SysConstant.COMMENT_STATUS_NEW);
+		comment.setType(SysConstant.COMMENT_TYPE_PLATFORM);
+
+		hibernateTemplate.save(comment);
+
+		return true;
+	}
+
+	@Override
+	public List<Map<String, Object>> queryCommentByOpenId(Locale locale, String openId) {
+
+		List<Map<String, Object>> list = czsUserDao.queryCommentByOpenId(locale, openId);
+
+		Map<String, Map<String, Object>> maps = new HashMap<String, Map<String, Object>>();
+
+		for (Map<String, Object> map : list) {
+			map.put("nice_time", DateUtil.toNiceTime(NumberUtil.getLong(map, "times") * 1000));
+
+			maps.put(StringUtil.getNotNullString(map, "id"), map);
+		}
+
+		List<Map<String, Object>> newList = new ArrayList<>();
+
+		for (Map<String, Object> map : list) {
+			String pid = StringUtil.getNotNullString(map, "p_id");
+
+			if (StringUtil.isNotEmpty(pid)) {
+
+				List<Map<String, Object>> children = (List<Map<String, Object>>) maps.get(pid).get("children");
+
+				if (children == null) {
+					children = new ArrayList<Map<String, Object>>();
+					maps.get(pid).put("children", children);
+				}
+
+				children.add(map);
+			} else {
+				newList.add(map);
+			}
+		}
+
+		return newList;
 	}
 }

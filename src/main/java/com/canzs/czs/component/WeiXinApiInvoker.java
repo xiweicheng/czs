@@ -282,8 +282,8 @@ public class WeiXinApiInvoker {
 			sub_button = new ArrayList<>();
 			sub_button.add(new WeiXinClickButton("关于平台", "platform_evt_key_1"));
 			sub_button.add(new WeiXinViewButton("平台管理", propUtil.getRedirectUrl() + "/czs/login.do"));
-			sub_button.add(new WeiXinClickButton("加盟合作", "platform_evt_key_2"));
-			sub_button.add(new WeiXinClickButton("提出建议", "platform_evt_key_3"));
+			sub_button.add(new WeiXinClickButton("加盟合作", "platform_evt_key_3"));
+			sub_button.add(new WeiXinClickButton("建议留言", "platform_evt_key_4"));
 
 			weiXinButton.setSub_button(sub_button);
 			button.add(weiXinButton);

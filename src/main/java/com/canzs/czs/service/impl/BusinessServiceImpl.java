@@ -895,10 +895,7 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		List<Map<String, Object>> queryRequest = businessDao.queryRequest(locale, openId);
 
 		for (Map<String, Object> map : queryRequest) {
-			long times = NumberUtil.getLong(map, "times");
-
-			String niceTime = DateUtil.toNiceTime(times * 1000);
-			map.put("nice_time", niceTime);
+			map.put("nice_time", DateUtil.toNiceTime(NumberUtil.getLong(map, "times") * 1000));
 		}
 
 		return queryRequest;

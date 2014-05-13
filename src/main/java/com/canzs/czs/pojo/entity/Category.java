@@ -1,6 +1,6 @@
 package com.canzs.czs.pojo.entity;
 
-// Generated 2014-5-9 22:47:38 by Hibernate Tools 3.4.0.CR1
+// Generated 2014-5-12 20:25:46 by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

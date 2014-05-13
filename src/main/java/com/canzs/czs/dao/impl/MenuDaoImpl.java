@@ -47,7 +47,9 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu.price,\n");
 		sqlSb.append("	menu.privilege,\n");
 		sqlSb.append("	menu.order_times,\n");
+		sqlSb.append("	menu.category_id,\n");
 		sqlSb.append("	menu_category.`name` AS category,\n");
+		sqlSb.append("	menu.taste_id,\n");
 		sqlSb.append("	menu_taste.`name` AS taste,\n");
 		sqlSb.append("	resources.path,\n");
 		sqlSb.append("	resources.file_name,\n");
@@ -194,6 +196,8 @@ public class MenuDaoImpl extends BaseDaoImpl implements IMenuDao {
 		sqlSb.append("	menu_bill.scene_id,\n");
 		sqlSb.append("	menu_bill.copies,\n");
 		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	IF(subscriber.sex = 1, '男', IF(subscriber.sex = 2, '女', '未知')) as sex,\n");
+		sqlSb.append("	subscriber.headimgurl,\n");
 		sqlSb.append("	qrcode.description,\n");
 		sqlSb.append("	menu.`name`\n");
 		sqlSb.append("FROM\n");

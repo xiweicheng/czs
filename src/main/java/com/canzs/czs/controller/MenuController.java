@@ -454,13 +454,13 @@ public class MenuController extends BaseController {
 		model.addAttribute("selectedCategoryId", menu.getCategoryId() == null ? -1 : menu.getCategoryId());
 		model.addAttribute("selectedTasteId", menu.getTasteId() == null ? -1 : menu.getTasteId());
 
-		if (menu.getCategoryId() != null && menu.getCategoryId() == -1) {
-			menu.setCategoryId(null);
-		}
+		// if (menu.getCategoryId() != null && menu.getCategoryId() == -1) {
+		menu.setCategoryId(null);
+		// }
 
-		if (menu.getTasteId() != null && menu.getTasteId() == -1) {
-			menu.setTasteId(null);
-		}
+		// if (menu.getTasteId() != null && menu.getTasteId() == -1) {
+		menu.setTasteId(null);
+		// }
 
 		// 查询商家菜单数据.
 		List<Map<String, Object>> mapList = menuService.queryMapList(locale, menu, consumeCode, order, openId);

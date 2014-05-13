@@ -81,6 +81,46 @@ public class CzsUserController extends BaseController {
 		return "czs/main";
 	}
 
+	@RequestMapping("free/about")
+	public String about(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		logger.debug("关于平台【平台用户】");
+
+		return "czs/about";
+	}
+
+	@RequestMapping("free/join")
+	public String join(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		logger.debug("加盟合作【平台用户】");
+
+		return "czs/join";
+	}
+
+	@RequestMapping("free/comment")
+	public String comment(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+
+		logger.debug("建议留言【平台用户】");
+
+		List<Map<String, Object>> list = czsUserService.queryCommentByOpenId(locale, openId);
+
+		model.addAttribute("list", list);
+
+		return "czs/comment";
+	}
+
+	@RequestMapping("free/commentSubmit")
+	@ResponseBody
+	public ResultMsg commentSubmit(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam("openId") String openId, @RequestParam("content") String content) {
+
+		logger.debug("建议留言提交【平台用户】");
+
+		boolean val = czsUserService.submitComment(locale, openId, content);
+
+		return new ResultMsg(val);
+	}
+
 	/**
 	 * 商家管理
 	 * 

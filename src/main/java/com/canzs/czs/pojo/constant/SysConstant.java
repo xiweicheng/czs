@@ -185,4 +185,8 @@ public final class SysConstant {
 
 	public static final Short QRCODE_STATUS_NEW = 0;
 
+	public static final Short COMMENT_STATUS_NEW = 0;
+
+	public static final Short COMMENT_TYPE_PLATFORM = 0;
+
 }

@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
@@ -11,17 +10,10 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
 <title>餐助手-顾客服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -45,8 +37,7 @@
 	<h4 class="ui top attached header" style="margin-top: 0px;">
 		收藏美食
 		<div class="circular ui red label">${fn:length(stowList)}个</div>
-		<div class="ui small buttons"
-			style="position: absolute; right: 2px; top: 2px;">
+		<div class="ui small buttons" style="position: absolute; right: 2px; top: 2px;">
 			<div class="ui button czsSimple" czs-status="0">清爽模式</div>
 		</div>
 	</h4>
@@ -58,13 +49,9 @@
 						<c:forEach items="${stowList}" var="item">
 							<div class="ui segment item" id="menu-item-${item.id}">
 								<div>
-									<div class="image czsSimpleMode"
-										style="width: 80px; heght: 80px; float: left;"
-										id="image-div-${item.id}">
-										<img style="width: 100%;"
-											src="../../../${item.path}120/${item.file_name}"
-											czz-src="../../../${item.path}640/${item.file_name}"
-											onclick="imageHandler('${item.id}')">
+									<div class="image czsSimpleMode" style="width: 80px; heght: 80px; float: left;" id="image-div-${item.id}">
+										<img style="width: 100%;" src="../../../${item.path}120/${item.file_name}"
+											czz-src="../../../${item.path}640/${item.file_name}" onclick="imageHandler('${item.id}')">
 									</div>
 
 									<div class="ui left corner label">
@@ -76,36 +63,29 @@
 										<div class="circular ui green label">￥${item.price}</div>
 
 										<c:if test="${! empty item.introduce}">
-											<div class="ui large label" style="float: right;"
-												onclick="introduceHandler('${item.id}')">
+											<div class="ui large label" style="float: right;" onclick="introduceHandler('${item.id}')">
 												<i class="comment icon"></i>
 											</div>
 										</c:if>
-										<div class="ui divider czsSimpleMode"
-											style="margin-top: 8px; margin-bottom: 8px; margin-left: 88px;"></div>
-										<div class="czsSimpleMode"
-											style="display: inline-block; margin-left: 8px;">
+										<div class="ui divider czsSimpleMode" style="margin-top: 8px; margin-bottom: 8px; margin-left: 88px;"></div>
+										<div class="czsSimpleMode" style="display: inline-block; margin-left: 8px;">
 											<div class="ui label">${item.category}</div>
 											<div class="ui label">${item.taste}</div>
 										</div>
-										<p class="description" style="display: none;"
-											id="introduce-p-${item.id}"
+										<p class="description" style="display: none;" id="introduce-p-${item.id}"
 											onclick="introduceHandler('${item.id}')">${item.introduce}</p>
 									</div>
 									<div style="clear: both;"></div>
 								</div>
-								<div class="ui divider"></div>
+								<div class="ui divider" style="margin-top: 8px; margin-bottom: 8px;"></div>
 								<div class="2 fluid ui buttons">
 
-									<c:if
-										test="${item.status == 0 || item.status == 1 || item.status == 3}">
-										<div class="ui small button disabled"
-											id="confirm-ui-btn-${item.id}">
+									<c:if test="${item.status == 0 || item.status == 1 || item.status == 3}">
+										<div class="ui small button disabled" id="confirm-ui-btn-${item.id}">
 											<i class="cart icon"></i>下单
 										</div>
 									</c:if>
-									<c:if
-										test="${(empty item.status) || (item.status != 0 && item.status != 1 && item.status != 3)}">
+									<c:if test="${(empty item.status) || (item.status != 0 && item.status != 1 && item.status != 3)}">
 										<div class="ui small button" id="confirm-ui-btn-${item.id}"
 											onclick="billAddDealHandler(this, '${item.id}', '${openId}', ${item.price}, '${item.name}')">
 											<i class="cart icon"></i>下单
@@ -114,8 +94,7 @@
 
 									<div class="or"></div>
 
-									<div class="ui small button" id="hold-ui-btn-${item.id}"
-										onclick="menuStowHandler('${item.id}', '${openId}')">
+									<div class="ui small button" id="hold-ui-btn-${item.id}" onclick="menuStowHandler('${item.id}', '${openId}')">
 										<i class="heart empty icon"></i>移除
 									</div>
 
@@ -123,21 +102,17 @@
 
 								<div style="margin-top: 10px;" class="czsCopies czsSimpleMode">
 									<c:if test="${! empty item.copies && item.status != 2}">
-										<div class="ui label"
-											style="margin-top: 5px; margin-bottom: 5px;">
+										<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">
 											自己(${item.copies})
 											<div class="detail">
 												<c:if test="${item.status == 0}">
-													<a
-														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a>
+													<a href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">待提交</a>
 												</c:if>
 												<c:if test="${item.status == 1}">
-													<a
-														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已下单</a>
+													<a href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已下单</a>
 												</c:if>
 												<c:if test="${item.status == 3}">
-													<a
-														href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已接单</a>
+													<a href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}">已接单</a>
 												</c:if>
 											</div>
 
@@ -156,17 +131,16 @@
 	<div class="ui small modal czsAdd">
 		<i class="close icon"></i>
 		<div class="header">确认提示</div>
-		<div class="content" style="padding:8px;">
+		<div class="content" style="padding: 8px;">
 			<div class="3 fluid ui buttons">
 				<div class="ui button czsReduce">减</div>
-				<div class="ui button black"
-					style="padding-left: 0px; padding-right: 0px;">
+				<div class="ui button black" style="padding-left: 0px; padding-right: 0px;">
 					<i class="cart icon"></i> <span id="czsCountSpan">1</span>
 				</div>
 				<div class="ui button czsAdd">加</div>
 			</div>
-			<div class="ui form" style="margin-top:10px;">
-				<div class="field" style="margin-bottom:0px;">
+			<div class="ui form" style="margin-top: 10px;">
+				<div class="field" style="margin-bottom: 0px;">
 					<input placeholder="特别备注" id="memo-input" type="text" maxlength="20">
 				</div>
 			</div>
@@ -187,27 +161,26 @@
 	<!-- bottom header -->
 	<div class="ui fixed bottom inverted fluid three item menu">
 		<a class="item" style="padding-top: 5px; padding-bottom: 5px;"
-			href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}"><div
-				style="font-size: small;">
+			href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}"><div style="font-size: small;">
 				<i class="cart icon"></i><span id="bill-count-span">${count}</span>份
 			</div>
 			<div style="font-size: small;">
 				<i class="icon yen"></i><span id="bill-total-span">${total}</span>
-			</div></a> <a class="item" href="menu/free/list4bill.do?openId=${openId}"><i
-			class="icon align justify"></i>商家菜单</a> <a class="item"
-			href="user/free/stowQuery.do?openId=${openId}"><i
-			class="icon heart"></i>收藏美食</a>
+			</div></a> <a class="item" href="menu/free/list4bill.do?openId=${openId}"><i class="icon align justify"></i>商家菜单</a> <a
+			class="item" href="user/free/stowQuery.do?openId=${openId}"><i class="icon heart"></i>收藏美食</a>
 	</div>
 
 	<!-- 菜品图片展示 -->
 	<div class="ui small modal czsBigImage">
-		<div class="content" style="padding: 0px; min-height:640px;">
-			<div class="ui image"
-				onclick="$('.ui.modal.czsBigImage').modal('hide');">
+		<div class="content" style="padding: 0px;">
+			<div class="ui image" onclick="$('.ui.modal.czsBigImage').modal('hide');">
 				<img alt="" src="">
 			</div>
 		</div>
 	</div>
+
+	<script src="http://code.jquery.com/jquery-2.0.2.min.js" charset="utf-8"></script>
+	<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 
 	<script type="text/javascript">
 	
