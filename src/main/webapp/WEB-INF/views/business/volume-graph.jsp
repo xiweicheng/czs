@@ -120,6 +120,9 @@
 								chart : {
 									type : 'column'
 								},
+								exporting : {
+									url : ''
+								},
 								title : {
 									text : '营业额统计'
 								},
