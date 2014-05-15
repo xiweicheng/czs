@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -11,16 +10,12 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>平台登录</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-1.10.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -35,22 +30,18 @@
 
 		<c:if test="${! empty param.openId}">
 			<div class="two item tabular ui menu">
-				<a class="item active" data-tab="dynamicCodeLogin">动态码登录</a> <a
-					class="item" data-tab="passwordLogin">密码登录</a>
+				<a class="item active" data-tab="dynamicCodeLogin">动态码登录</a> <a class="item" data-tab="passwordLogin">密码登录</a>
 			</div>
 			<div class="main container">
 				<div class="ui tab active" data-tab="dynamicCodeLogin">
 					<!-- 登陆框 -->
-					<form action="czs/verify.do" method="post"
-						class="czsDynamicCodeForm">
-						<input type="hidden" name="openId" value="${param.openId}">
-						<input type="hidden" name="type" value="0">
+					<form action="czs/verify.do" method="post" class="czsDynamicCodeForm">
+						<input type="hidden" name="openId" value="${param.openId}"> <input type="hidden" name="type" value="0">
 						<div class="ui form segment" style="width: 300px; margin: 0 auto;">
 							<div class="field">
 								<label>动态验证码</label>
 								<div class="ui left labeled icon input">
-									<input type="password" name="dynamicCode" value="945283">
-									<i class="lock icon"></i>
+									<input type="password" name="dynamicCode" value="945283"> <i class="lock icon"></i>
 									<div class="ui corner label">
 										<i class="icon asterisk"></i>
 									</div>
@@ -70,8 +61,7 @@
 							<div class="field">
 								<label>用户名</label>
 								<div class="ui left labeled icon input">
-									<input type="text" placeholder="E-mail" name="userName">
-									<i class="user icon"></i>
+									<input type="text" placeholder="E-mail" name="userName"> <i class="user icon"></i>
 									<div class="ui corner label">
 										<i class="icon asterisk"></i>
 									</div>
@@ -80,8 +70,7 @@
 							<div class="field">
 								<label>密码</label>
 								<div class="ui left labeled icon input">
-									<input type="password" name="password"> <i
-										class="lock icon"></i>
+									<input type="password" name="password"> <i class="lock icon"></i>
 									<div class="ui corner label">
 										<i class="icon asterisk"></i>
 									</div>
@@ -111,8 +100,7 @@
 							<div class="field">
 								<label>用户名</label>
 								<div class="ui left labeled icon input">
-									<input type="text" placeholder="E-mail" name="userName">
-									<i class="user icon"></i>
+									<input type="text" placeholder="E-mail" name="userName"> <i class="user icon"></i>
 									<div class="ui corner label">
 										<i class="icon asterisk"></i>
 									</div>
@@ -121,8 +109,7 @@
 							<div class="field">
 								<label>密码</label>
 								<div class="ui left labeled icon input">
-									<input type="password" name="password"> <i
-										class="lock icon"></i>
+									<input type="password" name="password"> <i class="lock icon"></i>
 									<div class="ui corner label">
 										<i class="icon asterisk"></i>
 									</div>

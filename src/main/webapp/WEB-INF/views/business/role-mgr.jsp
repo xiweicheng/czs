@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,20 +12,14 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<link href="../../../resources/tinybox2/css/tinybox.min.css"
-	rel="stylesheet" type="text/css">
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
 <script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -60,22 +53,16 @@
 	<div class="ui segment attached">
 		<div>
 			<form action="business/roleMgr.do" method="post" id="filter-form"></form>
-			<a class="ui label" id="roleType-0" onclick="filterHandler('0')"
-				style="margin-top: 5px; margin-bottom: 5px;">等待分配
-				${undetermined} 人 </a> <a class="ui label" id="roleType-1"
-				onclick="filterHandler('1')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 店主角色 ${boss} 人 </a><a
-				class="ui label" id="roleType-2" onclick="filterHandler('2')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 后厨角色 ${cook} 人</a> <a
-				class="ui label" id="roleType-3" onclick="filterHandler('3')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 服务员角色 ${waiter} 人
-			</a> <a class="ui label" onclick="filterHandler('4')" id="roleType-4"
-				style="margin-top: 5px; margin-bottom: 5px;"> 前台角色 ${proscenium}
-				人</a> </a><a class="ui label" onclick="filterHandler('')" id="roleType-"
+			<a class="ui label" id="roleType-0" onclick="filterHandler('0')" style="margin-top: 5px; margin-bottom: 5px;">等待分配
+				${undetermined} 人 </a> <a class="ui label" id="roleType-1" onclick="filterHandler('1')"
+				style="margin-top: 5px; margin-bottom: 5px;"> 店主角色 ${boss} 人 </a><a class="ui label" id="roleType-2"
+				onclick="filterHandler('2')" style="margin-top: 5px; margin-bottom: 5px;"> 后厨角色 ${cook} 人</a> <a class="ui label"
+				id="roleType-3" onclick="filterHandler('3')" style="margin-top: 5px; margin-bottom: 5px;"> 服务员角色 ${waiter} 人 </a> <a
+				class="ui label" onclick="filterHandler('4')" id="roleType-4" style="margin-top: 5px; margin-bottom: 5px;"> 前台角色
+				${proscenium} 人</a> </a><a class="ui label" onclick="filterHandler('')" id="roleType-"
 				style="margin-top: 5px; margin-bottom: 5px;"> 总计 ${total} 人 </a>
 		</div>
-		<table class="ui sortable table segment"
-			style="display: table; font-size: 15px;">
+		<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 			<thead>
 				<tr>
 					<th class="">头像</th>
@@ -97,8 +84,7 @@
 						<td class="">
 							<div class="ui selection dropdown">
 								<div class="text">选择角色</div>
-								<i class="dropdown icon"></i> <input type="hidden"
-									name="roleType" value="${item.type}-${item.id}"
+								<i class="dropdown icon"></i> <input type="hidden" name="roleType" value="${item.type}-${item.id}"
 									id="role-hidden-input-${item.id}">
 								<div class="menu">
 									<div class="item" data-value="0-${item.id}">等待分配</div>
@@ -110,8 +96,7 @@
 							</div>
 						</td>
 						<td class="">${item.date_time}</td>
-						<td class=""><a class="ui red label"
-							onclick="deleteRoleHandler('${item.id}')">删除</a></td>
+						<td class=""><a class="ui red label" onclick="deleteRoleHandler('${item.id}')">删除</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -147,8 +132,7 @@
 	<div class="ui small modal czsGetConsumerInfo">
 		<i class="close icon"></i>
 		<div class="header">顾客信息</div>
-		<div class="content" style="padding-top: 0px; padding-bottom: 0px;"
-			id="czsGetConsumerInfo-content"></div>
+		<div class="content" style="padding-top: 0px; padding-bottom: 0px;" id="czsGetConsumerInfo-content"></div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
 				<div class="ui deny labeled icon button">

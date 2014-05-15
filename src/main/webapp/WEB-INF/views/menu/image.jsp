@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,20 +12,14 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.html5uploader.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<link href="../../../resources/tinybox2/css/tinybox.min.css"
-	rel="stylesheet" type="text/css">
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.html5uploader.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
 <script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -65,10 +58,8 @@
 				<b>说明:</b>选择文件或者直接拖拽文件到当前页面上!
 			</p>
 		</div>
-		<form enctype="multipart/form-data" method="post"
-			action="menu/upload.do">
-			<input type="file" name="image_file" id="image_file"
-				style="font-size: 20px;" />
+		<form enctype="multipart/form-data" method="post" action="menu/upload.do">
+			<input type="file" name="image_file" id="image_file" style="font-size: 20px;" />
 		</form>
 	</div>
 
@@ -79,13 +70,10 @@
 		</h2>
 		<div class="ui stackable items">
 			<c:forEach items="${imageList}" var="item">
-				<div class="item" style="min-height: 0px;"
-					id="image-item-${item.id}">
+				<div class="item" style="min-height: 0px;" id="image-item-${item.id}">
 					<div class="image">
-						<img src="../../../${item.path}640/${item.fileName}"> <a
-							class="like ui corner label"
-							onclick="deleteHandler('${item.id}');"> <i
-							class="remove icon"></i>
+						<img src="../../../${item.path}640/${item.fileName}"> <a class="like ui corner label"
+							onclick="deleteHandler('${item.id}');"> <i class="remove icon"></i>
 						</a>
 					</div>
 					<div class="content" style="display: block;">
@@ -93,8 +81,7 @@
 							<fmt:formatDate value="${item.dateTime}" pattern="yyyy/MM/dd" />
 						</div>
 						<div class="name" id="image-name-${item.id}">${item.name }</div>
-						<div class="czsEditBtn"
-							style="display: none; position: absolute; right: 0px;">
+						<div class="czsEditBtn" style="display: none; position: absolute; right: 0px;">
 							<div class="ui green button" onclick="editHander('${item.id}')">编辑描述</div>
 						</div>
 					</div>

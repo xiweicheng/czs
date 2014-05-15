@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
@@ -11,12 +10,9 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-1.10.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -25,9 +21,8 @@
 </script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 </head>
 <body style="margin: 0px; padding: 0px;">
@@ -95,21 +90,17 @@
 		</div>
 		<div>
 			<div>
-				<form id="agree-form" action="business/free/reqHandle.do"
-					method="post">
-					<input type="hidden" name="agree" value="1"> <input
-						type="hidden" name="consumeCode" value="${consumer.consume_code}">
-					<input type="hidden" name="openId" value="${consumer.user_name}">
-					<input type="hidden" name="handler" value="${param.handler}">
-					<input type="hidden" name="businessId" value="${param.businessId}">
+				<form id="agree-form" action="business/free/reqHandle.do" method="post">
+					<input type="hidden" name="agree" value="1"> <input type="hidden" name="consumeCode"
+						value="${consumer.consume_code}"> <input type="hidden" name="openId" value="${consumer.user_name}">
+					<input type="hidden" name="handler" value="${param.handler}"> <input type="hidden" name="businessId"
+						value="${param.businessId}">
 				</form>
-				<form id="disagree-form" action="business/free/reqHandle.do"
-					method="post">
-					<input type="hidden" name="agree" value="0"> <input
-						type="hidden" name="consumeCode" value="${consumer.consume_code}">
-					<input type="hidden" name="openId" value="${consumer.user_name}">
-					<input type="hidden" name="handler" value="${param.handler}">
-					<input type="hidden" name="businessId" value="${param.businessId}">
+				<form id="disagree-form" action="business/free/reqHandle.do" method="post">
+					<input type="hidden" name="agree" value="0"> <input type="hidden" name="consumeCode"
+						value="${consumer.consume_code}"> <input type="hidden" name="openId" value="${consumer.user_name}">
+					<input type="hidden" name="handler" value="${param.handler}"> <input type="hidden" name="businessId"
+						value="${param.businessId}">
 				</form>
 			</div>
 			<div class="2 fluid ui buttons">

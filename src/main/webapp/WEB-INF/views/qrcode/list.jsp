@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,19 +12,14 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/tinybox2/css/tinybox.min.css"
-	rel="stylesheet" type="text/css">
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
 
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 <script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 
 
@@ -68,21 +62,16 @@
 						<img src="../../../${item.file_path}">
 					</div>
 					<div class="content">
-						<div class="name" style="text-align: center;"
-							id="qrcode-desc-div-${item.id}">${item.description}</div>
+						<div class="name" style="text-align: center;" id="qrcode-desc-div-${item.id}">${item.description}</div>
 						<div class="extra">
 							使用次数:${item.use_times} 限制次数:<span id="use-limit-span-${item.id}">${item.use_limit}</span>
 						</div>
 						<div class="meta">${item.name}</div>
-						<div class="czsEditBtn"
-							style="display: none; position: absolute; right: 0px;">
-							<div class="ui small green button"
-								onclick="editHander('${item.id}')">编辑描述</div>
+						<div class="czsEditBtn" style="display: none; position: absolute; right: 0px;">
+							<div class="ui small green button" onclick="editHander('${item.id}')">编辑描述</div>
 						</div>
-						<div class="czsLimitBtn"
-							style="display: none; position: absolute; left: 0px;">
-							<div class="ui small green button"
-								onclick="limitHander('${item.id}')">增加限制次数</div>
+						<div class="czsLimitBtn" style="display: none; position: absolute; left: 0px;">
+							<div class="ui small green button" onclick="limitHander('${item.id}')">增加限制次数</div>
 						</div>
 					</div>
 				</div>
@@ -123,9 +112,8 @@
 		<div class="content">
 			<div class="ui form">
 				<div class="field">
-					<label>输入增加限制数</label> <input type="text" id="limit-text"
-						maxlength="10">
-					<div style="margin-top:10px;">
+					<label>输入增加限制数</label> <input type="text" id="limit-text" maxlength="10">
+					<div style="margin-top: 10px;">
 						<div class="ui red label">兑换率:一次/10餐豆值</div>
 					</div>
 				</div>

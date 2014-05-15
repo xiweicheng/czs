@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,22 +12,15 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/tinybox2/css/tinybox.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
 <script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -99,17 +91,16 @@
 						<td class="">${sts.index + 1}</td>
 						<td class="">${item.name}</td>
 						<td class="">${item.copies}</td>
-						<td class=""><c:if test="${! empty item.memo}"><div class="ui red label">${item.memo}</div></c:if></td>
+						<td class=""><c:if test="${! empty item.memo}">
+								<div class="ui red label">${item.memo}</div>
+							</c:if></td>
 						<td class="">${item.date_time}</td>
 						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
-						<td class=""><img class="ui avatar image"
-							src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+						<td class=""><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
 						<td class="">${item.description}</td>
 						<td class=""><a class="ui purple label czsRequest"
-							onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')"
-							href="javascript:void(0);">接受</a><a
-							class="ui purple label czsRequest"
-							onclick="acceptJoinHandler('${item.id}', '${item.menu_id}')"
+							onclick="acceptHandler('${item.id}', '${item.menu_id}', '0', '${item.copies}')" href="javascript:void(0);">接受</a><a
+							class="ui purple label czsRequest" onclick="acceptJoinHandler('${item.id}', '${item.menu_id}')"
 							href="javascript:void(0);">合并接受</a></td>
 					</tr>
 				</c:forEach>
@@ -123,8 +114,7 @@
 	<div class="ui modal czsBillJoin">
 		<i class="close icon"></i>
 		<div class="header">合并订单信息</div>
-		<div class="content" style="padding-top: 0px; padding-bottom: 0px;"
-			id="czsGetConsumerInfo-content">
+		<div class="content" style="padding-top: 0px; padding-bottom: 0px;" id="czsGetConsumerInfo-content">
 			<form id="join-form">
 				<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 					<thead>

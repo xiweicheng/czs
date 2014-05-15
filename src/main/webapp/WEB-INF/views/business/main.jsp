@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -10,17 +9,13 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -81,8 +76,8 @@
 						<a class="ui red label"> 未验证 </a>
 					</c:if>
 					<c:if test="${business.isMailVerify == 1}">
-						<a class="ui green label" onclick="setEmailPasswordHandler()">
-							已验证,${(empty business.password)? '设置' : '修改'}登录密码 </a>
+						<a class="ui green label" onclick="setEmailPasswordHandler()"> 已验证,${(empty business.password)? '设置' : '修改'}登录密码
+						</a>
 					</c:if>
 				</div>
 			</div>
@@ -105,27 +100,22 @@
 		<i class="close icon"></i>
 		<div class="header">信息修改</div>
 		<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
-			<form action="business/update.do" id="business-update-form"
-				method="post">
+			<form action="business/update.do" id="business-update-form" method="post">
 				<input type="hidden" name="openId" value="${business.openId}">
-				<div class="ui warning form segment" id='business-update-ui-form'
-					style="height: 380px; overflow: auto;">
+				<div class="ui warning form segment" id='business-update-ui-form' style="height: 380px; overflow: auto;">
 					<div class="ui error message" id="add-menu-ui-message"></div>
 					<div class="field">
-						<label>店名</label> <input placeholder="店名" type="text" name="name"
-							value="${business.name}">
+						<label>店名</label> <input placeholder="店名" type="text" name="name" value="${business.name}">
 					</div>
 					<div class="field">
-						<label>地址</label> <input placeholder="地址" type="text"
-							name="address" value="${business.address}">
+						<label>地址</label> <input placeholder="地址" type="text" name="address" value="${business.address}">
 					</div>
 					<div class="field">
-						<label>电话</label> <input placeholder="电话" type="text"
-							name="phoneNumber" value="${business.phoneNumber}">
+						<label>电话</label> <input placeholder="电话" type="text" name="phoneNumber" value="${business.phoneNumber}">
 					</div>
 					<div class="field">
-						<label>E-mail</label> <input placeholder="E-mail" type="text"
-							name="mail" value="${business.mail}" autocomplete="off">
+						<label>E-mail</label> <input placeholder="E-mail" type="text" name="mail" value="${business.mail}"
+							autocomplete="off">
 					</div>
 					<div class="field">
 						<label>介绍</label>
@@ -160,8 +150,7 @@
 						<div class="field">
 							<label>原密码</label>
 							<div class="ui left labeled icon input">
-								<input type="password" name="oldPassword" autocomplete="off">
-								<i class="lock icon"></i>
+								<input type="password" name="oldPassword" autocomplete="off"> <i class="lock icon"></i>
 								<div class="ui corner label">
 									<i class="icon asterisk"></i>
 								</div>
@@ -171,8 +160,7 @@
 					<div class="field">
 						<label>密码</label>
 						<div class="ui left labeled icon input">
-							<input type="password" name="password" autocomplete="off">
-							<i class="lock icon"></i>
+							<input type="password" name="password" autocomplete="off"> <i class="lock icon"></i>
 							<div class="ui corner label">
 								<i class="icon asterisk"></i>
 							</div>
@@ -181,8 +169,7 @@
 					<div class="field">
 						<label>重复密码</label>
 						<div class="ui left labeled icon input">
-							<input type="password" name="repeatPassword" autocomplete="off">
-							<i class="lock icon"></i>
+							<input type="password" name="repeatPassword" autocomplete="off"> <i class="lock icon"></i>
 							<div class="ui corner label">
 								<i class="icon asterisk"></i>
 							</div>

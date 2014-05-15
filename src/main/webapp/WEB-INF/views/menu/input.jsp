@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
@@ -12,18 +11,13 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -66,13 +60,11 @@
 				<div class="ui error message" id="add-menu-ui-message"></div>
 				<div class="two fields">
 					<div class="field">
-						<label>菜名</label> <input placeholder="输入菜名" type="text"
-							name="name">
+						<label>菜名</label> <input placeholder="输入菜名" type="text" name="name">
 					</div>
 					<div class="inline field">
 						<div class="ui checkbox" style="margin-top: 30px;">
-							<input type="checkbox" name="_isDelete"> <label>禁用
-								(勾选后该项菜对用户将不再可见)</label>
+							<input type="checkbox" name="_isDelete"> <label>禁用 (勾选后该项菜对用户将不再可见)</label>
 						</div>
 					</div>
 				</div>
@@ -81,8 +73,7 @@
 						<label>分类</label>
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
-							<i class="dropdown icon"></i> <input type="hidden"
-								name="categoryId" id="category-hidden-input">
+							<i class="dropdown icon"></i> <input type="hidden" name="categoryId" id="category-hidden-input">
 							<div class="menu" id="category-menu-items">
 								<c:forEach items="${menuCategoryList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -92,10 +83,8 @@
 					</div>
 					<div class="field">
 						<div class="ui action input" style="margin-top: 20px;">
-							<input type="text" placeholder="增加分类"
-								id="add-category-text-input">
-							<div class="ui vertical animated button" id="add-category-btn"
-								style="margin-top: 20px;">
+							<input type="text" placeholder="增加分类" id="add-category-text-input">
+							<div class="ui vertical animated button" id="add-category-btn" style="margin-top: 20px;">
 								<div class="hidden content">增加分类</div>
 								<div class="visible content">
 									<i class="add icon"></i>
@@ -121,8 +110,7 @@
 						<label>口味</label>
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
-							<i class="dropdown icon"></i> <input type="hidden" name="tasteId"
-								id="taste-hidden-input">
+							<i class="dropdown icon"></i> <input type="hidden" name="tasteId" id="taste-hidden-input">
 							<div class="menu" id="taste-menu-items">
 								<c:forEach items="${menuTasteList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -151,14 +139,11 @@
 				</div>
 				<div class="two fields">
 					<div class="field">
-						<input type="hidden" name="resourceId" id="resourceId"> <label>图片</label>
-						<img class="rounded ui image" alt="图片"
-							src="../../../resources/img/menu-default.jpg" id="resourceImage">
+						<input type="hidden" name="resourceId" id="resourceId"> <label>图片</label> <img class="rounded ui image"
+							alt="图片" src="../../../resources/img/menu-default.jpg" id="resourceImage">
 					</div>
 					<div class="field">
-						<div class="ui vertical animated button"
-							style="margin-top: 20px; margin-bottom: 20px;"
-							id="select-image-btn">
+						<div class="ui vertical animated button" style="margin-top: 20px; margin-bottom: 20px;" id="select-image-btn">
 							<div class="hidden content">选择图片</div>
 							<div class="visible content">
 								<i class="browser icon"></i>
@@ -225,8 +210,7 @@
 		<i class="close icon"></i>
 		<div class="header">选择图片</div>
 		<div class="content">
-			<div class="ui stackable items" id="image-ui-items"
-				style="height: 350px; overflow: auto;"></div>
+			<div class="ui stackable items" id="image-ui-items" style="height: 350px; overflow: auto;"></div>
 		</div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
@@ -259,8 +243,8 @@
 			$('.ui.checkbox').checkbox();
 
 			$('.ui.modal').modal();
-			
-			$('.ui.page.dimmer.czsMsg').click(function(){
+
+			$('.ui.page.dimmer.czsMsg').click(function() {
 				$('.ui.page.dimmer.czsMsg > .content').hide();
 			});
 
@@ -421,7 +405,7 @@
 			$(_this).siblings("div[class='item']").find('i').removeClass('checkmark').addClass('like');
 
 			$(_this).find('i').removeClass('like').addClass('checkmark');
-			
+
 			$('#select-image-modal').modal('hide');
 		}
 	</script>

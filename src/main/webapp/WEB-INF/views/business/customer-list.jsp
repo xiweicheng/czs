@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
@@ -12,24 +11,16 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.jqprint-0.3.js"
-	charset="utf-8"></script>
-<link href="../../../resources/tinybox2/css/tinybox.min.css"
-	rel="stylesheet" type="text/css">
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<script src="../../../resources/js/lib/jquery-1.10.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
+<script src="../../../resources/js/lib/jquery.jqprint-0.3.js" charset="utf-8"></script>
+<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
 <script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -195,8 +186,7 @@
 		<div class="ui right vertical sidebar">
 			<h4 class="ui top attached header">顾客实时请求</h4>
 
-			<div class="ui attached selection divided list czzRequest"
-				style="margin-top: 5px;"></div>
+			<div class="ui attached selection divided list czzRequest" style="margin-top: 5px;"></div>
 		</div>
 
 		<!-- header -->
@@ -209,20 +199,16 @@
 				<input type="checkbox" name="pet"> <label>定时刷新</label>
 			</div>
 			<div class="ui radio checkbox">
-				<input type="radio" name="refresh" checked="checked"> <label>5s</label>
-				<input type="hidden" value="5">
+				<input type="radio" name="refresh" checked="checked"> <label>5s</label> <input type="hidden" value="5">
 			</div>
 			<div class="ui radio checkbox">
-				<input type="radio" name="refresh"> <label>15s</label> <input
-					type="hidden" value="15">
+				<input type="radio" name="refresh"> <label>15s</label> <input type="hidden" value="15">
 			</div>
 			<div class="ui radio checkbox">
-				<input type="radio" name="refresh"> <label>30s</label> <input
-					type="hidden" value="30">
+				<input type="radio" name="refresh"> <label>30s</label> <input type="hidden" value="30">
 			</div>
 			<div class="ui radio checkbox">
-				<input type="radio" name="refresh"> <label>60s</label> <input
-					type="hidden" value="60">
+				<input type="radio" name="refresh"> <label>60s</label> <input type="hidden" value="60">
 			</div>
 
 			<div class="ui checkbox czsFilterOver" style="margin-left: 20px;">
@@ -232,30 +218,20 @@
 		<div class="ui segment attached" style="min-height: 490px;">
 			<div>
 				<form action="business/list.do" method="post" id="filter-form"></form>
-				<a class="ui label czsRequest czsStatus" id="czsStatus-5"
-					onclick="filterHandler('5')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中
-					${requesting} 人 </a> <a class="ui label czsRequestOwn czsStatus"
-					id="czsStatus-3" onclick="filterHandler('3')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 个人结账申请
-					${requestOwn} 人 </a><a class="ui label czsRequestGroup czsStatus"
-					id="czsStatus-4" onclick="filterHandler('4')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 集体结账申请
-					${requestGroup} 人</a> <a class="ui label czsStatus" id="czsStatus-1"
-					onclick="filterHandler('1')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人
-				</a> <a class="ui label czsStatus" id="czsStatus-0"
-					onclick="filterHandler('0')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a
-					class="ui label czsStatus" id="czsStatus-2"
-					onclick="filterHandler('2')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled}
-					人 </a><a class="ui label total czsStatus" id="czsStatus-"
-					onclick="filterHandler('')"
+				<a class="ui label czsRequest czsStatus" id="czsStatus-5" onclick="filterHandler('5')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 进入请求中 ${requesting} 人 </a> <a
+					class="ui label czsRequestOwn czsStatus" id="czsStatus-3" onclick="filterHandler('3')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 个人结账申请 ${requestOwn} 人 </a><a
+					class="ui label czsRequestGroup czsStatus" id="czsStatus-4" onclick="filterHandler('4')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 集体结账申请 ${requestGroup} 人</a> <a class="ui label czsStatus"
+					id="czsStatus-1" onclick="filterHandler('1')" style="margin-top: 5px; margin-bottom: 5px;"> 消费中 ${ongoing} 人 </a> <a
+					class="ui label czsStatus" id="czsStatus-0" onclick="filterHandler('0')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 消费终止 ${over} 人 </a> <a class="ui label czsStatus" id="czsStatus-2"
+					onclick="filterHandler('2')" style="margin-top: 5px; margin-bottom: 5px;"> 消费禁止 ${disabled} 人 </a><a
+					class="ui label total czsStatus" id="czsStatus-" onclick="filterHandler('')"
 					style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 人 </a>
 			</div>
-			<table class="ui sortable table segment" id="customer-table"
-				style="display: table; font-size: 15px;">
+			<table class="ui sortable table segment" id="customer-table" style="display: table; font-size: 15px;">
 				<thead>
 					<tr>
 						<th class="number">序号</th>
@@ -270,10 +246,8 @@
 					<c:forEach items="${customerList}" var="item" varStatus="sts">
 						<tr id="item-tr-${item.consumer_id}">
 							<td>${sts.index + 1}</td>
-							<td class=""><img class="ui avatar image"
-								src="${item.headimgurl}/64"><a href="javascript:void(0);"
-								onclick="getConsumerInfoHandler('${item.consumer_id}')">${item.nickname}(${item.sex})</a>
-								<c:if
+							<td class=""><img class="ui avatar image" src="${item.headimgurl}/64"><a href="javascript:void(0);"
+								onclick="getConsumerInfoHandler('${item.consumer_id}')">${item.nickname}(${item.sex})</a> <c:if
 									test="${item.status=='1' || item.status=='3' || item.status=='4'}">
 									<a class="ui teal label"
 										onclick="billDetailHandler('${item.consume_code}', '${item.scene_id}', '${item.consumer_id}')">消费详情</a>
@@ -281,8 +255,7 @@
 							<td class=""><c:if test="${item.status=='5'}">
 									<i class="sign in icon"></i>进入请求中<a class="ui teal label"
 										onclick="agreeOrDisagreeHandler('1', '${item.consume_code}', '${item.consumer_id}')">同意</a>
-									<a class="ui orange label"
-										onclick="agreeOrDisagreeHandler('2', '${item.consume_code}', '${item.consumer_id}')">禁止</a>
+									<a class="ui orange label" onclick="agreeOrDisagreeHandler('2', '${item.consume_code}', '${item.consumer_id}')">禁止</a>
 								</c:if> <c:if test="${item.status=='0'}">
 									<i class="stop icon"></i>消费终止</c:if> <c:if test="${item.status=='1'}">
 									<i class="play icon"></i>消费中<a class="ui teal label"
@@ -313,8 +286,7 @@
 		<!-- footer -->
 		<%@ include file="../footer.jsp"%>
 
-		<div class="ui dimmer czsBillDetail"
-			style="overflow: auto; padding: 16px;">
+		<div class="ui dimmer czsBillDetail" style="overflow: auto; padding: 16px;">
 			<div class="content">
 				<div class="center" style="color: black; vertical-align: top;">
 					<div class="ui segment" style="text-align: left;">
@@ -324,16 +296,14 @@
 								<div class="ui button czsGroup">集体消费</div>
 							</div>
 
-							<div class="ui green vertical animated button czsPrint"
-								style="float: right; margin-left: 20px;">
+							<div class="ui green vertical animated button czsPrint" style="float: right; margin-left: 20px;">
 								<div class="hidden content">打印个人账单</div>
 								<div class="visible content">
 									<i class="print icon"></i>账单打印
 								</div>
 							</div>
 
-							<div class="ui red animated fade button czsTakeBill"
-								style="float: right;" czs-status="3">
+							<div class="ui red animated fade button czsTakeBill" style="float: right;" czs-status="3">
 								<div class="visible content">￥12.99</div>
 								<div class="hidden content">个人结账</div>
 							</div>
@@ -357,8 +327,7 @@
 						</div>
 						<div class="" style="margin-top: 20px;">
 							<div class="one fluid ui buttons">
-								<div class="ui button"
-									onclick="$(this).closest('.ui.dimmer').dimmer('hide');">确定</div>
+								<div class="ui button" onclick="$(this).closest('.ui.dimmer').dimmer('hide');">确定</div>
 							</div>
 						</div>
 					</div>
@@ -372,8 +341,7 @@
 		<i class="close icon"></i>
 		<div class="header">该桌信息</div>
 		<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
-			<table class="ui sortable table segment" id="group-table"
-				style="display: table;">
+			<table class="ui sortable table segment" id="group-table" style="display: table;">
 				<thead>
 					<tr>
 						<th class="">消费</th>
@@ -389,8 +357,7 @@
 				</tbody>
 			</table>
 			<div>
-				<div class="ui label red" id="total-consume-ui-label"
-					style="font-weight: bold;"></div>
+				<div class="ui label red" id="total-consume-ui-label" style="font-weight: bold;"></div>
 				<a class="ui green button" id="group-checkout-ui-btn">结账</a>
 			</div>
 		</div>
@@ -432,8 +399,7 @@
 	<div class="ui small modal czsGetConsumerInfo">
 		<i class="close icon"></i>
 		<div class="header">顾客信息</div>
-		<div class="content" style="padding-top: 0px; padding-bottom: 0px;"
-			id="czsGetConsumerInfo-content"></div>
+		<div class="content" style="padding-top: 0px; padding-bottom: 0px;" id="czsGetConsumerInfo-content"></div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
 				<div class="ui deny labeled icon button">

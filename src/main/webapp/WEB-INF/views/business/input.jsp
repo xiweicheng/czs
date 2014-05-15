@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -10,17 +9,15 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
+
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -47,20 +44,17 @@
 				<div class="ui warning form segment" style="margin-top: 0px;">
 					<div class="ui error message"></div>
 					<div class="field">
-						<label>店名</label> <input placeholder="店名" type="text" name="name"
-							value="${business.name}">
+						<label>店名</label> <input placeholder="店名" type="text" name="name" value="${business.name}">
 					</div>
 					<div class="field">
-						<label>地址</label> <input placeholder="地址" type="text"
-							name="address" value="${business.address}">
+						<label>地址</label> <input placeholder="地址" type="text" name="address" value="${business.address}">
 					</div>
 					<div class="field">
-						<label>电话</label> <input placeholder="电话" type="text"
-							name="phoneNumber" value="${business.phoneNumber}">
+						<label>电话</label> <input placeholder="电话" type="text" name="phoneNumber" value="${business.phoneNumber}">
 					</div>
 					<div class="field">
-						<label>E-mail</label> <input placeholder="E-mail" type="text"
-							name="mail" value="${business.mail}" autocomplete="off">
+						<label>E-mail</label> <input placeholder="E-mail" type="text" name="mail" value="${business.mail}"
+							autocomplete="off">
 					</div>
 					<div class="field">
 						<label>介绍</label>
