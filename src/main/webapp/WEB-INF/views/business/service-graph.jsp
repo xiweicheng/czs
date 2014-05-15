@@ -10,18 +10,18 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 
 <link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
-<link href="../../../resources/datepicker/css/datepicker.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">
 
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/highcharts.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/exporting.js" charset="utf-8"></script>
-<script src="../../../resources/datepicker/js/datepicker.min.js" charset="utf-8"></script>
-<script src="../../../resources/datepicker/i18n/datepicker.zh-CN.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/highcharts.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/exporting.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/datetimepicker/js/jquery.simple-dtpicker.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -42,13 +42,13 @@
 
 	<div class="ui segment attached">
 		<div class="ui icon input">
-			<input type="text" placeholder="开始日期" id="datepicker-start"> <i class="calendar icon"
-				onclick="$('#datepicker-start').datepicker('show');"></i>
+			<input type="text" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
+				onclick="$('#datepicker-start').handleDtpicker('show');"></i>
 		</div>
 		<div class="ui label">～</div>
 		<div class="ui icon input">
-			<input type="text" placeholder="截止日期" id="datepicker-end"> <i class="calendar icon"
-				onclick="$('#datepicker-end').datepicker('show');"></i>
+			<input type="text" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
+				onclick="$('#datepicker-end').handleDtpicker('show');"></i>
 		</div>
 		<div class="ui button czsConfirm">确定</div>
 	</div>
@@ -189,8 +189,20 @@
 
 			$('#menu-item-business-service-stat').addClass('active');
 
-			$("#datepicker-start").val('${start}').datepicker();
-			$("#datepicker-end").val('${end}').datepicker();
+			$('#datepicker-start').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD',
+				dateOnly : true,
+				locale : 'cn',
+				closeOnSelected : true,
+				current : '${start}'
+			});
+			$('#datepicker-end').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD',
+				dateOnly : true,
+				locale : 'cn',
+				closeOnSelected : true,
+				current : '${end}'
+			});
 
 			$('.ui.button.czsConfirm').click(function() {
 				showGraph();

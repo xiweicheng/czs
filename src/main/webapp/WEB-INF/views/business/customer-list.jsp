@@ -861,7 +861,7 @@
 			}
 
 			$(
-					'<a class="launch item czzRequest" style="float:right;"> 实时请求栏(<span id="request-count-span">0</span>)<i class="icon list layout"></i></a>')
+					'<a class="launch item czzRequest" style="float:right;"> 实时请求(<span id="request-count-span">0</span>)<i class="icon list layout"></i></a>')
 					.appendTo('.container.czzTopMenu');
 
 			$('.launch.item.czzRequest').click(function() {
