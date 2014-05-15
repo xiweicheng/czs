@@ -409,7 +409,8 @@ public class QrcodeController extends BaseController {
 	}
 
 	@RequestMapping("sendMailZip")
-	public String sendMailZip(HttpServletRequest request, Locale locale, Model model) {
+	@ResponseBody
+	public ResultMsg sendMailZip(HttpServletRequest request, Locale locale, Model model) {
 
 		String[] pathArr = request.getParameterValues("filePath");
 		String mail = request.getParameter("mail");
@@ -425,21 +426,20 @@ public class QrcodeController extends BaseController {
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
+			return new ResultMsg(false, new Msg(false, e.getMessage()));
 		}
 
 		String zipFilePath = realPath + "resources/temp/" + UUID.randomUUID().toString() + ".zip";
 
 		ZipUtil.zip(new File(zipFilePath), pathArr);
 
-		if (qrcodeService.sendMail(zipFilePath, mail)) {
-			model.addAttribute("message", "发送成功!");
-		} else {
-			model.addAttribute("message", "发送失败!");
+		if (!qrcodeService.sendMail(zipFilePath, mail)) {
+			return new ResultMsg(false);
 		}
 
 		FileUtils.deleteQuietly(new File(zipFilePath));
 
-		return "message";
+		return new ResultMsg(true);
 	}
 
 	@RequestMapping("buy")

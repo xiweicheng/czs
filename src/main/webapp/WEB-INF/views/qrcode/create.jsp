@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
@@ -12,26 +11,21 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
+
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/colorbox/css/colorbox.css" rel="stylesheet" type="text/css">
+
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/colorbox/js/jquery.colorbox-min.js" charset="utf-8"></script>
+<script src="../../../resources/colorbox/i18n/jquery.colorbox-zh-CN.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
 		WeixinJSBridge.call('hideOptionMenu');
 	});
-</script>
-<script id="imageItemTpl" type="text/x-jquery-tmpl">
-
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
@@ -59,16 +53,14 @@
 			</c:forEach>
 		</div>
 
-		<form action="qrcode/sendMailZip.do" id="add-qrcode-form"
-			method="post">
+		<form id="add-qrcode-form">
 			<c:forEach items="${qrcodeList}" var="item">
 				<input type="hidden" name="filePath" value="${item.path}">
 			</c:forEach>
 			<div class="ui warning form segment" id='add-menu-ui-form'>
 				<div class="ui error message" id="add-menu-ui-message"></div>
 				<div class="field">
-					<label>E-mail</label> <input placeholder="输入E-mail" type="text"
-						name="mail" value="${business.mail}">
+					<label>E-mail</label> <input placeholder="输入E-mail" type="text" name="mail" value="${business.mail}">
 				</div>
 				<div class="ui blue submit button" id="add-menu-btn">发送</div>
 			</div>
@@ -96,7 +88,17 @@
 
 			$('#add-menu-ui-form').form('setting', {
 				onSuccess : function() {
-					$('#add-qrcode-form').submit();
+					$.post('qrcode/sendMailZip.do', $('#add-qrcode-form').serialize(), function(msg) {
+						if (msg.succeed) {
+							$.colorbox({
+								html : '<h3 class="ui header"><i class="info icon"></i>发送成功!</h3>'
+							});
+						} else {
+							$.colorbox({
+								html : '<h3 class="ui red header"><i class="attention icon"></i>发送失败!</h3>'
+							});
+						}
+					});
 				},
 				onFailure : function() {
 					$("html,body").animate({
