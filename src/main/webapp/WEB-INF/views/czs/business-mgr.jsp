@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
@@ -12,18 +11,26 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-平台服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/tinybox2/css/tinybox.min.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/css/common.css" rel="stylesheet"
-	type="text/css">
-<link href="../../../resources/datepicker/css/glDatePicker.default.css"
-	rel="stylesheet" type="text/css">
+
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/datetimepicker/js/jquery.simple-dtpicker.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
+<script type="text/javascript">
+	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		WeixinJSBridge.call('hideToolbar');
+		WeixinJSBridge.call('hideOptionMenu');
+	});
+</script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -53,29 +60,26 @@
 
 			<div class="ui segment">
 				<div class="">
-					<div class="ui input" id="datetimepickerStart">
-						<input type="text" placeholder="开始日期">
+					<div class="ui icon input" id="datetimepickerStart">
+						<input type="text" name="start" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
+							onclick="$('#datepicker-start').handleDtpicker('show');"></i>
 					</div>
-					<div class="ui input" id="datetimepickerEnd">
-						<input type="text" placeholder="结束日期">
+					<div class="ui icon input" id="datetimepickerEnd">
+						<input type="text" name="end" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
+							onclick="$('#datepicker-end').handleDtpicker('show');"></i>
 					</div>
 				</div>
 				<div style="margin-top: 10px;">
 					<form action="czs/businessMgr.do" method="post" id="filter-form"></form>
-					<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
-						style="margin-top: 5px; margin-bottom: 5px;"> 新入驻 ${newCount}
-						个 </a> <a class="ui label" id="czsStatus-1"
-						onclick="filterHandler('1')"
-						style="margin-top: 5px; margin-bottom: 5px;"> 已验证
-						${understanding} 个 </a><a class="ui label" onclick="filterHandler('')"
-						id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;">
-						全部 ${total} 个 </a>
+					<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')" style="margin-top: 5px; margin-bottom: 5px;">
+						新入驻 ${newCount} 个 </a> <a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 已验证 ${understanding} 个 </a><a class="ui label"
+						onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
 				</div>
 			</div>
 		</div>
 		<div style="overflow: auto;">
-			<table class="ui sortable table segment"
-				style="display: table; width: 2000px; font-size: 15px;">
+			<table class="ui sortable table segment" style="display: table; width: 2000px; font-size: 15px;">
 				<thead>
 					<tr>
 						<th class="number">序号</th>
@@ -102,59 +106,50 @@
 							<td class="">${sts.index + 1}</td>
 							<td class=""><a class="ui label"
 								onclick="lifeValueMgr('${item.id}', '${item.open_id}', '${item.life_value}', '${item.qrcode_limit}', '${item.days}');">充值</a></td>
-							<td class=""><c:if test="${item.status=='0'}">申请中<a
-										id="pass-btn-${item.id}" class="ui label"
+							<td class=""><c:if test="${item.status=='0'}">申请中<a id="pass-btn-${item.id}" class="ui label"
 										onclick="msgHandler('1', '${item.id}', '${item.open_id}')">确认通过</a>
 								</c:if> <c:if test="${item.status=='1'}">已验证</c:if></td>
 							<td data-sort-value="${item.nickname}">
-								<div class="ui basic accordion"
-									style="width: 200px; margin-bottom: 0px;">
+								<div class="ui basic accordion" style="width: 200px; margin-bottom: 0px;">
 									<div class="title" style="padding: 0px;">
-										<i class="dropdown icon"></i> <img class="ui avatar image"
-											src="${item.headimgurl}/64">${item.nickname}(${item.sex})
+										<i class="dropdown icon"></i> <img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})
 									</div>
 									<div class="content">
 										<div class="ui mini list">
 											<div class="item">
 												<i class="user outline icon"></i>
-												<div class="content"
-													style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 													<div class="header">店名</div>
 													${item.name}
 												</div>
 											</div>
 											<div class="item">
 												<i class="home outline icon"></i>
-												<div class="content"
-													style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 													<div class="header">地址</div>
 													${item.address}
 												</div>
 											</div>
 											<div class="item">
 												<i class="phone outline icon"></i>
-												<div class="content"
-													style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 													<div class="header">电话</div>
 													${item.phone_number}
 												</div>
 											</div>
 											<div class="item">
 												<i class="mail outline icon"></i>
-												<div class="content"
-													style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 													<div class="header">E-mail</div>
 													${item.mail}
 												</div>
 											</div>
 											<div class="item">
 												<i class="comment outline icon"></i>
-												<div class="content"
-													style="padding-top: 0px; padding-bottom: 0px;">
+												<div class="content" style="padding-top: 0px; padding-bottom: 0px;">
 													<div class="header">介绍</div>
 													<c:if test="${! empty item.introduce}">
-														<span class="czsPopup" data-html="${item.introduce}">${item.simple_introduce}
-														</span>
+														<span class="czsPopup" data-html="${item.introduce}">${item.simple_introduce} </span>
 													</c:if>
 												</div>
 											</div>
@@ -243,15 +238,13 @@
 					</div>
 					<div class="two fields">
 						<div class="field">
-							<label>餐豆值</label> <input id="life-value-input"
-								readonly="readonly" type="text">
+							<label>餐豆值</label> <input id="life-value-input" readonly="readonly" type="text">
 						</div>
 						<div class="field">
 							<label>餐豆充值</label>
 							<div class="ui action input">
 								<input type="text" placeholder="充值数" id="add-life-value-input">
-								<div class="ui button czsAddLeftValue"
-									onclick="updateValue('0');">充值</div>
+								<div class="ui button czsAddLeftValue" onclick="updateValue('0');">充值</div>
 							</div>
 						</div>
 					</div>
@@ -259,16 +252,13 @@
 				<div class="ui attached segment">
 					<div class="two fields">
 						<div class="field">
-							<label>二维码限制数</label> <input id="qrcode-limit-input"
-								readonly="readonly" type="text">
+							<label>二维码限制数</label> <input id="qrcode-limit-input" readonly="readonly" type="text">
 						</div>
 						<div class="field">
 							<label>二维码限制数修改</label>
 							<div class="ui action input">
-								<input type="text" placeholder="限制数"
-									id="update-qrcode-limit-input">
-								<div class="ui button czsUpdateQrcodeLimit"
-									onclick="updateValue('1');">修改</div>
+								<input type="text" placeholder="限制数" id="update-qrcode-limit-input">
+								<div class="ui button czsUpdateQrcodeLimit" onclick="updateValue('1');">修改</div>
 							</div>
 						</div>
 					</div>
@@ -276,8 +266,7 @@
 				<div class="ui bottom attached segment">
 					<div class="two fields">
 						<div class="field">
-							<label>授权天数</label> <input id="days-input" readonly="readonly"
-								type="text">
+							<label>授权天数</label> <input id="days-input" readonly="readonly" type="text">
 						</div>
 						<div class="field">
 							<label>授权天数修改</label>
@@ -301,26 +290,6 @@
 			</div>
 		</div>
 	</div>
-
-
-	<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-		charset="utf-8"></script>
-	<script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
-	<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-		charset="utf-8"></script>
-	<script src="../../../resources/semantic/javascript/semantic.min.js"
-		charset="utf-8"></script>
-	<script src="../../../resources/tinybox2/tinybox.min.js"
-		charset="utf-8"></script>
-	<script type="text/javascript"
-		src="../../../resources/datepicker/js/glDatePicker.min.js"
-		charset="utf-8"></script>
-	<script type="text/javascript">
-		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-			WeixinJSBridge.call('hideToolbar');
-			WeixinJSBridge.call('hideOptionMenu');
-		});
-	</script>
 
 	<script type="text/javascript">
 		var _status;
@@ -434,17 +403,17 @@
 			var endDate = new Date();
 			endDate.setTime(Number('${end}'));
 
-			$('#datetimepickerStart > input').val(startDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
-				selectedDate : startDate,
-				onClick : function(target, cell, date, data) {
-					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
-				}
+			$('#datepicker-start').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD hh:mm:00',
+				locale : 'cn',
+				closeOnSelected : true,
+				current : startDate.format('yyyy-MM-dd hh:mm')
 			});
-			$('#datetimepickerEnd > input').val(endDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
-				selectedDate : endDate,
-				onClick : function(target, cell, date, data) {
-					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
-				}
+			$('#datepicker-end').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD hh:mm:00',
+				locale : 'cn',
+				closeOnSelected : true,
+				current : endDate.format('yyyy-MM-dd hh:mm')
 			});
 
 			setInterval(function() {

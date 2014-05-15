@@ -121,7 +121,7 @@
 									type : 'column'
 								},
 								exporting : {
-									url : ''
+									url : 'http://192.168.10.14:8080/'
 								},
 								title : {
 									text : '营业额统计'

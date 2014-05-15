@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
@@ -12,29 +11,20 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport"
-	content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-平台服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/datepicker/css/glDatePicker.default.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/tinybox2/css/tinybox.min.css"
-	rel="stylesheet" type="text/css">
-<link href="../../../resources/css/common.css" rel="stylesheet"
-	type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
-<script type="text/javascript"
-	src="../../../resources/datepicker/js/glDatePicker.min.js"
-	charset="utf-8"></script>
+
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/datetimepicker/js/jquery.simple-dtpicker.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -63,28 +53,25 @@
 
 			<div class="ui segment">
 				<div class="">
-					<div class="ui input" id="datetimepickerStart">
-						<input type="text" placeholder="开始日期">
+					<div class="ui icon input" id="datetimepickerStart">
+						<input type="text" name="start" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
+							onclick="$('#datepicker-start').handleDtpicker('show');"></i>
 					</div>
-					<div class="ui input" id="datetimepickerEnd">
-						<input type="text" placeholder="结束日期">
+					<div class="ui icon input" id="datetimepickerEnd">
+						<input type="text" name="end" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
+							onclick="$('#datepicker-end').handleDtpicker('show');"></i>
 					</div>
 				</div>
 				<div style="margin-top: 10px;">
 					<form action="czs/userMgr.do" method="post" id="filter-form"></form>
-					<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
-						style="margin-top: 5px; margin-bottom: 5px;"> 新入驻 ${newCount}
-						个 </a> <a class="ui label" id="czsStatus-1"
-						onclick="filterHandler('1')"
-						style="margin-top: 5px; margin-bottom: 5px;"> 已验证
-						${understanding} 个 </a><a class="ui label" onclick="filterHandler('')"
-						id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;">
-						全部 ${total} 个 </a>
+					<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')" style="margin-top: 5px; margin-bottom: 5px;">
+						新入驻 ${newCount} 个 </a> <a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 已验证 ${understanding} 个 </a><a class="ui label"
+						onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
 				</div>
 			</div>
 			<div style="overflow: auto;">
-				<table class="ui sortable table segment"
-					style="display: table; font-size: 15px;">
+				<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 					<thead>
 						<tr>
 							<th class="number">序号</th>
@@ -102,22 +89,18 @@
 						<c:forEach items="${userList}" var="item" varStatus="sts">
 							<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
 								<td class="">${sts.index + 1}</td>
-								<td class=""><a class="ui label"
-									onclick="refreshUserInfo('${item.user_name}');">刷新</a></td>
-								<td data-sort-value="${item.nickname}"><img
-									class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})
+								<td class=""><a class="ui label" onclick="refreshUserInfo('${item.user_name}');">刷新</a></td>
+								<td data-sort-value="${item.nickname}"><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})
 								</td>
 								<td class="">${item.country}&nbsp;${item.province}&nbsp;${item.city}</td>
 								<td class=""><c:if test="${! empty item.consume_code}">
-										<div class="ui label czsPopup"
-											data-content="消费码:${item.consume_code}">消费中</div>
+										<div class="ui label czsPopup" data-content="消费码:${item.consume_code}">消费中</div>
 									</c:if></td>
 								<td class="" data-sort-value="${item._times}">${item.create_time}</td>
 								<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
 								<td class="">${item.times}</td>
 								<td class=""><c:if test="${! empty item.latitude}">
-										<a class="ui label czsPopup"
-											data-content="${item.latitude}&nbsp;${item.longitude}&nbsp;${item.precision_}"><i
+										<a class="ui label czsPopup" data-content="${item.latitude}&nbsp;${item.longitude}&nbsp;${item.precision_}"><i
 											class="location icon"></i></a>
 									</c:if></td>
 							</tr>
@@ -204,17 +187,17 @@
 			var endDate = new Date();
 			endDate.setTime(Number('${end}'));
 
-			$('#datetimepickerStart > input').val(startDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
-				selectedDate : startDate,
-				onClick : function(target, cell, date, data) {
-					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
-				}
+			$('#datepicker-start').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD hh:mm:00',
+				locale : 'cn',
+				closeOnSelected : true,
+				current : startDate.format('yyyy-MM-dd hh:mm')
 			});
-			$('#datetimepickerEnd > input').val(endDate.format('yyyy-MM-dd hh:mm:ss')).glDatePicker({
-				selectedDate : endDate,
-				onClick : function(target, cell, date, data) {
-					target.val(date.format('yyyy-MM-dd hh:mm:ss'));
-				}
+			$('#datepicker-end').appendDtpicker({
+				dateFormat : 'YYYY-MM-DD hh:mm:00',
+				locale : 'cn',
+				closeOnSelected : true,
+				current : endDate.format('yyyy-MM-dd hh:mm')
 			});
 
 			$('#confirm-ui-modal').modal({

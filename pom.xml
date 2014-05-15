@@ -239,7 +239,6 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-
 	</repositories>
 
 	<organization>

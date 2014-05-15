@@ -146,7 +146,6 @@ div.ui.segment.attached {
 	box-shadow: rgb(221, 221, 221) 0px 0px 0px 1px;
 	box-sizing: border-box;
 	display: block;
-	height: 116.796875px;
 	margin-bottom: 0px;
 	margin-left: 0px;
 	margin-right: 0px;
@@ -173,7 +172,6 @@ div.ui.message {
 	color: rgba(0, 0, 0, 0.6);
 	display: block;
 	font-size: 16px;
-	height: 84.796875px;
 	line-height: 21px;
 	margin-bottom: 0px;
 	margin-left: 0px;

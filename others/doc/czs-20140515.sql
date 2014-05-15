@@ -4,19 +4,19 @@ Navicat MySQL Data Transfer
 Source Server         : localhost
 Source Server Version : 50614
 Source Host           : localhost:3306
-Source Database       : afl
+Source Database       : czs
 
 Target Server Type    : MYSQL
 Target Server Version : 50614
 File Encoding         : 65001
 
-Date: 2014-04-30 11:27:29
+Date: 2014-05-15 17:10:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `bill`
+-- Table structure for bill
 -- ----------------------------
 DROP TABLE IF EXISTS `bill`;
 CREATE TABLE `bill` (
@@ -34,14 +34,14 @@ CREATE TABLE `bill` (
   `bill_handler` varchar(255) DEFAULT NULL COMMENT '结账登记者',
   `is_delete` smallint(6) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of bill
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `business`
+-- Table structure for business
 -- ----------------------------
 DROP TABLE IF EXISTS `business`;
 CREATE TABLE `business` (
@@ -64,15 +64,17 @@ CREATE TABLE `business` (
   `audit_date_time` datetime DEFAULT NULL,
   `days` bigint(20) DEFAULT NULL COMMENT '使用天数',
   `login_times` bigint(20) DEFAULT NULL,
+  `life_value` bigint(20) DEFAULT '0' COMMENT '生命值',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of business
 -- ----------------------------
+INSERT INTO `business` VALUES ('17', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '0', '天下一绝', '上海 浦东新区 庭安路825号', 'xiweicheng@yeah.net', '美食天堂，欢迎光临！', '18721764335', '100', '124390', '1', '0', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '1', '2014-05-15 16:40:14', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '2014-05-15 16:49:08', '3650', null, '0');
 
 -- ----------------------------
--- Table structure for `business_consumer`
+-- Table structure for business_consumer
 -- ----------------------------
 DROP TABLE IF EXISTS `business_consumer`;
 CREATE TABLE `business_consumer` (
@@ -87,14 +89,14 @@ CREATE TABLE `business_consumer` (
   `handler` varchar(255) DEFAULT NULL,
   `handle_date_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of business_consumer
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `business_consumer_record`
+-- Table structure for business_consumer_record
 -- ----------------------------
 DROP TABLE IF EXISTS `business_consumer_record`;
 CREATE TABLE `business_consumer_record` (
@@ -107,14 +109,14 @@ CREATE TABLE `business_consumer_record` (
   `status` smallint(6) DEFAULT NULL COMMENT '消费状态->1:消费进行中;0:消费结束;2:禁止消费;3:个人结账申请中,4:集体结账申请中,5:进入中',
   `is_delete` smallint(6) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of business_consumer_record
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `business_role`
+-- Table structure for business_role
 -- ----------------------------
 DROP TABLE IF EXISTS `business_role`;
 CREATE TABLE `business_role` (
@@ -125,14 +127,14 @@ CREATE TABLE `business_role` (
   `is_delete` smallint(6) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of business_role
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `category`
+-- Table structure for category
 -- ----------------------------
 DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
@@ -152,7 +154,29 @@ INSERT INTO `category` VALUES ('2', '角色', 'JS', '0', 'qrcode');
 INSERT INTO `category` VALUES ('3', '结账', 'JZ', '1', 'qrcode');
 
 -- ----------------------------
--- Table structure for `czs_user`
+-- Table structure for comment
+-- ----------------------------
+DROP TABLE IF EXISTS `comment`;
+CREATE TABLE `comment` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `openId` varchar(255) DEFAULT NULL,
+  `content` varchar(2000) DEFAULT NULL,
+  `date_time` datetime DEFAULT NULL,
+  `status` smallint(6) DEFAULT NULL,
+  `is_delete` smallint(6) DEFAULT NULL,
+  `type` smallint(6) DEFAULT NULL,
+  `p_id` bigint(20) DEFAULT NULL,
+  `handler` varchar(255) DEFAULT NULL,
+  `handle_date_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of comment
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for czs_user
 -- ----------------------------
 DROP TABLE IF EXISTS `czs_user`;
 CREATE TABLE `czs_user` (
@@ -168,15 +192,15 @@ CREATE TABLE `czs_user` (
   `status` smallint(6) DEFAULT NULL,
   `is_delete` smallint(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of czs_user
 -- ----------------------------
-INSERT INTO `czs`.`czs_user` (`id`, `user_name`, `name`, `mail`, `phone_number`, `address`, `password`, `dynamic_code`, `type`, `status`, `is_delete`) VALUES ('2', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', 'xiweicheng', 'xiweicheng@yeah.net', '18721764335', '上海 浦东新区', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', NULL, '1', '1', '0');
+INSERT INTO `czs_user` VALUES ('2', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', 'xiweicheng', 'xiweicheng@yeah.net', '18721764335', '上海 浦东新区', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', null, '0', '0', '0');
 
 -- ----------------------------
--- Table structure for `favorites`
+-- Table structure for favorites
 -- ----------------------------
 DROP TABLE IF EXISTS `favorites`;
 CREATE TABLE `favorites` (
@@ -188,14 +212,34 @@ CREATE TABLE `favorites` (
   `is_delete` smallint(6) DEFAULT NULL,
   `limit_code` varchar(255) DEFAULT NULL COMMENT '限制码,一天只能赞一次. 20140409',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of favorites
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `menu`
+-- Table structure for log
+-- ----------------------------
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `date_time` datetime DEFAULT NULL,
+  `type` smallint(6) DEFAULT NULL,
+  `status` smallint(6) DEFAULT NULL,
+  `is_delete` smallint(6) DEFAULT NULL,
+  `object_id` varchar(255) DEFAULT NULL,
+  `detail` varchar(2000) DEFAULT NULL,
+  `handler` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of log
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for menu
 -- ----------------------------
 DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
@@ -239,7 +283,7 @@ INSERT INTO `menu` VALUES ('37', '妈咪宝贝', '46', '99.00', '0.00', '32', '�
 INSERT INTO `menu` VALUES ('38', '妈妈咪呀', '47', '998.00', '0.00', '33', '无言以表！', '88', '0', 'okPUDt6_6iTJLf-XZhLPhzZHbtL8', '2014-04-23 22:06:28', '0', null);
 
 -- ----------------------------
--- Table structure for `menu_bill`
+-- Table structure for menu_bill
 -- ----------------------------
 DROP TABLE IF EXISTS `menu_bill`;
 CREATE TABLE `menu_bill` (
@@ -254,14 +298,14 @@ CREATE TABLE `menu_bill` (
   `accepter_id` varchar(255) DEFAULT NULL COMMENT '订单接受者',
   `memo` varchar(500) DEFAULT NULL COMMENT '点餐备注',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=327 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=344 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of menu_bill
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `menu_category`
+-- Table structure for menu_category
 -- ----------------------------
 DROP TABLE IF EXISTS `menu_category`;
 CREATE TABLE `menu_category` (
@@ -290,7 +334,7 @@ INSERT INTO `menu_category` VALUES ('46', '特色', 'okPUDt6_6iTJLf-XZhLPhzZHbtL
 INSERT INTO `menu_category` VALUES ('47', '招牌', 'okPUDt6_6iTJLf-XZhLPhzZHbtL8', '0', '2014-04-23 22:06:22');
 
 -- ----------------------------
--- Table structure for `menu_taste`
+-- Table structure for menu_taste
 -- ----------------------------
 DROP TABLE IF EXISTS `menu_taste`;
 CREATE TABLE `menu_taste` (
@@ -318,7 +362,7 @@ INSERT INTO `menu_taste` VALUES ('32', '鲜嫩', 'okPUDt6_6iTJLf-XZhLPhzZHbtL8',
 INSERT INTO `menu_taste` VALUES ('33', '可口', 'okPUDt6_6iTJLf-XZhLPhzZHbtL8', '0', '2014-04-23 22:06:26');
 
 -- ----------------------------
--- Table structure for `message`
+-- Table structure for message
 -- ----------------------------
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
@@ -352,14 +396,22 @@ CREATE TABLE `message` (
   `scene_id` bigint(20) DEFAULT NULL,
   `recognition` varchar(2000) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1387 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1524 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of message
 -- ----------------------------
+INSERT INTO `message` VALUES ('1516', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400143275', 'event', null, null, null, null, null, null, '0.000000', '0.000000', '0.000000', null, null, null, null, 'business_evt_key_1', '0.000000', '0.000000', '0.000000', null, 'CLICK', null, '2014-05-15 16:40:14', '0', null, null, null);
+INSERT INTO `message` VALUES ('1517', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400143298', 'event', null, null, null, null, null, null, '0.000000', '0.000000', '0.000000', null, null, null, null, 'business_evt_key_1', '0.000000', '0.000000', '0.000000', null, 'CLICK', null, '2014-05-15 16:40:15', '0', null, null, null);
+INSERT INTO `message` VALUES ('1518', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400143439', 'event', null, null, null, null, null, null, '0.000000', '0.000000', '0.000000', null, null, null, null, 'http://www.canzs.cn/czs/login.do', '0.000000', '0.000000', '0.000000', null, 'VIEW', null, '2014-05-15 16:42:38', '0', null, null, null);
+INSERT INTO `message` VALUES ('1519', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400143509', 'event', null, null, null, null, null, null, '0.000000', '0.000000', '0.000000', null, null, null, null, '', '0.000000', '0.000000', '0.000000', null, 'unsubscribe', null, '2014-05-15 16:43:47', '0', null, null, null);
+INSERT INTO `message` VALUES ('1520', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400143518', 'event', null, null, null, null, null, null, '0.000000', '0.000000', '0.000000', null, null, null, null, '', '0.000000', '0.000000', '0.000000', null, 'subscribe', null, '2014-05-15 16:43:54', '0', null, null, null);
+INSERT INTO `message` VALUES ('1521', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400143800', 'event', null, null, null, null, null, null, '0.000000', '0.000000', '0.000000', null, null, null, null, 'http://www.canzs.cn/czs/login.do', '0.000000', '0.000000', '0.000000', null, 'VIEW', null, '2014-05-15 16:48:41', '0', null, null, null);
+INSERT INTO `message` VALUES ('1522', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400144634', 'event', null, null, null, null, null, null, '0.000000', '0.000000', '0.000000', null, null, null, null, 'business_evt_key_1', '0.000000', '0.000000', '0.000000', null, 'CLICK', null, '2014-05-15 17:02:30', '0', null, null, null);
+INSERT INTO `message` VALUES ('1523', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400144753', 'event', null, null, null, null, null, null, '0.000000', '0.000000', '0.000000', null, null, null, null, 'business_evt_key_2', '0.000000', '0.000000', '0.000000', null, 'CLICK', null, '2014-05-15 17:04:29', '0', null, null, null);
 
 -- ----------------------------
--- Table structure for `qrcode`
+-- Table structure for qrcode
 -- ----------------------------
 DROP TABLE IF EXISTS `qrcode`;
 CREATE TABLE `qrcode` (
@@ -375,15 +427,18 @@ CREATE TABLE `qrcode` (
   `type` varchar(50) DEFAULT NULL COMMENT 'QR_LIMIT_SCENE(永久) 或者 QR_SCENE(临时)',
   `my_url` varchar(1000) DEFAULT NULL COMMENT '二维码在自己服务器的url.',
   `description` varchar(1000) DEFAULT NULL COMMENT '二维码描述',
+  `date_time` datetime DEFAULT NULL,
+  `status` smallint(6) DEFAULT NULL,
+  `is_delete` smallint(6) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of qrcode
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `request`
+-- Table structure for request
 -- ----------------------------
 DROP TABLE IF EXISTS `request`;
 CREATE TABLE `request` (
@@ -398,14 +453,14 @@ CREATE TABLE `request` (
   `date_time` datetime DEFAULT NULL,
   `is_delete` smallint(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=301 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of request
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `resources`
+-- Table structure for resources
 -- ----------------------------
 DROP TABLE IF EXISTS `resources`;
 CREATE TABLE `resources` (
@@ -444,7 +499,7 @@ INSERT INTO `resources` VALUES ('88', '秀色可餐', 'resources/images/menu/', 
 INSERT INTO `resources` VALUES ('89', '妈咪宝贝', 'resources/images/menu/', 'ab5fbcf4-6976-4584-83ca-46262f33af29.jpg', 'image', 'okPUDt6_6iTJLf-XZhLPhzZHbtL8', '2014-04-23 22:01:26', '0');
 
 -- ----------------------------
--- Table structure for `service`
+-- Table structure for service
 -- ----------------------------
 DROP TABLE IF EXISTS `service`;
 CREATE TABLE `service` (
@@ -460,14 +515,14 @@ CREATE TABLE `service` (
   `scene_id` bigint(20) DEFAULT NULL,
   `handle_date_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of service
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `subscriber`
+-- Table structure for subscriber
 -- ----------------------------
 DROP TABLE IF EXISTS `subscriber`;
 CREATE TABLE `subscriber` (
@@ -481,14 +536,15 @@ CREATE TABLE `subscriber` (
   `language` varchar(255) DEFAULT NULL,
   `headimgurl` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of subscriber
 -- ----------------------------
+INSERT INTO `subscriber` VALUES ('22', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '席维成', '1', '浦东新区', '中国', '上海', 'zh_CN', 'http://wx.qlogo.cn/mmopen/DiaiaOiaOW4BbdPzGfvcMXKBIluKNgJhMX5sFk0fELyiavE636NlqcKxdzUHfXWVvKwsOkBoAX66qgMrWSKybA3Kthl4swmpIEoY/0');
 
 -- ----------------------------
--- Table structure for `user`
+-- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
@@ -501,10 +557,35 @@ CREATE TABLE `user` (
   `longitude` decimal(10,6) DEFAULT NULL,
   `precision_` decimal(10,6) DEFAULT NULL,
   `consume_code` varchar(500) DEFAULT NULL COMMENT '食客消费码',
+  `status` smallint(6) DEFAULT '0' COMMENT '用户状态',
   PRIMARY KEY (`id`),
   KEY `user_name` (`user_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
+INSERT INTO `user` VALUES ('20', 'okPUDtzjrogWsWdsI_Fz39VNbgBc', '1400143518', '0', '1', null, null, null, null, null);
+
+-- ----------------------------
+-- Function structure for queryChildrenComment
+-- ----------------------------
+DROP FUNCTION IF EXISTS `queryChildrenComment`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `queryChildrenComment`(`id` bigint) RETURNS varchar(4000) CHARSET utf8
+BEGIN
+	#Routine body goes here...
+	DECLARE sTemp VARCHAR(4000);
+	DECLARE sTempChd VARCHAR(4000);
+
+	SET sTemp = '$';
+	SET sTempChd = cast(id as char);
+
+	WHILE sTempChd is not NULL DO
+		SET sTemp = CONCAT(sTemp,',',sTempChd);
+		SELECT group_concat(`comment`.id) INTO sTempChd FROM `comment` where FIND_IN_SET(p_id,sTempChd) > 0;
+	END WHILE;
+	RETURN sTemp;
+END
+;;
+DELIMITER ;
