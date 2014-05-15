@@ -11,7 +11,8 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 
 <link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
@@ -91,11 +92,11 @@
 					$.post('qrcode/sendMailZip.do', $('#add-qrcode-form').serialize(), function(msg) {
 						if (msg.succeed) {
 							$.colorbox({
-								html : '<h3 class="ui header"><i class="info icon"></i>发送成功!</h3>'
+								html : '<h3 class="ui header">发送成功!</h3>'
 							});
 						} else {
 							$.colorbox({
-								html : '<h3 class="ui red header"><i class="attention icon"></i>发送失败!</h3>'
+								html : '<h3 class="ui red header">发送失败!</h3>'
 							});
 						}
 					});

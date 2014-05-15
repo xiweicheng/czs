@@ -9,14 +9,19 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
-<head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
+
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/colorbox/css/colorbox.css" rel="stylesheet" type="text/css">
+
+<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/colorbox/js/jquery.colorbox-min.js" charset="utf-8"></script>
+<script src="../../../resources/colorbox/i18n/jquery.colorbox-zh-CN.js" charset="utf-8"></script>
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -25,16 +30,6 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
-
-	<div class="ui dimmer czsMsg">
-		<div class="content" style="display: none;">
-			<div class="center">
-				<div class="ui huge message">
-					<span></span>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
@@ -175,16 +170,6 @@
 							</div>
 						</div>
 					</div>
-					<c:if test="${! empty business.password}">
-						<div class="field">
-							<a class="ui teal button" onclick="setOrUpdatePwd(true)">确定</a>
-						</div>
-					</c:if>
-					<c:if test="${empty business.password}">
-						<div class="field">
-							<a class="ui teal button" onclick="setOrUpdatePwd(false)">确定</a>
-						</div>
-					</c:if>
 				</div>
 			</form>
 		</div>
@@ -193,7 +178,7 @@
 				<div class="ui deny labeled icon button">
 					<i class="remove icon"></i> 取消
 				</div>
-				<div class="ui approve right labeled icon button">
+				<div class="ui approve right labeled icon button" onclick="setOrUpdatePwd(true)">
 					确定 <i class="checkmark icon"></i>
 				</div>
 			</div>
@@ -210,33 +195,25 @@
 			if (!isUpdate) {
 				$.post('business/newPassword.do', $('#password-form').serialize(), function(msg) {
 					if (msg.succeed) {
-						$('.ui.dimmer.czsMsg .center span').text('设置成功!');
-						$('.ui.dimmer.czsMsg > .content').show();
-						$('.ui.dimmer.czsMsg').dimmer('show');
+						$.colorbox({
+							html : '<h3 class="ui header">设置成功!</h3>'
+						});
 					} else {
-						if (!!msg.msg && !!msg.msg.detail) {
-							$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-						} else {
-							$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-						}
-						$('.ui.dimmer.czsMsg > .content').show();
-						$('.ui.dimmer.czsMsg').dimmer('show');
+						$.colorbox({
+							html : '<h3 class="ui red header">操作失败!<br/>失败信息:' + msg.msg.detail + '</h3>'
+						});
 					}
 				});
 			} else {
 				$.post('business/updatePassword.do', $('#password-form').serialize(), function(msg) {
 					if (msg.succeed) {
-						$('.ui.dimmer.czsMsg .center span').text('更新成功!');
-						$('.ui.dimmer.czsMsg > .content').show();
-						$('.ui.dimmer.czsMsg').dimmer('show');
+						$.colorbox({
+							html : '<h3 class="ui header">更新成功!</h3>'
+						});
 					} else {
-						if (!!msg.msg && !!msg.msg.detail) {
-							$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-						} else {
-							$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-						}
-						$('.ui.dimmer.czsMsg > .content').show();
-						$('.ui.dimmer.czsMsg').dimmer('show');
+						$.colorbox({
+							html : '<h3 class="ui red header">操作失败!<br/>失败信息:' + msg.msg.detail + '</h3>'
+						});
 					}
 				});
 			}
@@ -244,17 +221,9 @@
 
 		jQuery(function($) {
 
-			$('.ui.dimmer.czsMsg').click(function() {
-				$('.ui.dimmer.czsMsg > .content').hide();
-			});
-
 			$('#menu-item-business-main').addClass('active');
 
 			$('#business-update-modal').modal({
-				closable : false,
-				onDeny : function() {
-					return true;
-				},
 				onApprove : function() {
 					$('#business-update-form').submit();
 				}
