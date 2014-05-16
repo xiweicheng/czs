@@ -215,11 +215,11 @@
 				<input type="checkbox" name="filterOver"> <label>过滤终止状态</label>
 			</div>
 
-			<div class="ui small red vertical animated button czzRequest" style="position: absolute; top: 2px; right: 2px;">
+			<div class="ui small red vertical animated button czzRequest"
+				style="position: absolute; top: 2px; right: 2px; padding-left: 1px; padding-right: 1px;">
 				<div class="hidden content">请求</div>
 				<div class="visible content">
-					<i class="bullhorn icon">&nbsp;(<span id="request-count-span">0</span>)
-					</i>
+					<i class="bullhorn icon" style="min-width: 80px;"> <span id="request-count-span"></span></i>
 				</div>
 			</div>
 		</h4>
