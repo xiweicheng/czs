@@ -55,7 +55,7 @@
 							<td class="">{{html $value.date_time}}</td>
 							<td class="">{{html $value.diff}}</td>
 							<td class="">{{html $value.copies}}</td>
-							<td class="">
+							<td class="" style="text-align:right;">
 								{{if $value.status == '3'}}
 									<div class="ui green label">已接单</div>
 								{{else}}
@@ -74,7 +74,7 @@
 							<td class="">{{html date_time}}</td>
 							<td class="">{{html diff}}</td>
 							<td class="">{{html copies}}</td>
-							<td class="">
+							<td class="" style="text-align:right;">
 								{{if status == '3'}}
 									<div class="ui green label">已接单</div>
 								{{else}}

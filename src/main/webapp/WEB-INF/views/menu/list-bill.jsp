@@ -41,17 +41,15 @@
 
 	<!-- top title bar -->
 	<h4 class="ui top attached header" style="margin-top: 44px;">
-		商家菜单
-		<div class="circular ui red label">
-			<span id="menu-count-span">${fn:length(menuList)}</span>个
-		</div>
-		<div class="ui small buttons" style="position: absolute; right: 2px; top: 2px;">
+		商家菜单 <a class="circular ui red label"> <span id="menu-count-span">${fn:length(menuList)}</span>个
+		</a>
+		<div class="ui small buttons" style="position: absolute; right: 4px; top: 2px;">
 			<div class="ui button czsSimple" czs-status="0">清爽模式</div>
 		</div>
 	</h4>
 
 	<!-- top header -->
-	<div id="header" class="ui fixed top inverted fluid three item menu">
+	<div id="top-header" class="ui fixed top inverted fluid three item menu">
 		<form action="menu/free/list4bill.do" id="filter-form" method="post">
 			<input type="hidden" name="openId" value="${param.openId}">
 			<div class="ui dropdown item czsCategory">
@@ -98,8 +96,7 @@
 				<div class="column">
 					<div class="ui vertical fluid menu czsMenuList">
 						<c:forEach items="${menuList}" var="item">
-							<div class="ui segment item czsMenuItem" czs-category="${item.category_id}" czs-taste="${item.taste_id}"
-								style="padding: 8px;">
+							<div class="ui segment item czsMenuItem" czs-category="${item.category_id}" czs-taste="${item.taste_id}">
 								<div class="content">
 									<div>
 										<div class="image czsSimpleMode" style="width: 80px; heght: 80px; float: left;" id="image-div-${item.id}">
@@ -211,11 +208,11 @@
 		</div>
 	</div>
 
-	<!-- 页面底部填充 -->
-	<div style="height: 44px;"></div>
+	<!-- footer -->
+	<%@ include file="../footer.jsp"%>
 
 	<!-- bottom header -->
-	<div class="ui fixed bottom inverted fluid three item menu headroom">
+	<div id="bottom-header" class="ui fixed bottom inverted fluid three item menu">
 		<a class="item" style="padding-top: 5px; padding-bottom: 5px;"
 			href="menu/free/billQuery.do?isOwn=1&consumerId=${param.openId}"><div style="font-size: small;">
 				<i class="cart icon"></i><span id="bill-count-span">${count}</span>份
@@ -265,6 +262,7 @@
 		</div>
 	</div>
 
+
 	<script type="text/javascript">
 		var _menuId;
 		var _consumerId;
@@ -272,13 +270,13 @@
 		var _this;
 
 		function imageHandler(id) {
-			var $img =  $('#image-div-' + id + " > img");
+			var $img = $('#image-div-' + id + " > img");
 			var $img2 = $('.ui.modal.czsBigImage img');
-			if(!$img2.attr('src') || $img2.attr('src') != $img.attr('czz-src')){
-				$img2.attr('src', $img.attr('czz-src')).get(0).onload = function(){
+			if (!$img2.attr('src') || $img2.attr('src') != $img.attr('czz-src')) {
+				$img2.attr('src', $img.attr('czz-src')).get(0).onload = function() {
 					$('.ui.modal.czsBigImage').modal('show');
 				};
-			}else{
+			} else {
 				$('.ui.modal.czsBigImage').modal('show');
 			}
 		}
@@ -356,9 +354,9 @@
 				if (msg.succeed) {
 					$('#hold-ui-btn-' + menuId).addClass('disabled');
 				} else {
-					if(!!msg.msg && !!msg.msg.detail){
+					if (!!msg.msg && !!msg.msg.detail) {
 						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					}else{
+					} else {
 						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 					}
 					$('.ui.dimmer.czsMsg > .content').show();
@@ -366,10 +364,26 @@
 				}
 			});
 		}
-		
+
 		jQuery(function($) {
+
+			var p = 0;
+			var t = 0;
 			
-			$('.ui.dimmer.czsMsg').click(function(){
+			$(window).scroll(function(e) {
+				p = $(this).scrollTop();
+				
+				if(t < p){// down
+					$('#top-header,#bottom-header').hide();
+				}else{// up
+					$('#top-header,#bottom-header').show();
+				}
+				setTimeout(function(){
+					t = p;
+				}, 0);
+			});
+
+			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
 			});
 
@@ -378,42 +392,41 @@
 					$('#filter-form').submit();
 				}
 			});
-			
-			
-			if($('#category-id-input').val() != '-1'){
+
+			if ($('#category-id-input').val() != '-1') {
 				$('div[czs-category][czs-category!=' + $('#category-id-input').val() + ']').hide();
 			}
-			if($('#taste-id-input').val() != '-1'){
+			if ($('#taste-id-input').val() != '-1') {
 				$('div[czs-taste][czs-taste!=' + $('#taste-id-input').val() + ']').hide();
 			}
-			
+
 			$('#menu-count-span').text($('.ui.item.czsMenuItem:visible').size());
-			
+
 			$('.ui.dropdown.czsCategory').dropdown({
 				onChange : function(value, text) {
 					$('.ui.item.czsMenuItem').show();
-					
-					if($('#category-id-input').val() != '-1'){
+
+					if ($('#category-id-input').val() != '-1') {
 						$('div[czs-category][czs-category!=' + $('#category-id-input').val() + ']').hide();
 					}
-					if($('#taste-id-input').val() != '-1'){
+					if ($('#taste-id-input').val() != '-1') {
 						$('div[czs-taste][czs-taste!=' + $('#taste-id-input').val() + ']').hide();
 					}
-					
+
 					$('#menu-count-span').text($('.ui.item.czsMenuItem:visible').size());
 				}
 			});
 			$('.ui.dropdown.czsTaste').dropdown({
 				onChange : function(value, text) {
 					$('.ui.item.czsMenuItem').show();
-					
-					if($('#category-id-input').val() != '-1'){
+
+					if ($('#category-id-input').val() != '-1') {
 						$('div[czs-category][czs-category!=' + $('#category-id-input').val() + ']').hide();
 					}
-					if($('#taste-id-input').val() != '-1'){
+					if ($('#taste-id-input').val() != '-1') {
 						$('div[czs-taste][czs-taste!=' + $('#taste-id-input').val() + ']').hide();
 					}
-					
+
 					$('#menu-count-span').text($('.ui.item.czsMenuItem:visible').size());
 				}
 			});
@@ -427,52 +440,63 @@
 			$('.ui.button.czsAdd').click(function() {
 				$('#czsCountSpan').text(Number($('#czsCountSpan').text()) + 1);
 			});
-			
 
 			$('.ui.modal.czsBigImage').modal();
-			
-			$('.ui.modal.czsAdd').modal(
-					{
-						onApprove : function() {
 
-							var copies = Number($('#czsCountSpan').text());
-							var memo = $('#memo-input').val();
-							$.post('menu/free/billDeal.do', {
-								menuId : _menuId,
-								consumerId : _consumerId,
-								copies : copies,
-								memo : memo,
-								status : 0
-							}, function(msg) {
-								if (msg.succeed) {
-									$('#confirm-ui-btn-' + _menuId).addClass('disabled');
-									$('#confirm-ui-btn-' + _menuId).parent().next().prepend(
-											'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己(' + copies + ')<div class="detail"><a href="menu/free/billQuery.do?isOwn=1&consumerId=${param.openId}">待提交</a></div></div>');
+			$('.ui.modal.czsAdd')
+					.modal(
+							{
+								onApprove : function() {
 
-									$('#bill-total-span').text(
-											format_number(Number($('#bill-total-span').text()) + Number(_price)
-													* copies, 2));
-									$('#bill-count-span').text(Number($('#bill-count-span').text()) + copies);
+									var copies = Number($('#czsCountSpan').text());
+									var memo = $('#memo-input').val();
+									$
+											.post(
+													'menu/free/billDeal.do',
+													{
+														menuId : _menuId,
+														consumerId : _consumerId,
+														copies : copies,
+														memo : memo,
+														status : 0
+													},
+													function(msg) {
+														if (msg.succeed) {
+															$('#confirm-ui-btn-' + _menuId).addClass('disabled');
+															$('#confirm-ui-btn-' + _menuId)
+																	.parent()
+																	.next()
+																	.prepend(
+																			'<div class="ui label" style="margin-top: 5px; margin-bottom: 5px;">自己('
+																					+ copies
+																					+ ')<div class="detail"><a href="menu/free/billQuery.do?isOwn=1&consumerId=${param.openId}">待提交</a></div></div>');
 
-								} else {
-									if(!!msg.msg && !!msg.msg.detail){
-										$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-									}else{
-										$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-									}
-									$('.ui.dimmer.czsMsg > .content').show();
-									$('.ui.dimmer.czsMsg').dimmer('show');
+															$('#bill-total-span').text(
+																	format_number(Number($('#bill-total-span').text())
+																			+ Number(_price) * copies, 2));
+															$('#bill-count-span').text(
+																	Number($('#bill-count-span').text()) + copies);
+
+														} else {
+															if (!!msg.msg && !!msg.msg.detail) {
+																$('.ui.dimmer.czsMsg .center span').html(
+																		'操作失败!<br/>失败信息:' + msg.msg.detail);
+															} else {
+																$('.ui.dimmer.czsMsg .center span').text('操作失败!');
+															}
+															$('.ui.dimmer.czsMsg > .content').show();
+															$('.ui.dimmer.czsMsg').dimmer('show');
+														}
+													});
 								}
 							});
-						}
-					});
-			
-			$('.ui.button.czsSimple').click(function(){
-				if($(this).attr('czs-status') == '0'){
+
+			$('.ui.button.czsSimple').click(function() {
+				if ($(this).attr('czs-status') == '0') {
 					$(this).attr('czs-status', '1');
 					$(this).addClass('green');
 					$('.czsSimpleMode').hide();
-				}else{
+				} else {
 					$(this).attr('czs-status', '0');
 					$(this).removeClass('green');
 					$('.czsSimpleMode').show();

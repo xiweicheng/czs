@@ -35,9 +35,8 @@
 	</div>
 
 	<h4 class="ui top attached header" style="margin-top: 0px;">
-		收藏美食
-		<div class="circular ui red label">${fn:length(stowList)}个</div>
-		<div class="ui small buttons" style="position: absolute; right: 2px; top: 2px;">
+		收藏美食 <a class="circular ui red label">${fn:length(stowList)}个</a>
+		<div class="ui small buttons" style="position: absolute; right: 4px; top: 2px;">
 			<div class="ui button czsSimple" czs-status="0">清爽模式</div>
 		</div>
 	</h4>
@@ -157,9 +156,11 @@
 		</div>
 	</div>
 
-	<div style="height: 44px;"></div>
+	<!-- footer -->
+	<%@ include file="../footer.jsp"%>
+	
 	<!-- bottom header -->
-	<div class="ui fixed bottom inverted fluid three item menu">
+	<div id="bottom-header" class="ui fixed bottom inverted fluid three item menu">
 		<a class="item" style="padding-top: 5px; padding-bottom: 5px;"
 			href="menu/free/billQuery.do?isOwn=1&consumerId=${openId}"><div style="font-size: small;">
 				<i class="cart icon"></i><span id="bill-count-span">${count}</span>份
@@ -270,6 +271,22 @@
 		}
 		
 		jQuery(function($) {
+			
+			var p = 0;
+			var t = 0;
+			
+			$(window).scroll(function(e) {
+				p = $(this).scrollTop();
+				
+				if(t < p){// down
+					$('#bottom-header').hide();
+				}else{// up
+					$('#bottom-header').show();
+				}
+				setTimeout(function(){
+					t = p;
+				}, 0);
+			});
 			
 			$('.ui.dimmer.czsMsg').click(function(){
 				$('.ui.dimmer.czsMsg > .content').hide();
