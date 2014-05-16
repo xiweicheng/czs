@@ -19,6 +19,7 @@
 <link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
 <link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
 <link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/colorbox/css/colorbox.css" rel="stylesheet" type="text/css">
 
 <script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
@@ -26,6 +27,7 @@
 <script type="text/javascript" src="../../../resources/datetimepicker/js/jquery.simple-dtpicker.js" charset="utf-8"></script>
 <script type="text/javascript" src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
 <script type="text/javascript" src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/colorbox/js/jquery.colorbox-min.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -49,121 +51,128 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 
-	<div class="ui dimmer czsMsg">
-		<div class="content" style="display: none;">
-			<div class="center">
-				<div class="ui huge message">
-					<span></span>
+	<!-- message -->
+	<div style="display: none;">
+		<div id="succeed-msg">
+			<div class="ui icon green message">
+				<i class="info icon"></i>
+				<div class="content">
+					<div class="header">操作成功!</div>
+				</div>
+			</div>
+		</div>
+		<div id="fail-msg">
+			<div class="ui icon red message">
+				<i class="info icon"></i>
+				<div class="content">
+					<div class="header">操作失败!</div>
+					<p></p>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div>
-		<!-- 侧边栏 -->
-		<%@ include file="../menu.jsp"%>
+	<!-- 侧边栏 -->
+	<%@ include file="../menu.jsp"%>
 
-		<!-- header -->
-		<%@ include file="../header.jsp"%>
+	<!-- header -->
+	<%@ include file="../header.jsp"%>
 
-		<!-- top spacer -->
-		<div class="czs top spacer"></div>
+	<!-- top spacer -->
+	<div class="czs top spacer"></div>
 
-		<h4 class="ui top bottom attached header">
-			账目结算
-			<div class="circular ui red label">
-				<span id="msgCount-span">${fn:length(billList)}</span>个
-			</div>
-		</h4>
-		<div class="ui segment attached">
-			<form action="business/billSett.do" method="post" id="filter-form"></form>
-			<form action="business/billSettConfirm.do?status=${status}" method="post" id="bill-form">
-				<div class="ui segment">
-					<div class="">
-						<div class="ui icon input" id="datetimepickerStart">
-							<input type="text" name="start" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
-								onclick="$('#datepicker-start').handleDtpicker('show');"></i>
-						</div>
-						<div class="ui icon input" id="datetimepickerEnd">
-							<input type="text" name="end" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
-								onclick="$('#datepicker-end').handleDtpicker('show');"></i>
-						</div>
+	<h4 class="ui top bottom attached header">
+		账目结算 <a class="circular ui red label"> <span id="msgCount-span">${fn:length(billList)}</span>个
+		</a>
+	</h4>
+	<div class="ui segment attached">
+		<form action="business/billSett.do" method="post" id="filter-form"></form>
+		<form action="business/billSettConfirm.do?status=${status}" method="post" id="bill-form">
+			<div class="ui segment">
+				<div class="">
+					<div class="ui icon input" id="datetimepickerStart">
+						<input type="text" name="start" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
+							onclick="$('#datepicker-start').handleDtpicker('show');"></i>
 					</div>
-					<div style="margin-top: 10px;">
-
-						<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')" style="margin-top: 5px; margin-bottom: 5px;">
-							未结算 ${newCount} 个 </a> <a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
-							style="margin-top: 5px; margin-bottom: 5px;"> 已结算 ${understanding} 个 </a><a class="ui label"
-							onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
-
-						<div class="ui label">
-							<a class="ui huge label">选择<span id="sett-count-span" style="font-weight: bold; color: red;">${count}</span>份
-							</a> <a class="ui huge label"> <i class="yen icon"></i><span id="sett-amount-span"
-								style="font-weight: bold; color: red;">${amount}</span>
-							</a>
-							<c:if test="${count == 0}">
-								<div class="ui green button czsConfirm" style="display: none;">结算</div>
-							</c:if>
-							<c:if test="${count > 0}">
-								<div class="ui green button czsConfirm">结算</div>
-							</c:if>
-						</div>
+					<div class="ui icon input" id="datetimepickerEnd">
+						<input type="text" name="end" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
+							onclick="$('#datepicker-end').handleDtpicker('show');"></i>
 					</div>
 				</div>
-				<table class="ui sortable table segment" style="display: table; font-size: 15px;">
-					<thead>
-						<tr>
-							<th class="number">序号</th>
-							<th class="" width="35px" style="width: 35px;"><div class="ui checkbox czsSelectAll">
-									<input type="checkbox" checked="checked"><label style="width: 0px; padding-left: 0px;"></label>
-								</div></th>
-							<th class="">消费者</th>
-							<th class="number">消费金额</th>
-							<th class="">位置</th>
-							<th class="">类型</th>
-							<th class="">状态</th>
-							<th class="">结账者</th>
-							<th class="number">结账时间</th>
-							<th class="">结算者</th>
-							<th class="number">结算时间</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach items="${billList}" var="item" varStatus="sts">
-							<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
-								<td class="">${sts.index + 1}</td>
-								<td class="" data-sort-value="1" width="35px" style="width: 35px;"><c:if test="${item.status==0}">
-										<div class="ui checkbox czsItem" czs-value="${item.amount}">
-											<input type="checkbox" name="id" value="${item.id}" checked="checked"><label
-												style="width: 0px; padding-left: 0px;"></label>
-										</div>
-									</c:if></td>
-								<td class="" data-sort-value="${item.nickname}"><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
-								<td class="">${item.amount}</td>
-								<td class="">${item.description}</td>
-								<td class=""><c:if test="${item.type=='0'}">个人结账</c:if> <c:if test="${item.type=='1'}">集体结账</c:if></td>
-								<td class=""><c:if test="${item.status==0}">未结算</c:if> <c:if test="${item.status==1}">已结算
+				<div style="margin-top: 10px;">
+
+					<a class="ui label" id="czsStatus-0" onclick="filterHandler('0')" style="margin-top: 5px; margin-bottom: 5px;">
+						未结算 ${newCount} 个 </a> <a class="ui label" id="czsStatus-1" onclick="filterHandler('1')"
+						style="margin-top: 5px; margin-bottom: 5px;"> 已结算 ${understanding} 个 </a><a class="ui label"
+						onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
+
+					<div class="ui label">
+						<a class="ui huge label">选择<span id="sett-count-span" style="font-weight: bold; color: red;">${count}</span>份
+						</a> <a class="ui huge label"> <i class="yen icon"></i><span id="sett-amount-span"
+							style="font-weight: bold; color: red;">${amount}</span>
+						</a>
+						<c:if test="${count == 0}">
+							<div class="ui green button czsConfirm" style="display: none;">结算</div>
+						</c:if>
+						<c:if test="${count > 0}">
+							<div class="ui green button czsConfirm">结算</div>
+						</c:if>
+					</div>
+				</div>
+			</div>
+			<table class="ui sortable table segment" style="display: table; font-size: 15px;">
+				<thead>
+					<tr>
+						<th class="number">序号</th>
+						<th class="" width="35px" style="width: 35px;"><div class="ui checkbox czsSelectAll">
+								<input type="checkbox" checked="checked"><label style="width: 0px; padding-left: 0px;"></label>
+							</div></th>
+						<th class="">消费者</th>
+						<th class="number">消费金额</th>
+						<th class="">位置</th>
+						<th class="">类型</th>
+						<th class="">状态</th>
+						<th class="">结账者</th>
+						<th class="number">结账时间</th>
+						<th class="">结算者</th>
+						<th class="number">结算时间</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${billList}" var="item" varStatus="sts">
+						<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
+							<td class="">${sts.index + 1}</td>
+							<td class="" data-sort-value="1" width="35px" style="width: 35px;"><c:if test="${item.status==0}">
+									<div class="ui checkbox czsItem" czs-value="${item.amount}">
+										<input type="checkbox" name="id" value="${item.id}" checked="checked"><label
+											style="width: 0px; padding-left: 0px;"></label>
+									</div>
+								</c:if></td>
+							<td class="" data-sort-value="${item.nickname}"><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+							<td class="">${item.amount}</td>
+							<td class="">${item.description}</td>
+							<td class=""><c:if test="${item.type=='0'}">个人结账</c:if> <c:if test="${item.type=='1'}">集体结账</c:if></td>
+							<td class=""><c:if test="${item.status==0}">未结算</c:if> <c:if test="${item.status==1}">已结算
 							</c:if></td>
-								<td class="" data-sort-value="${item.bill_nickname}"><c:if test="${! empty item.bill_nickname}">
-										<img class="ui avatar image" src="${item.bill_headimgurl}/64">${item.bill_nickname}(${item.bill_sex})</c:if></td>
-								<td class="spec-diff" data-sort-value="${item.sec_diff}" data-html="距今:${item.diff}">${item.date_time}</td>
-								<td class="" data-sort-value="${item.sett_name}"><c:if test="${! empty item.sett_nickname}">
-										<img class="ui avatar image" src="${item.sett_headimgurl}/64">${item.sett_nickname}(${item.sett_sex})</c:if></td>
-								<td class="spec-diff" data-sort-value="${item.sec_sett_diff}" data-html="距今:${item.sett_diff}"><c:if
-										test="${! empty item.sett_date_time}">
-										<a class="ui label" style="text-decoration: underline;"
-											onclick="queryByDateHandler('${item.sett_times}', '${item.sett_date_time}')">${item.sett_date_time}</a>
-									</c:if></td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-			</form>
-		</div>
-
-		<!-- footer -->
-		<%@ include file="../footer.jsp"%>
+							<td class="" data-sort-value="${item.bill_nickname}"><c:if test="${! empty item.bill_nickname}">
+									<img class="ui avatar image" src="${item.bill_headimgurl}/64">${item.bill_nickname}(${item.bill_sex})</c:if></td>
+							<td class="spec-diff" data-sort-value="${item.sec_diff}" data-html="距今:${item.diff}">${item.date_time}</td>
+							<td class="" data-sort-value="${item.sett_name}"><c:if test="${! empty item.sett_nickname}">
+									<img class="ui avatar image" src="${item.sett_headimgurl}/64">${item.sett_nickname}(${item.sett_sex})</c:if></td>
+							<td class="spec-diff" data-sort-value="${item.sec_sett_diff}" data-html="距今:${item.sett_diff}"><c:if
+									test="${! empty item.sett_date_time}">
+									<a class="ui label" style="text-decoration: underline;"
+										onclick="queryByDateHandler('${item.sett_times}', '${item.sett_date_time}')">${item.sett_date_time}</a>
+								</c:if></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</form>
 	</div>
+
+	<!-- footer -->
+	<%@ include file="../footer.jsp"%>
 
 	<div class="ui small modal czsConfirm">
 		<div class="header">确认提示</div>
@@ -251,25 +260,22 @@
 					$('.ui.modal.czsBillByDate').modal('show');
 					return true;
 				} else {
-					if (!!msg.msg && !!msg.msg.detail) {
-						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					} else {
-						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-					}
-					$('.ui.dimmer.czsMsg > .content').show();
-					$('.ui.dimmer.czsMsg').dimmer('show');
+					$('#fail-msg p').text(msg.msg.detail);
+					$.colorbox({
+						inline : true,
+						href : '#fail-msg',
+						onOpen : function() {
+						},
+						onClosed : function() {
+						}
+					});
 				}
 			});
 		}
 
 		jQuery(function($) {
 
-			$('.ui.dimmer.czsMsg').click(function() {
-				$('.ui.dimmer.czsMsg > .content').hide();
-			});
-
 			$('.ui.modal.czsConfirm').modal({
-				closable : false,
 				onApprove : function() {
 					$('#bill-form').submit();
 				}
@@ -280,6 +286,7 @@
 			$('.spec-diff').popup();
 
 			$('table').tablesort().data('tablesort');
+
 			$('thead th.number').data('sortBy', function(th, td, sorter) {
 				if (!!$(td).attr('data-sort-value')) {
 					return parseInt($(td).attr('data-sort-value'), 10);

@@ -15,13 +15,16 @@
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
+
 <link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
-<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
-<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
+<link href="../../../resources/colorbox/css/colorbox.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/colorbox/js/jquery.colorbox-min.js" charset="utf-8"></script>
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -29,7 +32,7 @@
 	});
 </script>
 <script id="joinTrTpl" type="text/x-jquery-tmpl">
-<tr id="item-tr-join-{{html id}}" class="item-tr-{{html menu_id}}">
+<tr id="item-tr-join-{{html id}}" class="item-tr-join-{{html menu_id}}">
 <input type="hidden" name="id" value="{{html id}}">
 <input type="hidden" name="copies" value="{{html copies}}">
 	<td class="">{{html name}}</td>
@@ -47,11 +50,22 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 
-	<div class="ui dimmer czsMsg">
-		<div class="content" style="display: none;">
-			<div class="center">
-				<div class="ui huge message">
-					<span></span>
+	<!-- message -->
+	<div style="display: none;">
+		<div id="succeed-msg">
+			<div class="ui icon green message">
+				<i class="info icon"></i>
+				<div class="content">
+					<div class="header">操作成功!</div>
+				</div>
+			</div>
+		</div>
+		<div id="fail-msg">
+			<div class="ui icon red message">
+				<i class="info icon"></i>
+				<div class="content">
+					<div class="header">操作失败!</div>
+					<p></p>
 				</div>
 			</div>
 		</div>
@@ -64,11 +78,9 @@
 	<%@ include file="../header.jsp"%>
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">
-		订单一览
-		<div class="circular ui red label">
-			<span id="orderCount-span">${fn:length(orderList)}</span>份
-		</div>
-		<div class="ui green tiny button czsManual" style="margin-left: 20px;">手动刷新</div>
+		订单一览 <a class="circular ui red label"> <span id="orderCount-span">${fn:length(orderList)}</span>份
+		</a>
+		<div class="ui green tiny button" onclick="window.location.reload();" style="margin-left: 20px;">手动刷新</div>
 	</h4>
 	<div class="ui segment attached">
 		<table class="ui sortable table segment" style="display: table; font-size: 15px;">
@@ -182,6 +194,7 @@
 			_type = type;
 			_copies = copies;
 			$('.ui.modal.czsConfirm').modal('show');
+			$('.ui.modal.czsBillJoin').modal('hide');
 		}
 
 		function acceptJoinHandler(id, menu_id) {
@@ -200,14 +213,15 @@
 					$('.ui.modal.czsBillJoin > .header').text('合并订单信息 - 共' + total + '份');
 					$('.ui.modal.czsBillJoin').modal('show');
 				} else {
-					if (!!msg.msg && !!msg.msg.detail) {
-						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					} else {
-						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-					}
-					$('.ui.dimmer.czsMsg > .content').show();
-					$('.ui.dimmer.czsMsg').dimmer('show');
-
+					$('#fail-msg p').text(msg.msg.detail);
+					$.colorbox({
+						inline : true,
+						href : '#fail-msg',
+						onOpen : function() {
+						},
+						onClosed : function() {
+						}
+					});
 				}
 
 			});
@@ -224,7 +238,6 @@
 			$('#menu-item-order-list').addClass('active');
 
 			$('.ui.modal.czsConfirm').modal({
-				closable : false,
 				onApprove : function() {
 					$.post('menu/accept.do', {
 						id : _id,
@@ -237,85 +250,73 @@
 								$('#item-tr-' + _id).remove();
 								$('#item-tr-join-' + _id).remove();
 							}
+							$('#orderCount-span').text(Number($('#orderCount-span').text()) - 1);
 							return true;
 						} else {
-							if (!!msg.msg && !!msg.msg.detail) {
-								$('.ui.dimmer.czsMsg .center span').html();
-								TINY.box.show({
-									html : '操作失败!<br/>失败信息:' + msg.msg.detail,
-									animate : false,
-									close : false,
-									boxid : 'error',
-									topsplit : 3
-								})
-							} else {
-								TINY.box.show({
-									html : '操作失败,请刷新页面再试!',
-									animate : false,
-									close : false,
-									boxid : 'error',
-									topsplit : 3
-								})
-							}
+							$('#fail-msg p').text(msg.msg.detail);
+							$.colorbox({
+								inline : true,
+								href : '#fail-msg',
+								onOpen : function() {
+								},
+								onClosed : function() {
+								}
+							});
 						}
 					});
 				}
 			});
 
-			$('.ui.modal.czsBillJoin').modal({
-				closable : false,
-				onApprove : function() {
-					$.post('menu/acceptJoin.do', $('#join-form').serialize(), function(msg) {
-						if (msg.succeed) {
-							$('.item-tr-' + _menu_id).remove();
-							return true;
-						} else {
-							if (!!msg.msg && !!msg.msg.detail) {
-								$('.ui.dimmer.czsMsg .center span').html();
-								TINY.box.show({
-									html : '操作失败!<br/>失败信息:' + msg.msg.detail,
-									animate : false,
-									close : false,
-									boxid : 'error',
-									topsplit : 3
-								})
-							} else {
-								TINY.box.show({
-									html : '操作失败,请刷新页面再试!',
-									animate : false,
-									close : false,
-									boxid : 'error',
-									topsplit : 3
-								})
-							}
+			$('.ui.modal.czsBillJoin').modal(
+					{
+						onApprove : function() {
+							$.post('menu/acceptJoin.do', $('#join-form').serialize(), function(msg) {
+								if (msg.succeed) {
+									$('#orderCount-span').text(
+											Number($('#orderCount-span').text())
+													- Number($('.item-tr-' + _menu_id).size()));
+									$('.item-tr-' + _menu_id).remove();
+									$('.item-tr-join-' + _menu_id).remove();
+
+									return true;
+								} else {
+									$('#fail-msg p').text(msg.msg.detail);
+									$.colorbox({
+										inline : true,
+										href : '#fail-msg',
+										onOpen : function() {
+										},
+										onClosed : function() {
+										}
+									});
+								}
+							});
 						}
 					});
-				}
-			});
-
-			$('.ui.button.czsManual').click(function() {
-				window.location.reload();
-			});
 
 			setInterval(function() {
 				$.post('businessRole/free/checkBill.do', {
 					businessId : '${businessId}'
 				}, function(msg) {
 					if (msg.succeed) {
-						if (!($('.ui.dimmer.czsMsg').dimmer('is active'))) {
-							var cnt = Number($('#orderCount-span').text());
-							if (cnt != msg.value) {
-								window.location.reload();
-							}
+						if ($('.ui.dimmer').dimmer('is active') == true) {
+							return;
+						}
+
+						var cnt = Number($('#orderCount-span').text());
+						if (cnt != msg.value) {
+							window.location.reload();
 						}
 					} else {
-						if (!!msg.msg && !!msg.msg.detail) {
-							$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-						} else {
-							$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-						}
-						$('.ui.dimmer.czsMsg > .content').show();
-						$('.ui.dimmer.czsMsg').dimmer('show');
+						$('#fail-msg p').text(msg.msg.detail);
+						$.colorbox({
+							inline : true,
+							href : '#fail-msg',
+							onOpen : function() {
+							},
+							onClosed : function() {
+							}
+						});
 					}
 				});
 			}, 5 * 1000);

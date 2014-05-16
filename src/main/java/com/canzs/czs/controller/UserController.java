@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +37,7 @@ import com.canzs.czs.service.IUserService;
 import com.canzs.czs.util.DateUtil;
 import com.canzs.czs.util.NumberUtil;
 import com.canzs.czs.util.StringUtil;
+import com.canzs.czs.util.WebUtil;
 
 /**
  * 【用户】请求控制层.
@@ -548,7 +550,9 @@ public class UserController extends BaseController {
 
 		ResultMsg resultMsg = new ResultMsg(true);
 		resultMsg.setValues(list);
-		resultMsg.setValue(NumberUtil.format2Money(total));
+		resultMsg.put("total", NumberUtil.format2Money(total));
+		resultMsg.put("title", WebUtil.getSessionBusiness(request).getName());
+		resultMsg.put("date", DateTime.now().toString("yyyy-MM-dd hh:mm:ss"));
 
 		return resultMsg;
 	}

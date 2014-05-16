@@ -21,7 +21,7 @@
 <script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 <script src="../../../resources/colorbox/js/jquery.colorbox-min.js" charset="utf-8"></script>
-<script src="../../../resources/colorbox/i18n/jquery.colorbox-zh-CN.js" charset="utf-8"></script>
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -30,6 +30,28 @@
 </script>
 </head>
 <body style="margin: 0px; padding: 0px;">
+
+	<!-- message -->
+	<div style="display: none;">
+		<div id="succeed-msg">
+			<div class="ui icon green message">
+				<i class="info icon"></i>
+				<div class="content">
+					<div class="header">操作成功!</div>
+				</div>
+			</div>
+		</div>
+		<div id="fail-msg">
+			<div class="ui icon red message">
+				<i class="info icon"></i>
+				<div class="content">
+					<div class="header">操作失败!</div>
+					<p></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 侧边栏 -->
 	<%@ include file="../menu.jsp"%>
 
@@ -37,6 +59,7 @@
 	<%@ include file="../header.jsp"%>
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">二维码发送</h4>
+
 	<a id="error-msg-anchor"></a>
 
 	<div class="ui segment attached">
@@ -92,11 +115,22 @@
 					$.post('qrcode/sendMailZip.do', $('#add-qrcode-form').serialize(), function(msg) {
 						if (msg.succeed) {
 							$.colorbox({
-								html : '<h3 class="ui header">发送成功!</h3>'
+								inline : true,
+								href : '#succeed-msg',
+								onOpen : function() {
+								},
+								onClosed : function() {
+								}
 							});
 						} else {
+							$('#fail-msg p').text(msg.msg.detail);
 							$.colorbox({
-								html : '<h3 class="ui red header">发送失败!</h3>'
+								inline : true,
+								href : '#fail-msg',
+								onOpen : function() {
+								},
+								onClosed : function() {
+								}
 							});
 						}
 					});

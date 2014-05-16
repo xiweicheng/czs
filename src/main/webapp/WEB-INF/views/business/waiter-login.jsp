@@ -303,11 +303,13 @@
 					businessId : '${param.businessId}'
 				}, function(msg) {
 					if (msg.succeed) {
-						if (!($('.ui.dimmer').dimmer('is active'))) {
-							var cnt = Number($('#orderCount-span').text());
-							if (cnt != msg.value) {
-								window.location.reload();
-							}
+						if ($('.ui.dimmer').dimmer('is active') == true) {
+							return;
+						}
+
+						var cnt = Number($('#orderCount-span').text());
+						if (cnt != msg.value) {
+							window.location.reload();
 						}
 					} else {
 						clearInterval(_intervalRef);

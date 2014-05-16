@@ -120,7 +120,14 @@
 
 					$('.ui.segment.czsService').highcharts({
 						chart : {
-							type : 'column'
+							type : 'column',
+							events: {
+								load : function(event){
+									setTimeout(function(){
+										event.currentTarget.reflow();
+									}, 100)
+								}
+							}
 						},
 						title : {
 							text : '服务统计'

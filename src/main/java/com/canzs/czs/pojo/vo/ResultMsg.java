@@ -1,7 +1,9 @@
 package com.canzs.czs.pojo.vo;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.canzs.czs.util.WebUtil;
 
@@ -46,6 +48,9 @@ public class ResultMsg implements Serializable {
 
 	/** values [List<Object>]调用返回结果对象列表 */
 	private List values;
+
+	/** map [Map<String,Object>] 额外的key-value返回值 */
+	private Map<String, Object> map = new HashMap<String, Object>();
 
 	/** totalProperty [long]分页使用的总的行数 */
 	private long total;
@@ -190,11 +195,24 @@ public class ResultMsg implements Serializable {
 		this.total = total;
 	}
 
+	public Map<String, Object> getMap() {
+		return map;
+	}
+
+	public void setMap(Map<String, Object> map) {
+		this.map = map;
+	}
+
+	public ResultMsg put(String key, Object value) {
+		map.put(key, value);
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return "ResultMsg [mimeType=" + mimeType + ", id=" + id + ", verson=" + verson + ", auth=" + auth
 				+ ", succeed=" + succeed + ", msg=" + msg + ", msgs=" + msgs + ", value=" + value + ", values="
-				+ values + ", total=" + total + "]";
+				+ values + ", map=" + map + ", total=" + total + "]";
 	}
 
 }

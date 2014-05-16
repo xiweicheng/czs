@@ -214,6 +214,14 @@
 			<div class="ui checkbox czsFilterOver" style="margin-left: 20px;">
 				<input type="checkbox" name="filterOver"> <label>过滤终止状态</label>
 			</div>
+
+			<div class="ui small red vertical animated button czzRequest" style="position: absolute; top: 2px; right: 2px;">
+				<div class="hidden content">请求</div>
+				<div class="visible content">
+					<i class="bullhorn icon">&nbsp;(<span id="request-count-span">0</span>)
+					</i>
+				</div>
+			</div>
 		</h4>
 		<div class="ui segment attached" style="min-height: 490px;">
 			<div>
@@ -415,6 +423,8 @@
 	<!-- 消费账单打印 -->
 	<div style="display: none;">
 		<div id="bill-print-div">
+			<div id="print-title-div">天下一绝</div>
+			<div id="print-date-div">2014-05-16 12:22:00</div>
 			<div class="ui bulleted list menuList"></div>
 			<div id="print-total-div"></div>
 		</div>
@@ -461,8 +471,10 @@
 				if (msg.succeed) {
 					$('#billTrTpl').tmpl(msg.values).appendTo($('#bill-detail-tbody').empty());
 					$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
-					$('#print-total-div').text('总价: ￥' + msg.value);
-					$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
+					$('#print-total-div').text('总价: ￥' + msg.map.total);
+					$('#print-title-div').text(msg.map.title);
+					$('#print-date-div').text(msg.map.date);
+					$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.map.total);
 					$('.ui.dimmer.czsBillDetail .czsOwn').addClass('active green');
 					$('.ui.dimmer.czsBillDetail .czsGroup').removeClass('active green');
 					$('.ui.dimmer.czsBillDetail').dimmer('show');
@@ -755,9 +767,11 @@
 								$('#billTrTpl').tmpl(msg.values).appendTo($('#bill-detail-tbody').empty());
 
 								$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
-								$('#print-total-div').text('总价: ￥' + msg.value);
+								$('#print-total-div').text('总价: ￥' + msg.map.total);
+								$('#print-title-div').text(msg.map.title);
+								$('#print-date-div').text(msg.map.date);
 
-								$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
+								$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.map.total);
 								if ($('.ui.button.czsImage').attr('czs-status') == '1') {
 									$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find(
 											'img').each(function() {
@@ -794,9 +808,11 @@
 								$('#billTrTpl').tmpl(msg.values).appendTo($('#bill-detail-tbody').empty());
 
 								$('#menuItemPrintTpl').tmpl(msg.values).appendTo($('.ui.list.menuList').empty());
-								$('#print-total-div').text('总价: ￥' + msg.value);
+								$('#print-total-div').text('总价: ￥' + msg.map.total);
+								$('#print-title-div').text(msg.map.title);
+								$('#print-date-div').text(msg.map.date);
 
-								$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.value);
+								$('.ui.button.czsTakeBill > .visible.content').text('￥' + msg.map.total);
 
 								if ($('.ui.button.czsImage').attr('czs-status') == '1') {
 									$('#bill-detail-ui-stackable-items').find('div[class="image"]').show().end().find(
@@ -838,10 +854,6 @@
 
 			var intervalRef;
 
-			/* $('.ui.right.sidebar').sidebar({
-				exclusive : false
-			}); */
-
 			try {
 				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 					$('.ui.right.sidebar').sidebar('hide');
@@ -860,11 +872,7 @@
 				$('.ui.right.sidebar').sidebar('show');
 			}
 
-			$(
-					'<a class="launch item czzRequest" style="float:right;"> 实时请求(<span id="request-count-span">0</span>)<i class="icon list layout"></i></a>')
-					.appendTo('.container.czzTopMenu');
-
-			$('.launch.item.czzRequest').click(function() {
+			$('.ui.button.czzRequest').click(function() {
 				$('.ui.right.sidebar').sidebar('toggle');
 
 				if ($('.ui.right.sidebar').sidebar('is open')) {

@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -12,18 +11,22 @@
 <head>
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-商家服务</title>
 
 <link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
 <link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
 <link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/colorbox/css/colorbox.css" rel="stylesheet" type="text/css">
 
 <script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/js/lib/jquery-migrate-1.2.1.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="../../../resources/datetimepicker/js/jquery.simple-dtpicker.js" charset="utf-8"></script>
 <script type="text/javascript" src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
+<script type="text/javascript" src="../../../resources/colorbox/js/jquery.colorbox-min.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -34,110 +37,96 @@
 </head>
 <body style="margin: 0px; padding: 0px;">
 
-	<div class="ui dimmer czsMsg">
-		<div class="content" style="display: none;">
-			<div class="center">
-				<div class="ui huge message">
-					<span></span>
+	<!-- message -->
+	<div style="display: none;">
+		<div id="succeed-msg">
+			<div class="ui icon green message">
+				<i class="info icon"></i>
+				<div class="content">
+					<div class="header">操作成功!</div>
+				</div>
+			</div>
+		</div>
+		<div id="fail-msg">
+			<div class="ui icon red message">
+				<i class="info icon"></i>
+				<div class="content">
+					<div class="header">操作失败!</div>
+					<p></p>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div>
-		<!-- 侧边栏 -->
-		<%@ include file="../menu.jsp"%>
+	<!-- 侧边栏 -->
+	<%@ include file="../menu.jsp"%>
 
-		<!-- header -->
-		<%@ include file="../header.jsp"%>
+	<!-- header -->
+	<%@ include file="../header.jsp"%>
 
-		<!-- top spacer -->
-		<div class="czs top spacer"></div>
+	<!-- top spacer -->
+	<div class="czs top spacer"></div>
 
-		<h4 class="ui top bottom attached header">
-			服务请求
-			<div class="circular ui red label">
-				<span id="msgCount-span">${fn:length(msgList)}</span>个
-			</div>
-		</h4>
-		<div class="ui segment attached">
+	<h4 class="ui top bottom attached header">
+		服务请求 <a class="circular ui red label"> <span id="msgCount-span">${fn:length(msgList)}</span>个
+		</a>
+	</h4>
+	<div class="ui segment attached">
 
-			<div class="ui segment">
-				<div class="">
-					<div class="ui icon input" id="datetimepickerStart">
-						<input type="text" name="start" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
-							onclick="$('#datepicker-start').handleDtpicker('show');"></i>
-					</div>
-					<div class="ui icon input" id="datetimepickerEnd">
-						<input type="text" name="end" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
-							onclick="$('#datepicker-end').handleDtpicker('show');"></i>
-					</div>
+		<div class="ui segment">
+			<div class="">
+				<div class="ui icon input" id="datetimepickerStart">
+					<input type="text" name="start" placeholder="开始日期" id="datepicker-start"><i class="calendar icon"
+						onclick="$('#datepicker-start').handleDtpicker('show');"></i>
+				</div>
+				<div class="ui icon input" id="datetimepickerEnd">
+					<input type="text" name="end" placeholder="结束日期" id="datepicker-end"><i class="calendar icon"
+						onclick="$('#datepicker-end').handleDtpicker('show');"></i>
 				</div>
 			</div>
-			<div style="margin-top: 10px;">
-				<form action="business/listService.do" method="post" id="filter-form"></form>
-				<a class="ui label" id="czsStatus-1" onclick="filterHandler('1')" style="margin-top: 5px; margin-bottom: 5px;">
-					新请求 ${newCount} 个 </a> <a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
-					style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${understanding} 个 </a><a class="ui label"
-					onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
-			</div>
 		</div>
-		<table class="ui sortable table segment" style="display: table; font-size: 15px;">
-			<thead>
-				<tr>
-					<th class="number">序号</th>
-					<th class="">顾客</th>
-					<th class="">位置</th>
-					<th class="">类型</th>
-					<th class="">状态</th>
-					<th class="">时间</th>
-					<th class="number">距今</th>
-					<th class="">接受者</th>
+		<div style="margin-top: 10px;">
+			<form action="business/listService.do" method="post" id="filter-form"></form>
+			<a class="ui label" id="czsStatus-1" onclick="filterHandler('1')" style="margin-top: 5px; margin-bottom: 5px;">
+				新请求 ${newCount} 个 </a> <a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
+				style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${understanding} 个 </a><a class="ui label"
+				onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
+		</div>
+	</div>
+	<table class="ui sortable table segment" style="display: table; font-size: 15px;">
+		<thead>
+			<tr>
+				<th class="number">序号</th>
+				<th class="">顾客</th>
+				<th class="">位置</th>
+				<th class="">类型</th>
+				<th class="">状态</th>
+				<th class="">时间</th>
+				<th class="number">距今</th>
+				<th class="">接受者</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach items="${msgList}" var="item" varStatus="sts">
+				<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
+					<td class="">${sts.index + 1}</td>
+					<td class="" data-sort-value="${item.nickname}"><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+					<td class="">${item.description}</td>
+					<td class=""><c:if test="${item.type=='0'}">呼叫服务</c:if></td>
+					<td class=""><c:if test="${item.status==0}">已接受</c:if> <c:if test="${item.status==1}">待接收<a
+								class="ui green label" id="ui-label-accept-${item.id}" onclick="serviceHandler('0', '${item.id}', '${item.consumer_id}')">接受</a>
+						</c:if></td>
+					<td class="">${item.date_time}</td>
+					<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
+					<td class="" data-sort-value="${item.handler_name}"><c:if test="${! empty item.handler_name}">
+							<img class="ui avatar image" src="${item.handler_headimgurl}/64">${item.handler_name}(${item.handler_sex})</c:if></td>
 				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${msgList}" var="item" varStatus="sts">
-					<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
-						<td class="">${sts.index + 1}</td>
-						<td class="" data-sort-value="${item.nickname}"><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
-						<td class="">${item.description}</td>
-						<td class=""><c:if test="${item.type=='0'}">呼叫服务</c:if></td>
-						<td class=""><c:if test="${item.status==0}">已接受</c:if> <c:if test="${item.status==1}">待接收<a
-									class="ui green label" id="ui-label-accept-${item.id}" onclick="serviceHandler('0', '${item.id}')">接受</a>
-							</c:if></td>
-						<td class="">${item.date_time}</td>
-						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
-						<td class="" data-sort-value="${item.handler_name}"><c:if test="${! empty item.handler_name}">
-								<img class="ui avatar image" src="${item.handler_headimgurl}/64">${item.handler_name}(${item.handler_sex})</c:if></td>
-					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
-	</div>
+			</c:forEach>
+		</tbody>
+	</table>
 
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
-	</div>
-
-	<div class="ui small modal czsConfirm">
-		<div class="header">确认提示</div>
-		<div class="content">
-			<div class="left">
-				<i class="warning icon"></i>
-			</div>
-			<div class="right" style="font-size: 30px;"></div>
-		</div>
-		<div class="actions">
-			<div class="two fluid ui buttons">
-				<div class="ui negative labeled icon button">
-					<i class="remove icon"></i> 取消
-				</div>
-				<div class="ui positive right labeled icon button">
-					确认 <i class="checkmark icon"></i>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<script type="text/javascript">
 		function filterHandler(status) {
@@ -149,34 +138,32 @@
 									$('#datetimepickerEnd > input').val())).submit();
 		}
 
-		function serviceHandler(status, id) {
+		function serviceHandler(status, id, consumer_id) {
 			$.post('business/serviceHandle.do', {
 				status : status,
+				consumerId : consumer_id,
 				id : id
 			}, function(msg) {
 				if (msg.succeed) {
 					$('#ui-label-accept-' + id).hide();
 				} else {
-					if (!!msg.msg && !!msg.msg.detail) {
-						$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-					} else {
-						$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-					}
-					$('.ui.dimmer.czsMsg > .content').show();
-					$('.ui.dimmer.czsMsg').dimmer('show');
+					$('#fail-msg p').text(msg.msg.detail);
+					$.colorbox({
+						inline : true,
+						href : '#fail-msg',
+						onOpen : function() {
+						},
+						onClosed : function() {
+						}
+					});
 				}
 			});
 		}
 
 		jQuery(function($) {
 
-			$('.ui.dimmer.czsMsg').click(function() {
-				$('.ui.dimmer.czsMsg > .content').hide();
-			});
-
-			$('.ui.modal').modal();
-
 			$('table').tablesort().data('tablesort');
+
 			$('thead th.number').data('sortBy', function(th, td, sorter) {
 				if (!!$(td).attr('data-sort-value')) {
 					return parseInt($(td).attr('data-sort-value'), 10);
@@ -213,20 +200,25 @@
 					end : $('#datetimepickerEnd > input').val()
 				}, function(msg) {
 					if (msg.succeed) {
-						if (!($('.ui.dimmer.czsMsg').dimmer('is active'))) {
-							var cnt = Number($('#msgCount-span').text());
-							if (cnt != msg.value) {
-								filterHandler('${status}');
-							}
+
+						if ($('.ui.dimmer').dimmer('is active') == true) {
+							return;
+						}
+
+						var cnt = Number($('#msgCount-span').text());
+						if (cnt != msg.value) {
+							filterHandler('${status}');
 						}
 					} else {
-						if (!!msg.msg && !!msg.msg.detail) {
-							$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + msg.msg.detail);
-						} else {
-							$('.ui.dimmer.czsMsg .center span').text('操作失败!');
-						}
-						$('.ui.dimmer.czsMsg > .content').show();
-						$('.ui.dimmer.czsMsg').dimmer('show');
+						$('#fail-msg p').text(msg.msg.detail);
+						$.colorbox({
+							inline : true,
+							href : '#fail-msg',
+							onOpen : function() {
+							},
+							onClosed : function() {
+							}
+						});
 					}
 				});
 			}, 5 * 1000);

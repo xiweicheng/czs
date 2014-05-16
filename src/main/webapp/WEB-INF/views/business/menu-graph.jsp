@@ -62,16 +62,6 @@
 			<div class="ui button czsConfirm">确定</div>
 		</div>
 		<div class="content" style="padding: 5px; height: 400px;"></div>
-		<!-- <div class="actions">
-			<div class="two fluid ui buttons">
-				<div class="ui deny labeled icon button">
-					<i class="remove icon"></i> 取消
-				</div>
-				<div class="ui approve right labeled icon button">
-					确定 <i class="checkmark icon"></i>
-				</div>
-			</div>
-		</div> -->
 	</div>
 
 	<script type="text/javascript">
@@ -189,14 +179,21 @@
 			});
 
 			var _ids;//[]
-
+			
 			$.post("business/menuGraph.do", {}, function(msg) {
 
 				if (msg.succeed) {
 					_ids = msg.value.ids;
 					$('.ui.segment.czsMenu').highcharts({
 						chart : {
-							type : 'bar'
+							type : 'bar',
+							events: {
+								load : function(event){
+									setTimeout(function(){
+										event.currentTarget.reflow();
+									}, 100)
+								}
+							}
 						},
 						title : {
 							text : '菜品点击统计'

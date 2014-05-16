@@ -121,7 +121,14 @@
 					$('.ui.segment.czsMenu').highcharts(
 							{
 								chart : {
-									type : 'column'
+									type : 'column',
+									events : {
+										load : function(event) {
+											setTimeout(function() {
+												event.currentTarget.reflow();
+											}, 100)
+										}
+									}
 								},
 								exporting : {
 									url : 'http://192.168.10.14:8080/'

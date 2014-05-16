@@ -1281,7 +1281,7 @@ public class BusinessController extends BaseController {
 	 */
 	@RequestMapping("serviceHandle")
 	@ResponseBody
-	public ResultMsg serviceHandle(HttpServletRequest request, Locale locale, @ModelAttribute Service service) {
+	public ResultMsg serviceHandle(HttpServletRequest request, Locale locale, @ModelAttribute final Service service) {
 
 		logger.debug("顾客服务处理【商家】");
 
@@ -1291,6 +1291,15 @@ public class BusinessController extends BaseController {
 		service.setHandler(WebUtil.getSessionBusiness(request).getOpenId());
 
 		boolean val = serviceService.updateStatus(locale, service);
+
+		if (val && SysConstant.SERVICE_STATUS_ACCEPT.equals(service.getStatus())) {
+
+			ThreadUtil.exec(new Runnable() {
+				public void run() {
+					weiXinApiInvoker.sendServiceMsg(service.getConsumerId(), StringUtil.replace("您的呼叫服务已经被接受,请稍后..."));
+				}
+			});
+		}
 
 		return new ResultMsg(val);
 	}
