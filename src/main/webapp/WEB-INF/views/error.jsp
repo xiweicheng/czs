@@ -9,12 +9,13 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
-<head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-错误提示</title>
+
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
@@ -44,9 +45,5 @@
 
 	<!-- footer -->
 	<%@ include file="footer.jsp"%>
-
-	<script type="text/javascript">
-		
-	</script>
 </body>
 </html>

@@ -464,9 +464,9 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 				businessConsumer2.setStatus(SysConstant.CONSUME_STATUS_ONGOING);// 消费进行中
 			}
 
-			hibernateTemplate.save(businessConsumer2);
-
 			if (user2 != null) {
+				hibernateTemplate.save(businessConsumer2);
+
 				user2.setConsumeCode(businessConsumer2.getConsumeCode());
 				hibernateTemplate.update(user2);
 			} else {
@@ -1221,6 +1221,11 @@ public class BusinessServiceImpl extends BaseServiceImpl implements IBusinessSer
 		}
 
 		return queryConsumerRequestHistory;
+	}
+
+	@Override
+	public List<Map<String, Object>> getInfo(Locale locale, String sessionBusinessId) {
+		return businessDao.getInfo(locale, sessionBusinessId);
 	}
 
 }

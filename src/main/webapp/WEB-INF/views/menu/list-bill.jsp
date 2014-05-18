@@ -16,9 +16,11 @@
 <title>餐助手-顾客服务</title>
 
 <link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="../../../resources/scrollup/css/themes/image.css" rel="stylesheet" type="text/css">
 
 <script src="http://code.jquery.com/jquery-2.0.2.min.js" charset="utf-8"></script>
 <script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="../../../resources/scrollup/js/jquery.scrollUp.min.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -382,6 +384,17 @@
 					t = p;
 				}, 0);
 			});
+			
+			$.scrollUp({
+			    scrollName: 'scrollUp',
+			    topDistance: '300',
+			    topSpeed: 300,
+			    animation: 'fade',
+			    animationInSpeed: 100,
+			    animationOutSpeed: 200,
+			    scrollText: '',
+			    activeOverlay: false,
+			});
 
 			$('.ui.dimmer.czsMsg').click(function() {
 				$('.ui.dimmer.czsMsg > .content').hide();
@@ -444,7 +457,7 @@
 			$('.ui.modal.czsBigImage').modal();
 
 			$('.ui.modal.czsAdd')
-					.modal(
+					.modal('setting', 
 							{
 								onApprove : function() {
 

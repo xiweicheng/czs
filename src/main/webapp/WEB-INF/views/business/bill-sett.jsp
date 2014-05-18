@@ -1,40 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ request.getContextPath() + "/";
-%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<base href="<%=basePath%>">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport"
-	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<!-- head common -->
+<%@ include file="../common.jsp"%>
 <title>餐助手-商家服务</title>
-
-<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
-<link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
-<link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">
-<link href="../../../resources/colorbox/css/colorbox.css" rel="stylesheet" type="text/css">
-
-<script type="text/javascript" src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="../../../resources/datetimepicker/js/jquery.simple-dtpicker.js" charset="utf-8"></script>
-<script type="text/javascript" src="../../../resources/js/lib/date.format.js" charset="utf-8"></script>
-<script type="text/javascript" src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="../../../resources/colorbox/js/jquery.colorbox-min.js" charset="utf-8"></script>
-
-<script type="text/javascript">
-	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-		WeixinJSBridge.call('hideToolbar');
-		WeixinJSBridge.call('hideOptionMenu');
-	});
-</script>
 
 <script id="billTrTpl" type="text/x-jquery-tmpl">
 <tr id="item-tr-{{html id}}" class="item-tr-{{html id}}">
@@ -275,7 +246,7 @@
 
 		jQuery(function($) {
 
-			$('.ui.modal.czsConfirm').modal({
+			$('.ui.modal.czsConfirm').modal('setting', {
 				onApprove : function() {
 					$('#bill-form').submit();
 				}

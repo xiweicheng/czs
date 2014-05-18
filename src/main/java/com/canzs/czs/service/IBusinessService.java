@@ -373,4 +373,6 @@ public interface IBusinessService extends IBaseService {
 	List<Map<String, Object>> queryBusinessConsumerHistory(Locale locale, String businessId, String openId);
 
 	List<Map<String, Object>> queryConsumerRequestHistory(Locale locale, String businessId, String openId);
+
+	List<Map<String, Object>> getInfo(Locale locale, String sessionBusinessId);
 }

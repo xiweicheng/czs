@@ -314,7 +314,7 @@
 				$('#czsCountSpan').text(Number($('#czsCountSpan').text()) + 1);
 			});
 
-			$('.ui.modal.czsAdd').modal(
+			$('.ui.modal.czsAdd').modal('setting', 
 					{
 						onApprove : function() {
 

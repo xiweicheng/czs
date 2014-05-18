@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String basePath = request.getScheme() + "://"
@@ -10,58 +9,53 @@
 <html>
 <head>
 <base href="<%=basePath%>">
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>餐助手-推荐商家信息</title>
+
+<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+
+<script src="../../../resources/js/lib/jquery-1.10.2.min.js" charset="utf-8"></script>
+<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 		WeixinJSBridge.call('hideToolbar');
 	});
 </script>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport"
-	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>餐助手-推荐商家信息</title>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
 	<h4 class="ui top attached header" style="margin-top: 0px;">商家信息</h4>
+
 	<div class="ui segment attached">
 
 		<div class="ui segment">
 
-			<div class="ui red label" id="store-ui-label-0"
-				<c:if test="${storeStatus != '0' }"> style="display: none" </c:if>
+			<div class="ui red label" id="store-ui-label-0" <c:if test="${storeStatus != '0' }"> style="display: none" </c:if>
 				onclick="storeHandler('0', '${business.openId}', '${consumerId}')">
 				<a class="detail"><i class="cart icon"></i> 加入收藏</a>
 			</div>
 
-			<div class="ui red label" id="store-ui-label-6"
-				<c:if test="${storeStatus != '1' }"> style="display: none" </c:if>
+			<div class="ui red label" id="store-ui-label-6" <c:if test="${storeStatus != '1' }"> style="display: none" </c:if>
 				onclick="storeHandler('6', '${business.openId}', '${consumerId}')">
 				<a class="detail"><i class="cart icon"></i> 取消收藏 </a>
 			</div>
 
 			<c:if test="${dislikeStatus == '0' }">
-				<div class="ui red label" id="store-ui-label-3"
-					style="float: right; margin-left: 10px;"
+				<div class="ui red label" id="store-ui-label-3" style="float: right; margin-left: 10px;"
 					onclick="storeHandler('3', '${business.openId}', '${consumerId}')">
 					<a class="detail"><i class="thumbs down icon"></i> <span>${dislikeCount}</span></a>
 				</div>
 			</c:if>
 			<c:if test="${dislikeStatus == '1' }">
-				<div class="ui label" id="store-ui-label-3"
-					style="float: right; margin-left: 10px;">
+				<div class="ui label" id="store-ui-label-3" style="float: right; margin-left: 10px;">
 					<a class="detail"><i class="thumbs down icon"></i> <span>${dislikeCount}</span></a>
 				</div>
 			</c:if>
 			<c:if test="${likeStatus == '0' }">
-				<div class="ui red label" id="store-ui-label-2"
-					style="float: right;"
+				<div class="ui red label" id="store-ui-label-2" style="float: right;"
 					onclick="storeHandler('2', '${business.openId}', '${consumerId}')">
 					<a class="detail"><i class="thumbs up icon"></i> <span>${likeCount}</span></a>
 				</div>

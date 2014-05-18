@@ -1,20 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ request.getContextPath() + "/";
-%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<base href="<%=basePath%>">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<!-- head common -->
+<%@ include file="common.jsp"%>
 <title>餐助手-平台服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
-<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
-<link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -88,51 +79,22 @@
 	<!-- footer -->
 	<%@ include file="footer.jsp"%>
 
-	<script src="http://code.jquery.com/jquery-2.0.2.min.js" charset="utf-8"></script>
-	<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
-	<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
-
-	<script type="text/javascript">
-		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-			WeixinJSBridge.call('hideToolbar');
-			WeixinJSBridge.call('hideOptionMenu');
-		});
-	</script>
 	<script type="text/javascript">
 		jQuery(function($) {
 			$('.ui.submit.button').click(function() {
 				if (!$('#czs-reply-form textarea').val()) {
-					TINY.box.show({
-						html : '评论内容不能为空!',
-						animate : false,
-						close : false,
-						boxid : 'error',
-						topsplit : 3
+					$.colorbox({
+						html : '<h3 class="ui header">评论内容不能为空!</h3>'
 					});
 					return;
 				}
 
 				$.post('czs/free/commentSubmit.do', $('#czs-reply-form').serialize(), function(msg) {
 					if (msg.succeed) {
-
-						/* $('#czs-reply-form textarea').val('');
-										TINY.box.show({
-											html : '提交成功!',
-											animate : true,
-											mask : false,
-											close : false,
-											boxid : 'success',
-											autohide : 2,
-											top : 48
-										}); */
 						window.location.reload();
 					} else {
-						TINY.box.show({
-							html : '操作失败!<br/>失败信息:' + msg.msg.detail,
-							animate : false,
-							close : false,
-							boxid : 'error',
-							topsplit : 3
+						$.colorbox({
+							html : '<h3 class="ui red header">操作失败!<br/>失败信息:' + msg.msg.detail + '</h3>'
 						});
 					}
 				}, 'json');

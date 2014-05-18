@@ -1,34 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ request.getContextPath() + "/";
-%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<base href="<%=basePath%>">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport"
-	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<!-- head common -->
+<%@ include file="../common.jsp"%>
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css"
-	rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js"
-	charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js"
-	charset="utf-8"></script>
-<script type="text/javascript">
-	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-		WeixinJSBridge.call('hideToolbar');
-		WeixinJSBridge.call('hideOptionMenu');
-	});
-</script>
+
 <script id="imageItemTpl" type="text/x-jquery-tmpl">
 <div class="item" style="min-height: 0px;"
 	onclick="selectImage(this, '{{html id}}', '{{html path}}640/{{html fileName}}')">
@@ -76,13 +53,11 @@
 				<div class="ui error message" id="add-menu-ui-message"></div>
 				<div class="two fields">
 					<div class="field">
-						<label>菜名</label> <input placeholder="输入菜名" type="text"
-							name="name" value="${menu.name}">
+						<label>菜名</label> <input placeholder="输入菜名" type="text" name="name" value="${menu.name}">
 					</div>
 					<div class="inline field">
 						<div class="ui checkbox" style="margin-top: 30px;">
-							<input type="checkbox" name="_isDelete"
-								<c:if test="${menu.isDelete==1}">checked="checked"</c:if>><label>禁用
+							<input type="checkbox" name="_isDelete" <c:if test="${menu.isDelete==1}">checked="checked"</c:if>><label>禁用
 								(勾选后该项菜对用户将不再可见)</label>
 						</div>
 					</div>
@@ -92,8 +67,7 @@
 						<label>分类</label>
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
-							<i class="dropdown icon"></i> <input type="hidden"
-								name="categoryId" value="${menu.categoryId}"
+							<i class="dropdown icon"></i> <input type="hidden" name="categoryId" value="${menu.categoryId}"
 								id="category-hidden-input">
 							<div class="menu" id="category-menu-items">
 								<c:forEach items="${menuCategoryList}" var="item">
@@ -104,10 +78,8 @@
 					</div>
 					<div class="field">
 						<div class="ui action input" style="margin-top: 20px;">
-							<input type="text" placeholder="增加分类"
-								id="add-category-text-input">
-							<div class="ui vertical animated button" id="add-category-btn"
-								style="margin-top: 20px;">
+							<input type="text" placeholder="增加分类" id="add-category-text-input">
+							<div class="ui vertical animated button" id="add-category-btn" style="margin-top: 20px;">
 								<div class="hidden content">增加分类</div>
 								<div class="visible content">
 									<i class="add icon"></i>
@@ -118,8 +90,7 @@
 				</div>
 				<div class="two fields">
 					<div class="field">
-						<label>价格</label> <input placeholder="价格" type="text" name="price"
-							value="${menu.price}">
+						<label>价格</label> <input placeholder="价格" type="text" name="price" value="${menu.price}">
 					</div>
 					<div class="field"></div>
 				</div>
@@ -128,8 +99,7 @@
 						<label>口味</label>
 						<div class="ui fluid selection dropdown">
 							<div class="text">选择...</div>
-							<i class="dropdown icon"></i> <input type="hidden" name="tasteId"
-								value="${menu.tasteId}" id="taste-hidden-input">
+							<i class="dropdown icon"></i> <input type="hidden" name="tasteId" value="${menu.tasteId}" id="taste-hidden-input">
 							<div class="menu" id="taste-menu-items">
 								<c:forEach items="${menuTasteList}" var="item">
 									<div class="item" data-value="${item.id}">${item.name }</div>
@@ -158,15 +128,10 @@
 				</div>
 				<div class="two fields">
 					<div class="field">
-						<input type="hidden" name="resourceId" id="resourceId"
-							value="${menu.resourceId}"> <label>图片</label> <img
-							class="rounded ui image" alt="图片"
-							src="../../../${extra_imgPath}640/${extra_imgFileName}"
-							id="resourceImage">
+						<input type="hidden" name="resourceId" id="resourceId" value="${menu.resourceId}"> <label>图片</label> <img
+							class="rounded ui image" alt="图片" src="../../../${extra_imgPath}640/${extra_imgFileName}" id="resourceImage">
 					</div>
-					<div class="ui vertical animated button"
-						style="margin-top: 20px; margin-bottom: 20px;"
-						id="select-image-btn">
+					<div class="ui vertical animated button" style="margin-top: 20px; margin-bottom: 20px;" id="select-image-btn">
 						<div class="hidden content">选择图片</div>
 						<div class="visible content">
 							<i class="browser icon"></i>
@@ -237,8 +202,7 @@
 		<i class="close icon"></i>
 		<div class="header">选择图片</div>
 		<div class="content">
-			<div class="ui three items" style="height: 350px; overflow: auto;"
-				id="image-ui-items"></div>
+			<div class="ui three items" style="height: 350px; overflow: auto;" id="image-ui-items"></div>
 		</div>
 		<div class="actions">
 			<div class="two fluid ui buttons">
@@ -331,7 +295,7 @@
 						});
 					});
 
-			$('#select-image-modal').modal({
+			$('#select-image-modal').modal('setting', {
 				closable : false,
 				onDeny : function() {
 					return true;
@@ -410,9 +374,9 @@
 							$('.ui.dimmer.czsMsg').dimmer('show');
 
 						} else {
-							if(!!data.msg && !!data.msg.detail){
+							if (!!data.msg && !!data.msg.detail) {
 								$('.ui.dimmer.czsMsg .center span').html('操作失败!<br/>失败信息:' + data.msg.detail);
-							}else{
+							} else {
 								$('.ui.dimmer.czsMsg .center span').text('操作失败!');
 							}
 							$('.ui.dimmer.czsMsg > .content').show();

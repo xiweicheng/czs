@@ -476,4 +476,36 @@ public final class WebUtil {
 
 		return user.getUserName();
 	}
+
+	public static boolean clearSessionBusiness(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+
+		Object attribute = session.getAttribute(SysConstant.SESSION_OBJECT);
+
+		if (attribute != null && attribute instanceof Business) {
+			session.removeAttribute(SysConstant.SESSION_OBJECT);
+			return true;
+		} else {
+			logger.error("session Business 不存在!");
+		}
+
+		return false;
+	}
+
+	public static boolean clearSessionCzsUser(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+
+		Object attribute = session.getAttribute(SysConstant.SESSION_OBJECT);
+
+		if (attribute != null && attribute instanceof CzsUser) {
+			session.removeAttribute(SysConstant.SESSION_OBJECT);
+			return true;
+		} else {
+			logger.error("session CzsUser 不存在!");
+		}
+
+		return false;
+	}
 }

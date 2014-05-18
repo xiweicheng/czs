@@ -112,9 +112,13 @@ public class CzsUserController extends BaseController {
 	@RequestMapping("free/commentSubmit")
 	@ResponseBody
 	public ResultMsg commentSubmit(HttpServletRequest request, Locale locale, Model model,
-			@RequestParam("openId") String openId, @RequestParam("content") String content) {
+			@RequestParam(value = "openId", required = false) String openId, @RequestParam("content") String content) {
 
 		logger.debug("建议留言提交【平台用户】");
+
+		if (StringUtil.isEmpty(openId)) {
+			openId = WebUtil.getSessionBusinessId(request);
+		}
 
 		boolean val = czsUserService.submitComment(locale, openId, content);
 

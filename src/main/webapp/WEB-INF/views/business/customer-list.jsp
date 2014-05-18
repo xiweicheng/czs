@@ -1,33 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ request.getContextPath() + "/";
-%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<base href="<%=basePath%>">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport"
-	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<!-- head common -->
+<%@ include file="../common.jsp"%>
 <title>餐助手-商家服务</title>
-<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
-<script src="../../../resources/js/lib/jquery-1.10.2.min.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tablesort.min.js" charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
-<script src="../../../resources/js/lib/jquery.tmpl.min.js" charset="utf-8"></script>
+
 <script src="../../../resources/js/lib/jquery.jqprint-0.3.js" charset="utf-8"></script>
 <link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
 <script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
-<script type="text/javascript">
-	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-		WeixinJSBridge.call('hideToolbar');
-		WeixinJSBridge.call('hideOptionMenu');
-	});
-</script>
+
 <script id="userTrTpl" type="text/x-jquery-tmpl">
 <tr>
 	<td class="" style="color:red; font-weight: bold;">{{html consume}}</td>
@@ -639,15 +621,15 @@
 
 			$('#menu-item-business-list').addClass('active');
 
-			$('#group-info-show-modal').modal({
+			$('#group-info-show-modal').modal('setting', {
 				closable : false
 			});
 
-			$('#bill-detail-modal').modal({
+			$('#bill-detail-modal').modal('setting', {
 				closable : false
 			});
 
-			$('#confirm-ui-modal').modal({
+			$('#confirm-ui-modal').modal('setting', {
 				closable : false,
 				onApprove : function() {
 					$.post('business/checkout.do', {
@@ -857,7 +839,6 @@
 			try {
 				if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
 					$('.ui.right.sidebar').sidebar('hide');
-					$('.container.czzTopMenu > .title.item').hide();
 				} else {
 
 					if ('${request}' != '' && '${request}' != '0') {

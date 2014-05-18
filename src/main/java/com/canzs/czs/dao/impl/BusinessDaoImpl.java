@@ -1073,4 +1073,80 @@ public class BusinessDaoImpl extends BaseDaoImpl implements IBusinessDao {
 		return getMapList(sqlSb, businessId, handler);
 	}
 
+	@Override
+	public List<Map<String, Object>> getInfo(Locale locale, String sessionBusinessId) {
+
+		// @formatter:off
+		/**
+		SELECT
+			business.id,
+			business.open_id,
+			business.is_deleted,
+			business.`name`,
+			business.address,
+			business.mail,
+			business.introduce,
+			business.phone_number,
+			business.qrcode_limit,
+			business.dynamic_code,
+			business.is_mail_verify,
+			business.is_phone_verify,
+			business.`password`,
+			business.`status`,
+			business.date_time,
+			business.audit_handler,
+			business.audit_date_time,
+			business.days,
+			business.login_times,
+			business.life_value,
+			subscriber.nickname,
+			subscriber.sex,
+			subscriber.city,
+			subscriber.country,
+			subscriber.province,
+			subscriber.headimgurl
+		FROM
+			business
+		INNER JOIN subscriber ON business.open_id = subscriber.user_name
+		WHERE
+			business.open_id = 'okPUDtzjrogWsWdsI_Fz39VNbgBc'**/
+		// @formatter:on
+
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("SELECT\n");
+		sqlSb.append("	business.id,\n");
+		sqlSb.append("	business.open_id,\n");
+		sqlSb.append("	business.is_deleted,\n");
+		sqlSb.append("	business.`name`,\n");
+		sqlSb.append("	business.address,\n");
+		sqlSb.append("	business.mail,\n");
+		sqlSb.append("	business.introduce,\n");
+		sqlSb.append("	business.phone_number,\n");
+		sqlSb.append("	business.qrcode_limit,\n");
+		sqlSb.append("	business.dynamic_code,\n");
+		sqlSb.append("	business.is_mail_verify,\n");
+		sqlSb.append("	business.is_phone_verify,\n");
+		sqlSb.append("	business.`password`,\n");
+		sqlSb.append("	business.`status`,\n");
+		sqlSb.append("	business.date_time,\n");
+		sqlSb.append("	business.audit_handler,\n");
+		sqlSb.append("	business.audit_date_time,\n");
+		sqlSb.append("	business.days,\n");
+		sqlSb.append("	business.login_times,\n");
+		sqlSb.append("	business.life_value,\n");
+		sqlSb.append("	subscriber.nickname,\n");
+		sqlSb.append("	subscriber.sex,\n");
+		sqlSb.append("	subscriber.city,\n");
+		sqlSb.append("	subscriber.country,\n");
+		sqlSb.append("	subscriber.province,\n");
+		sqlSb.append("	subscriber.headimgurl\n");
+		sqlSb.append("FROM\n");
+		sqlSb.append("	business\n");
+		sqlSb.append("INNER JOIN subscriber ON business.open_id = subscriber.user_name\n");
+		sqlSb.append("WHERE\n");
+		sqlSb.append("	business.open_id = ?\n");
+
+		return getMapList(sqlSb, sessionBusinessId);
+	}
+
 }

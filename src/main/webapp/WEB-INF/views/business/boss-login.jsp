@@ -158,11 +158,5 @@
 				class="icon dashboard"></i>营业状况 </a>
 		</div>
 	</div>
-
-	<script type="text/javascript">
-		jQuery(function($) {
-
-		});
-	</script>
 </body>
 </html>

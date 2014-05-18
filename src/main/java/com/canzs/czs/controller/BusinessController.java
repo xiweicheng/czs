@@ -1629,4 +1629,51 @@ public class BusinessController extends BaseController {
 
 		return resultMsg;
 	}
+
+	/**
+	 * 获取商家信息.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月17日 下午6:42:20
+	 * @modification 2014年5月17日 下午6:42:20
+	 * @param request
+	 * @param locale
+	 * @return
+	 */
+	@RequestMapping("getInfo")
+	@ResponseBody
+	public ResultMsg getInfo(HttpServletRequest request, Locale locale) {
+
+		logger.debug("获取商家信息【商家】");
+
+		List<Map<String, Object>> mapList = businessService.getInfo(locale, WebUtil.getSessionBusinessId(request));
+
+		if (mapList.size() > 0) {
+			return new ResultMsg(true, mapList.get(0));
+		} else {
+			return new ResultMsg(false);
+		}
+	}
+
+	/**
+	 * 商家退出登录.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月17日 下午7:08:21
+	 * @modification 2014年5月17日 下午7:08:21
+	 * @param request
+	 * @param locale
+	 * @return
+	 */
+	@RequestMapping("logout")
+	public String logout(HttpServletRequest request, Locale locale) {
+
+		logger.debug("商家退出登录【商家】");
+
+		String businessId = WebUtil.getSessionBusinessId(request);
+
+		WebUtil.clearSessionBusiness(request);
+
+		return StringUtil.replace("forward:login.do?openId={?1}", businessId);
+	}
 }
