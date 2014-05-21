@@ -56,7 +56,7 @@
 		账目结算 <a class="circular ui red label"> <span id="msgCount-span">${fn:length(billList)}</span>个
 		</a>
 	</h4>
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="min-height: 490px;">
 		<form action="business/billSett.do" method="post" id="filter-form"></form>
 		<form action="business/billSettConfirm.do?status=${status}" method="post" id="bill-form">
 			<div class="ui segment">

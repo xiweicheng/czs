@@ -42,7 +42,7 @@
 		服务请求 <a class="circular ui red label"> <span id="msgCount-span">${fn:length(msgList)}</span>个
 		</a>
 	</h4>
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="min-height: 490px;">
 
 		<div class="ui segment">
 			<div class="">
@@ -55,46 +55,49 @@
 						onclick="$('#datepicker-end').handleDtpicker('show');"></i>
 				</div>
 			</div>
+
+			<div style="margin-top: 10px;">
+				<form action="business/listService.do" method="post" id="filter-form"></form>
+				<a class="ui label" id="czsStatus-1" onclick="filterHandler('1')" style="margin-top: 5px; margin-bottom: 5px;">
+					新请求 ${newCount} 个 </a> <a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
+					style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${understanding} 个 </a><a class="ui label"
+					onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
+			</div>
 		</div>
-		<div style="margin-top: 10px;">
-			<form action="business/listService.do" method="post" id="filter-form"></form>
-			<a class="ui label" id="czsStatus-1" onclick="filterHandler('1')" style="margin-top: 5px; margin-bottom: 5px;">
-				新请求 ${newCount} 个 </a> <a class="ui label" id="czsStatus-0" onclick="filterHandler('0')"
-				style="margin-top: 5px; margin-bottom: 5px;"> 已接受 ${understanding} 个 </a><a class="ui label"
-				onclick="filterHandler('')" id="czsStatus-" style="margin-top: 5px; margin-bottom: 5px;"> 全部 ${total} 个 </a>
-		</div>
-	</div>
-	<table class="ui sortable table segment" style="display: table; font-size: 15px;">
-		<thead>
-			<tr>
-				<th class="number">序号</th>
-				<th class="">顾客</th>
-				<th class="">位置</th>
-				<th class="">类型</th>
-				<th class="">状态</th>
-				<th class="">时间</th>
-				<th class="number">距今</th>
-				<th class="">接受者</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach items="${msgList}" var="item" varStatus="sts">
-				<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
-					<td class="">${sts.index + 1}</td>
-					<td class="" data-sort-value="${item.nickname}"><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
-					<td class="">${item.description}</td>
-					<td class=""><c:if test="${item.type=='0'}">呼叫服务</c:if></td>
-					<td class=""><c:if test="${item.status==0}">已接受</c:if> <c:if test="${item.status==1}">待接收<a
-								class="ui green label" id="ui-label-accept-${item.id}" onclick="serviceHandler('0', '${item.id}', '${item.consumer_id}')">接受</a>
-						</c:if></td>
-					<td class="">${item.date_time}</td>
-					<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
-					<td class="" data-sort-value="${item.handler_name}"><c:if test="${! empty item.handler_name}">
-							<img class="ui avatar image" src="${item.handler_headimgurl}/64">${item.handler_name}(${item.handler_sex})</c:if></td>
+		
+		<table class="ui sortable table segment" style="display: table; font-size: 15px;">
+			<thead>
+				<tr>
+					<th class="number">序号</th>
+					<th class="">顾客</th>
+					<th class="">位置</th>
+					<th class="">类型</th>
+					<th class="">状态</th>
+					<th class="">时间</th>
+					<th class="number">距今</th>
+					<th class="">接受者</th>
 				</tr>
-			</c:forEach>
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				<c:forEach items="${msgList}" var="item" varStatus="sts">
+					<tr id="item-tr-${item.id}" class="item-tr-${item.id}">
+						<td class="">${sts.index + 1}</td>
+						<td class="" data-sort-value="${item.nickname}"><img class="ui avatar image" src="${item.headimgurl}/64">${item.nickname}(${item.sex})</td>
+						<td class="">${item.description}</td>
+						<td class=""><c:if test="${item.type=='0'}">呼叫服务</c:if></td>
+						<td class=""><c:if test="${item.status==0}">已接受</c:if> <c:if test="${item.status==1}">待接收<a
+									class="ui green label" id="ui-label-accept-${item.id}"
+									onclick="serviceHandler('0', '${item.id}', '${item.consumer_id}')">接受</a>
+							</c:if></td>
+						<td class="">${item.date_time}</td>
+						<td class="" data-sort-value="${item.sec_diff}">${item.diff}</td>
+						<td class="" data-sort-value="${item.handler_name}"><c:if test="${! empty item.handler_name}">
+								<img class="ui avatar image" src="${item.handler_headimgurl}/64">${item.handler_name}(${item.handler_sex})</c:if></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
 
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>

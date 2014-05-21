@@ -57,7 +57,7 @@
 		</a>
 		<div class="ui green tiny button" onclick="window.location.reload();" style="margin-left: 20px;">手动刷新</div>
 	</h4>
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="min-height: 490px;">
 		<table class="ui sortable table segment" style="display: table; font-size: 15px;">
 			<thead>
 				<tr>

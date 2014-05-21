@@ -30,7 +30,7 @@
 		</div>
 		<div class="ui button czsConfirm">确定</div>
 	</div>
-	<div class="ui segment attached czsMenu"></div>
+	<div class="ui segment attached czsMenu" style="min-height: 415px;"></div>
 
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>

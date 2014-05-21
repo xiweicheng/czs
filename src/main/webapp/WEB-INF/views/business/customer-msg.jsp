@@ -44,7 +44,7 @@
 		</a>
 	</h4>
 
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="min-height: 490px;">
 
 		<div class="ui segment">
 			<div class="">

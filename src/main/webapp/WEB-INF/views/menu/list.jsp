@@ -29,45 +29,46 @@
 		<div class="circular ui red label">${fn:length(menuList)}个</div>
 	</h4>
 
-	<table class="ui sortable table segment" style="display: table;">
-		<thead>
-			<tr>
-				<th class="number">序号</th>
-				<th class="">菜名</th>
-				<th class="number">价格</th>
-				<th class="">图片</th>
-				<th class="">介绍</th>
-				<th class="">分类</th>
-				<th class="">口味</th>
-				<th class="">添加时间</th>
-				<th class="number">被点次数</th>
-				<th class="">操作</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach items="${menuList}" var="item" varStatus="sts">
-				<tr id="menu-item-${item.id}">
-					<td class="">${sts.index + 1}</td>
-					<td class="">${item.name}</td>
-					<td class="">${item.price}</td>
-					<td class=""><c:if test="${! empty item.file_name}">
-							<a class="ui label czsMenuImg" target="_blank" href="../../../${item.path}640/${item.file_name}"
-								data-html="<img style='width:200px;' src='../../../${item.path}640/${item.file_name}'>">图片链接</a>
-						</c:if></td>
-					<td class=""><c:if test="${! empty item.introduce}">
-							<a class="ui label czsMenuIntroduce" data-html="<p>${item.introduce}</p>">菜品介绍</a>
-						</c:if></td>
-					<td class="">${item.category}</td>
-					<td class="">${item.taste}</td>
-					<td class="">${item.date_time}</td>
-					<td class="">${item.order_times}</td>
-					<td class=""><a class="ui red label" href="javascript:void(0);" onclick="menuDeleteHandler('${item.id}');">删除</a>
-						<a class="ui purple label" href="menu/update.do?id=${item.id}">修改</a></td>
+	<div class="ui segment attached" style="min-height: 490px; padding:0px;">
+		<table class="ui sortable table segment" style="display: table;">
+			<thead>
+				<tr>
+					<th class="number">序号</th>
+					<th class="">菜名</th>
+					<th class="number">价格</th>
+					<th class="">图片</th>
+					<th class="">介绍</th>
+					<th class="">分类</th>
+					<th class="">口味</th>
+					<th class="">添加时间</th>
+					<th class="number">被点次数</th>
+					<th class="">操作</th>
 				</tr>
-			</c:forEach>
-		</tbody>
-	</table>
-
+			</thead>
+			<tbody>
+				<c:forEach items="${menuList}" var="item" varStatus="sts">
+					<tr id="menu-item-${item.id}">
+						<td class="">${sts.index + 1}</td>
+						<td class="">${item.name}</td>
+						<td class="">${item.price}</td>
+						<td class=""><c:if test="${! empty item.file_name}">
+								<a class="ui label czsMenuImg" target="_blank" href="../../../${item.path}640/${item.file_name}"
+									data-html="<img style='width:200px;' src='../../../${item.path}640/${item.file_name}'>">图片链接</a>
+							</c:if></td>
+						<td class=""><c:if test="${! empty item.introduce}">
+								<a class="ui label czsMenuIntroduce" data-html="<p>${item.introduce}</p>">菜品介绍</a>
+							</c:if></td>
+						<td class="">${item.category}</td>
+						<td class="">${item.taste}</td>
+						<td class="">${item.date_time}</td>
+						<td class="">${item.order_times}</td>
+						<td class=""><a class="ui red label" href="javascript:void(0);" onclick="menuDeleteHandler('${item.id}');">删除</a>
+							<a class="ui purple label" href="menu/update.do?id=${item.id}">修改</a></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>
 

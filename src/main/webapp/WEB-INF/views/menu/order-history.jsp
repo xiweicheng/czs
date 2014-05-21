@@ -32,7 +32,7 @@
 			历史订单
 			<div class="circular ui red label">${fn:length(historyMenuBillList)}份</div>
 		</h4>
-		<div class="ui segment attached">
+		<div class="ui segment attached" style="min-height: 490px;">
 
 			<div class="ui segment">
 				<div class="">

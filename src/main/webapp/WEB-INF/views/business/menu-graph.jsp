@@ -19,7 +19,7 @@
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">菜品统计</h4>
 
-	<div class="ui segment attached czsMenu"></div>
+	<div class="ui segment attached czsMenu" style="min-height: 490px;"></div>
 
 	<!-- footer -->
 	<%@ include file="../footer.jsp"%>

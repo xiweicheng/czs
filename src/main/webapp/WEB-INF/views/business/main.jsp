@@ -15,7 +15,7 @@
 	<%@ include file="../header.jsp"%>
 
 	<h4 class="ui top attached header" style="margin-top: 45px;">基本信息</h4>
-	<div class="ui segment attached">
+	<div class="ui segment attached" style="min-height: 490px;">
 		<div class="ui green button" id="business-update-ui-btn">修改信息</div>
 		<div class="ui relaxed celled list">
 			<div class="item">
