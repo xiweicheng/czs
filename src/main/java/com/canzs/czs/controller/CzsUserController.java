@@ -66,7 +66,8 @@ public class CzsUserController extends BaseController {
 	IUserService userService;
 
 	@RequestMapping("login")
-	public String login(HttpServletRequest request, Locale locale, Model model) {
+	public String login(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "openId", required = false) String openId) {
 
 		logger.debug("平台登录【平台用户】");
 
@@ -82,7 +83,8 @@ public class CzsUserController extends BaseController {
 	}
 
 	@RequestMapping("free/about")
-	public String about(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+	public String about(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "openId", required = false) String openId) {
 
 		logger.debug("关于平台【平台用户】");
 
@@ -90,7 +92,8 @@ public class CzsUserController extends BaseController {
 	}
 
 	@RequestMapping("free/join")
-	public String join(HttpServletRequest request, Locale locale, Model model, @RequestParam("openId") String openId) {
+	public String join(HttpServletRequest request, Locale locale, Model model,
+			@RequestParam(value = "openId", required = false) String openId) {
 
 		logger.debug("加盟合作【平台用户】");
 
@@ -327,7 +330,7 @@ public class CzsUserController extends BaseController {
 		} else {
 			model.addAttribute("message", "登录失败!");
 
-			return "error";
+			return "message";
 		}
 	}
 

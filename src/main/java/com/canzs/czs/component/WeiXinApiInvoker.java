@@ -40,7 +40,6 @@ import com.canzs.czs.pojo.model.WeiXinMenu;
 import com.canzs.czs.pojo.model.WeiXinQrcode;
 import com.canzs.czs.pojo.model.WeiXinQrcodeCreateParam;
 import com.canzs.czs.pojo.model.WeiXinUserInfo;
-import com.canzs.czs.pojo.model.WeiXinViewButton;
 import com.canzs.czs.util.JsonUtil;
 import com.canzs.czs.util.StringUtil;
 import com.canzs.czs.util.WebUtil;
@@ -281,7 +280,7 @@ public class WeiXinApiInvoker {
 			weiXinButton = new WeiXinButton("平台服务");
 			sub_button = new ArrayList<>();
 			sub_button.add(new WeiXinClickButton("关于平台", "platform_evt_key_1"));
-			sub_button.add(new WeiXinViewButton("平台管理", propUtil.getRedirectUrl() + "/czs/login.do"));
+			sub_button.add(new WeiXinClickButton("平台管理", "platform_evt_key_2"));
 			sub_button.add(new WeiXinClickButton("加盟合作", "platform_evt_key_3"));
 			sub_button.add(new WeiXinClickButton("建议留言", "platform_evt_key_4"));
 

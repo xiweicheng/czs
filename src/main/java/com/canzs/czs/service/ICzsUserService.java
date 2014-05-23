@@ -137,4 +137,16 @@ public interface ICzsUserService extends IBaseService {
 	boolean submitComment(Locale locale, String openId, String content);
 
 	List<Map<String, Object>> queryCommentByOpenId(Locale locale, String openId);
+
+	/**
+	 * 判断是否为平台管理员
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月23日 上午10:38:38
+	 * @modification 2014年5月23日 上午10:38:38
+	 * @param locale
+	 * @param fromUserName
+	 * @return
+	 */
+	boolean isCzsMgr(Locale locale, String fromUserName);
 }

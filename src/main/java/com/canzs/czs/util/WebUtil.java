@@ -424,6 +424,19 @@ public final class WebUtil {
 	}
 
 	/**
+	 * 判断Session business是否存在.
+	 * 
+	 * @author xiweicheng
+	 * @creation 2014年5月23日 上午9:59:16
+	 * @modification 2014年5月23日 上午9:59:16
+	 * @param request
+	 * @return
+	 */
+	public static boolean existsSessionBusiness(HttpServletRequest request) {
+		return getSessionBusiness(request) != null;
+	}
+
+	/**
 	 * 获取session business
 	 * 
 	 * @author xiweicheng

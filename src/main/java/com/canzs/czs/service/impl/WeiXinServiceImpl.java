@@ -36,6 +36,7 @@ import com.canzs.czs.pojo.model.WeiXinUserInfo;
 import com.canzs.czs.pojo.vo.PageResult;
 import com.canzs.czs.service.IBusinessRoleService;
 import com.canzs.czs.service.IBusinessService;
+import com.canzs.czs.service.ICzsUserService;
 import com.canzs.czs.service.IQrcodeService;
 import com.canzs.czs.service.IUserService;
 import com.canzs.czs.service.IWeiXinService;
@@ -86,6 +87,9 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 
 	@Autowired
 	PropUtil propUtil;
+
+	@Autowired
+	ICzsUserService czsUserService;
 
 	@Override
 	public boolean save(Locale locale, WeiXin weiXin) {
@@ -251,13 +255,17 @@ public class WeiXinServiceImpl extends BaseServiceImpl implements IWeiXinService
 		} else if (WeiXinEventKey.BUSINESS_EVT_KEY_3.getValue().equals(eventKey)) {// 店员入口
 			return businessRoleLogin(bean, locale);
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_1.getValue().equals(eventKey)) {// 关于平台
-			return StringUtil.replace("<a href='{?1}/czs/free/about.d0?openId={?2}'>[点击此]进入【关于平台】</a>",
-					propUtil.getRedirectUrl(), bean.getFromUserName());
-		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_2.getValue().equals(eventKey)) {//
-			return StringUtil.replace("功能开发设计中,敬请期待...");
+			return StringUtil.replace("<a href='{?1}/'>[点击此]进入【关于平台】</a>", propUtil.getRedirectUrl());
+		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_2.getValue().equals(eventKey)) {// 平台管理
+			// 判断用户是否为平台管理员
+			if (czsUserService.isCzsMgr(locale, bean.getFromUserName())) {
+				return StringUtil.replace("<a href='{?1}/czs/login.do?openId={?2}'>[点击此]进入【平台管理】</a>",
+						propUtil.getRedirectUrl(), bean.getFromUserName());
+			} else {
+				return "对不起,您不是平台管理员!";
+			}
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_3.getValue().equals(eventKey)) {// 加盟合作
-			return StringUtil.replace("<a href='{?1}/czs/free/join.do?openId={?2}'>[点击此]进入【加盟合作】</a>",
-					propUtil.getRedirectUrl(), bean.getFromUserName());
+			return StringUtil.replace("<a href='{?1}/'>[点击此]进入【加盟合作】</a>", propUtil.getRedirectUrl());
 		} else if (WeiXinEventKey.PLATFORM_EVT_KEY_4.getValue().equals(eventKey)) {// 建议留言
 			return StringUtil.replace("<a href='{?1}/czs/free/comment.do?openId={?2}'>[点击此]进入【建议留言】</a>",
 					propUtil.getRedirectUrl(), bean.getFromUserName());

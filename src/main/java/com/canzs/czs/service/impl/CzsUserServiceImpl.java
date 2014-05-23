@@ -302,4 +302,20 @@ public class CzsUserServiceImpl extends BaseServiceImpl implements ICzsUserServi
 
 		return newList;
 	}
+
+	@Override
+	public boolean isCzsMgr(Locale locale, final String fromUserName) {
+
+		logger.debug("[业务逻辑层]判断【平台用户】是否为管理者");
+
+		return hibernateTemplate.execute(new HibernateCallback<Boolean>() {
+
+			@Override
+			public Boolean doInHibernate(Session session) throws HibernateException, SQLException {
+
+				return (Long) session.createQuery("select count(*) from CzsUser where userName = ?")
+						.setString(0, fromUserName).uniqueResult() > 0;
+			}
+		});
+	}
 }

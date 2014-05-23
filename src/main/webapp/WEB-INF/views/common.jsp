@@ -11,6 +11,8 @@
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
+<link rel="shortcut icon" href="../../../resources/img/canzs_128.png">
+
 <link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
 <link href="../../../resources/css/common.css" rel="stylesheet" type="text/css">
 <link href="../../../resources/datetimepicker/css/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css">

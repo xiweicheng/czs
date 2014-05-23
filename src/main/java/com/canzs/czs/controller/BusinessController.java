@@ -367,7 +367,7 @@ public class BusinessController extends BaseController {
 				businessService.update(business2);
 			}
 
-			// 清楚密码错误次数记录和动态码
+			// 清除密码错误次数记录和动态码
 			businessService.clearDynamicCodeAndLoginTimes(locale, business2);
 
 			HttpSession session = request.getSession();
