@@ -21,10 +21,10 @@ public class SimpleMailSenderTest extends BaseTest {
 		mailInfo.setMailServerHost("smtp.163.com");
 		mailInfo.setMailServerPort("25");
 		mailInfo.setValidate(true);
-		mailInfo.setUserName("xiweicheng1987@163.com");
-		mailInfo.setPassword("1987826");// 您的邮箱密码
-		mailInfo.setFromAddress("xiweicheng1987@163.com");
-		mailInfo.setToAddress("xiweicheng@yeah.net");
+		mailInfo.setUserName("");
+		mailInfo.setPassword("");// 您的邮箱密码
+		mailInfo.setFromAddress("");
+		mailInfo.setToAddress("");
 		mailInfo.setSubject("设置邮箱标题");
 		mailInfo.setContent("设置邮箱内容");
 		// 这个类主要来发送邮件
@@ -38,10 +38,10 @@ public class SimpleMailSenderTest extends BaseTest {
 		mailInfo.setMailServerHost("smtp.163.com");
 		mailInfo.setMailServerPort("25");
 		mailInfo.setValidate(true);
-		mailInfo.setUserName("xiweicheng1987@163.com");
-		mailInfo.setPassword("1987826");// 您的邮箱密码
-		mailInfo.setFromAddress("xiweicheng1987@163.com");
-		mailInfo.setToAddress("xiweicheng@yeah.net");
+		mailInfo.setUserName("@163.com");
+		mailInfo.setPassword("");// 您的邮箱密码
+		mailInfo.setFromAddress("@163.com");
+		mailInfo.setToAddress("@yeah.net");
 		mailInfo.setSubject("设置邮箱标题");
 		mailInfo.setContent("设置邮箱内容");
 		// 这个类主要来发送邮件
