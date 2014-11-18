@@ -13,7 +13,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
 <title>餐助手-顾客服务</title>
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -49,8 +49,8 @@
 							<div class="ui segment item" id="menu-item-${item.id}">
 								<div>
 									<div class="image czsSimpleMode" style="width: 80px; heght: 80px; float: left;" id="image-div-${item.id}">
-										<img style="width: 100%;" src="../../../${item.path}120/${item.file_name}"
-											czz-src="../../../${item.path}640/${item.file_name}" onclick="imageHandler('${item.id}')">
+										<img style="width: 100%;" src="${item.path}120/${item.file_name}"
+											czz-src="${item.path}640/${item.file_name}" onclick="imageHandler('${item.id}')">
 									</div>
 
 									<div class="ui left corner label">
@@ -181,7 +181,7 @@
 	</div>
 
 	<script src="http://code.jquery.com/jquery-2.0.2.min.js" charset="utf-8"></script>
-	<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+	<script src="resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 
 	<script type="text/javascript">
 	

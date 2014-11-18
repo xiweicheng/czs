@@ -35,7 +35,7 @@
 			<c:forEach items="${qrcodeList}" var="item">
 				<div class="item" style="min-height: 0px;">
 					<div class="image">
-						<img src="../../../${item.file_path}">
+						<img src="${item.file_path}">
 					</div>
 					<div class="content">
 						<div class="name" style="text-align: center;" id="qrcode-desc-div-${item.id}">${item.description}</div>

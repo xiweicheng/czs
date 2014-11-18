@@ -5,8 +5,8 @@
 <!-- head common -->
 <%@ include file="common.jsp"%>
 <title>餐助手-平台服务</title>
-<link href="../../../resources/css/czs-about.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../../../resources/js/lib/unslider.min.js"></script>
+<link href="resources/css/czs-about.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="resources/js/lib/unslider.min.js"></script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 

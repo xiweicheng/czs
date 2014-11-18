@@ -199,7 +199,7 @@
 				<version>2.0</version>
 				<configuration>
 					<uriEncoding>UTF-8</uriEncoding>
-					<path>/</path>
+					<path>/czs</path>
 					<!--在这里定义端口号 -->
 					<port>80</port>
 				</configuration>

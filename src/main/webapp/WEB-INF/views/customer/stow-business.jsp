@@ -15,10 +15,10 @@
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <title>餐助手-顾客服务</title>
 
-<link href="../../../resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
+<link href="resources/semantic/css/semantic.min.css" rel="stylesheet" type="text/css">
 
-<script src="../../../resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
-<script src="../../../resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
+<script src="resources/js/lib/jquery-2.0.2.min.js" charset="utf-8"></script>
+<script src="resources/semantic/javascript/semantic.min.js" charset="utf-8"></script>
 
 <script type="text/javascript">
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {

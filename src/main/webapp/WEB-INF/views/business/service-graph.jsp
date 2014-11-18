@@ -6,8 +6,8 @@
 <%@ include file="../common.jsp"%>
 <title>餐助手-商家服务</title>
 
-<script type="text/javascript" src="../../../resources/js/lib/highcharts.js" charset="utf-8"></script>
-<script type="text/javascript" src="../../../resources/js/lib/exporting.js" charset="utf-8"></script>
+<script type="text/javascript" src="resources/js/lib/highcharts.js" charset="utf-8"></script>
+<script type="text/javascript" src="resources/js/lib/exporting.js" charset="utf-8"></script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 

@@ -10,7 +10,7 @@
 <div class="item" style="min-height: 0px;"
 	onclick="selectImage(this, '{{html id}}', '{{html path}}640/{{html fileName}}')">
 	<div class="image">
-		<img src="../../../{{html path}}640/{{html fileName}}"> <a
+		<img src="{{html path}}640/{{html fileName}}"> <a
 			class="like ui corner label"> <i class="like icon"></i>
 		</a>
 	</div>
@@ -129,7 +129,7 @@
 				<div class="two fields">
 					<div class="field">
 						<input type="hidden" name="resourceId" id="resourceId" value="${menu.resourceId}"> <label>图片</label> <img
-							class="rounded ui image" alt="图片" src="../../../${extra_imgPath}640/${extra_imgFileName}" id="resourceImage">
+							class="rounded ui image" alt="图片" src="${extra_imgPath}640/${extra_imgFileName}" id="resourceImage">
 					</div>
 					<div class="ui vertical animated button" style="margin-top: 20px; margin-bottom: 20px;" id="select-image-btn">
 						<div class="hidden content">选择图片</div>
@@ -396,7 +396,7 @@
 		/**选中图片 **/
 		function selectImage(_this, id, path) {
 			$('#resourceId').val(id);
-			$('#resourceImage').attr('src', '../../../' + path);
+			$('#resourceImage').attr('src', '' + path);
 
 			$(_this).siblings("div[class='item']").find('i').removeClass('checkmark').addClass('like');
 

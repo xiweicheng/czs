@@ -7,7 +7,7 @@
 <%@ include file="../common.jsp"%>
 <title>餐助手-商家服务</title>
 
-<script src="../../../resources/js/lib/jquery.html5uploader.min.js" charset="utf-8"></script>
+<script src="resources/js/lib/jquery.html5uploader.min.js" charset="utf-8"></script>
 </head>
 <body style="margin: 0px; padding: 0px;">
 
@@ -53,7 +53,7 @@
 			<c:forEach items="${imageList}" var="item">
 				<div class="item" style="min-height: 0px;" id="image-item-${item.id}">
 					<div class="image">
-						<img src="../../../${item.path}640/${item.fileName}"> <a class="like ui corner label"
+						<img src="${item.path}640/${item.fileName}"> <a class="like ui corner label"
 							onclick="deleteHandler('${item.id}');"> <i class="remove icon"></i>
 						</a>
 					</div>

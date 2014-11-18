@@ -6,9 +6,9 @@
 <%@ include file="../common.jsp"%>
 <title>餐助手-商家服务</title>
 
-<script src="../../../resources/js/lib/jquery.jqprint-0.3.js" charset="utf-8"></script>
-<link href="../../../resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
-<script src="../../../resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
+<script src="resources/js/lib/jquery.jqprint-0.3.js" charset="utf-8"></script>
+<link href="resources/tinybox2/css/tinybox.min.css" rel="stylesheet" type="text/css">
+<script src="resources/tinybox2/tinybox.min.js" charset="utf-8"></script>
 
 <script id="userTrTpl" type="text/x-jquery-tmpl">
 <tr>

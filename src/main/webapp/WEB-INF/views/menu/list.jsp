@@ -52,8 +52,8 @@
 						<td class="">${item.name}</td>
 						<td class="">${item.price}</td>
 						<td class=""><c:if test="${! empty item.file_name}">
-								<a class="ui label czsMenuImg" target="_blank" href="../../../${item.path}640/${item.file_name}"
-									data-html="<img style='width:200px;' src='../../../${item.path}640/${item.file_name}'>">图片链接</a>
+								<a class="ui label czsMenuImg" target="_blank" href="${item.path}640/${item.file_name}"
+									data-html="<img style='width:200px;' src='${item.path}640/${item.file_name}'>">图片链接</a>
 							</c:if></td>
 						<td class=""><c:if test="${! empty item.introduce}">
 								<a class="ui label czsMenuIntroduce" data-html="<p>${item.introduce}</p>">菜品介绍</a>
