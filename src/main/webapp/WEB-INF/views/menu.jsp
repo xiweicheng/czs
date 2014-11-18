@@ -3,14 +3,14 @@
 	<div class="" style="padding: 20px 15px;">
 		<div class="">
 			<a class="avatar" style="float: left;" href="http://www.canzs.cn" target="_blank"> <img class="circular ui image"
-				style="width: 52px;" src="../../resources/img/canzs_128.png"></a>
+				style="width: 52px;" src="resources/img/canzs_128.png"></a>
 
 			<div style="float: left; font-size: 15px; padding-left: 10px; padding-top: 5px;">
 				<div>
 					<a class="" style="color: #1f90c8;" href="business/main.do" id="login-business-name-a"></a>
 				</div>
 				<div class="" style="margin-top: 10px; color: #FFF; cursor: pointer;">
-					<a class="czsPopup" style="text-decoration: none; color: #FFF;" href="http://www.canzs.cn" target="_blank"
+					<a class="czsPopup" style="text-decoration: none; color: #FFF;" href="" target="_blank"
 						data-content="主页" data-variation="small"> <i class="home icon"></i>
 					</a> <a class="czsPopup" style="text-decoration: none; color: #FFF;" data-content="仪表盘" data-variation="small"> <i
 						class="dashboard icon"></i>

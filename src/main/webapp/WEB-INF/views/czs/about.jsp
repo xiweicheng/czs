@@ -14,7 +14,7 @@
 		<div class="czs-header">
 			<div class="title item">
 				<a class="avatar" style="float: left;" href="czs/free/about.do?openId=" target="_blank"> <img
-					class="circular ui image" style="width: 46px;" src="../../resources/img/canzs_128.png"></a>
+					class="circular ui image" style="width: 46px;" src="resources/img/canzs_128.png"></a>
 
 				<div style="margin: 15px 0 10px 10px; float: left;">
 					<b>餐助手</b>
